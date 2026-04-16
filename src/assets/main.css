@@ -1,0 +1,103 @@
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --ocean-glow: rgba(14, 165, 233, 0.14);
+}
+
+@layer base {
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    @apply bg-ink text-foam font-display antialiased min-h-screen overflow-x-hidden;
+  }
+
+  ::-webkit-scrollbar { width: 5px; }
+  ::-webkit-scrollbar-track { @apply bg-ink; }
+  ::-webkit-scrollbar-thumb { @apply bg-border-light rounded; }
+
+  h1, h2, h3, h4 { @apply font-bold tracking-tight leading-tight; }
+  h1 { font-size: clamp(1.7rem, 4vw, 2.6rem); }
+  h2 { font-size: clamp(1.2rem, 3vw, 1.7rem); }
+
+  a { @apply text-ocean no-underline transition-colors duration-200; }
+  a:hover { @apply text-sand; }
+
+  input, textarea, select {
+    @apply w-full bg-surface-2 border border-border rounded-sm text-foam font-display text-sm
+           px-3 py-2 outline-none transition-all duration-200;
+  }
+  input:focus, textarea:focus, select:focus {
+    @apply border-ocean;
+    box-shadow: 0 0 0 3px var(--ocean-glow);
+  }
+  input::placeholder, textarea::placeholder { @apply text-muted; }
+  textarea { @apply resize-y; min-height: 80px; }
+  select option { @apply bg-surface-2; }
+
+  label {
+    @apply block text-muted text-xs font-semibold uppercase tracking-widest mb-1;
+  }
+}
+
+@layer components {
+  .btn {
+    @apply inline-flex items-center justify-center gap-1.5 px-4 py-2
+           rounded-sm font-display text-sm font-semibold
+           border-0 cursor-pointer transition-all duration-200 whitespace-nowrap;
+  }
+  .btn-primary   { @apply bg-ocean text-white hover:bg-ocean-dark hover:-translate-y-px; }
+  .btn-secondary { @apply bg-surface-2 border border-border text-foam hover:border-ocean; }
+  .btn-ghost     { @apply bg-transparent border border-border text-muted hover:border-border-light hover:text-foam; }
+  .btn-danger    { @apply bg-transparent border border-danger text-danger hover:bg-danger hover:text-white; }
+  .btn-sm        { @apply text-xs px-3 py-1.5; }
+  .btn:disabled  { @apply opacity-40 cursor-not-allowed translate-y-0; }
+
+  .card {
+    @apply bg-surface border border-border rounded-lg p-5;
+  }
+
+  .badge {
+    @apply inline-block rounded px-1.5 py-0.5 text-[0.68rem] font-bold uppercase tracking-wide;
+  }
+  .badge-ocean   { background: var(--ocean-glow); @apply border border-ocean text-ocean; }
+  .badge-sand    { @apply bg-amber-500/10 border border-sand text-sand; }
+  .badge-success { @apply bg-green-500/10 border border-success text-success; }
+
+  .form-grid {
+    @apply grid gap-3;
+    grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  }
+  .form-group     { @apply flex flex-col; }
+  .form-group.full { grid-column: 1 / -1; }
+
+  .section-divider {
+    @apply flex items-center gap-3 text-muted text-xs font-bold uppercase tracking-widest my-5;
+  }
+  .section-divider::before,
+  .section-divider::after {
+    content: '';
+    @apply flex-1 h-px bg-border;
+  }
+
+  .stars { @apply text-sand tracking-wide; }
+
+  .spinner {
+    @apply inline-block rounded-full border-2 border-border border-t-ocean;
+    width: 18px; height: 18px;
+    animation: spin .7s linear infinite;
+  }
+
+  .state-center {
+    @apply flex flex-col items-center gap-2 py-16 text-center;
+  }
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+@media (max-width: 640px) {
+  .form-grid { grid-template-columns: 1fr; }
+}
