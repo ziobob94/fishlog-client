@@ -55,20 +55,27 @@
               <InfoItem label="Coordinate" :value="coordsLabel" mono />
             </div>
             <p v-if="session.location?.notes" class="notes-text mt-1">{{ session.location.notes }}</p>
+            <MapDisplay
+              v-if="session.location?.coords?.lat && session.location?.coords?.lng"
+              :lat="session.location.coords.lat"
+              :lng="session.location.coords.lng"
+              class="mt-3"
+            />
           </section>
 
-          <!-- Mare -->
+          <!-- Condizioni acqua -->
           <section v-if="hasSea" class="detail-section">
-            <h3 class="section-title">🌊 Condizioni mare</h3>
+            <h3 class="section-title">{{ waterSectionTitle }}</h3>
             <div class="info-grid">
-              <InfoItem label="Stato"      :value="session.sea?.seaState" />
-              <InfoItem label="Onde"       :value="session.sea?.waveHeight" />
-              <InfoItem label="Periodo"    :value="session.sea?.wavePeriod" />
-              <InfoItem label="Corrente"   :value="session.sea?.current" />
-              <InfoItem label="Colore"     :value="session.sea?.waterColor" />
-              <InfoItem label="Temp. acqua" :value="session.sea?.waterTemp != null ? `${session.sea.waterTemp}°C` : null" />
-              <InfoItem label="Marea"      :value="session.sea?.tide?.state" />
-              <InfoItem label="Note marea" :value="session.sea?.tide?.notes" />
+              <InfoItem v-if="isSea" label="Stato mare"   :value="seaStateLabel(session.sea?.seaState)" />
+              <InfoItem v-if="isSea" label="Onde"         :value="session.sea?.waveHeight" />
+              <InfoItem v-if="isSea" label="Periodo"      :value="session.sea?.wavePeriod" />
+              <InfoItem v-if="isRiver" label="Livello"    :value="waterLevelLabel(session.sea?.waterLevel)" />
+              <InfoItem label="Corrente"                  :value="session.sea?.current" />
+              <InfoItem label="Colore acqua"              :value="session.sea?.waterColor" />
+              <InfoItem label="Temp. acqua"               :value="session.sea?.waterTemp != null ? `${session.sea.waterTemp}°C` : null" />
+              <InfoItem v-if="isSea" label="Marea"        :value="tideLabel(session.sea?.tide?.state)" />
+              <InfoItem v-if="isSea" label="Note marea"   :value="session.sea?.tide?.notes" />
             </div>
           </section>
 
@@ -206,6 +213,7 @@ import MediaUploader from '../components/MediaUploader.vue'
 import InfoItem      from '../components/InfoItem.vue'
 import StatBar       from '../components/StatBar.vue'
 import CastsTable    from '../components/CastsTable.vue'
+import MapDisplay    from '../components/MapDisplay.vue'
 
 const store  = useSessionStore()
 const route  = useRoute()
@@ -233,6 +241,16 @@ const statItems = computed(() => {
 })
 
 const visibilityLabel = v => ({ private: '🔒 Privata', users: '👥 Tutti gli utenti', group: '🫂 Gruppi' }[v] || v)
+const seaStateLabel   = v => ({ piatto: '🫧 Piatto', poco_mosso: '〰️ Poco mosso', mosso: '🌊 Mosso', molto_mosso: '🌊💨 Molto mosso', agitato: '⛈️ Agitato' }[v] || v)
+const waterLevelLabel = v => ({ piena: '🔼 In piena', normale: '➡️ Normale', magra: '🔽 In magra' }[v] || v)
+const tideLabel       = v => ({ crescente: '📈 Crescente', calante: '📉 Calante', alta: '⬆️ Alta', bassa: '⬇️ Bassa' }[v] || v)
+
+const isSea   = computed(() => !session.value?.waterType || session.value?.waterType === 'mare')
+const isRiver = computed(() => session.value?.waterType === 'fiume')
+const waterSectionTitle = computed(() => ({
+  mare: '🌊 Condizioni mare', fiume: '🏞️ Condizioni fiume',
+  lago: '🏔️ Condizioni lago',  altro: '💧 Condizioni acqua',
+}[session.value?.waterType] || '🌊 Condizioni mare'))
 
 const fmtDate     = d => new Date(d).toLocaleDateString('it-IT', { weekday:'long', day:'2-digit', month:'long', year:'numeric' })
 const fmtDatetime = d => new Date(d).toLocaleString('it-IT', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' })
