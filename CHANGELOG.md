@@ -1,3 +1,10 @@
+## [1.2.1](https://github.com/ziobob94/fishlog-client/compare/client-v1.2.0...client-v1.2.1) (2026-09-05)
+
+
+### Bug Fixes
+
+* string ([bd95ddb](https://github.com/ziobob94/fishlog-client/commit/bd95ddb78eb49b23dbba789c18cc77b3cff3a9c2))
+
 # [1.2.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.1.0...client-v1.2.0) (2026-09-05)
 
 
