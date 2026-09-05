@@ -28,8 +28,8 @@
       class="flex-1 min-w-[130px] max-w-[160px]"
       @change="update('dateTo', $event.target.value)"
     />
-    <button v-if="hasFilters" class="btn btn-ghost btn-sm shrink-0" @click="$emit('reset')">
-      {{ t('sessionFilters.reset') }}
+    <button v-if="hasFilters" class="btn btn-ghost btn-sm shrink-0" style="display:inline-flex;align-items:center;gap:.4rem" @click="$emit('reset')">
+      <X :size="14" /> {{ t('sessionFilters.reset') }}
     </button>
   </div>
 </template>
@@ -37,6 +37,7 @@
 <script setup>
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { X } from 'lucide-vue-next'
 
 const { t } = useI18n()
 const props = defineProps({ modelValue: { type: Object, required: true } })

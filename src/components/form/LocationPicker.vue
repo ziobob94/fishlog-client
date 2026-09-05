@@ -34,9 +34,10 @@ onMounted(() => {
   const zoom      = hasCoords ? 13 : 6
 
   map = L.map(mapEl.value).setView(center, zoom)
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+  L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+    attribution: 'Tiles © Esri'
   }).addTo(map)
+  L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}').addTo(map)
 
   if (hasCoords) {
     marker = L.marker([props.lat, props.lng]).addTo(map)

@@ -6,14 +6,18 @@
 
     <div v-else-if="!session" class="state-center">
       <p class="text-muted">{{ t('session.view.notFound') }}</p>
-      <RouterLink to="/" class="btn btn-ghost btn-sm mt-2">{{ t('session.view.backToList') }}</RouterLink>
+      <RouterLink to="/sessions" class="btn btn-ghost btn-sm mt-2">{{ t('session.view.backToList') }}</RouterLink>
     </div>
 
     <template v-else>
+      <div v-if="session._pending" class="pending-banner icon-inline">
+        <Hourglass :size="14" /> {{ t('offline.sessionPendingNotice') }}
+      </div>
+
       <!-- Header -->
       <div class="detail-header">
         <div class="detail-header-left">
-          <RouterLink to="/" class="btn btn-ghost btn-sm">{{ t('session.view.allSessions') }}</RouterLink>
+          <RouterLink to="/sessions" class="btn btn-ghost btn-sm">{{ t('session.view.allSessions') }}</RouterLink>
           <div class="detail-title-block">
             <div class="detail-meta">
               <span class="text-mono text-muted">{{ fmtDate(session.date) }}</span>
@@ -22,14 +26,14 @@
               <span v-if="session.rating" class="stars">{{ '★'.repeat(session.rating) }}</span>
             </div>
             <h1>{{ session.title || session.location?.name || t('session.untitled') }}</h1>
-            <p v-if="session.location?.spot" class="text-muted">
-              📍 {{ session.location.spot }} — {{ session.location.region }}
+            <p v-if="session.location?.spot" class="text-muted icon-inline">
+              <MapPin :size="14" /> {{ session.location.spot }} — {{ session.location.region }}
             </p>
           </div>
         </div>
         <div class="detail-header-actions">
-          <RouterLink :to="`/session/${session._id}/edit`" class="btn btn-secondary">{{ t('groups.editAction') }}</RouterLink>
-          <button class="btn btn-danger" @click="confirmDelete = true">{{ t('groups.deleteAction') }}</button>
+          <RouterLink :to="`/session/${session._id}/edit`" class="btn btn-secondary icon-inline"><Pencil :size="15" /> {{ t('groups.editAction') }}</RouterLink>
+          <button class="btn btn-danger icon-inline" @click="confirmDelete = true"><Trash2 :size="15" /> {{ t('groups.deleteAction') }}</button>
         </div>
       </div>
 
@@ -41,13 +45,14 @@
 
           <!-- Media -->
           <section class="detail-section">
-            <h3 class="section-title">{{ t('session.view.sections.media') }}</h3>
-            <MediaUploader :session-id="session._id" :media="session.media || []" @update="reload" />
+            <h3 class="section-title icon-inline"><Camera :size="16" /> {{ t('session.view.sections.media') }}</h3>
+            <p v-if="session._pending" class="text-muted text-sm">{{ t('offline.sessionPendingNotice') }}</p>
+            <MediaUploader v-else :session-id="session._id" :media="session.media || []" @update="reload" />
           </section>
 
           <!-- Luogo -->
           <section class="detail-section">
-            <h3 class="section-title">{{ t('session.view.sections.location') }}</h3>
+            <h3 class="section-title icon-inline"><MapPin :size="16" /> {{ t('session.view.sections.location') }}</h3>
             <div class="info-grid">
               <InfoItem :label="t('session.view.fields.name')"       :value="session.location?.name" />
               <InfoItem :label="t('session.view.fields.spot')"       :value="session.location?.spot" />
@@ -65,7 +70,7 @@
 
           <!-- Condizioni acqua -->
           <section v-if="hasSea" class="detail-section">
-            <h3 class="section-title">{{ waterSectionTitle }}</h3>
+            <h3 class="section-title icon-inline"><component :is="waterSectionIcon" :size="16" /> {{ waterSectionTitle }}</h3>
             <div class="info-grid">
               <InfoItem v-if="isSea" :label="t('session.view.fields.seaState')"   :value="seaStateLabel(session.sea?.seaState)" />
               <InfoItem v-if="isSea" :label="t('session.view.fields.waves')"         :value="session.sea?.waveHeight" />
@@ -81,7 +86,7 @@
 
           <!-- Meteo -->
           <section v-if="hasWeather" class="detail-section">
-            <h3 class="section-title">{{ t('session.view.weather.title') }}</h3>
+            <h3 class="section-title icon-inline"><Sun :size="16" /> {{ t('session.view.weather.title') }}</h3>
             <div class="info-grid">
               <InfoItem :label="t('session.view.fields.condition')"  :value="session.weather?.condition" />
               <InfoItem :label="t('session.view.fields.wind')"       :value="session.weather?.windDirection" />
@@ -92,55 +97,11 @@
             <p v-if="session.weather?.notes" class="notes-text mt-1">{{ session.weather.notes }}</p>
           </section>
 
-          <!-- Esche -->
-          <section v-if="session.baits?.length" class="detail-section">
-            <h3 class="section-title">{{ t('session.view.sections.baits', { n: session.baits.length }) }}</h3>
-            <div class="item-cards">
-              <div v-for="(b, i) in session.baits" :key="i" class="item-card card">
-                <div class="item-card-header">
-                  <strong>{{ b.name }}</strong>
-                  <span v-if="b.type" class="badge badge-ocean">{{ b.type }}</span>
-                </div>
-                <div class="info-grid sm">
-                  <InfoItem :label="t('session.view.fields.presentation')" :value="b.presentation" />
-                  <InfoItem :label="t('session.view.fields.notes')"          :value="b.notes" />
-                </div>
-              </div>
-            </div>
-          </section>
-
-          <!-- Montature -->
-          <section v-if="session.rigs?.length" class="detail-section">
-            <h3 class="section-title">{{ t('session.view.sections.rigs', { n: session.rigs.length }) }}</h3>
-            <div class="item-cards">
-              <div v-for="(r, i) in session.rigs" :key="i" class="item-card card">
-                <div class="item-card-header">
-                  <strong>{{ r.name }}</strong>
-                  <span v-if="r.type" class="badge badge-sand">{{ r.type }}</span>
-                </div>
-                <div class="info-grid sm">
-                  <InfoItem :label="t('session.view.fields.hook')"       :value="r.hookSize ? `${r.hookSize}${r.hookType ? ' — ' + r.hookType : ''}` : r.hookType" />
-                  <InfoItem :label="t('session.view.fields.sinker')"    :value="r.sinkerWeight != null ? `${r.sinkerWeight}g${r.sinkerType ? ' (' + r.sinkerType + ')' : ''}` : null" />
-                  <InfoItem :label="t('session.view.fields.line')"      :value="r.lineMainLb != null ? `${r.lineMainLb} lb` : null" />
-                  <InfoItem :label="t('session.view.fields.leader')" :value="r.leaderLb != null ? `${r.leaderLb} lb` : null" />
-                  <InfoItem :label="t('session.view.fields.swivel')"   :value="r.swivel" />
-                  <InfoItem :label="t('session.view.fields.notes')"      :value="r.notes" />
-                </div>
-              </div>
-            </div>
-          </section>
-
-          <!-- Lanci -->
-          <section v-if="session.casts?.length" class="detail-section">
-            <h3 class="section-title">{{ t('session.view.sections.casts', { n: session.casts.length }) }}</h3>
-            <CastsTable :casts="session.casts" />
-          </section>
-
           <!-- Catture -->
           <section v-if="session.catches?.length" class="detail-section">
-            <h3 class="section-title">{{ t('session.view.sections.catches', { n: session.catches.length }) }}</h3>
+            <h3 class="section-title icon-inline"><Fish :size="16" /> {{ t('session.view.sections.catches', { n: session.catches.length }) }}</h3>
             <div class="item-cards">
-              <div v-for="(c, i) in session.catches" :key="i" class="item-card card catch-card">
+              <div v-for="c in session.catches" :key="c._id" class="item-card card catch-card">
                 <div class="item-card-header">
                   <strong class="text-ocean">{{ c.species }}</strong>
                   <span v-if="c.released" class="badge badge-success">{{ t('session.view.released') }}</span>
@@ -150,17 +111,33 @@
                   <InfoItem :label="t('session.view.fields.length')" :value="c.lengthCm != null ? `${c.lengthCm} cm` : null" />
                   <InfoItem :label="t('session.view.fields.time')"       :value="c.time" />
                   <InfoItem :label="t('session.view.fields.distance')"  :value="c.distance != null ? `${c.distance}m` : null" />
+                  <InfoItem :label="t('session.view.fields.direction')" :value="c.direction" />
                   <InfoItem :label="t('session.view.fields.bait')"      :value="c.baitUsed" />
-                  <InfoItem :label="t('session.view.fields.rig')" :value="c.rigUsed" />
-                  <InfoItem :label="t('session.view.fields.notes')"      :value="c.notes" />
+                  <InfoItem :label="t('session.view.fields.baitType')"  :value="c.baitType" />
+                  <InfoItem :label="t('session.view.fields.presentation')" :value="c.baitPresentation" />
+                  <InfoItem :label="t('session.view.fields.rig')"       :value="c.rigUsed" />
+                  <InfoItem :label="t('session.view.fields.hook')"      :value="c.hookSize ? `${c.hookSize}${c.hookType ? ' — ' + c.hookType : ''}` : c.hookType" />
+                  <InfoItem :label="t('session.view.fields.sinker')"    :value="c.sinkerWeight != null ? `${c.sinkerWeight}g${c.sinkerType ? ' (' + c.sinkerType + ')' : ''}` : null" />
+                  <InfoItem :label="t('session.view.fields.line')"      :value="c.lineMainLb != null ? `${c.lineMainLb} lb` : null" />
+                  <InfoItem :label="t('session.view.fields.leader')"    :value="c.leaderLb != null ? `${c.leaderLb} lb` : null" />
+                  <InfoItem :label="t('session.view.fields.swivel')"    :value="c.swivel" />
+                  <InfoItem :label="t('session.view.fields.notes')"     :value="c.notes" />
                 </div>
+                <MediaUploader
+                  class="mt-3"
+                  :session-id="session._id"
+                  :media="c.media || []"
+                  :upload-url="`/media/upload/${session._id}/catch/${c._id}`"
+                  :item-base-url="`/media/${session._id}/catch/${c._id}`"
+                  @update="reload"
+                />
               </div>
             </div>
           </section>
 
           <!-- Note -->
           <section v-if="session.notes" class="detail-section">
-            <h3 class="section-title">{{ t('session.view.sections.notes') }}</h3>
+            <h3 class="section-title icon-inline"><FileText :size="16" /> {{ t('session.view.sections.notes') }}</h3>
             <p class="notes-text">{{ session.notes }}</p>
           </section>
         </div>
@@ -209,11 +186,11 @@
 import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter, RouterLink } from 'vue-router'
 import { useI18n } from 'vue-i18n'
+import { Hourglass, MapPin, Pencil, Trash2, Camera, Sun, Fish, FileText, Waves, Trees, Mountain, Droplet } from 'lucide-vue-next'
 import { useSessionStore } from '../stores/sessions.js'
 import MediaUploader from '../components/MediaUploader.vue'
 import InfoItem      from '../components/InfoItem.vue'
 import StatBar       from '../components/StatBar.vue'
-import CastsTable    from '../components/CastsTable.vue'
 import MapDisplay    from '../components/MapDisplay.vue'
 
 const { t }  = useI18n()
@@ -253,6 +230,9 @@ const waterSectionTitle = computed(() => ({
   mare: t('session.view.water.sea'), fiume: t('session.view.water.river'),
   lago: t('session.view.water.lake'),  altro: t('session.view.water.other'),
 }[session.value?.waterType] || t('session.view.water.sea')))
+const waterSectionIcon = computed(() => ({
+  mare: Waves, fiume: Trees, lago: Mountain, altro: Droplet,
+}[session.value?.waterType] || Waves))
 
 const fmtDate     = d => new Date(d).toLocaleDateString('it-IT', { weekday:'long', day:'2-digit', month:'long', year:'numeric' })
 const fmtDatetime = d => new Date(d).toLocaleString('it-IT', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' })
@@ -263,12 +243,16 @@ onMounted(() => store.fetchSession(route.params.id))
 async function doDelete() {
   deleting.value = true
   const ok = await store.deleteSession(route.params.id)
-  if (ok) router.push('/')
+  if (ok) router.push('/sessions')
   deleting.value = false
 }
 </script>
 
 <style scoped>
+.pending-banner {
+  @apply bg-sand/10 border border-sand text-sand rounded-sm text-sm px-4 py-3 mb-5;
+}
+
 .detail-header       { @apply flex flex-wrap items-start justify-between gap-4 mb-6; }
 .detail-header-left  { @apply flex flex-col gap-3; }
 .detail-meta         { @apply flex flex-wrap items-center gap-2; }
@@ -280,6 +264,7 @@ async function doDelete() {
 
 .detail-section { @apply border-b border-border mb-6 pb-6 last:border-b-0; }
 .section-title  { @apply text-sm font-bold mb-3 text-foam; }
+.icon-inline    { display: inline-flex; align-items: center; gap: .4rem; }
 
 .info-grid    { @apply grid gap-2; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); }
 .info-grid.sm { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); }
