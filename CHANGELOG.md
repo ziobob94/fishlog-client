@@ -1,3 +1,10 @@
+## [1.2.2](https://github.com/ziobob94/fishlog-client/compare/client-v1.2.1...client-v1.2.2) (2026-09-05)
+
+
+### Bug Fixes
+
+* comment out new session link in sidebar ([f819fc8](https://github.com/ziobob94/fishlog-client/commit/f819fc846a371620b17f02f468f6225a1594dfb1))
+
 ## [1.2.1](https://github.com/ziobob94/fishlog-client/compare/client-v1.2.0...client-v1.2.1) (2026-09-05)
 
 
