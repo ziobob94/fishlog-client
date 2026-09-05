@@ -1,8 +1,8 @@
 <template>
   <div>
     <div class="page-header">
-      <RouterLink to="/" class="btn btn-ghost btn-sm">← Indietro</RouterLink>
-      <h2>Nuova uscita</h2>
+      <RouterLink to="/" class="btn btn-ghost btn-sm">{{ t('common.back') }}</RouterLink>
+      <h2>{{ t('session.new.title') }}</h2>
     </div>
 
     <div v-if="error" class="error-banner">⚠️ {{ error }}</div>
@@ -14,9 +14,11 @@
 <script setup>
 import { computed } from 'vue'
 import { useRouter, RouterLink } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import { useSessionStore } from '../stores/sessions.js'
 import SessionForm from '../components/form/SessionForm.vue'
 
+const { t }  = useI18n()
 const store  = useSessionStore()
 const router = useRouter()
 const error  = computed(() => store.error)

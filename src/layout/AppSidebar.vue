@@ -15,7 +15,7 @@
       <button
         class="p-1 bg-transparent border-none cursor-pointer text-base transition-opacity duration-200"
         :class="locked ? 'opacity-100' : 'opacity-40 hover:opacity-100'"
-        :title="locked ? 'Sblocca' : 'Blocca'"
+        :title="locked ? t('nav.unlock') : t('nav.lock')"
         @click="$emit('toggle-lock')"
       >{{ locked ? '📌' : '📍' }}</button>
     </div>
@@ -23,13 +23,13 @@
     <!-- Nav -->
     <nav class="flex-1 flex flex-col gap-0.5 overflow-y-auto p-3">
       <RouterLink to="/" class="nav-item" @click="$emit('close')">
-        <span class="w-5 text-center">🎣</span> Uscite
+        <span class="w-5 text-center">🎣</span> {{ t('nav.sessions') }}
       </RouterLink>
       <RouterLink to="/new" class="nav-item nav-accent mb-2" @click="$emit('close')">
-        <span class="w-5 text-center font-bold">+</span> Nuova uscita
+        <span class="w-5 text-center font-bold">+</span> {{ t('session.new.title') }}
       </RouterLink>
       <RouterLink to="/groups" class="nav-item" @click="$emit('close')">
-        <span class="w-5 text-center">🫂</span> Gruppi
+        <span class="w-5 text-center">🫂</span> {{ t('nav.groups') }}
       </RouterLink>
       <RouterLink
         v-if="auth.user?.role === 'admin'"
@@ -37,7 +37,7 @@
         class="nav-item"
         @click="$emit('close')"
       >
-        <span class="w-5 text-center">⚙️</span> Admin
+        <span class="w-5 text-center">⚙️</span> {{ t('nav.admin') }}
       </RouterLink>
     </nav>
 
@@ -60,11 +60,11 @@
             <span class="badge badge-ocean" style="font-size:.6rem; align-self:flex-start">{{ auth.user?.role }}</span>
           </div>
         </div>
-        <button class="btn btn-ghost btn-sm w-full" @click="logout">Esci</button>
+        <button class="btn btn-ghost btn-sm w-full" @click="logout">{{ t('nav.logout') }}</button>
       </template>
       <template v-else>
         <RouterLink to="/login" class="btn btn-primary w-full text-center" @click="$emit('close')">
-          Accedi
+          {{ t('common.login') }}
         </RouterLink>
       </template>
     </div>
@@ -74,8 +74,10 @@
 <script setup>
 import { computed } from 'vue'
 import { RouterLink, useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import { useAuthStore } from '../stores/auth.js'
 
+const { t } = useI18n()
 defineProps({
   open:   { type: Boolean, default: false },
   locked: { type: Boolean, default: false }

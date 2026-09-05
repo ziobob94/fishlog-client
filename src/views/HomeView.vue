@@ -2,10 +2,10 @@
   <div>
     <div class="home-hero">
       <div>
-        <h1>Le tue <span class="text-ocean">uscite</span></h1>
-        <p class="text-muted mt-1">{{ store.total }} sessioni registrate</p>
+        <h1>{{ t('home.titlePrefix') }} <span class="text-ocean">{{ t('home.titleHighlight') }}</span></h1>
+        <p class="text-muted mt-1">{{ t('home.sessionsCount', { n: store.total }) }}</p>
       </div>
-      <RouterLink to="/new" class="btn btn-primary">+ Nuova uscita</RouterLink>
+      <RouterLink to="/new" class="btn btn-primary">{{ t('home.newSession') }}</RouterLink>
     </div>
 
     <SessionFilters v-model="filters" @reset="resetFilters" />
@@ -16,9 +16,9 @@
 
     <div v-else-if="!store.sessions.length" class="state-center">
       <div style="font-size:3.5rem">🐟</div>
-      <h3>Nessuna uscita trovata</h3>
-      <p class="text-muted">Registra la tua prima sessione</p>
-      <RouterLink to="/new" class="btn btn-primary mt-2">+ Registra uscita</RouterLink>
+      <h3>{{ t('home.empty.title') }}</h3>
+      <p class="text-muted">{{ t('home.empty.text') }}</p>
+      <RouterLink to="/new" class="btn btn-primary mt-2">{{ t('home.empty.register') }}</RouterLink>
     </div>
 
     <div v-else class="sessions-grid">
@@ -36,6 +36,7 @@
 <script setup>
 import { ref, watch, onMounted } from 'vue'
 import { RouterLink } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import { useSessionStore } from '../stores/sessions.js'
 import { usePagination } from '../composables/usePagination.js'
 import { useDebouncedFn } from '../composables/useDebouncedFn.js'
@@ -43,6 +44,7 @@ import SessionCard    from '../components/SessionCard.vue'
 import SessionFilters from '../components/SessionFilters.vue'
 import PaginationBar  from '../components/PaginationBar.vue'
 
+const { t } = useI18n()
 const store = useSessionStore()
 
 const filters = ref({ search: '', technique: '', dateFrom: '', dateTo: '' })

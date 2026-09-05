@@ -1,0 +1,424 @@
+{
+  "common": {
+    "save": "Salva",
+    "cancel": "Annulla",
+    "delete": "Elimina",
+    "edit": "Modifica",
+    "add": "Aggiungi",
+    "loading": "Caricamento...",
+    "confirmDelete": "Sei sicuro di voler eliminare?",
+    "back": "← Indietro",
+    "prevPage": "← Prec",
+    "nextPage": "Succ →",
+    "or": "oppure",
+    "login": "Accedi",
+    "error": "Errore",
+    "none": "—"
+  },
+  "nav": {
+    "sessions": "Uscite",
+    "newSession": "+ Nuova uscita",
+    "groups": "Gruppi",
+    "admin": "Admin",
+    "logout": "Esci",
+    "lock": "Blocca",
+    "unlock": "Sblocca"
+  },
+  "admin": {
+    "title": "Pannello Admin",
+    "tabs": { "users": "Utenti", "sessions": "Sessioni" },
+    "users": {
+      "searchPlaceholder": "Cerca utente...",
+      "table": { "user": "Utente", "email": "Email", "role": "Ruolo", "registered": "Registrato", "actions": "Azioni" }
+    },
+    "sessions": {
+      "showHiddenOnly": "Mostra solo nascoste",
+      "table": { "title": "Titolo", "author": "Autore", "date": "Data", "visibility": "Visibilità", "hidden": "Nascosta", "actions": "Azioni" },
+      "hiddenBadge": "Nascosta",
+      "show": "Mostra",
+      "hide": "Nascondi"
+    },
+    "deleteUser": {
+      "title": "Elimina utente",
+      "warning": "Verranno eliminate anche tutte le sessioni di {name}."
+    }
+  },
+  "auth": {
+    "callback": {
+      "loggingIn": "Accesso in corso...",
+      "missingToken": "Errore: token mancante",
+      "authError": "Errore di autenticazione"
+    }
+  },
+  "login": {
+    "welcomeBack": "Bentornato",
+    "google": "Continua con Google",
+    "facebook": "Continua con Facebook",
+    "emailLabel": "Email",
+    "emailPlaceholder": "tu@email.com",
+    "passwordLabel": "Password",
+    "passwordPlaceholder": "••••••••",
+    "loading": "Accesso...",
+    "error": "Errore di accesso",
+    "noAccount": "Non hai un account?",
+    "register": "Registrati"
+  },
+  "register": {
+    "title": "Crea account",
+    "google": "Registrati con Google",
+    "facebook": "Registrati con Facebook",
+    "nameLabel": "Nome",
+    "namePlaceholder": "Mario Rossi",
+    "passwordPlaceholder": "min. 6 caratteri",
+    "loading": "Registrazione...",
+    "submit": "Crea account",
+    "error": "Errore registrazione",
+    "hasAccount": "Hai già un account?"
+  },
+  "groups": {
+    "titlePrefix": "I tuoi",
+    "titleHighlight": "gruppi",
+    "newGroup": "+ Nuovo gruppo",
+    "empty": {
+      "title": "Nessun gruppo",
+      "text": "Crea un gruppo per condividere le uscite con amici specifici",
+      "create": "+ Crea gruppo"
+    },
+    "membersCount": "{n} membri",
+    "owner": "owner",
+    "addMemberPlaceholder": "Email utente da aggiungere...",
+    "errors": {
+      "userNotFound": "Utente non trovato"
+    },
+    "editAction": "✏️ Modifica",
+    "deleteAction": "🗑 Elimina",
+    "modal": {
+      "editTitle": "Modifica gruppo",
+      "newTitle": "Nuovo gruppo",
+      "nameLabel": "Nome *",
+      "namePlaceholder": "es. Amici di pesca",
+      "descLabel": "Descrizione",
+      "descPlaceholder": "Opzionale...",
+      "nameRequired": "Nome obbligatorio",
+      "update": "Aggiorna",
+      "create": "Crea",
+      "saving": "..."
+    },
+    "deleteDialog": {
+      "title": "Elimina gruppo",
+      "confirm": "Sei sicuro di voler eliminare {name}?"
+    }
+  },
+  "home": {
+    "titlePrefix": "Le tue",
+    "titleHighlight": "uscite",
+    "sessionsCount": "{n} sessioni registrate",
+    "newSession": "+ Nuova uscita",
+    "empty": {
+      "title": "Nessuna uscita trovata",
+      "text": "Registra la tua prima sessione",
+      "register": "+ Registra uscita"
+    }
+  },
+  "session": {
+    "new": { "title": "Nuova uscita" },
+    "edit": { "title": "Modifica uscita" },
+    "untitled": "Uscita",
+    "view": {
+      "notFound": "Sessione non trovata.",
+      "backToList": "← Torna alla lista",
+      "allSessions": "← Tutte le uscite",
+      "visibility": {
+        "private": "🔒 Privata",
+        "users": "👥 Tutti gli utenti",
+        "group": "🫂 Gruppi"
+      },
+      "sections": {
+        "media": "📸 Foto & Video",
+        "location": "📍 Luogo",
+        "baits": "🪱 Esche ({n})",
+        "rigs": "🪝 Montature ({n})",
+        "casts": "🎯 Lanci ({n})",
+        "catches": "🐟 Catture ({n})",
+        "notes": "📝 Note"
+      },
+      "water": {
+        "sea": "🌊 Condizioni mare",
+        "river": "🏞️ Condizioni fiume",
+        "lake": "🏔️ Condizioni lago",
+        "other": "💧 Condizioni acqua"
+      },
+      "weather": {
+        "title": "☀️ Meteo"
+      },
+      "fields": {
+        "name": "Nome",
+        "spot": "Spot",
+        "region": "Regione",
+        "coordinates": "Coordinate",
+        "seaState": "Stato mare",
+        "waves": "Onde",
+        "wavePeriod": "Periodo",
+        "level": "Livello",
+        "current": "Corrente",
+        "waterColor": "Colore acqua",
+        "waterTemp": "Temp. acqua",
+        "tide": "Marea",
+        "tideNotes": "Note marea",
+        "condition": "Condizione",
+        "wind": "Vento",
+        "windSpeed": "Vel. vento",
+        "tempAir": "Temp. aria",
+        "pressure": "Pressione",
+        "presentation": "Presentazione",
+        "notes": "Note",
+        "hook": "Amo",
+        "sinker": "Piombo",
+        "line": "Filo",
+        "leader": "Terminale",
+        "swivel": "Girella",
+        "weight": "Peso",
+        "length": "Lunghezza",
+        "time": "Ora",
+        "distance": "Distanza",
+        "bait": "Esca",
+        "rig": "Montatura"
+      },
+      "released": "rilasciata",
+      "sideLabels": {
+        "technique": "Tecnica",
+        "visibility": "Visibilità",
+        "rating": "Voto",
+        "registeredAt": "Registrata il"
+      },
+      "deleteDialog": {
+        "title": "Elimina uscita",
+        "confirm": "Sei sicuro? Verranno eliminati anche tutti i media associati.",
+        "deleting": "Eliminazione..."
+      },
+      "seaState": {
+        "piatto": "🫧 Piatto",
+        "poco_mosso": "〰️ Poco mosso",
+        "mosso": "🌊 Mosso",
+        "molto_mosso": "🌊💨 Molto mosso",
+        "agitato": "⛈️ Agitato"
+      },
+      "waterLevel": {
+        "piena": "🔼 In piena",
+        "normale": "➡️ Normale",
+        "magra": "🔽 In magra"
+      },
+      "tideState": {
+        "crescente": "📈 Crescente",
+        "calante": "📉 Calante",
+        "alta": "⬆️ Alta",
+        "bassa": "⬇️ Bassa"
+      },
+      "statLabels": {
+        "time": "Orario",
+        "catches": "Catture",
+        "best": "Migliore"
+      }
+    }
+  },
+  "castsTable": {
+    "distance": "Distanza",
+    "direction": "Direzione",
+    "bait": "Esca",
+    "rig": "Montatura",
+    "result": "Risultato"
+  },
+  "mediaUploader": {
+    "dropHint": "Trascina foto / video o",
+    "dropHintClick": "clicca per selezionare",
+    "formatsHint": "JPG, PNG, WEBP, HEIC, MP4, MOV — max 200MB",
+    "uploadProgress": "Upload {progress}%",
+    "captionPlaceholder": "Didascalia...",
+    "deleteDialog": {
+      "title": "Elimina media",
+      "confirm": "L'operazione non è reversibile."
+    }
+  },
+  "pagination": {
+    "prev": "← Prec",
+    "next": "Succ →"
+  },
+  "sessionFilters": {
+    "searchPlaceholder": "Cerca luogo, note...",
+    "allTechniques": "Tutte le tecniche",
+    "reset": "✕ Reset"
+  },
+  "sessionForm": {
+    "sections": {
+      "base": "📋 Dati uscita",
+      "location": "📍 Luogo",
+      "weather": "☀️ Meteo",
+      "baits": "🪱 Esche",
+      "rigs": "🪝 Montature",
+      "casts": "🎯 Lanci e distanze",
+      "catches": "🐟 Catture",
+      "notes": "📝 Note libere"
+    },
+    "fields": {
+      "titleLabel": "Titolo (opzionale)",
+      "titlePlaceholder": "es. Alba alla foce, Uscita notturna...",
+      "dateLabel": "Data *",
+      "startTimeLabel": "Ora inizio",
+      "endTimeLabel": "Ora fine",
+      "techniqueLabel": "Tecnica",
+      "selectPlaceholder": "-- Seleziona --",
+      "waterTypeLabel": "Tipo di acqua",
+      "ratingLabel": "Voto uscita",
+      "locationNameLabel": "Nome luogo *",
+      "locationNamePlaceholder": "es. Foce Arno, Marina di Pisa",
+      "spotLabel": "Spot / Soprannome",
+      "spotPlaceholder": "es. Punta della Rena",
+      "regionLabel": "Regione / Area",
+      "regionPlaceholder": "es. Toscana",
+      "latLabel": "Latitudine",
+      "lngLabel": "Longitudine",
+      "locationNotesLabel": "Note luogo",
+      "locationNotesPlaceholder": "Accesso, parcheggio, fondo, caratteristiche...",
+      "gpsDetecting": "Rilevamento...",
+      "gpsButton": "📡 Usa posizione GPS",
+      "seaStateLabel": "Stato mare",
+      "waveHeightLabel": "Altezza onde",
+      "waveHeightPlaceholder": "es. 0.5-1m",
+      "wavePeriodLabel": "Periodo onde",
+      "wavePeriodPlaceholder": "es. 6s",
+      "waterLevelLabel": "Livello acqua",
+      "currentLabel": "Corrente",
+      "currentPlaceholder": "es. corrente da nord",
+      "waterColorLabel": "Colore acqua",
+      "waterColorPlaceholder": "es. limpida, torbida, verde",
+      "waterTempLabel": "Temp. acqua (°C)",
+      "tideLabel": "Marea",
+      "tideNotesLabel": "Note marea",
+      "tideNotesPlaceholder": "es. bassa alle 06:30",
+      "conditionLabel": "Condizione",
+      "windDirectionLabel": "Vento direzione",
+      "windSpeedLabel": "Velocità vento (km/h)",
+      "tempAirLabel": "Temp. aria (°C)",
+      "pressureLabel": "Pressione (hPa)",
+      "weatherNotesLabel": "Note meteo",
+      "weatherNotesPlaceholder": "Osservazioni...",
+      "visibilityLabel": "Visibilità",
+      "allowedGroupsLabel": "Gruppi autorizzati",
+      "noGroups": "Nessun gruppo —",
+      "createOne": "creane uno",
+      "generalNotesLabel": "Note generali",
+      "generalNotesPlaceholder": "Osservazioni, cosa provare la prossima volta, promemoria..."
+    },
+    "visibility": {
+      "private": "🔒 Solo io",
+      "users": "👥 Tutti gli utenti",
+      "group": "🫂 Gruppi specifici"
+    },
+    "autoFill": {
+      "title": "☁️ Compila meteo e condizioni acqua automaticamente",
+      "subtitle": "Recupera i dati storici del giorno selezionato tramite Open-Meteo",
+      "loading": "Recupero...",
+      "button": "⚡ Compila",
+      "warning": "Inserisci le coordinate o usa il GPS per abilitare il recupero automatico",
+      "success": "✓ Compilati: {fields}",
+      "noData": "⚠️ Nessun dato disponibile per questa data/posizione",
+      "error": "✗ Errore durante il recupero dei dati",
+      "gpsUnsupported": "⚠️ GPS non supportato dal browser",
+      "gpsFailed": "⚠️ Impossibile rilevare la posizione",
+      "geocoding": "🔍 Ricerca indirizzo...",
+      "geocodeFound": "✓ Trovato: {name}",
+      "filledFields": {
+        "condition": "condizione",
+        "temperature": "temperatura",
+        "wind": "vento",
+        "windDirection": "direzione vento",
+        "pressure": "pressione",
+        "seaState": "stato mare",
+        "waveHeight": "altezza onde",
+        "wavePeriod": "periodo onde"
+      }
+    },
+    "waterSection": {
+      "sea": "🌊 Condizioni mare",
+      "river": "🏞️ Condizioni fiume",
+      "lake": "🏔️ Condizioni lago",
+      "other": "💧 Condizioni acqua"
+    },
+    "saving": "Salvataggio...",
+    "submitCreate": "Salva uscita",
+    "submitEdit": "Aggiorna uscita"
+  },
+  "baitsSection": {
+    "itemTitle": "Esca {n}",
+    "remove": "✕ Rimuovi",
+    "nameLabel": "Nome *",
+    "namePlaceholder": "es. Arenicola, Calamaro",
+    "typeLabel": "Tipo",
+    "typeNatural": "Naturale",
+    "typeArtificial": "Artificiale",
+    "typeMixed": "Misto",
+    "presentationLabel": "Presentazione",
+    "presentationPlaceholder": "es. intera, a pezzi",
+    "notesLabel": "Note",
+    "notesPlaceholder": "Fresca, surgelata...",
+    "add": "+ Aggiungi esca"
+  },
+  "rigsSection": {
+    "itemTitle": "Montatura {n}",
+    "nameLabel": "Nome *",
+    "namePlaceholder": "es. Paternoster, Piombo fisso",
+    "typeLabel": "Tipo",
+    "typePlaceholder": "es. surfcasting, feeder",
+    "hookSizeLabel": "Misura amo",
+    "hookSizePlaceholder": "es. 1/0, 2, 4",
+    "hookTypeLabel": "Tipo amo",
+    "hookTypePlaceholder": "es. Aberdeen, Limerick",
+    "sinkerWeightLabel": "Piombo (g)",
+    "sinkerTypeLabel": "Tipo piombo",
+    "sinkerTypePlaceholder": "es. ancora, fisso",
+    "lineMainLabel": "Filo principale (lb)",
+    "leaderLabel": "Terminale (lb)",
+    "swivelLabel": "Girella",
+    "swivelPlaceholder": "es. rolling n°8",
+    "notesLabel": "Note",
+    "notesPlaceholder": "Dettagli costruzione...",
+    "add": "+ Aggiungi montatura"
+  },
+  "castsSection": {
+    "itemTitle": "Lancio {n}",
+    "distanceLabel": "Distanza (m)",
+    "distancePlaceholder": "es. 80",
+    "directionLabel": "Direzione",
+    "directionPlaceholder": "es. parallela costa",
+    "rigLabel": "Montatura usata",
+    "rigPlaceholder": "nome montatura",
+    "baitLabel": "Esca usata",
+    "baitPlaceholder": "nome esca",
+    "resultLabel": "Risultato",
+    "resultCatch": "Cattura",
+    "resultBite": "Abboccata",
+    "resultNothing": "Niente",
+    "notesLabel": "Note",
+    "add": "+ Aggiungi lancio"
+  },
+  "catchesSection": {
+    "itemTitle": "Cattura {n}",
+    "speciesLabel": "Specie *",
+    "speciesPlaceholder": "es. Spigola, Orate, Rombo",
+    "weightLabel": "Peso (kg)",
+    "lengthLabel": "Lunghezza (cm)",
+    "timeLabel": "Ora cattura",
+    "distanceLabel": "Distanza (m)",
+    "releasedLabel": "Rilasciata",
+    "releasedNo": "No (tenuta)",
+    "releasedYes": "Sì (rilasciata)",
+    "baitUsedLabel": "Esca usata",
+    "rigUsedLabel": "Montatura usata",
+    "notesLabel": "Note",
+    "notesPlaceholder": "Dove esattamente, canna usata...",
+    "add": "+ Aggiungi cattura"
+  },
+  "locationPicker": {
+    "hint": "Clicca sulla mappa per impostare le coordinate"
+  }
+}

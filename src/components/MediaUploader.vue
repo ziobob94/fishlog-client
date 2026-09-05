@@ -14,9 +14,9 @@
       <div class="flex flex-col items-center gap-1.5 text-center px-4">
         <span class="text-3xl">📎</span>
         <p class="text-sm text-foam">
-          Trascina foto / video o <span class="text-ocean">clicca per selezionare</span>
+          {{ t('mediaUploader.dropHint') }} <span class="text-ocean">{{ t('mediaUploader.dropHintClick') }}</span>
         </p>
-        <span class="text-xs text-muted">JPG, PNG, WEBP, HEIC, MP4, MOV — max 200MB</span>
+        <span class="text-xs text-muted">{{ t('mediaUploader.formatsHint') }}</span>
       </div>
     </div>
 
@@ -25,7 +25,7 @@
       <div class="h-1.5 bg-surface-2 rounded-full overflow-hidden">
         <div class="h-full bg-ocean rounded-full transition-all duration-200" :style="{ width: progress + '%' }"></div>
       </div>
-      <span class="text-xs text-muted text-center">Upload {{ progress }}%</span>
+      <span class="text-xs text-muted text-center">{{ t('mediaUploader.uploadProgress', { progress }) }}</span>
     </div>
 
     <!-- Grid -->
@@ -45,7 +45,7 @@
         <input
           v-model="item.caption"
           type="text"
-          placeholder="Didascalia..."
+          :placeholder="t('mediaUploader.captionPlaceholder')"
           class="text-xs py-1.5"
           @blur="saveCaption(item)"
           @keydown.enter="saveCaption(item)"
@@ -73,11 +73,11 @@
         @click.self="deleteTarget = null"
       >
         <div class="card w-[90%] max-w-sm">
-          <h3 class="font-bold mb-1">Elimina media</h3>
-          <p class="text-muted text-sm mt-1">L'operazione non è reversibile.</p>
+          <h3 class="font-bold mb-1">{{ t('mediaUploader.deleteDialog.title') }}</h3>
+          <p class="text-muted text-sm mt-1">{{ t('mediaUploader.deleteDialog.confirm') }}</p>
           <div class="flex gap-3 justify-end mt-5">
-            <button class="btn btn-ghost btn-sm" @click="deleteTarget = null">Annulla</button>
-            <button class="btn btn-danger btn-sm" @click="doDelete">Elimina</button>
+            <button class="btn btn-ghost btn-sm" @click="deleteTarget = null">{{ t('common.cancel') }}</button>
+            <button class="btn btn-danger btn-sm" @click="doDelete">{{ t('common.delete') }}</button>
           </div>
         </div>
       </div>
@@ -87,8 +87,10 @@
 
 <script setup>
 import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import api from '../utils/api.js'
 
+const { t } = useI18n()
 const props = defineProps({
   sessionId: { type: String, required: true },
   media:     { type: Array, default: () => [] }

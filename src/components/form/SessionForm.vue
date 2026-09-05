@@ -2,40 +2,40 @@
   <form @submit.prevent="handleSubmit" class="session-form">
 
     <!-- BASE -->
-    <div class="section-divider">📋 Dati uscita</div>
+    <div class="section-divider">{{ t('sessionForm.sections.base') }}</div>
     <div class="form-grid">
       <div class="form-group full">
-        <label>Titolo (opzionale)</label>
-        <input v-model="f.title" type="text" placeholder="es. Alba alla foce, Uscita notturna..." />
+        <label>{{ t('sessionForm.fields.titleLabel') }}</label>
+        <input v-model="f.title" type="text" :placeholder="t('sessionForm.fields.titlePlaceholder')" />
       </div>
       <div class="form-group">
-        <label>Data *</label>
+        <label>{{ t('sessionForm.fields.dateLabel') }}</label>
         <input v-model="f.date" type="date" required />
       </div>
       <div class="form-group">
-        <label>Ora inizio</label>
+        <label>{{ t('sessionForm.fields.startTimeLabel') }}</label>
         <input v-model="f.startTime" type="time" />
       </div>
       <div class="form-group">
-        <label>Ora fine</label>
+        <label>{{ t('sessionForm.fields.endTimeLabel') }}</label>
         <input v-model="f.endTime" type="time" />
       </div>
       <div class="form-group">
-        <label>Tecnica</label>
+        <label>{{ t('sessionForm.fields.techniqueLabel') }}</label>
         <select v-model="f.technique">
-          <option value="">-- Seleziona --</option>
-          <option v-for="t in TECHNIQUES" :key="t.v" :value="t.v">{{ t.l }}</option>
+          <option value="">{{ t('sessionForm.fields.selectPlaceholder') }}</option>
+          <option v-for="t2 in TECHNIQUES" :key="t2.v" :value="t2.v">{{ t2.l }}</option>
         </select>
       </div>
       <div class="form-group">
-        <label>Tipo di acqua</label>
+        <label>{{ t('sessionForm.fields.waterTypeLabel') }}</label>
         <select v-model="f.waterType">
-          <option value="">-- Seleziona --</option>
+          <option value="">{{ t('sessionForm.fields.selectPlaceholder') }}</option>
           <option v-for="w in WATER_TYPES" :key="w.v" :value="w.v">{{ w.l }}</option>
         </select>
       </div>
       <div class="form-group">
-        <label>Voto uscita</label>
+        <label>{{ t('sessionForm.fields.ratingLabel') }}</label>
         <div class="star-row">
           <button v-for="n in 5" :key="n" type="button"
             class="star-btn" :class="{ active: n <= f.rating }"
@@ -45,36 +45,36 @@
     </div>
 
     <!-- LUOGO -->
-    <div class="section-divider">📍 Luogo</div>
+    <div class="section-divider">{{ t('sessionForm.sections.location') }}</div>
     <div class="form-grid">
       <div class="form-group">
-        <label>Nome luogo *</label>
-        <input v-model="f.location.name" type="text" placeholder="es. Foce Arno, Marina di Pisa" required />
+        <label>{{ t('sessionForm.fields.locationNameLabel') }}</label>
+        <input v-model="f.location.name" type="text" :placeholder="t('sessionForm.fields.locationNamePlaceholder')" required />
       </div>
       <div class="form-group">
-        <label>Spot / Soprannome</label>
-        <input v-model="f.location.spot" type="text" placeholder="es. Punta della Rena" />
+        <label>{{ t('sessionForm.fields.spotLabel') }}</label>
+        <input v-model="f.location.spot" type="text" :placeholder="t('sessionForm.fields.spotPlaceholder')" />
       </div>
       <div class="form-group">
-        <label>Regione / Area</label>
-        <input v-model="f.location.region" type="text" placeholder="es. Toscana" />
+        <label>{{ t('sessionForm.fields.regionLabel') }}</label>
+        <input v-model="f.location.region" type="text" :placeholder="t('sessionForm.fields.regionPlaceholder')" />
       </div>
       <div class="form-group">
-        <label>Latitudine</label>
+        <label>{{ t('sessionForm.fields.latLabel') }}</label>
         <input v-model.number="f.location.coords.lat" type="number" step="0.000001" placeholder="43.123456" />
       </div>
       <div class="form-group">
-        <label>Longitudine</label>
+        <label>{{ t('sessionForm.fields.lngLabel') }}</label>
         <input v-model.number="f.location.coords.lng" type="number" step="0.000001" placeholder="10.123456" />
       </div>
       <div class="form-group full">
-        <label>Note luogo</label>
-        <textarea v-model="f.location.notes" placeholder="Accesso, parcheggio, fondo, caratteristiche..." rows="2" />
+        <label>{{ t('sessionForm.fields.locationNotesLabel') }}</label>
+        <textarea v-model="f.location.notes" :placeholder="t('sessionForm.fields.locationNotesPlaceholder')" rows="2" />
       </div>
       <div class="form-group full">
         <button type="button" class="btn btn-ghost btn-sm" :disabled="gpsLoading" @click="detectGPS">
           <span v-if="gpsLoading" class="spinner" style="width:13px;height:13px"></span>
-          {{ gpsLoading ? 'Rilevamento...' : '📡 Usa posizione GPS' }}
+          {{ gpsLoading ? t('sessionForm.fields.gpsDetecting') : t('sessionForm.fields.gpsButton') }}
         </button>
         <span v-if="geocodeMsg" class="autofill-hint">{{ geocodeMsg }}</span>
       </div>
@@ -91,16 +91,16 @@
     <!-- BOTTONE AUTO-FILL METEO -->
     <div class="autofill-bar">
       <div>
-        <p class="autofill-title">☁️ Compila meteo e condizioni acqua automaticamente</p>
-        <p class="autofill-sub">Recupera i dati storici del giorno selezionato tramite Open-Meteo</p>
+        <p class="autofill-title">{{ t('sessionForm.autoFill.title') }}</p>
+        <p class="autofill-sub">{{ t('sessionForm.autoFill.subtitle') }}</p>
       </div>
       <button type="button" class="btn btn-secondary btn-sm"
         :disabled="!canAutoFill || autoFilling" @click="autoFillWeatherAndSea">
         <span v-if="autoFilling" class="spinner" style="width:13px;height:13px"></span>
-        {{ autoFilling ? 'Recupero...' : '⚡ Compila' }}
+        {{ autoFilling ? t('sessionForm.autoFill.loading') : t('sessionForm.autoFill.button') }}
       </button>
     </div>
-    <p v-if="!canAutoFill" class="autofill-warning">Inserisci le coordinate o usa il GPS per abilitare il recupero automatico</p>
+    <p v-if="!canAutoFill" class="autofill-warning">{{ t('sessionForm.autoFill.warning') }}</p>
     <div v-if="autoFillMsg" class="autofill-result" :class="autoFillMsg.type">{{ autoFillMsg.text }}</div>
 
     <!-- CONDIZIONI ACQUA (adattive) -->
@@ -110,33 +110,33 @@
       <!-- MARE: stato, onde, marea -->
       <template v-if="isSea">
         <div class="form-group">
-          <label>Stato mare</label>
+          <label>{{ t('sessionForm.fields.seaStateLabel') }}</label>
           <select v-model="f.sea.seaState">
             <option value="">--</option>
             <option v-for="s in SEA_STATES" :key="s.v" :value="s.v">{{ s.l }}</option>
           </select>
         </div>
         <div class="form-group">
-          <label>Altezza onde</label>
-          <input v-model="f.sea.waveHeight" type="text" placeholder="es. 0.5-1m" />
+          <label>{{ t('sessionForm.fields.waveHeightLabel') }}</label>
+          <input v-model="f.sea.waveHeight" type="text" :placeholder="t('sessionForm.fields.waveHeightPlaceholder')" />
         </div>
         <div class="form-group">
-          <label>Periodo onde</label>
-          <input v-model="f.sea.wavePeriod" type="text" placeholder="es. 6s" />
+          <label>{{ t('sessionForm.fields.wavePeriodLabel') }}</label>
+          <input v-model="f.sea.wavePeriod" type="text" :placeholder="t('sessionForm.fields.wavePeriodPlaceholder')" />
         </div>
       </template>
 
       <!-- FIUME: livello, corrente select -->
       <template v-else-if="isRiver">
         <div class="form-group">
-          <label>Livello acqua</label>
+          <label>{{ t('sessionForm.fields.waterLevelLabel') }}</label>
           <select v-model="f.sea.waterLevel">
             <option value="">--</option>
             <option v-for="l in WATER_LEVELS" :key="l.v" :value="l.v">{{ l.l }}</option>
           </select>
         </div>
         <div class="form-group">
-          <label>Corrente</label>
+          <label>{{ t('sessionForm.fields.currentLabel') }}</label>
           <select v-model="f.sea.current">
             <option value="">--</option>
             <option v-for="c in RIVER_CURRENTS" :key="c" :value="c">{{ c }}</option>
@@ -146,123 +146,123 @@
 
       <!-- MARE/ALTRO: corrente testo -->
       <div v-if="isSea || isOther" class="form-group">
-        <label>Corrente</label>
-        <input v-model="f.sea.current" type="text" placeholder="es. corrente da nord" />
+        <label>{{ t('sessionForm.fields.currentLabel') }}</label>
+        <input v-model="f.sea.current" type="text" :placeholder="t('sessionForm.fields.currentPlaceholder')" />
       </div>
 
       <!-- COMUNE: colore e temperatura -->
       <div class="form-group">
-        <label>Colore acqua</label>
-        <input v-model="f.sea.waterColor" type="text" placeholder="es. limpida, torbida, verde" />
+        <label>{{ t('sessionForm.fields.waterColorLabel') }}</label>
+        <input v-model="f.sea.waterColor" type="text" :placeholder="t('sessionForm.fields.waterColorPlaceholder')" />
       </div>
       <div class="form-group">
-        <label>Temp. acqua (°C)</label>
+        <label>{{ t('sessionForm.fields.waterTempLabel') }}</label>
         <input v-model.number="f.sea.waterTemp" type="number" step="0.5" />
       </div>
 
       <!-- MARE: marea -->
       <template v-if="isSea">
         <div class="form-group">
-          <label>Marea</label>
+          <label>{{ t('sessionForm.fields.tideLabel') }}</label>
           <select v-model="f.sea.tide.state">
             <option value="">--</option>
-            <option v-for="t in TIDE_STATES" :key="t.v" :value="t.v">{{ t.l }}</option>
+            <option v-for="td in TIDE_STATES" :key="td.v" :value="td.v">{{ td.l }}</option>
           </select>
         </div>
         <div class="form-group">
-          <label>Note marea</label>
-          <input v-model="f.sea.tide.notes" type="text" placeholder="es. bassa alle 06:30" />
+          <label>{{ t('sessionForm.fields.tideNotesLabel') }}</label>
+          <input v-model="f.sea.tide.notes" type="text" :placeholder="t('sessionForm.fields.tideNotesPlaceholder')" />
         </div>
       </template>
 
     </div>
 
     <!-- METEO -->
-    <div class="section-divider">☀️ Meteo</div>
+    <div class="section-divider">{{ t('sessionForm.sections.weather') }}</div>
     <div class="form-grid">
       <div class="form-group">
-        <label>Condizione</label>
+        <label>{{ t('sessionForm.fields.conditionLabel') }}</label>
         <select v-model="f.weather.condition">
           <option value="">--</option>
           <option v-for="c in WEATHER" :key="c.v" :value="c.v">{{ c.l }}</option>
         </select>
       </div>
       <div class="form-group">
-        <label>Vento direzione</label>
+        <label>{{ t('sessionForm.fields.windDirectionLabel') }}</label>
         <select v-model="f.weather.windDirection">
           <option value="">--</option>
           <option v-for="w in WIND_DIRS" :key="w" :value="w">{{ w }}</option>
         </select>
       </div>
       <div class="form-group">
-        <label>Velocità vento (km/h)</label>
+        <label>{{ t('sessionForm.fields.windSpeedLabel') }}</label>
         <input v-model.number="f.weather.windSpeed" type="number" min="0" />
       </div>
       <div class="form-group">
-        <label>Temp. aria (°C)</label>
+        <label>{{ t('sessionForm.fields.tempAirLabel') }}</label>
         <input v-model.number="f.weather.tempAir" type="number" step="0.5" />
       </div>
       <div class="form-group">
-        <label>Pressione (hPa)</label>
+        <label>{{ t('sessionForm.fields.pressureLabel') }}</label>
         <input v-model.number="f.weather.pressure" type="number" />
       </div>
       <div class="form-group full">
-        <label>Note meteo</label>
-        <textarea v-model="f.weather.notes" placeholder="Osservazioni..." rows="2" />
+        <label>{{ t('sessionForm.fields.weatherNotesLabel') }}</label>
+        <textarea v-model="f.weather.notes" :placeholder="t('sessionForm.fields.weatherNotesPlaceholder')" rows="2" />
       </div>
     </div>
 
     <!-- ESCHE -->
-    <div class="section-divider">🪱 Esche</div>
+    <div class="section-divider">{{ t('sessionForm.sections.baits') }}</div>
     <BaitsSection v-model="f.baits" />
 
     <!-- MONTATURE -->
-    <div class="section-divider">🪝 Montature</div>
+    <div class="section-divider">{{ t('sessionForm.sections.rigs') }}</div>
     <RigsSection v-model="f.rigs" />
 
     <!-- LANCI -->
-    <div class="section-divider">🎯 Lanci e distanze</div>
+    <div class="section-divider">{{ t('sessionForm.sections.casts') }}</div>
     <CastsSection v-model="f.casts" />
 
     <!-- CATTURE -->
-    <div class="section-divider">🐟 Catture</div>
+    <div class="section-divider">{{ t('sessionForm.sections.catches') }}</div>
     <CatchesSection v-model="f.catches" />
 
     <div class="form-group">
-      <label>Visibilità</label>
+      <label>{{ t('sessionForm.fields.visibilityLabel') }}</label>
       <select v-model="f.visibility">
-        <option value="private">🔒 Solo io</option>
-        <option value="users">👥 Tutti gli utenti</option>
-        <option value="group">🫂 Gruppi specifici</option>
+        <option value="private">{{ t('sessionForm.visibility.private') }}</option>
+        <option value="users">{{ t('sessionForm.visibility.users') }}</option>
+        <option value="group">{{ t('sessionForm.visibility.group') }}</option>
       </select>
     </div>
 
     <div v-if="f.visibility === 'group'" class="form-group full">
-      <label>Gruppi autorizzati</label>
+      <label>{{ t('sessionForm.fields.allowedGroupsLabel') }}</label>
       <div class="group-checkboxes">
         <label v-for="g in groups" :key="g._id" class="group-check">
           <input type="checkbox" :value="g._id" v-model="f.allowedGroups" />
           {{ g.name }}
         </label>
         <span v-if="!groups.length" class="text-muted" style="font-size:.85rem">
-          Nessun gruppo — <RouterLink to="/groups">creane uno</RouterLink>
+          {{ t('sessionForm.fields.noGroups') }} <RouterLink to="/groups">{{ t('sessionForm.fields.createOne') }}</RouterLink>
         </span>
       </div>
     </div>
 
     <!-- NOTE -->
-    <div class="section-divider">📝 Note libere</div>
+    <div class="section-divider">{{ t('sessionForm.sections.notes') }}</div>
     <div class="form-group">
-      <label>Note generali</label>
-      <textarea v-model="f.notes" placeholder="Osservazioni, cosa provare la prossima volta, promemoria..." rows="4" />
+      <label>{{ t('sessionForm.fields.generalNotesLabel') }}</label>
+      <textarea v-model="f.notes" :placeholder="t('sessionForm.fields.generalNotesPlaceholder')" rows="4" />
     </div>
 
     <!-- AZIONI -->
     <div class="form-actions">
-      <button type="button" class="btn btn-ghost" @click="$emit('cancel')">Annulla</button>
+      <button type="button" class="btn btn-ghost" @click="$emit('cancel')">{{ t('common.cancel') }}</button>
       <button type="submit" class="btn btn-primary" :disabled="saving">
         <span v-if="saving" class="spinner" style="width:15px;height:15px"></span>
-        {{ saving ? 'Salvataggio...' : (isEdit ? 'Aggiorna uscita' : 'Salva uscita') }}
+        {{ saving ? t('sessionForm.saving') : (isEdit ? t('sessionForm.submitEdit') : t('sessionForm.submitCreate')) }}
       </button>
     </div>
 
@@ -271,6 +271,7 @@
 
 <script setup>
 import { ref, computed, watch, onMounted } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useGroupStore } from '../../stores/groups.js'
 import { RouterLink } from 'vue-router'
 import { storeToRefs } from 'pinia'
@@ -280,6 +281,7 @@ import RigsSection     from './RigsSection.vue'
 import CastsSection    from './CastsSection.vue'
 import CatchesSection  from './CatchesSection.vue'
 
+const { t } = useI18n()
 const groupStore = useGroupStore()
 const { groups } = storeToRefs(groupStore)
 onMounted(() => groupStore.fetchGroups())
@@ -342,11 +344,11 @@ const isRiver  = computed(() => f.value.waterType === 'fiume')
 const isOther  = computed(() => f.value.waterType === 'altro')
 
 const waterSectionTitle = computed(() => ({
-  mare:  '🌊 Condizioni mare',
-  fiume: '🏞️ Condizioni fiume',
-  lago:  '🏔️ Condizioni lago',
-  altro: '💧 Condizioni acqua',
-}[f.value.waterType] || '🌊 Condizioni mare'))
+  mare:  t('sessionForm.waterSection.sea'),
+  fiume: t('sessionForm.waterSection.river'),
+  lago:  t('sessionForm.waterSection.lake'),
+  altro: t('sessionForm.waterSection.other'),
+}[f.value.waterType] || t('sessionForm.waterSection.sea')))
 
 // ─── Form data ────────────────────────────────────────────────────────────────
 
@@ -411,7 +413,7 @@ function waveHeightToSeaState(h) {
 
 function detectGPS() {
   if (!navigator.geolocation) {
-    geocodeMsg.value = '⚠️ GPS non supportato dal browser'
+    geocodeMsg.value = t('sessionForm.autoFill.gpsUnsupported')
     return
   }
   gpsLoading.value = true
@@ -424,7 +426,7 @@ function detectGPS() {
     },
     err => {
       gpsLoading.value = false
-      geocodeMsg.value = '⚠️ Impossibile rilevare la posizione'
+      geocodeMsg.value = t('sessionForm.autoFill.gpsFailed')
       console.warn('GPS error', err)
     },
     { timeout: 10000, enableHighAccuracy: true }
@@ -454,12 +456,12 @@ watch(
     clearTimeout(geocodeTimer)
     if (!lat || !lng) return
     geocodeTimer = setTimeout(async () => {
-      geocodeMsg.value = '🔍 Ricerca indirizzo...'
+      geocodeMsg.value = t('sessionForm.autoFill.geocoding')
       const result = await reverseGeocode(lat, lng)
       if (!result) { geocodeMsg.value = ''; return }
       if (!f.value.location.name)   f.value.location.name   = result.name
       if (!f.value.location.region) f.value.location.region = result.region
-      geocodeMsg.value = result.name ? `✓ Trovato: ${result.name}` : ''
+      geocodeMsg.value = result.name ? t('sessionForm.autoFill.geocodeFound', { name: result.name }) : ''
     }, 800)
   }
 )
@@ -497,11 +499,11 @@ async function autoFillWeatherAndSea() {
       const windDeg   = d.wind_direction_10m_dominant?.[0]
       const pressure  = h?.surface_pressure?.[12]
 
-      if (code != null)                    { f.value.weather.condition     = wmoToCondition(code, windSpeed); filled.push('condizione') }
-      if (tMax != null && tMin != null)    { f.value.weather.tempAir       = Math.round((tMax + tMin) / 2);   filled.push('temperatura') }
-      if (windSpeed != null)               { f.value.weather.windSpeed     = Math.round(windSpeed);            filled.push('vento') }
-      if (windDeg != null)                 { f.value.weather.windDirection  = degToWindName(windDeg);          filled.push('direzione vento') }
-      if (pressure != null)                { f.value.weather.pressure      = Math.round(pressure);             filled.push('pressione') }
+      if (code != null)                    { f.value.weather.condition     = wmoToCondition(code, windSpeed); filled.push(t('sessionForm.autoFill.filledFields.condition')) }
+      if (tMax != null && tMin != null)    { f.value.weather.tempAir       = Math.round((tMax + tMin) / 2);   filled.push(t('sessionForm.autoFill.filledFields.temperature')) }
+      if (windSpeed != null)               { f.value.weather.windSpeed     = Math.round(windSpeed);            filled.push(t('sessionForm.autoFill.filledFields.wind')) }
+      if (windDeg != null)                 { f.value.weather.windDirection  = degToWindName(windDeg);          filled.push(t('sessionForm.autoFill.filledFields.windDirection')) }
+      if (pressure != null)                { f.value.weather.pressure      = Math.round(pressure);             filled.push(t('sessionForm.autoFill.filledFields.pressure')) }
     }
 
     if (isSea.value && marineRes.status === 'fulfilled' && marineRes.value?.daily) {
@@ -511,20 +513,20 @@ async function autoFillWeatherAndSea() {
       if (waveH != null) {
         f.value.sea.seaState   = waveHeightToSeaState(waveH)
         f.value.sea.waveHeight = `${waveH.toFixed(1)}m`
-        filled.push('stato mare', 'altezza onde')
+        filled.push(t('sessionForm.autoFill.filledFields.seaState'), t('sessionForm.autoFill.filledFields.waveHeight'))
       }
       if (wavePeriod != null) {
         f.value.sea.wavePeriod = `${Math.round(wavePeriod)}s`
-        filled.push('periodo onde')
+        filled.push(t('sessionForm.autoFill.filledFields.wavePeriod'))
       }
     }
 
     autoFillMsg.value = filled.length
-      ? { type: 'success', text: `✓ Compilati: ${filled.join(', ')}` }
-      : { type: 'warn',    text: '⚠️ Nessun dato disponibile per questa data/posizione' }
+      ? { type: 'success', text: t('sessionForm.autoFill.success', { fields: filled.join(', ') }) }
+      : { type: 'warn',    text: t('sessionForm.autoFill.noData') }
 
   } catch (err) {
-    autoFillMsg.value = { type: 'error', text: '✗ Errore durante il recupero dei dati' }
+    autoFillMsg.value = { type: 'error', text: t('sessionForm.autoFill.error') }
     console.error('autoFill error', err)
   } finally {
     autoFilling.value = false

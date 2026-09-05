@@ -27,7 +27,7 @@
         <span v-if="session.rating" class="stars text-sm">{{ '★'.repeat(session.rating) }}</span>
       </div>
       <h3 class="font-bold text-sm mb-1 truncate text-foam">
-        {{ session.title || session.location?.name || 'Uscita' }}
+        {{ session.title || session.location?.name || t('session.untitled') }}
       </h3>
       <p class="text-muted text-xs mb-2">
         📍 {{ session.location?.spot || session.location?.name }}
@@ -45,7 +45,9 @@
 
 <script setup>
 import { RouterLink } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 
+const { t } = useI18n()
 defineProps({ session: { type: Object, required: true } })
 
 const fmtDate   = d => new Date(d).toLocaleDateString('it-IT', { day:'2-digit', month:'short', year:'numeric' })

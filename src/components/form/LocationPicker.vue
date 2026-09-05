@@ -1,12 +1,13 @@
 <template>
   <div class="location-picker">
-    <p class="picker-hint">Clicca sulla mappa per impostare le coordinate</p>
+    <p class="picker-hint">{{ t('locationPicker.hint') }}</p>
     <div ref="mapEl" class="map-picker"></div>
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted, onUnmounted, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png'
@@ -16,6 +17,7 @@ import markerShadow from 'leaflet/dist/images/marker-shadow.png'
 delete L.Icon.Default.prototype._getIconUrl
 L.Icon.Default.mergeOptions({ iconRetinaUrl: markerIcon2x, iconUrl: markerIcon, shadowUrl: markerShadow })
 
+const { t } = useI18n()
 const props = defineProps({
   lat: { type: Number, default: null },
   lng: { type: Number, default: null },

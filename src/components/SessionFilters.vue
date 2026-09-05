@@ -3,7 +3,7 @@
     <input
       :value="modelValue.search"
       type="search"
-      placeholder="Cerca luogo, note..."
+      :placeholder="t('sessionFilters.searchPlaceholder')"
       class="flex-1 min-w-[140px] max-w-xs"
       @input="update('search', $event.target.value)"
     />
@@ -12,7 +12,7 @@
       class="flex-1 min-w-[140px] max-w-[180px]"
       @change="update('technique', $event.target.value)"
     >
-      <option value="">Tutte le tecniche</option>
+      <option value="">{{ t('sessionFilters.allTechniques') }}</option>
       <option v-for="t in TECHNIQUES" :key="t.v" :value="t.v">{{ t.l }}</option>
     </select>
     <input
@@ -29,14 +29,16 @@
       @change="update('dateTo', $event.target.value)"
     />
     <button v-if="hasFilters" class="btn btn-ghost btn-sm shrink-0" @click="$emit('reset')">
-      ✕ Reset
+      {{ t('sessionFilters.reset') }}
     </button>
   </div>
 </template>
 
 <script setup>
 import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 
+const { t } = useI18n()
 const props = defineProps({ modelValue: { type: Object, required: true } })
 const emit  = defineEmits(['update:modelValue', 'reset'])
 

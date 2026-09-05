@@ -1,17 +1,17 @@
 <template>
   <div>
     <div class="page-header">
-      <h2>I tuoi <span class="text-ocean">gruppi</span></h2>
-      <button class="btn btn-primary" @click="showCreate = true">+ Nuovo gruppo</button>
+      <h2>{{ t('groups.titlePrefix') }} <span class="text-ocean">{{ t('groups.titleHighlight') }}</span></h2>
+      <button class="btn btn-primary" @click="showCreate = true">{{ t('groups.newGroup') }}</button>
     </div>
 
     <div v-if="store.loading" class="state-center"><div class="spinner"></div></div>
 
     <div v-else-if="!store.groups.length" class="state-center">
       <div style="font-size:3rem">🫂</div>
-      <h3>Nessun gruppo</h3>
-      <p class="text-muted mt-1">Crea un gruppo per condividere le uscite con amici specifici</p>
-      <button class="btn btn-primary mt-2" @click="showCreate = true">+ Crea gruppo</button>
+      <h3>{{ t('groups.empty.title') }}</h3>
+      <p class="text-muted mt-1">{{ t('groups.empty.text') }}</p>
+      <button class="btn btn-primary mt-2" @click="showCreate = true">{{ t('groups.empty.create') }}</button>
     </div>
 
     <div v-else class="groups-grid">
@@ -21,7 +21,7 @@
             <h3>{{ g.name }}</h3>
             <p v-if="g.description" class="text-muted" style="font-size:.85rem;margin-top:.2rem">{{ g.description }}</p>
           </div>
-          <span class="badge badge-ocean">{{ g.members?.length || 0 }} membri</span>
+          <span class="badge badge-ocean">{{ t('groups.membersCount', { n: g.members?.length || 0 }) }}</span>
         </div>
 
         <div class="members-list">
@@ -30,7 +30,7 @@
               <img v-if="m.avatar" :src="m.avatar" class="mini-avatar" />
               <span v-else class="mini-placeholder">{{ initials(m) }}</span>
               <span>{{ m.displayName || m.email }}</span>
-              <span v-if="m._id === g.owner?._id" class="badge badge-sand" style="font-size:.6rem">owner</span>
+              <span v-if="m._id === g.owner?._id" class="badge badge-sand" style="font-size:.6rem">{{ t('groups.owner') }}</span>
             </div>
             <button
               v-if="canRemove(g, m)"
@@ -45,17 +45,17 @@
           <input
             v-model="inviteEmail[g._id]"
             type="email"
-            placeholder="Email utente da aggiungere..."
+            :placeholder="t('groups.addMemberPlaceholder')"
             @keydown.enter="addMember(g)"
           />
-          <button class="btn btn-secondary btn-sm" @click="addMember(g)">Aggiungi</button>
+          <button class="btn btn-secondary btn-sm" @click="addMember(g)">{{ t('common.add') }}</button>
         </div>
         <p v-if="errors[g._id]" class="error-msg">{{ errors[g._id] }}</p>
 
         <!-- Azioni gruppo -->
         <div v-if="isOwnerOrAdmin(g)" class="group-actions">
-          <button class="btn btn-ghost btn-sm" @click="startEdit(g)">✏️ Modifica</button>
-          <button class="btn btn-danger btn-sm" @click="confirmDelete(g)">🗑 Elimina</button>
+          <button class="btn btn-ghost btn-sm" @click="startEdit(g)">{{ t('groups.editAction') }}</button>
+          <button class="btn btn-danger btn-sm" @click="confirmDelete(g)">{{ t('groups.deleteAction') }}</button>
         </div>
       </div>
     </div>
@@ -64,20 +64,20 @@
     <Teleport to="body">
       <div v-if="showCreate || editTarget" class="dialog-overlay" @click.self="closeModal">
         <div class="dialog card">
-          <h3>{{ editTarget ? 'Modifica gruppo' : 'Nuovo gruppo' }}</h3>
+          <h3>{{ editTarget ? t('groups.modal.editTitle') : t('groups.modal.newTitle') }}</h3>
           <div class="form-group mt-2">
-            <label>Nome *</label>
-            <input v-model="groupForm.name" type="text" placeholder="es. Amici di pesca" />
+            <label>{{ t('groups.modal.nameLabel') }}</label>
+            <input v-model="groupForm.name" type="text" :placeholder="t('groups.modal.namePlaceholder')" />
           </div>
           <div class="form-group mt-1">
-            <label>Descrizione</label>
-            <input v-model="groupForm.description" type="text" placeholder="Opzionale..." />
+            <label>{{ t('groups.modal.descLabel') }}</label>
+            <input v-model="groupForm.description" type="text" :placeholder="t('groups.modal.descPlaceholder')" />
           </div>
           <p v-if="modalError" class="error-msg mt-1">{{ modalError }}</p>
           <div style="display:flex;gap:.75rem;justify-content:flex-end;margin-top:1.25rem">
-            <button class="btn btn-ghost btn-sm" @click="closeModal">Annulla</button>
+            <button class="btn btn-ghost btn-sm" @click="closeModal">{{ t('common.cancel') }}</button>
             <button class="btn btn-primary btn-sm" :disabled="saving" @click="saveGroup">
-              {{ saving ? '...' : (editTarget ? 'Aggiorna' : 'Crea') }}
+              {{ saving ? t('groups.modal.saving') : (editTarget ? t('groups.modal.update') : t('groups.modal.create')) }}
             </button>
           </div>
         </div>
@@ -88,11 +88,11 @@
     <Teleport to="body">
       <div v-if="deleteTarget" class="dialog-overlay" @click.self="deleteTarget = null">
         <div class="dialog card">
-          <h3>Elimina gruppo</h3>
-          <p class="text-muted mt-1">Sei sicuro di voler eliminare <strong>{{ deleteTarget.name }}</strong>?</p>
+          <h3>{{ t('groups.deleteDialog.title') }}</h3>
+          <p class="text-muted mt-1">{{ t('groups.deleteDialog.confirm', { name: deleteTarget.name }) }}</p>
           <div style="display:flex;gap:.75rem;justify-content:flex-end;margin-top:1.25rem">
-            <button class="btn btn-ghost btn-sm" @click="deleteTarget = null">Annulla</button>
-            <button class="btn btn-danger btn-sm" @click="doDelete">Elimina</button>
+            <button class="btn btn-ghost btn-sm" @click="deleteTarget = null">{{ t('common.cancel') }}</button>
+            <button class="btn btn-danger btn-sm" @click="doDelete">{{ t('common.delete') }}</button>
           </div>
         </div>
       </div>
@@ -102,10 +102,12 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useGroupStore } from '../stores/groups.js'
 import { useAuthStore } from '../stores/auth.js'
 import api from '../utils/api.js'
 
+const { t }     = useI18n()
 const store    = useGroupStore()
 const authStore = useAuthStore()
 
@@ -151,7 +153,7 @@ function closeModal() {
 }
 
 async function saveGroup() {
-  if (!groupForm.value.name.trim()) { modalError.value = 'Nome obbligatorio'; return }
+  if (!groupForm.value.name.trim()) { modalError.value = t('groups.modal.nameRequired'); return }
   saving.value = true; modalError.value = ''
   try {
     if (editTarget.value) {
@@ -162,7 +164,7 @@ async function saveGroup() {
     }
     closeModal()
   } catch (e) {
-    modalError.value = e.response?.data?.error || 'Errore'
+    modalError.value = e.response?.data?.error || t('common.error')
   } finally { saving.value = false }
 }
 
@@ -180,11 +182,11 @@ async function addMember(g) {
     // Cerca userId per email
     const { data: users } = await api.get('/admin/users', { params: { search: email, limit: 1 } })
     const found = users.data?.[0]
-    if (!found) { errors.value[g._id] = 'Utente non trovato'; return }
+    if (!found) { errors.value[g._id] = t('groups.errors.userNotFound'); return }
     await store.addMember(g._id, found._id)
     inviteEmail.value[g._id] = ''
   } catch (e) {
-    errors.value[g._id] = e.response?.data?.error || 'Errore'
+    errors.value[g._id] = e.response?.data?.error || t('common.error')
   }
 }
 

@@ -1,8 +1,8 @@
 <template>
   <div>
     <div class="page-header">
-      <RouterLink :to="`/session/${route.params.id}`" class="btn btn-ghost btn-sm">← Indietro</RouterLink>
-      <h2>Modifica uscita</h2>
+      <RouterLink :to="`/session/${route.params.id}`" class="btn btn-ghost btn-sm">{{ t('common.back') }}</RouterLink>
+      <h2>{{ t('session.edit.title') }}</h2>
     </div>
 
     <div v-if="store.loading && !store.current" class="state-center">
@@ -25,9 +25,11 @@
 <script setup>
 import { computed, onMounted } from 'vue'
 import { useRouter, useRoute, RouterLink } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import { useSessionStore } from '../stores/sessions.js'
 import SessionForm from '../components/form/SessionForm.vue'
 
+const { t }  = useI18n()
 const store  = useSessionStore()
 const router = useRouter()
 const route  = useRoute()
