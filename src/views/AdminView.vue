@@ -1,22 +1,22 @@
 <template>
   <div>
-    <h2>Pannello Admin</h2>
+    <h2>{{ t('admin.title') }}</h2>
 
     <div class="admin-tabs">
-      <button class="btn" :class="tab === 'users' ? 'btn-primary' : 'btn-ghost'" @click="tab = 'users'">Utenti</button>
-      <button class="btn" :class="tab === 'sessions' ? 'btn-primary' : 'btn-ghost'" @click="tab = 'sessions'">Sessioni</button>
+      <button class="btn" :class="tab === 'users' ? 'btn-primary' : 'btn-ghost'" @click="tab = 'users'">{{ t('admin.tabs.users') }}</button>
+      <button class="btn" :class="tab === 'sessions' ? 'btn-primary' : 'btn-ghost'" @click="tab = 'sessions'">{{ t('admin.tabs.sessions') }}</button>
     </div>
 
     <!-- UTENTI -->
     <div v-if="tab === 'users'">
       <div class="toolbar">
-        <input v-model="userSearch" type="search" placeholder="Cerca utente..." style="max-width:280px" @input="debouncedUsers" />
+        <input v-model="userSearch" type="search" :placeholder="t('admin.users.searchPlaceholder')" style="max-width:280px" @input="debouncedSearchUsers" />
       </div>
 
-      <div v-if="loadingUsers" class="state-center"><div class="spinner"></div></div>
+      <div v-if="pagination.loading.value" class="state-center"><div class="spinner"></div></div>
       <table v-else class="admin-table">
         <thead>
-          <tr><th>Utente</th><th>Email</th><th>Ruolo</th><th>Registrato</th><th>Azioni</th></tr>
+          <tr><th>{{ t('admin.users.table.user') }}</th><th>{{ t('admin.users.table.email') }}</th><th>{{ t('admin.users.table.role') }}</th><th>{{ t('admin.users.table.registered') }}</th><th>{{ t('admin.users.table.actions') }}</th></tr>
         </thead>
         <tbody>
           <tr v-for="u in users" :key="u._id">
@@ -45,16 +45,16 @@
                 class="btn btn-danger btn-sm"
                 :disabled="u._id === authStore.user._id"
                 @click="confirmDeleteUser(u)"
-              >Elimina</button>
+              >{{ t('common.delete') }}</button>
             </td>
           </tr>
         </tbody>
       </table>
 
       <div class="pagination mt-2">
-        <button class="btn btn-ghost btn-sm" :disabled="userPage <= 1" @click="userPage--; fetchUsers()">← Prec</button>
-        <span class="text-muted text-mono" style="font-size:.85rem">{{ userPage }} / {{ userPages }}</span>
-        <button class="btn btn-ghost btn-sm" :disabled="userPage >= userPages" @click="userPage++; fetchUsers()">Succ →</button>
+        <button class="btn btn-ghost btn-sm" :disabled="pagination.page.value <= 1" @click="pagination.goTo(pagination.page.value - 1)">{{ t('common.prevPage') }}</button>
+        <span class="text-muted text-mono" style="font-size:.85rem">{{ pagination.page.value }} / {{ pagination.pages.value }}</span>
+        <button class="btn btn-ghost btn-sm" :disabled="pagination.page.value >= pagination.pages.value" @click="pagination.goTo(pagination.page.value + 1)">{{ t('common.nextPage') }}</button>
       </div>
     </div>
 
@@ -63,14 +63,14 @@
       <div class="toolbar">
         <label style="flex-direction:row;align-items:center;gap:.5rem;text-transform:none;letter-spacing:0;font-size:.85rem">
           <input type="checkbox" v-model="showHidden" @change="fetchSessions" />
-          Mostra solo nascoste
+          {{ t('admin.sessions.showHiddenOnly') }}
         </label>
       </div>
 
       <div v-if="loadingSessions" class="state-center"><div class="spinner"></div></div>
       <table v-else class="admin-table">
         <thead>
-          <tr><th>Titolo</th><th>Autore</th><th>Data</th><th>Visibilità</th><th>Nascosta</th><th>Azioni</th></tr>
+          <tr><th>{{ t('admin.sessions.table.title') }}</th><th>{{ t('admin.sessions.table.author') }}</th><th>{{ t('admin.sessions.table.date') }}</th><th>{{ t('admin.sessions.table.visibility') }}</th><th>{{ t('admin.sessions.table.hidden') }}</th><th>{{ t('admin.sessions.table.actions') }}</th></tr>
         </thead>
         <tbody>
           <tr v-for="s in adminSessions" :key="s._id" :class="{ 'row-hidden': s.hidden }">
@@ -79,12 +79,12 @@
             <td class="text-mono text-muted" style="font-size:.78rem">{{ fmtDate(s.date) }}</td>
             <td><span class="badge badge-ocean">{{ s.visibility }}</span></td>
             <td>
-              <span v-if="s.hidden" class="badge badge-sand">Nascosta</span>
-              <span v-else class="text-muted" style="font-size:.8rem">—</span>
+              <span v-if="s.hidden" class="badge badge-sand">{{ t('admin.sessions.hiddenBadge') }}</span>
+              <span v-else class="text-muted" style="font-size:.8rem">{{ t('common.none') }}</span>
             </td>
             <td>
               <button class="btn btn-ghost btn-sm" @click="toggleHide(s)">
-                {{ s.hidden ? 'Mostra' : 'Nascondi' }}
+                {{ s.hidden ? t('admin.sessions.show') : t('admin.sessions.hide') }}
               </button>
             </td>
           </tr>
@@ -96,11 +96,11 @@
     <Teleport to="body">
       <div v-if="deleteTarget" class="dialog-overlay" @click.self="deleteTarget = null">
         <div class="dialog card">
-          <h3>Elimina utente</h3>
-          <p class="text-muted mt-1">Verranno eliminate anche tutte le sessioni di <strong>{{ deleteTarget.displayName }}</strong>.</p>
+          <h3>{{ t('admin.deleteUser.title') }}</h3>
+          <p class="text-muted mt-1">{{ t('admin.deleteUser.warning', { name: deleteTarget.displayName }) }}</p>
           <div style="display:flex;gap:.75rem;justify-content:flex-end;margin-top:1.25rem">
-            <button class="btn btn-ghost btn-sm" @click="deleteTarget = null">Annulla</button>
-            <button class="btn btn-danger btn-sm" @click="doDeleteUser">Elimina</button>
+            <button class="btn btn-ghost btn-sm" @click="deleteTarget = null">{{ t('common.cancel') }}</button>
+            <button class="btn btn-danger btn-sm" @click="doDeleteUser">{{ t('common.delete') }}</button>
           </div>
         </div>
       </div>
@@ -110,31 +110,29 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useAuthStore } from '../stores/auth.js'
+import { usePagination } from '../composables/usePagination.js'
+import { useDebouncedFn } from '../composables/useDebouncedFn.js'
 import api from '../utils/api.js'
 
+const { t } = useI18n()
 const authStore = useAuthStore()
 const tab = ref('users')
 
 // Users
 const users        = ref([])
 const userSearch   = ref('')
-const userPage     = ref(1)
-const userPages    = ref(1)
-const loadingUsers = ref(false)
 const deleteTarget = ref(null)
 
-async function fetchUsers() {
-  loadingUsers.value = true
-  try {
-    const { data } = await api.get('/admin/users', { params: { page: userPage.value, search: userSearch.value || undefined } })
-    users.value = data.data
-    userPages.value = data.pagination.pages
-  } finally { loadingUsers.value = false }
+async function fetchUsers(page) {
+  const { data } = await api.get('/admin/users', { params: { page, search: userSearch.value || undefined } })
+  users.value = data.data
+  return data.pagination.pages
 }
 
-let timer
-function debouncedUsers() { clearTimeout(timer); timer = setTimeout(fetchUsers, 320) }
+const pagination = usePagination(fetchUsers)
+const debouncedSearchUsers = useDebouncedFn(() => pagination.reset(), 320)
 
 async function changeRole(user, role) {
   await api.patch(`/admin/users/${user._id}/role`, { role })
@@ -168,7 +166,7 @@ async function toggleHide(s) {
 
 const fmtDate = d => new Date(d).toLocaleDateString('it-IT', { day: '2-digit', month: 'short', year: 'numeric' })
 
-onMounted(() => { fetchUsers(); fetchSessions() })
+onMounted(() => { pagination.load(); fetchSessions() })
 </script>
 
 <style scoped>

@@ -53,5 +53,51 @@ export const useAuthStore = defineStore('auth', () => {
     clearAuth()
   }
 
-  return { token, user, isLoggedIn, setAuth, clearAuth, initAuth, login, register, fetchMe, logout }
+  function persistUser(u) {
+    user.value = u
+    localStorage.setItem('fl_user', JSON.stringify(u))
+  }
+
+  async function updateProfile(payload) {
+    const { data } = await api.patch('/auth/me', payload)
+    persistUser(data)
+    return data
+  }
+
+  async function uploadAvatar(file) {
+    const form = new FormData()
+    form.append('file', file)
+    const { data } = await api.post('/auth/me/avatar', form, { headers: { 'Content-Type': 'multipart/form-data' } })
+    persistUser(data)
+    return data
+  }
+
+  async function changePassword(currentPassword, newPassword) {
+    await api.patch('/auth/me/password', { currentPassword, newPassword })
+  }
+
+  async function changeEmail(newEmail, currentPassword) {
+    const { data } = await api.patch('/auth/me/email', { newEmail, currentPassword })
+    persistUser({ ...user.value, pendingEmail: data.pendingEmail })
+    return data
+  }
+
+  async function deleteAccount(password) {
+    await api.delete('/auth/me', { data: { password } })
+    clearAuth()
+  }
+
+  async function forgotPassword(email) {
+    await api.post('/auth/forgot-password', { email })
+  }
+
+  async function resetPassword(token, newPassword) {
+    await api.post('/auth/reset-password', { token, newPassword })
+  }
+
+  return {
+    token, user, isLoggedIn, setAuth, clearAuth, initAuth, login, register, fetchMe, logout,
+    updateProfile, uploadAvatar, changePassword, changeEmail, deleteAccount,
+    forgotPassword, resetPassword
+  }
 })

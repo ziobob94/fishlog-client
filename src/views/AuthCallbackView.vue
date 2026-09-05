@@ -10,19 +10,21 @@
 <script setup>
 import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import { useAuthStore } from '../stores/auth.js'
 import api from '../utils/api.js'
 
+const { t }   = useI18n()
 const router  = useRouter()
 const auth    = useAuthStore()
-const message = ref('Accesso in corso...')
+const message = ref(t('auth.callback.loggingIn'))
 
 onMounted(async () => {
   const params = new URLSearchParams(window.location.search)
   const token  = params.get('token')
 
   if (!token) {
-    message.value = 'Errore: token mancante'
+    message.value = t('auth.callback.missingToken')
     setTimeout(() => router.push('/login'), 2000)
     return
   }
@@ -33,7 +35,7 @@ onMounted(async () => {
     auth.setAuth(token, user)
     router.push('/')
   } catch {
-    message.value = 'Errore di autenticazione'
+    message.value = t('auth.callback.authError')
     setTimeout(() => router.push('/login'), 2000)
   }
 })

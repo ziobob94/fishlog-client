@@ -12,11 +12,11 @@
     >
       <input ref="fileInput" type="file" multiple accept="image/*,video/*" class="hidden" @change="onFileChange" />
       <div class="flex flex-col items-center gap-1.5 text-center px-4">
-        <span class="text-3xl">📎</span>
+        <Paperclip :size="28" class="text-muted" />
         <p class="text-sm text-foam">
-          Trascina foto / video o <span class="text-ocean">clicca per selezionare</span>
+          {{ t('mediaUploader.dropHint') }} <span class="text-ocean">{{ t('mediaUploader.dropHintClick') }}</span>
         </p>
-        <span class="text-xs text-muted">JPG, PNG, WEBP, HEIC, MP4, MOV — max 200MB</span>
+        <span class="text-xs text-muted">{{ t('mediaUploader.formatsHint') }}</span>
       </div>
     </div>
 
@@ -25,7 +25,7 @@
       <div class="h-1.5 bg-surface-2 rounded-full overflow-hidden">
         <div class="h-full bg-ocean rounded-full transition-all duration-200" :style="{ width: progress + '%' }"></div>
       </div>
-      <span class="text-xs text-muted text-center">Upload {{ progress }}%</span>
+      <span class="text-xs text-muted text-center">{{ t('mediaUploader.uploadProgress', { progress }) }}</span>
     </div>
 
     <!-- Grid -->
@@ -35,17 +35,17 @@
           <img v-if="item.type === 'photo'" :src="item.url" loading="lazy" class="w-full h-full object-cover" />
           <video v-else :src="item.url" controls preload="metadata" class="w-full h-full object-cover" />
           <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
-            <button class="overlay-btn" @click="lightboxItem = item">🔍</button>
-            <button class="overlay-btn" @click="confirmDelete(item)">🗑</button>
+            <button class="overlay-btn" @click="lightboxItem = item"><Search :size="16" /></button>
+            <button class="overlay-btn" @click="confirmDelete(item)"><Trash2 :size="16" /></button>
           </div>
           <span class="absolute bottom-1.5 right-1.5 text-sm">
-            {{ item.type === 'photo' ? '📷' : '🎬' }}
+            <component :is="item.type === 'photo' ? Camera : Clapperboard" :size="14" />
           </span>
         </div>
         <input
           v-model="item.caption"
           type="text"
-          placeholder="Didascalia..."
+          :placeholder="t('mediaUploader.captionPlaceholder')"
           class="text-xs py-1.5"
           @blur="saveCaption(item)"
           @keydown.enter="saveCaption(item)"
@@ -60,7 +60,7 @@
         @click.self="lightboxItem = null"
       >
         <button class="absolute top-6 right-6 w-9 h-9 rounded-full bg-white/10 hover:bg-white/25 border-none text-white cursor-pointer text-base transition-colors"
-          @click="lightboxItem = null">✕</button>
+          @click="lightboxItem = null"><X :size="18" /></button>
         <img v-if="lightboxItem.type === 'photo'" :src="lightboxItem.url" class="max-w-[90vw] max-h-[90vh] object-contain rounded-sm" />
         <video v-else :src="lightboxItem.url" controls autoplay class="max-w-[90vw] max-h-[90vh] rounded-sm" />
       </div>
@@ -73,11 +73,11 @@
         @click.self="deleteTarget = null"
       >
         <div class="card w-[90%] max-w-sm">
-          <h3 class="font-bold mb-1">Elimina media</h3>
-          <p class="text-muted text-sm mt-1">L'operazione non è reversibile.</p>
+          <h3 class="font-bold mb-1">{{ t('mediaUploader.deleteDialog.title') }}</h3>
+          <p class="text-muted text-sm mt-1">{{ t('mediaUploader.deleteDialog.confirm') }}</p>
           <div class="flex gap-3 justify-end mt-5">
-            <button class="btn btn-ghost btn-sm" @click="deleteTarget = null">Annulla</button>
-            <button class="btn btn-danger btn-sm" @click="doDelete">Elimina</button>
+            <button class="btn btn-ghost btn-sm" @click="deleteTarget = null">{{ t('common.cancel') }}</button>
+            <button class="btn btn-danger btn-sm" @click="doDelete">{{ t('common.delete') }}</button>
           </div>
         </div>
       </div>
@@ -87,13 +87,23 @@
 
 <script setup>
 import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { Paperclip, Search, Trash2, Camera, Clapperboard, X } from 'lucide-vue-next'
 import api from '../utils/api.js'
 
+const { t } = useI18n()
 const props = defineProps({
   sessionId: { type: String, required: true },
-  media:     { type: Array, default: () => [] }
+  media:     { type: Array, default: () => [] },
+  // Permettono di puntare l'uploader ai media di una singola cattura invece
+  // che a quelli della sessione, riusando lo stesso componente/endpoint base.
+  uploadUrl: { type: String, default: null },
+  itemBaseUrl: { type: String, default: null }
 })
 const emit = defineEmits(['update'])
+
+const uploadEndpoint = props.uploadUrl || `/media/upload/${props.sessionId}`
+const itemEndpoint   = props.itemBaseUrl || `/media/${props.sessionId}`
 
 const fileInput    = ref(null)
 const dragging     = ref(false)
@@ -111,7 +121,7 @@ async function upload(files) {
   const fd = new FormData()
   for (const f of files) fd.append('files', f)
   try {
-    await api.post(`/media/upload/${props.sessionId}`, fd, {
+    await api.post(uploadEndpoint, fd, {
       headers: { 'Content-Type': 'multipart/form-data' },
       onUploadProgress: e => { progress.value = Math.round((e.loaded / e.total) * 100) }
     })
@@ -120,12 +130,12 @@ async function upload(files) {
 }
 
 async function saveCaption(item) {
-  await api.patch(`/media/${props.sessionId}/${item._id}/caption`, { caption: item.caption })
+  await api.patch(`${itemEndpoint}/${item._id}/caption`, { caption: item.caption })
 }
 
 function confirmDelete(item) { deleteTarget.value = item }
 async function doDelete() {
-  await api.delete(`/media/${props.sessionId}/${deleteTarget.value._id}`)
+  await api.delete(`${itemEndpoint}/${deleteTarget.value._id}`)
   emit('update')
   deleteTarget.value = null
 }

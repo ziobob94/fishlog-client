@@ -19,10 +19,13 @@
       :class="sidebarLocked ? 'ml-60' : 'ml-0'"
     >
       <AppTopbar @toggle-sidebar="toggleSidebar" />
-      <main class="flex-1 w-full max-w-[1100px] mx-auto px-6 py-8">
+      <main class="flex-1 w-full max-w-[1100px] mx-auto px-6 py-8 pb-24 md:pb-8">
         <RouterView />
       </main>
     </div>
+
+    <AppBottomNav />
+    <ToastContainer />
   </div>
 </template>
 
@@ -31,6 +34,8 @@ import { ref, onMounted } from 'vue'
 import { RouterView } from 'vue-router'
 import AppSidebar from './layout/AppSidebar.vue'
 import AppTopbar  from './layout/AppTopbar.vue'
+import AppBottomNav from './layout/AppBottomNav.vue'
+import ToastContainer from './components/ToastContainer.vue'
 
 const sidebarOpen   = ref(false)
 const sidebarLocked = ref(localStorage.getItem('sidebar_locked') === 'true')

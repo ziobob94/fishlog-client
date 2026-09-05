@@ -1,83 +1,67 @@
 <template>
   <div>
     <div class="home-hero">
-      <div>
-        <h1>Le tue <span class="text-ocean">uscite</span></h1>
-        <p class="text-muted mt-1">{{ store.total }} sessioni registrate</p>
-      </div>
-      <RouterLink to="/new" class="btn btn-primary">+ Nuova uscita</RouterLink>
+      <h1>{{ t('home.hub.titlePrefix') }} <span class="text-ocean">{{ t('home.hub.titleHighlight') }}</span></h1>
+      <p class="text-muted mt-1">{{ t('home.hub.subtitle') }}</p>
     </div>
 
-    <SessionFilters v-model="filters" @reset="resetFilters" />
-
-    <div v-if="store.loading" class="state-center">
-      <div class="spinner"></div>
+    <div class="hub-grid">
+      <component
+        :is="section.to ? 'RouterLink' : 'div'"
+        v-for="section in sections"
+        :key="section.key"
+        :to="section.to"
+        class="hub-card card"
+        :class="{ 'hub-card-disabled': !section.to }"
+      >
+        <div class="hub-icon"><component :is="section.icon" :size="28" /></div>
+        <div class="hub-body">
+          <h3>{{ t(`home.hub.sections.${section.key}.title`) }}</h3>
+          <p class="text-muted">{{ t(`home.hub.sections.${section.key}.text`) }}</p>
+        </div>
+        <span v-if="!section.to" class="badge badge-sand">{{ t('home.hub.comingSoon') }}</span>
+      </component>
     </div>
-
-    <div v-else-if="!store.sessions.length" class="state-center">
-      <div style="font-size:3.5rem">🐟</div>
-      <h3>Nessuna uscita trovata</h3>
-      <p class="text-muted">Registra la tua prima sessione</p>
-      <RouterLink to="/new" class="btn btn-primary mt-2">+ Registra uscita</RouterLink>
-    </div>
-
-    <div v-else class="sessions-grid">
-      <SessionCard v-for="s in store.sessions" :key="s._id" :session="s" />
-    </div>
-
-    <PaginationBar
-      :current="page"
-      :pages="store.pagination.pages"
-      @change="goPage"
-    />
   </div>
 </template>
 
 <script setup>
-import { ref, watch, onMounted } from 'vue'
-import { RouterLink } from 'vue-router'
-import { useSessionStore } from '../stores/sessions.js'
-import SessionCard    from '../components/SessionCard.vue'
-import SessionFilters from '../components/SessionFilters.vue'
-import PaginationBar  from '../components/PaginationBar.vue'
+import { useI18n } from 'vue-i18n'
+import {
+  Fish, Users, Newspaper, Pin, ShoppingBag, MessageSquare,
+  BookOpen, MessagesSquare, UserCircle, BarChart3
+} from 'lucide-vue-next'
 
-const store = useSessionStore()
-const page  = ref(1)
+const { t } = useI18n()
 
-const filters = ref({ search: '', technique: '', dateFrom: '', dateTo: '' })
-
-function fetchData() {
-  store.fetchSessions({
-    page: page.value,
-    search:    filters.value.search    || undefined,
-    technique: filters.value.technique || undefined,
-    dateFrom:  filters.value.dateFrom  || undefined,
-    dateTo:    filters.value.dateTo    || undefined
-  })
-}
-
-let timer
-watch(filters, () => {
-  clearTimeout(timer)
-  timer = setTimeout(() => { page.value = 1; fetchData() }, 320)
-}, { deep: true })
-
-function goPage(n) { page.value = n; fetchData() }
-
-function resetFilters() {
-  filters.value = { search: '', technique: '', dateFrom: '', dateTo: '' }
-  page.value = 1
-}
-
-onMounted(fetchData)
+const sections = [
+  { key: 'sessions',    to: '/sessions', icon: Fish },
+  { key: 'feed',        to: '/feed',     icon: Newspaper },
+  { key: 'board',       to: '/board',    icon: Pin },
+  { key: 'groups',      to: '/groups',   icon: Users },
+  { key: 'profile',     to: '/profile',  icon: UserCircle },
+  { key: 'stats',       to: '/stats',    icon: BarChart3 },
+  { key: 'marketplace', to: '/market',   icon: ShoppingBag },
+  { key: 'forum',       to: null,        icon: MessageSquare },
+  { key: 'culture',     to: null,        icon: BookOpen },
+  { key: 'chat',        to: '/chat',     icon: MessagesSquare }
+]
 </script>
 
 <style scoped>
-.home-hero {
-  @apply flex items-end justify-between mb-6;
+.home-hero { @apply mb-6; }
+.hub-grid  { @apply grid gap-4; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
+
+.hub-card {
+  @apply flex flex-col gap-2 relative no-underline text-inherit transition-all duration-200;
 }
-.sessions-grid {
-  @apply grid gap-4;
-  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
-}
+a.hub-card:hover { @apply border-ocean; transform: translateY(-2px); }
+
+.hub-card-disabled { @apply opacity-60; }
+
+.hub-icon { @apply text-ocean; }
+.hub-body h3 { @apply font-semibold; }
+.hub-body p  { @apply text-sm mt-0.5; }
+
+.hub-card .badge { @apply absolute top-3 right-3; }
 </style>

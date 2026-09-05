@@ -1,29 +1,59 @@
 <template>
   <div>
     <div class="page-header">
-      <RouterLink to="/" class="btn btn-ghost btn-sm">← Indietro</RouterLink>
-      <h2>Nuova uscita</h2>
+      <RouterLink to="/sessions" class="btn btn-ghost btn-sm">{{ t('common.back') }}</RouterLink>
+      <h2>{{ t('session.new.title') }}</h2>
     </div>
 
-    <div v-if="error" class="error-banner">⚠️ {{ error }}</div>
+    <div v-if="error" class="error-banner" style="display:inline-flex;align-items:center;gap:.4rem"><AlertTriangle :size="16" /> {{ error }}</div>
 
-    <SessionForm :saving="store.loading" @submit="onSubmit" @cancel="router.push('/')" />
+    <div v-if="checkingOngoing" class="state-center"><div class="spinner"></div></div>
+
+    <SessionForm v-else :saving="store.loading" @submit="onSubmit" @cancel="router.push('/sessions')" />
   </div>
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { computed, ref, onMounted } from 'vue'
 import { useRouter, RouterLink } from 'vue-router'
+import { useI18n } from 'vue-i18n'
+import { AlertTriangle } from 'lucide-vue-next'
 import { useSessionStore } from '../stores/sessions.js'
-import SessionForm from '../components/SessionForm.vue'
+import SessionForm from '../components/form/SessionForm.vue'
 
+const { t }  = useI18n()
 const store  = useSessionStore()
 const router = useRouter()
 const error  = computed(() => store.error)
+const checkingOngoing = ref(true)
 
-async function onSubmit(payload) {
+// Non si può aprire una nuova uscita se ce n'è già una in corso: si viene
+// rimandati dritti lì, invece di lasciare che la creazione la chiuda.
+onMounted(async () => {
+  const ongoing = await store.fetchOngoing()
+  if (ongoing) {
+    router.replace(`/session/${ongoing._id}/edit#section-catches`)
+    return
+  }
+  checkingOngoing.value = false
+})
+
+async function onSubmit(payload, pendingPhotosByIndex) {
   const session = await store.createSession(payload)
-  if (session) router.push(`/session/${session._id}`)
+  if (!session) return
+
+  if (pendingPhotosByIndex?.size) {
+    for (const [index, files] of pendingPhotosByIndex) {
+      const catchId = session.catches?.[index]?._id
+      if (catchId && files.length) await store.uploadCatchMedia(session._id, catchId, files)
+    }
+  }
+
+  // Un'uscita appena creata è "ongoing": si torna dritti sulla sezione
+  // Catture per continuare ad aggiungere pesci mentre si è ancora a pesca,
+  // invece di finire sulla pagina di sola visualizzazione.
+  if (session.status === 'ongoing') router.push(`/session/${session._id}/edit#section-catches`)
+  else router.push(`/session/${session._id}`)
 }
 </script>
 
