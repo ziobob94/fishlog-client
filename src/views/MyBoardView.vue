@@ -42,7 +42,10 @@ const auth  = useAuthStore()
 
 const myPosts = computed(() => store.feed)
 
-onMounted(() => store.fetchPosts({ author: auth.user?._id }))
+onMounted(() => {
+  store.fetchPosts({ author: auth.user?._id })
+  store.markSeen('board')
+})
 
 function onCreated() { store.fetchPosts({ author: auth.user?._id }) }
 async function onDelete(post) { await store.deletePost(post._id) }

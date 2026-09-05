@@ -38,7 +38,10 @@ import PostCard from '../components/post/PostCard.vue'
 const { t } = useI18n()
 const store = usePostStore()
 
-onMounted(() => store.fetchPosts())
+onMounted(() => {
+  store.fetchPosts()
+  store.markSeen('feed')
+})
 
 function onCreated() { store.fetchPosts() }
 async function onDelete(post) { await store.deletePost(post._id) }

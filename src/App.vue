@@ -36,11 +36,18 @@ import AppSidebar from './layout/AppSidebar.vue'
 import AppTopbar  from './layout/AppTopbar.vue'
 import AppBottomNav from './layout/AppBottomNav.vue'
 import ToastContainer from './components/ToastContainer.vue'
+import { useAuthStore } from './stores/auth.js'
+import { usePostStore } from './stores/posts.js'
 
 const sidebarOpen   = ref(false)
 const sidebarLocked = ref(localStorage.getItem('sidebar_locked') === 'true')
+const auth  = useAuthStore()
+const posts = usePostStore()
 
-onMounted(() => { if (sidebarLocked.value) sidebarOpen.value = true })
+onMounted(() => {
+  if (sidebarLocked.value) sidebarOpen.value = true
+  if (auth.isLoggedIn) posts.fetchUnreadCount()
+})
 
 function toggleSidebar() { sidebarOpen.value = !sidebarOpen.value }
 function closeSidebar()  { if (!sidebarLocked.value) sidebarOpen.value = false }

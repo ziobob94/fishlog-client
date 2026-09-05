@@ -42,9 +42,11 @@
       </RouterLink>
       <RouterLink to="/feed" class="nav-item" @click="$emit('close')">
         <span class="w-5 text-center flex justify-center"><Newspaper :size="16" /></span> {{ t('nav.feed') }}
+        <span v-if="posts.unread.feed" class="nav-badge">{{ posts.unread.feed }}</span>
       </RouterLink>
       <RouterLink to="/board" class="nav-item" @click="$emit('close')">
         <span class="w-5 text-center flex justify-center"><Pin :size="16" /></span> {{ t('nav.board') }}
+        <span v-if="posts.unread.board" class="nav-badge">{{ posts.unread.board }}</span>
       </RouterLink>
       <RouterLink to="/stats" class="nav-item" @click="$emit('close')">
         <span class="w-5 text-center flex justify-center"><BarChart3 :size="16" /></span> {{ t('nav.stats') }}
@@ -99,6 +101,7 @@
   import { Fish, Home, Pin, MapPin, Users, UserPlus, Newspaper, Settings, BarChart3, UserCircle, Plus, Waves } from 'lucide-vue-next'
   import { useAuthStore } from '../stores/auth.js'
   import { useSessionStore } from '../stores/sessions.js'
+  import { usePostStore } from '../stores/posts.js'
 
   const { t } = useI18n()
   defineProps({
@@ -110,6 +113,7 @@
   const auth = useAuthStore()
   const router = useRouter()
   const sessions = useSessionStore()
+  const posts = usePostStore()
 
   onMounted(() => { if (auth.isLoggedIn) sessions.fetchOngoing() })
 
@@ -147,5 +151,9 @@
 
   .nav-accent.router-link-active {
     @apply bg-ocean text-white;
+  }
+
+  .nav-badge {
+    @apply ml-auto bg-danger text-white text-[0.65rem] font-bold rounded-full px-1.5 py-0.5 leading-none;
   }
 </style>

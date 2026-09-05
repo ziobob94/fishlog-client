@@ -8,6 +8,22 @@ export const usePostStore = defineStore('posts', () => {
   const pagination = ref({ page: 1, limit: 20, total: 0, pages: 0 })
   const loading     = ref(false)
   const error       = ref(null)
+  const unread      = ref({ feed: 0, board: 0 })
+
+  async function fetchUnreadCount() {
+    try {
+      const { data } = await api.get('/posts/unread-count')
+      unread.value = data
+    } catch (e) { /* badge non critico */ }
+  }
+
+  // Da chiamare quando l'utente apre davvero la bacheca (non solo passandoci
+  // sopra col mouse): azzera il relativo contatore anche localmente, senza
+  // aspettare il prossimo fetchUnreadCount.
+  async function markSeen(scope) {
+    unread.value = { ...unread.value, [scope]: 0 }
+    try { await api.post('/posts/mark-seen', { scope }) } catch (e) { /* non critico */ }
+  }
 
   async function fetchPosts(params = {}) {
     loading.value = true
@@ -63,7 +79,8 @@ export const usePostStore = defineStore('posts', () => {
   }
 
   return {
-    feed, current, pagination, loading, error,
-    fetchPosts, fetchPost, createPost, updatePost, deletePost, respond, setEventStatus
+    feed, current, pagination, loading, error, unread,
+    fetchPosts, fetchPost, createPost, updatePost, deletePost, respond, setEventStatus,
+    fetchUnreadCount, markSeen
   }
 })
