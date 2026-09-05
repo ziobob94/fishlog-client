@@ -32,7 +32,7 @@ const checkingOngoing = ref(true)
 onMounted(async () => {
   const ongoing = await store.fetchOngoing()
   if (ongoing) {
-    router.replace(`/session/${ongoing._id}/edit#section-catches`)
+    router.replace(`/session/${ongoing._id}/edit`)
     return
   }
   checkingOngoing.value = false
@@ -40,7 +40,12 @@ onMounted(async () => {
 
 async function onSubmit(payload, pendingPhotosByIndex) {
   const session = await store.createSession(payload)
-  if (!session) return
+  if (!session) {
+    // Race condition (es. due schede aperte): il server ha rifiutato perché
+    // nel frattempo esiste già un'uscita in corso, si viene rimandati lì.
+    if (store.ongoing) router.replace(`/session/${store.ongoing._id}/edit`)
+    return
+  }
 
   if (pendingPhotosByIndex?.size) {
     for (const [index, files] of pendingPhotosByIndex) {
@@ -49,10 +54,10 @@ async function onSubmit(payload, pendingPhotosByIndex) {
     }
   }
 
-  // Un'uscita appena creata è "ongoing": si torna dritti sulla sezione
-  // Catture per continuare ad aggiungere pesci mentre si è ancora a pesca,
-  // invece di finire sulla pagina di sola visualizzazione.
-  if (session.status === 'ongoing') router.push(`/session/${session._id}/edit#section-catches`)
+  // Un'uscita appena creata è "ongoing": si va sulla scheda dedicata per
+  // continuare ad aggiungere pesci mentre si è ancora a pesca, invece di
+  // finire sulla pagina di sola visualizzazione.
+  if (session.status === 'ongoing') router.push(`/session/${session._id}/edit`)
   else router.push(`/session/${session._id}`)
 }
 </script>

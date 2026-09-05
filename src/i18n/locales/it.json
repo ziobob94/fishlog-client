@@ -175,6 +175,11 @@
     "new": { "title": "Nuova uscita" },
     "edit": { "title": "Modifica uscita", "viewSummary": "Riepilogo" },
     "untitled": "Uscita",
+    "ongoing": {
+      "title": "Uscita in corso",
+      "close": "Chiudi uscita",
+      "closed": "Uscita chiusa"
+    },
     "view": {
       "notFound": "Sessione non trovata.",
       "backToList": "← Torna alla lista",

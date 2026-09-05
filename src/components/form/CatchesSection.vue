@@ -352,7 +352,17 @@ const pendingPhotosByIndex = computed(() => {
   }
   return map
 })
-defineExpose({ pendingPhotosByIndex })
+// Esposto al form padre: libera le anteprime locali di un indice dopo che
+// le foto sono state caricate sul server (evita di ricaricarle ad ogni
+// nuovo salvataggio automatico).
+function clearPendingPhotos(i) {
+  const next = new Map(pendingFiles.value)
+  const list = next.get(i) ?? []
+  for (const p of list) URL.revokeObjectURL(p.url)
+  next.delete(i)
+  pendingFiles.value = next
+}
+defineExpose({ pendingPhotosByIndex, clearPendingPhotos })
 
 function toggleSub(i, id) {
   const next = new Map(openSubs.value)

@@ -112,6 +112,11 @@ export const useSessionStore = defineStore('sessions', () => {
       return data
     } catch (e) {
       if (!isNetworkError(e)) {
+        // Il server rifiuta sempre una seconda sessione "ongoing": si allinea
+        // lo stato locale così il chiamante può rimandare l'utente lì.
+        if (e.response?.status === 409 && e.response.data?.ongoingId) {
+          await fetchOngoing()
+        }
         error.value = e.response?.data?.error || 'Errore creazione'
         return null
       }

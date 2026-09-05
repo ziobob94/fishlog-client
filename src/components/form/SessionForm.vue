@@ -664,7 +664,10 @@
     d.sea = { ...def.sea, ...d.sea, tide: { state: '', notes: '', ...(d.sea?.tide || {}) } }
     d.weather = { ...def.weather, ...d.weather }
     f.value = { ...def, ...d }
-    openSections.value = new Set(d.status === 'ongoing' ? ['catches'] : ALL_SECTIONS)
+    // Questo form completo si usa solo per uscite già chiuse (le "ongoing"
+    // passano dalla scheda dedicata OngoingCatchForm): tutte le sezioni
+    // aperte per la revisione/modifica.
+    openSections.value = new Set(ALL_SECTIONS)
   }, { immediate: true })
 
   const catchesRef = ref(null)
@@ -804,6 +807,14 @@
     .form-actions {
       /* si impila sopra la bottom-nav mobile invece di sovrapporvisi */
       bottom: calc(56px + env(safe-area-inset-bottom));
+    }
+
+    /* la barra azioni + la bottom-nav sotto restano fisse e coprono il
+       fondo dello schermo: senza questo spazio l'ultimo contenuto
+       (es. le card di suggerimento specie) resta permanentemente
+       nascosto dietro di esse, non basta scrollare. */
+    .session-form {
+      padding-bottom: calc(56px + env(safe-area-inset-bottom) + 6rem);
     }
   }
 
