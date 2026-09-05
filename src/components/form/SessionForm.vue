@@ -664,9 +664,9 @@
     d.sea = { ...def.sea, ...d.sea, tide: { state: '', notes: '', ...(d.sea?.tide || {}) } }
     d.weather = { ...def.weather, ...d.weather }
     f.value = { ...def, ...d }
-    // Questo form completo si usa solo per uscite già chiuse (le "ongoing"
-    // passano dalla scheda dedicata OngoingCatchForm): tutte le sezioni
-    // aperte per la revisione/modifica.
+    // Uscite chiuse: qui di default. Uscite "ongoing" ci passano solo su
+    // richiesta esplicita ("Modifica altri dati" da OngoingCatchForm). In
+    // entrambi i casi tutte le sezioni aperte per la revisione/modifica.
     openSections.value = new Set(ALL_SECTIONS)
   }, { immediate: true })
 

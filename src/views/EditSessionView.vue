@@ -13,13 +13,15 @@
 
     <div v-else-if="error" class="error-banner" style="display:inline-flex;align-items:center;gap:.4rem"><AlertTriangle :size="16" /> {{ error }}</div>
 
-    <!-- Uscita in corso: solo la scheda di aggiunta cattura, mai il form
-         completo — quello resta riservato alla modifica di uscite chiuse. -->
+    <!-- Uscita in corso: di norma solo la scheda di aggiunta cattura; il
+         form completo resta un'eccezione esplicita, richiesta con "Modifica
+         altri dati" per intervenire su meteo/luogo/altre info. -->
     <OngoingCatchForm
-      v-else-if="store.current?.status === 'ongoing'"
+      v-else-if="store.current?.status === 'ongoing' && !showFullForm"
       :session="store.current"
       @cancel="router.push(`/session/${route.params.id}`)"
       @closed="onClosed"
+      @edit-full="showFullForm = true"
     />
 
     <SessionForm
@@ -28,17 +30,18 @@
       :saving="store.loading"
       :is-edit="true"
       @submit="onSubmit"
-      @cancel="router.push(`/session/${route.params.id}`)"
+      @cancel="onCancelFullForm"
     />
   </div>
 </template>
 
 <script setup>
-import { computed, onMounted } from 'vue'
+import { computed, ref, onMounted } from 'vue'
 import { useRouter, useRoute, RouterLink } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { AlertTriangle, FileText } from 'lucide-vue-next'
 import { useSessionStore } from '../stores/sessions.js'
+import { useToast } from '../composables/useToast.js'
 import SessionForm from '../components/form/SessionForm.vue'
 import OngoingCatchForm from '../components/form/OngoingCatchForm.vue'
 
@@ -47,11 +50,22 @@ const store  = useSessionStore()
 const router = useRouter()
 const route  = useRoute()
 const error  = computed(() => store.error)
+const { toast } = useToast()
+
+// Se l'uscita è in corso e si apre il form completo per modificare
+// meteo/luogo/altre info, "annulla" deve tornare alla scheda catture
+// invece che al riepilogo — l'uscita resta comunque in corso.
+const showFullForm = ref(false)
 
 onMounted(() => store.fetchSession(route.params.id))
 
 function onClosed() {
   router.push(`/session/${route.params.id}`)
+}
+
+function onCancelFullForm() {
+  if (store.current?.status === 'ongoing') showFullForm.value = false
+  else router.push(`/session/${route.params.id}`)
 }
 
 async function onSubmit(payload, pendingPhotosByIndex) {
@@ -66,7 +80,12 @@ async function onSubmit(payload, pendingPhotosByIndex) {
     await store.fetchSession(route.params.id)
   }
 
-  router.push(`/session/${route.params.id}`)
+  if (session.status === 'ongoing') {
+    showFullForm.value = false
+    toast(t('sessionForm.saved'), { type: 'success' })
+  } else {
+    router.push(`/session/${route.params.id}`)
+  }
 }
 </script>
 

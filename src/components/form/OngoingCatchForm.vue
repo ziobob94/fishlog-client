@@ -2,8 +2,11 @@
   <div class="ongoing-form">
 
     <div class="ongoing-summary">
-      <h3>{{ session.title || t('session.untitled') }}</h3>
-      <p class="ongoing-meta">{{ formattedDate }}<template v-if="session.location?.name"> · {{ session.location.name }}</template></p>
+      <div>
+        <h3>{{ session.title || t('session.untitled') }}</h3>
+        <p class="ongoing-meta">{{ formattedDate }}<template v-if="session.location?.name"> · {{ session.location.name }}</template></p>
+      </div>
+      <button type="button" class="btn btn-ghost btn-sm" @click="$emit('edit-full')">{{ t('session.ongoing.editFull') }}</button>
     </div>
 
     <div v-if="error" class="error-banner"><AlertTriangle :size="16" /> {{ error }}</div>
@@ -36,7 +39,7 @@ const { toast } = useToast()
 const props = defineProps({
   session: { type: Object, required: true }
 })
-const emit = defineEmits(['cancel', 'closed'])
+const emit = defineEmits(['cancel', 'closed', 'edit-full'])
 
 const error     = ref(null)
 const closing   = ref(false)
@@ -104,6 +107,13 @@ async function closeSession() {
   flex-direction: column;
   gap: 1.25rem;
   max-width: 920px;
+}
+
+.ongoing-summary {
+  align-items: flex-start;
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
 }
 
 .ongoing-summary h3 {

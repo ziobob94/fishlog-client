@@ -178,7 +178,8 @@
     "ongoing": {
       "title": "Uscita in corso",
       "close": "Chiudi uscita",
-      "closed": "Uscita chiusa"
+      "closed": "Uscita chiusa",
+      "editFull": "Modifica altri dati"
     },
     "view": {
       "notFound": "Sessione non trovata.",
