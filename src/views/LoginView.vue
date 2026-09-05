@@ -15,27 +15,35 @@
         </a>
       </div>
 
-      <div class="divider"><span>{{ t('common.or') }}</span></div>
-
-      <form @submit.prevent="handleLogin">
-        <div class="form-group mb-1">
-          <label>{{ t('login.emailLabel') }}</label>
-          <input v-model="email" type="email" :placeholder="t('login.emailPlaceholder')" required />
-        </div>
-        <div class="form-group mb-1">
-          <label>{{ t('login.passwordLabel') }}</label>
-          <input v-model="password" type="password" :placeholder="t('login.passwordPlaceholder')" required />
-        </div>
-        <p class="forgot-link mb-2">
-          <RouterLink v-if="features.passwordAuthEnabled" to="/forgot-password">{{ t('login.forgotPassword') }}</RouterLink>
-          <span v-else class="text-muted">{{ t('login.forgotPassword') }} ({{ t('home.hub.comingSoon') }})</span>
+      <template v-if="features.loaded && !features.passwordAuthEnabled">
+        <div class="divider"><span>{{ t('common.or') }}</span></div>
+        <p class="coming-soon">
+          <span class="badge badge-sand">{{ t('home.hub.comingSoon') }}</span>
+          {{ t('register.passwordAuthDisabled') }}
         </p>
-        <div v-if="error" class="error-msg">{{ error }}</div>
-        <button type="submit" class="btn btn-primary w-full" :disabled="loading">
-          <span v-if="loading" class="spinner" style="width:15px;height:15px"></span>
-          {{ loading ? t('login.loading') : t('common.login') }}
-        </button>
-      </form>
+      </template>
+      <template v-else>
+        <div class="divider"><span>{{ t('common.or') }}</span></div>
+
+        <form @submit.prevent="handleLogin">
+          <div class="form-group mb-1">
+            <label>{{ t('login.emailLabel') }}</label>
+            <input v-model="email" type="email" :placeholder="t('login.emailPlaceholder')" required />
+          </div>
+          <div class="form-group mb-1">
+            <label>{{ t('login.passwordLabel') }}</label>
+            <input v-model="password" type="password" :placeholder="t('login.passwordPlaceholder')" required />
+          </div>
+          <p class="forgot-link mb-2">
+            <RouterLink to="/forgot-password">{{ t('login.forgotPassword') }}</RouterLink>
+          </p>
+          <div v-if="error" class="error-msg">{{ error }}</div>
+          <button type="submit" class="btn btn-primary w-full" :disabled="loading">
+            <span v-if="loading" class="spinner" style="width:15px;height:15px"></span>
+            {{ loading ? t('login.loading') : t('common.login') }}
+          </button>
+        </form>
+      </template>
 
       <p class="auth-switch">
         {{ t('login.noAccount') }}
@@ -96,4 +104,5 @@ async function handleLogin() {
 }
 .auth-switch { @apply text-muted text-sm text-center mt-5; }
 .forgot-link { @apply text-right text-xs; }
+.coming-soon { @apply flex items-center gap-2 text-muted text-sm; }
 </style>
