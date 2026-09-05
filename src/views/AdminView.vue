@@ -10,10 +10,10 @@
     <!-- UTENTI -->
     <div v-if="tab === 'users'">
       <div class="toolbar">
-        <input v-model="userSearch" type="search" placeholder="Cerca utente..." style="max-width:280px" @input="debouncedUsers" />
+        <input v-model="userSearch" type="search" placeholder="Cerca utente..." style="max-width:280px" @input="debouncedSearchUsers" />
       </div>
 
-      <div v-if="loadingUsers" class="state-center"><div class="spinner"></div></div>
+      <div v-if="pagination.loading.value" class="state-center"><div class="spinner"></div></div>
       <table v-else class="admin-table">
         <thead>
           <tr><th>Utente</th><th>Email</th><th>Ruolo</th><th>Registrato</th><th>Azioni</th></tr>
@@ -52,9 +52,9 @@
       </table>
 
       <div class="pagination mt-2">
-        <button class="btn btn-ghost btn-sm" :disabled="userPage <= 1" @click="userPage--; fetchUsers()">← Prec</button>
-        <span class="text-muted text-mono" style="font-size:.85rem">{{ userPage }} / {{ userPages }}</span>
-        <button class="btn btn-ghost btn-sm" :disabled="userPage >= userPages" @click="userPage++; fetchUsers()">Succ →</button>
+        <button class="btn btn-ghost btn-sm" :disabled="pagination.page.value <= 1" @click="pagination.goTo(pagination.page.value - 1)">← Prec</button>
+        <span class="text-muted text-mono" style="font-size:.85rem">{{ pagination.page.value }} / {{ pagination.pages.value }}</span>
+        <button class="btn btn-ghost btn-sm" :disabled="pagination.page.value >= pagination.pages.value" @click="pagination.goTo(pagination.page.value + 1)">Succ →</button>
       </div>
     </div>
 
@@ -111,6 +111,8 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useAuthStore } from '../stores/auth.js'
+import { usePagination } from '../composables/usePagination.js'
+import { useDebouncedFn } from '../composables/useDebouncedFn.js'
 import api from '../utils/api.js'
 
 const authStore = useAuthStore()
@@ -119,22 +121,16 @@ const tab = ref('users')
 // Users
 const users        = ref([])
 const userSearch   = ref('')
-const userPage     = ref(1)
-const userPages    = ref(1)
-const loadingUsers = ref(false)
 const deleteTarget = ref(null)
 
-async function fetchUsers() {
-  loadingUsers.value = true
-  try {
-    const { data } = await api.get('/admin/users', { params: { page: userPage.value, search: userSearch.value || undefined } })
-    users.value = data.data
-    userPages.value = data.pagination.pages
-  } finally { loadingUsers.value = false }
+async function fetchUsers(page) {
+  const { data } = await api.get('/admin/users', { params: { page, search: userSearch.value || undefined } })
+  users.value = data.data
+  return data.pagination.pages
 }
 
-let timer
-function debouncedUsers() { clearTimeout(timer); timer = setTimeout(fetchUsers, 320) }
+const pagination = usePagination(fetchUsers)
+const debouncedSearchUsers = useDebouncedFn(() => pagination.reset(), 320)
 
 async function changeRole(user, role) {
   await api.patch(`/admin/users/${user._id}/role`, { role })
@@ -168,7 +164,7 @@ async function toggleHide(s) {
 
 const fmtDate = d => new Date(d).toLocaleDateString('it-IT', { day: '2-digit', month: 'short', year: 'numeric' })
 
-onMounted(() => { fetchUsers(); fetchSessions() })
+onMounted(() => { pagination.load(); fetchSessions() })
 </script>
 
 <style scoped>

@@ -26,9 +26,9 @@
     </div>
 
     <PaginationBar
-      :current="page"
+      :current="pagination.page.value"
       :pages="store.pagination.pages"
-      @change="goPage"
+      @change="pagination.goTo"
     />
   </div>
 </template>
@@ -37,39 +37,38 @@
 import { ref, watch, onMounted } from 'vue'
 import { RouterLink } from 'vue-router'
 import { useSessionStore } from '../stores/sessions.js'
+import { usePagination } from '../composables/usePagination.js'
+import { useDebouncedFn } from '../composables/useDebouncedFn.js'
 import SessionCard    from '../components/SessionCard.vue'
 import SessionFilters from '../components/SessionFilters.vue'
 import PaginationBar  from '../components/PaginationBar.vue'
 
 const store = useSessionStore()
-const page  = ref(1)
 
 const filters = ref({ search: '', technique: '', dateFrom: '', dateTo: '' })
 
-function fetchData() {
-  store.fetchSessions({
-    page: page.value,
+async function fetchData(page) {
+  await store.fetchSessions({
+    page,
     search:    filters.value.search    || undefined,
     technique: filters.value.technique || undefined,
     dateFrom:  filters.value.dateFrom  || undefined,
     dateTo:    filters.value.dateTo    || undefined
   })
+  return store.pagination.pages
 }
 
-let timer
-watch(filters, () => {
-  clearTimeout(timer)
-  timer = setTimeout(() => { page.value = 1; fetchData() }, 320)
-}, { deep: true })
+const pagination = usePagination(fetchData)
+const debouncedReset = useDebouncedFn(() => pagination.reset(), 320)
 
-function goPage(n) { page.value = n; fetchData() }
+watch(filters, debouncedReset, { deep: true })
 
 function resetFilters() {
   filters.value = { search: '', technique: '', dateFrom: '', dateTo: '' }
-  page.value = 1
+  pagination.reset()
 }
 
-onMounted(fetchData)
+onMounted(() => pagination.load())
 </script>
 
 <style scoped>

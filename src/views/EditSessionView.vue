@@ -26,7 +26,7 @@
 import { computed, onMounted } from 'vue'
 import { useRouter, useRoute, RouterLink } from 'vue-router'
 import { useSessionStore } from '../stores/sessions.js'
-import SessionForm from '../components/SessionForm.vue'
+import SessionForm from '../components/form/SessionForm.vue'
 
 const store  = useSessionStore()
 const router = useRouter()
