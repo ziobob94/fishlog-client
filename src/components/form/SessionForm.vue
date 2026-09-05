@@ -702,6 +702,17 @@
     background: var(--surface-2, #0d2035);
   }
 
+  .accordion-header.section-divider {
+    font-size: .95rem;
+    color: var(--foam, #cde);
+  }
+
+  .accordion-header.section-divider::before,
+  .accordion-header.section-divider::after {
+    background: var(--ocean, #0ea5e9);
+    opacity: .35;
+  }
+
   .accordion-header + * {
     margin-top: .5rem;
   }
