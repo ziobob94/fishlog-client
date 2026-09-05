@@ -141,6 +141,16 @@
       "confirm": "Sei sicuro di voler eliminare {name}?"
     }
   },
+  "chat": {
+    "titlePrefix": "Le tue",
+    "titleHighlight": "chat",
+    "empty": "Nessuna conversazione: scrivi a un amico qui sopra per iniziare",
+    "newChat": {
+      "label": "Nuova chat"
+    },
+    "messagePlaceholder": "Scrivi un messaggio...",
+    "send": "Invia"
+  },
   "friends": {
     "titlePrefix": "I tuoi",
     "titleHighlight": "amici",

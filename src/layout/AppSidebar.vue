@@ -48,6 +48,10 @@
         <span class="w-5 text-center flex justify-center"><Pin :size="16" /></span> {{ t('nav.board') }}
         <span v-if="posts.unread.board" class="nav-badge">{{ posts.unread.board }}</span>
       </RouterLink>
+      <RouterLink to="/chat" class="nav-item" @click="$emit('close')">
+        <span class="w-5 text-center flex justify-center"><MessagesSquare :size="16" /></span> {{ t('nav.chat') }}
+        <span v-if="chat.unreadCount" class="nav-badge">{{ chat.unreadCount }}</span>
+      </RouterLink>
       <RouterLink to="/stats" class="nav-item" @click="$emit('close')">
         <span class="w-5 text-center flex justify-center"><BarChart3 :size="16" /></span> {{ t('nav.stats') }}
       </RouterLink>
@@ -98,10 +102,11 @@
   import { computed, onMounted } from 'vue'
   import { RouterLink, useRouter } from 'vue-router'
   import { useI18n } from 'vue-i18n'
-  import { Fish, Home, Pin, MapPin, Users, UserPlus, Newspaper, Settings, BarChart3, UserCircle, Plus, Waves } from 'lucide-vue-next'
+  import { Fish, Home, Pin, MapPin, Users, UserPlus, Newspaper, MessagesSquare, Settings, BarChart3, UserCircle, Plus, Waves } from 'lucide-vue-next'
   import { useAuthStore } from '../stores/auth.js'
   import { useSessionStore } from '../stores/sessions.js'
   import { usePostStore } from '../stores/posts.js'
+  import { useChatStore } from '../stores/chat.js'
 
   const { t } = useI18n()
   defineProps({
@@ -114,6 +119,7 @@
   const router = useRouter()
   const sessions = useSessionStore()
   const posts = usePostStore()
+  const chat = useChatStore()
 
   onMounted(() => { if (auth.isLoggedIn) sessions.fetchOngoing() })
 

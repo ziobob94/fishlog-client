@@ -14,7 +14,11 @@
       <ShoppingBag :size="20" /> <span>{{ t('nav.market') }}</span>
     </RouterLink>
     <RouterLink to="/chat" class="bottom-nav-item">
-      <MessagesSquare :size="20" /> <span>{{ t('nav.chat') }}</span>
+      <span class="icon-wrap">
+        <MessagesSquare :size="20" />
+        <span v-if="chat.unreadCount" class="unread-dot"></span>
+      </span>
+      <span>{{ t('nav.chat') }}</span>
     </RouterLink>
     <RouterLink to="/profile" class="bottom-nav-item">
       <UserCircle :size="20" /> <span>{{ t('nav.profile') }}</span>
@@ -27,9 +31,11 @@ import { RouterLink } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { Home, Newspaper, ShoppingBag, MessagesSquare, UserCircle } from 'lucide-vue-next'
 import { usePostStore } from '../stores/posts.js'
+import { useChatStore } from '../stores/chat.js'
 
 const { t } = useI18n()
 const posts = usePostStore()
+const chat = useChatStore()
 </script>
 
 <style scoped>
