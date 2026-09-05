@@ -1,3 +1,14 @@
+# [1.2.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.1.0...client-v1.2.0) (2026-09-05)
+
+
+### Features
+
+* **auth:** pagine profilo, recupero password e conferma email ([7c524c3](https://github.com/ziobob94/fishlog-client/commit/7c524c34a19d2b131b85a7c1084bdd8cae1158e0))
+* **i18n:** implement Italian localization for authentication and session views ([f28a4e4](https://github.com/ziobob94/fishlog-client/commit/f28a4e40f9850021171bcfe9fcfe97ee555e623a))
+* **nav:** nuova home, bottom nav e sezioni market/chat/stats ([d27af80](https://github.com/ziobob94/fishlog-client/commit/d27af8029badab45de9774dd7823845aefd99897))
+* **offline:** coda offline con IndexedDB e notifiche toast ([645748d](https://github.com/ziobob94/fishlog-client/commit/645748dc93c0a1e5aeed8d84ab45a91632c11d07))
+* **social:** feed e bacheca personale basati sui post ([be6e7b4](https://github.com/ziobob94/fishlog-client/commit/be6e7b4453f4d71736c957308157ed56d377d7ea))
+
 # [1.1.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.0.0...client-v1.1.0) (2026-04-17)
 
 
