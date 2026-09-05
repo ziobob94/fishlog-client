@@ -64,7 +64,7 @@
     "google": "Continua con Google",
     "facebook": "Continua con Facebook",
     "emailLabel": "Email",
-    "emailPlaceholder": "tu@email.com",
+    "emailPlaceholder": "tu{'@'}email.com",
     "passwordLabel": "Password",
     "passwordPlaceholder": "••••••••",
     "loading": "Accesso...",
