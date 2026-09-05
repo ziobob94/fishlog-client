@@ -29,7 +29,7 @@
 import { useI18n } from 'vue-i18n'
 import {
   Fish, Users, Newspaper, Pin, ShoppingBag, MessageSquare,
-  BookOpen, MessagesSquare, UserCircle, BarChart3
+  BookOpen, MessagesSquare, UserCircle, UserPlus, BarChart3
 } from 'lucide-vue-next'
 
 const { t } = useI18n()
@@ -39,6 +39,7 @@ const sections = [
   { key: 'feed',        to: '/feed',     icon: Newspaper },
   { key: 'board',       to: '/board',    icon: Pin },
   { key: 'groups',      to: '/groups',   icon: Users },
+  { key: 'friends',     to: '/friends',  icon: UserPlus },
   { key: 'profile',     to: '/profile',  icon: UserCircle },
   { key: 'stats',       to: '/stats',    icon: BarChart3 },
   { key: 'marketplace', to: '/market',   icon: ShoppingBag },

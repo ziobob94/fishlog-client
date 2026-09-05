@@ -181,8 +181,8 @@ async function addMember(g) {
   errors.value[g._id] = ''
   try {
     // Cerca userId per email
-    const { data: users } = await api.get('/admin/users', { params: { search: email, limit: 1 } })
-    const found = users.data?.[0]
+    const { data: users } = await api.get('/users', { params: { search: email } })
+    const found = users.data?.find(u => u.email?.toLowerCase() === email.toLowerCase())
     if (!found) { errors.value[g._id] = t('groups.errors.userNotFound'); return }
     await store.addMember(g._id, found._id)
     inviteEmail.value[g._id] = ''

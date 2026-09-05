@@ -37,6 +37,9 @@
       <RouterLink to="/groups" class="nav-item" @click="$emit('close')">
         <span class="w-5 text-center flex justify-center"><Users :size="16" /></span> {{ t('nav.groups') }}
       </RouterLink>
+      <RouterLink to="/friends" class="nav-item" @click="$emit('close')">
+        <span class="w-5 text-center flex justify-center"><UserPlus :size="16" /></span> {{ t('nav.friends') }}
+      </RouterLink>
       <RouterLink to="/feed" class="nav-item" @click="$emit('close')">
         <span class="w-5 text-center flex justify-center"><Newspaper :size="16" /></span> {{ t('nav.feed') }}
       </RouterLink>
@@ -93,7 +96,7 @@
   import { computed, onMounted } from 'vue'
   import { RouterLink, useRouter } from 'vue-router'
   import { useI18n } from 'vue-i18n'
-  import { Fish, Home, Pin, MapPin, Users, Newspaper, Settings, BarChart3, UserCircle, Plus, Waves } from 'lucide-vue-next'
+  import { Fish, Home, Pin, MapPin, Users, UserPlus, Newspaper, Settings, BarChart3, UserCircle, Plus, Waves } from 'lucide-vue-next'
   import { useAuthStore } from '../stores/auth.js'
   import { useSessionStore } from '../stores/sessions.js'
 

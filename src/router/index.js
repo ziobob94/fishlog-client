@@ -18,6 +18,8 @@ export default createRouter({
     { path: '/session/:id/edit', name: 'edit-session', component: () => import('../views/EditSessionView.vue') },
     { path: '/admin', name: 'admin', component: () => import('../views/AdminView.vue'), meta: { role: 'admin' } },
     { path: '/groups', name: 'groups', component: () => import('../views/GroupsView.vue') },
+    { path: '/friends', name: 'friends', component: () => import('../views/FriendsView.vue') },
+    { path: '/users/:id', name: 'user-profile', component: () => import('../views/UserProfileView.vue') },
     { path: '/feed',  name: 'feed',  component: () => import('../views/FeedView.vue') },
     { path: '/board', name: 'board', component: () => import('../views/MyBoardView.vue') },
     { path: '/market', name: 'market', component: () => import('../views/MarketView.vue') },

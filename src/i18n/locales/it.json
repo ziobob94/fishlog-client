@@ -22,6 +22,7 @@
     "newSession": "+ Nuova uscita",
     "ongoingSession": "Pescata in corso",
     "groups": "Gruppi",
+    "friends": "Amici",
     "feed": "Bacheca",
     "board": "La mia bacheca",
     "market": "Market",
@@ -140,6 +141,44 @@
       "confirm": "Sei sicuro di voler eliminare {name}?"
     }
   },
+  "friends": {
+    "titlePrefix": "I tuoi",
+    "titleHighlight": "amici",
+    "search": {
+      "label": "Cerca persone",
+      "placeholder": "Nome o email...",
+      "noResults": "Nessun utente trovato"
+    },
+    "received": { "title": "Richieste ricevute" },
+    "sent":     { "title": "Richieste inviate" },
+    "list": {
+      "title": "Amici",
+      "empty": "Non hai ancora amici: cercali qui sopra"
+    },
+    "actions": {
+      "add": "Aggiungi",
+      "accept": "Accetta",
+      "decline": "Rifiuta",
+      "cancel": "Annulla richiesta",
+      "remove": "Rimuovi amicizia"
+    },
+    "status": {
+      "none": "—",
+      "sent": "Richiesta inviata",
+      "received": "Richiesta ricevuta",
+      "friends": "Amici",
+      "sending": "Invio..."
+    },
+    "toasts": {
+      "accepted": "Richiesta accettata"
+    },
+    "profile": {
+      "notFound": "Utente non trovato.",
+      "memberSince": "Su FishLog dal {date}",
+      "commonGroups": "Gruppi in comune",
+      "noCommonGroups": "Nessun gruppo in comune"
+    }
+  },
   "home": {
     "titlePrefix": "Le tue",
     "titleHighlight": "uscite",
@@ -162,6 +201,7 @@
         "feed":        { "title": "Bacheca generale", "text": "Post ed eventi della community e dei tuoi gruppi" },
         "board":       { "title": "La mia bacheca", "text": "I tuoi post ed eventi, pubblici, di gruppo o privati" },
         "groups":      { "title": "Gruppi", "text": "Gestisci i tuoi gruppi di amici e compagni di pesca" },
+        "friends":     { "title": "Amici", "text": "Cerca persone, gestisci richieste e amicizie" },
         "marketplace": { "title": "Mercatino", "text": "Compra e vendi attrezzatura nuova e usata" },
         "forum":       { "title": "Forum", "text": "Discussioni e consigli tra appassionati" },
         "culture":     { "title": "Cultura della pesca", "text": "Articoli e approfondimenti" },
