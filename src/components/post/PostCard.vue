@@ -47,8 +47,41 @@
       <button class="btn btn-secondary btn-sm" @click="submitResponse">{{ t('posts.event.respondAction') }}</button>
     </div>
 
-    <div v-if="isAuthor" class="post-actions">
-      <button class="btn btn-danger btn-sm" @click="$emit('delete', post)">{{ t('common.delete') }}</button>
+    <div class="engagement-row">
+      <button
+        class="btn btn-ghost btn-sm like-btn"
+        :class="{ liked: isLiked }"
+        @click="$emit('like', post)"
+      ><Heart :size="14" :fill="isLiked ? 'currentColor' : 'none'" /> {{ post.likes?.length || 0 }}</button>
+      <button class="btn btn-ghost btn-sm" @click="showComments = !showComments">
+        <MessageCircle :size="14" /> {{ post.comments?.length || 0 }}
+      </button>
+      <button v-if="isAuthor" class="btn btn-danger btn-sm ml-auto" @click="$emit('delete', post)">{{ t('common.delete') }}</button>
+    </div>
+
+    <div v-if="showComments" class="comments-block">
+      <div v-if="post.comments?.length" class="comments-list">
+        <div v-for="c in post.comments" :key="c._id" class="comment-row">
+          <span class="mini-placeholder">{{ initials(c.user) }}</span>
+          <div class="comment-body">
+            <span class="text-sm"><strong>{{ c.user?.displayName || c.user?.email }}</strong> {{ c.message }}</span>
+          </div>
+          <button
+            v-if="c.user?._id === auth.user?._id || isAuthor"
+            class="btn btn-ghost btn-sm comment-remove"
+            @click="$emit('delete-comment', post, c)"
+          ><X :size="12" /></button>
+        </div>
+      </div>
+      <div class="comment-row-input">
+        <input
+          v-model="commentText"
+          type="text"
+          :placeholder="t('posts.comments.placeholder')"
+          @keydown.enter="submitComment"
+        />
+        <button class="btn btn-secondary btn-sm" @click="submitComment">{{ t('posts.comments.send') }}</button>
+      </div>
     </div>
   </div>
 </template>
@@ -56,17 +89,20 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { MapPin, Calendar } from 'lucide-vue-next'
+import { MapPin, Calendar, Heart, MessageCircle, X } from 'lucide-vue-next'
 import { useAuthStore } from '../../stores/auth.js'
 
 const props = defineProps({ post: { type: Object, required: true } })
-const emit  = defineEmits(['delete', 'close-event', 'respond'])
+const emit  = defineEmits(['delete', 'close-event', 'respond', 'like', 'comment', 'delete-comment'])
 
 const { t } = useI18n()
 const auth  = useAuthStore()
 const responseText = ref('')
+const commentText   = ref('')
+const showComments  = ref(false)
 
 const isAuthor = computed(() => props.post.author?._id === auth.user?._id || auth.user?.role === 'admin')
+const isLiked  = computed(() => props.post.likes?.some(id => id === auth.user?._id))
 const groupNames = computed(() => props.post.allowedGroups?.map(g => g.name).join(', '))
 
 function initials(u) {
@@ -82,6 +118,12 @@ function submitResponse() {
   if (!responseText.value.trim()) return
   emit('respond', props.post, responseText.value)
   responseText.value = ''
+}
+
+function submitComment() {
+  if (!commentText.value.trim()) return
+  emit('comment', props.post, commentText.value)
+  commentText.value = ''
 }
 </script>
 
@@ -105,4 +147,16 @@ function submitResponse() {
 .respond-row    { @apply flex gap-2; }
 .respond-row input { @apply text-sm flex-1; }
 .post-actions   { @apply flex gap-2 border-t border-border pt-2; }
+
+.engagement-row { @apply flex items-center gap-2 border-t border-border pt-2; }
+.like-btn.liked { @apply text-danger border-danger; }
+.ml-auto { margin-left: auto; }
+
+.comments-block { @apply flex flex-col gap-2 border-t border-border pt-2; }
+.comments-list  { @apply flex flex-col gap-1.5; }
+.comment-row    { @apply flex items-center gap-2; }
+.comment-body   { @apply flex-1 min-w-0; }
+.comment-remove { @apply shrink-0 px-1.5; }
+.comment-row-input { @apply flex gap-2; }
+.comment-row-input input { @apply text-sm flex-1; }
 </style>

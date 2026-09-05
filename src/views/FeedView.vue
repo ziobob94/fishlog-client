@@ -22,6 +22,9 @@
         @delete="onDelete"
         @close-event="onCloseEvent"
         @respond="onRespond"
+        @like="onLike"
+        @comment="onComment"
+        @delete-comment="onDeleteComment"
       />
     </div>
   </div>
@@ -32,11 +35,13 @@ import { onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { Newspaper } from 'lucide-vue-next'
 import { usePostStore } from '../stores/posts.js'
+import { useAuthStore } from '../stores/auth.js'
 import PostForm from '../components/post/PostForm.vue'
 import PostCard from '../components/post/PostCard.vue'
 
 const { t } = useI18n()
 const store = usePostStore()
+const auth  = useAuthStore()
 
 onMounted(() => {
   store.fetchPosts()
@@ -47,6 +52,9 @@ function onCreated() { store.fetchPosts() }
 async function onDelete(post) { await store.deletePost(post._id) }
 async function onCloseEvent(post) { await store.setEventStatus(post._id, 'closed') }
 async function onRespond(post, message) { await store.respond(post._id, message); await store.fetchPosts() }
+async function onLike(post) { await store.toggleLike(post._id, auth.user?._id) }
+async function onComment(post, message) { await store.addComment(post._id, message) }
+async function onDeleteComment(post, comment) { await store.deleteComment(post._id, comment._id) }
 </script>
 
 <style scoped>

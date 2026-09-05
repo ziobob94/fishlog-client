@@ -575,6 +575,10 @@
   },
   "posts": {
     "eventBadge": "Evento",
+    "comments": {
+      "placeholder": "Scrivi un commento...",
+      "send": "Invia"
+    },
     "visibility": {
       "public": "Pubblico",
       "group": "Gruppo",

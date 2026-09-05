@@ -65,6 +65,38 @@ export const usePostStore = defineStore('posts', () => {
     feed.value = feed.value.filter(p => p._id !== id)
   }
 
+  async function addComment(id, message) {
+    const { data } = await api.post(`/posts/${id}/comments`, { message })
+    const post = feed.value.find(p => p._id === id)
+    if (post) post.comments = [...(post.comments || []), data]
+    if (current.value?._id === id) current.value.comments = [...(current.value.comments || []), data]
+    return data
+  }
+
+  async function deleteComment(id, commentId) {
+    await api.delete(`/posts/${id}/comments/${commentId}`)
+    const post = feed.value.find(p => p._id === id)
+    if (post) post.comments = post.comments.filter(c => c._id !== commentId)
+    if (current.value?._id === id) current.value.comments = current.value.comments.filter(c => c._id !== commentId)
+  }
+
+  // Il server risponde solo con {liked, count}: qui si ricostruisce
+  // localmente l'array "likes" (stesso campo popolato dal GET iniziale)
+  // aggiungendo/togliendo l'id dell'utente corrente, così la UI resta
+  // coerente sia appena caricata la bacheca sia dopo un toggle.
+  async function toggleLike(id, myUserId) {
+    const { data } = await api.post(`/posts/${id}/like`)
+    const apply = (post) => {
+      if (!post) return
+      post.likes = data.liked
+        ? [...(post.likes || []).filter(u => u !== myUserId), myUserId]
+        : (post.likes || []).filter(u => u !== myUserId)
+    }
+    apply(feed.value.find(p => p._id === id))
+    if (current.value?._id === id) apply(current.value)
+    return data
+  }
+
   async function respond(id, message) {
     const { data } = await api.post(`/posts/${id}/responses`, { message })
     if (current.value?._id === id) current.value.responses.push(data)
@@ -81,6 +113,6 @@ export const usePostStore = defineStore('posts', () => {
   return {
     feed, current, pagination, loading, error, unread,
     fetchPosts, fetchPost, createPost, updatePost, deletePost, respond, setEventStatus,
-    fetchUnreadCount, markSeen
+    fetchUnreadCount, markSeen, addComment, deleteComment, toggleLike
   }
 })
