@@ -1,7 +1,7 @@
 <template>
   <div class="auth-page">
     <div class="auth-card card">
-      <div class="auth-logo">🎣 FishLog</div>
+      <div class="auth-logo" style="display:inline-flex;align-items:center;gap:.4rem"><Fish :size="22" /> FishLog</div>
       <h2>{{ t('register.title') }}</h2>
 
       <div class="oauth-buttons">
@@ -15,27 +15,36 @@
         </a>
       </div>
 
-      <div class="divider"><span>{{ t('common.or') }}</span></div>
+      <template v-if="features.loaded && !features.passwordAuthEnabled">
+        <div class="divider"><span>{{ t('common.or') }}</span></div>
+        <p class="coming-soon">
+          <span class="badge badge-sand">{{ t('home.hub.comingSoon') }}</span>
+          {{ t('register.passwordAuthDisabled') }}
+        </p>
+      </template>
+      <template v-else>
+        <div class="divider"><span>{{ t('common.or') }}</span></div>
 
-      <form @submit.prevent="handleRegister">
-        <div class="form-group mb-1">
-          <label>{{ t('register.nameLabel') }}</label>
-          <input v-model="displayName" type="text" :placeholder="t('register.namePlaceholder')" />
-        </div>
-        <div class="form-group mb-1">
-          <label>{{ t('login.emailLabel') }}</label>
-          <input v-model="email" type="email" :placeholder="t('login.emailPlaceholder')" required />
-        </div>
-        <div class="form-group mb-2">
-          <label>{{ t('login.passwordLabel') }}</label>
-          <input v-model="password" type="password" :placeholder="t('register.passwordPlaceholder')" required />
-        </div>
-        <div v-if="error" class="error-msg">{{ error }}</div>
-        <button type="submit" class="btn btn-primary w-full" :disabled="loading">
-          <span v-if="loading" class="spinner" style="width:15px;height:15px"></span>
-          {{ loading ? t('register.loading') : t('register.submit') }}
-        </button>
-      </form>
+        <form @submit.prevent="handleRegister">
+          <div class="form-group mb-1">
+            <label>{{ t('register.nameLabel') }}</label>
+            <input v-model="displayName" type="text" :placeholder="t('register.namePlaceholder')" />
+          </div>
+          <div class="form-group mb-1">
+            <label>{{ t('login.emailLabel') }}</label>
+            <input v-model="email" type="email" :placeholder="t('login.emailPlaceholder')" required />
+          </div>
+          <div class="form-group mb-2">
+            <label>{{ t('login.passwordLabel') }}</label>
+            <input v-model="password" type="password" :placeholder="t('register.passwordPlaceholder')" required />
+          </div>
+          <div v-if="error" class="error-msg">{{ error }}</div>
+          <button type="submit" class="btn btn-primary w-full" :disabled="loading">
+            <span v-if="loading" class="spinner" style="width:15px;height:15px"></span>
+            {{ loading ? t('register.loading') : t('register.submit') }}
+          </button>
+        </form>
+      </template>
 
       <p class="auth-switch">
         {{ t('register.hasAccount') }}
@@ -49,10 +58,13 @@
 import { ref } from 'vue'
 import { useRouter, RouterLink } from 'vue-router'
 import { useI18n } from 'vue-i18n'
+import { Fish } from 'lucide-vue-next'
 import { useAuthStore } from '../stores/auth.js'
+import { useFeaturesStore } from '../stores/features.js'
 
 const { t }       = useI18n()
 const auth        = useAuthStore()
+const features    = useFeaturesStore()
 const router      = useRouter()
 const displayName = ref('')
 const email       = ref('')
@@ -92,4 +104,5 @@ async function handleRegister() {
   @apply bg-danger/10 border border-danger rounded-sm text-danger text-sm px-3 py-2 mb-3;
 }
 .auth-switch { @apply text-muted text-sm text-center mt-5; }
+.coming-soon { @apply flex items-center gap-2 text-muted text-sm; }
 </style>

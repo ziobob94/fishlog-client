@@ -1,7 +1,7 @@
 <template>
   <div class="auth-page">
     <div class="auth-card card">
-      <div class="auth-logo">🎣 FishLog</div>
+      <div class="auth-logo" style="display:inline-flex;align-items:center;gap:.4rem"><Fish :size="22" /> FishLog</div>
       <h2>{{ t('login.welcomeBack') }}</h2>
 
       <div class="oauth-buttons">
@@ -22,10 +22,14 @@
           <label>{{ t('login.emailLabel') }}</label>
           <input v-model="email" type="email" :placeholder="t('login.emailPlaceholder')" required />
         </div>
-        <div class="form-group mb-2">
+        <div class="form-group mb-1">
           <label>{{ t('login.passwordLabel') }}</label>
           <input v-model="password" type="password" :placeholder="t('login.passwordPlaceholder')" required />
         </div>
+        <p class="forgot-link mb-2">
+          <RouterLink v-if="features.passwordAuthEnabled" to="/forgot-password">{{ t('login.forgotPassword') }}</RouterLink>
+          <span v-else class="text-muted">{{ t('login.forgotPassword') }} ({{ t('home.hub.comingSoon') }})</span>
+        </p>
         <div v-if="error" class="error-msg">{{ error }}</div>
         <button type="submit" class="btn btn-primary w-full" :disabled="loading">
           <span v-if="loading" class="spinner" style="width:15px;height:15px"></span>
@@ -35,7 +39,8 @@
 
       <p class="auth-switch">
         {{ t('login.noAccount') }}
-        <RouterLink to="/register">{{ t('login.register') }}</RouterLink>
+        <RouterLink v-if="features.passwordAuthEnabled" to="/register">{{ t('login.register') }}</RouterLink>
+        <span v-else class="text-muted">{{ t('login.register') }} ({{ t('home.hub.comingSoon') }})</span>
       </p>
     </div>
   </div>
@@ -45,10 +50,13 @@
 import { ref } from 'vue'
 import { useRouter, RouterLink } from 'vue-router'
 import { useI18n } from 'vue-i18n'
+import { Fish } from 'lucide-vue-next'
 import { useAuthStore } from '../stores/auth.js'
+import { useFeaturesStore } from '../stores/features.js'
 
 const { t }    = useI18n()
 const auth     = useAuthStore()
+const features = useFeaturesStore()
 const router   = useRouter()
 const email    = ref('')
 const password = ref('')
@@ -87,4 +95,5 @@ async function handleLogin() {
   @apply bg-danger/10 border border-danger rounded-sm text-danger text-sm px-3 py-2 mb-3;
 }
 .auth-switch { @apply text-muted text-sm text-center mt-5; }
+.forgot-link { @apply text-right text-xs; }
 </style>
