@@ -18,7 +18,7 @@ jobs:
           port: ${{ secrets.DEPLOY_PORT || 22 }}
           script: |
             set -e
-            cd /var/www/fishlog/fishlog-client
+            cd /var/fishlog/fishlog-client
             git fetch origin master
             git reset --hard origin/master
             npm ci
