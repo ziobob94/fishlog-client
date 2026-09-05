@@ -28,12 +28,12 @@
       <RouterLink to="/sessions" class="nav-item" @click="$emit('close')">
         <span class="w-5 text-center flex justify-center"><Fish :size="16" /></span> {{ t('nav.sessions') }}
       </RouterLink>
-      <RouterLink :to="newSessionTarget" class="nav-item nav-accent mb-2" @click="$emit('close')">
+    <!--  <RouterLink :to="newSessionTarget" class="nav-item nav-accent mb-2" @click="$emit('close')">
         <span class="w-5 text-center flex justify-center">
           <component :is="sessions.ongoing ? Waves : Plus" :size="16" />
         </span>
         {{ sessions.ongoing ? t('nav.ongoingSession') : t('nav.newSession') }}
-      </RouterLink>
+      </RouterLink> -->
       <RouterLink to="/groups" class="nav-item" @click="$emit('close')">
         <span class="w-5 text-center flex justify-center"><Users :size="16" /></span> {{ t('nav.groups') }}
       </RouterLink>
@@ -90,49 +90,59 @@
 </template>
 
 <script setup>
-import { computed, onMounted } from 'vue'
-import { RouterLink, useRouter } from 'vue-router'
-import { useI18n } from 'vue-i18n'
-import { Fish, Home, Pin, MapPin, Users, Newspaper, Settings, BarChart3, UserCircle, Plus, Waves } from 'lucide-vue-next'
-import { useAuthStore } from '../stores/auth.js'
-import { useSessionStore } from '../stores/sessions.js'
+  import { computed, onMounted } from 'vue'
+  import { RouterLink, useRouter } from 'vue-router'
+  import { useI18n } from 'vue-i18n'
+  import { Fish, Home, Pin, MapPin, Users, Newspaper, Settings, BarChart3, UserCircle, Plus, Waves } from 'lucide-vue-next'
+  import { useAuthStore } from '../stores/auth.js'
+  import { useSessionStore } from '../stores/sessions.js'
 
-const { t } = useI18n()
-defineProps({
-  open:   { type: Boolean, default: false },
-  locked: { type: Boolean, default: false }
-})
-defineEmits(['close', 'toggle-lock'])
+  const { t } = useI18n()
+  defineProps({
+    open: { type: Boolean, default: false },
+    locked: { type: Boolean, default: false }
+  })
+  defineEmits(['close', 'toggle-lock'])
 
-const auth     = useAuthStore()
-const router   = useRouter()
-const sessions = useSessionStore()
+  const auth = useAuthStore()
+  const router = useRouter()
+  const sessions = useSessionStore()
 
-onMounted(() => { if (auth.isLoggedIn) sessions.fetchOngoing() })
+  onMounted(() => { if (auth.isLoggedIn) sessions.fetchOngoing() })
 
-const newSessionTarget = computed(() =>
-  sessions.ongoing
-    ? { path: `/session/${sessions.ongoing._id}/edit`, hash: '#section-catches' }
-    : { path: '/new' }
-)
+  const newSessionTarget = computed(() =>
+    sessions.ongoing
+      ? { path: `/session/${sessions.ongoing._id}/edit`, hash: '#section-catches' }
+      : { path: '/new' }
+  )
 
-const initials = computed(() => {
-  const name = auth.user?.displayName || auth.user?.email || '?'
-  return name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2)
-})
+  const initials = computed(() => {
+    const name = auth.user?.displayName || auth.user?.email || '?'
+    return name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2)
+  })
 
-function logout() {
-  auth.logout()
-  router.push('/login')
-}
+  function logout() {
+    auth.logout()
+    router.push('/login')
+  }
 </script>
 
 <style scoped>
-.nav-item {
-  @apply flex items-center gap-2.5 px-3 py-2 rounded-sm text-sm font-semibold
-         text-muted transition-all duration-200 hover:bg-surface-2 hover:text-foam;
-}
-.nav-item.router-link-active { @apply text-ocean; background: var(--ocean-glow); }
-.nav-accent                  { background: var(--ocean-glow); @apply border border-ocean/20 text-ocean hover:bg-ocean hover:text-white; }
-.nav-accent.router-link-active { @apply bg-ocean text-white; }
+  .nav-item {
+    @apply flex items-center gap-2.5 px-3 py-2 rounded-sm text-sm font-semibold text-muted transition-all duration-200 hover:bg-surface-2 hover:text-foam;
+  }
+
+  .nav-item.router-link-active {
+    @apply text-ocean;
+    background: var(--ocean-glow);
+  }
+
+  .nav-accent {
+    background: var(--ocean-glow);
+    @apply border border-ocean/20 text-ocean hover:bg-ocean hover:text-white;
+  }
+
+  .nav-accent.router-link-active {
+    @apply bg-ocean text-white;
+  }
 </style>
