@@ -8,7 +8,7 @@
     <div v-if="store.loading" class="state-center"><div class="spinner"></div></div>
 
     <div v-else-if="!store.groups.length" class="state-center">
-      <div style="font-size:3rem">🫂</div>
+      <div style="font-size:3rem; display:flex; justify-content:center"><Users :size="48" /></div>
       <h3>{{ t('groups.empty.title') }}</h3>
       <p class="text-muted mt-1">{{ t('groups.empty.text') }}</p>
       <button class="btn btn-primary mt-2" @click="showCreate = true">{{ t('groups.empty.create') }}</button>
@@ -36,7 +36,7 @@
               v-if="canRemove(g, m)"
               class="btn btn-ghost btn-sm"
               @click="removeMember(g, m)"
-            >✕</button>
+            ><X :size="14" /></button>
           </div>
         </div>
 
@@ -54,8 +54,8 @@
 
         <!-- Azioni gruppo -->
         <div v-if="isOwnerOrAdmin(g)" class="group-actions">
-          <button class="btn btn-ghost btn-sm" @click="startEdit(g)">{{ t('groups.editAction') }}</button>
-          <button class="btn btn-danger btn-sm" @click="confirmDelete(g)">{{ t('groups.deleteAction') }}</button>
+          <button class="btn btn-ghost btn-sm" @click="startEdit(g)" style="display:inline-flex;align-items:center;gap:.4rem"><Pencil :size="14" /> {{ t('groups.editAction') }}</button>
+          <button class="btn btn-danger btn-sm" @click="confirmDelete(g)" style="display:inline-flex;align-items:center;gap:.4rem"><Trash2 :size="14" /> {{ t('groups.deleteAction') }}</button>
         </div>
       </div>
     </div>
@@ -103,6 +103,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { Users, X, Pencil, Trash2 } from 'lucide-vue-next'
 import { useGroupStore } from '../stores/groups.js'
 import { useAuthStore } from '../stores/auth.js'
 import api from '../utils/api.js'

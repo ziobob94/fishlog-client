@@ -2,6 +2,8 @@ import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import router, { setupGuards } from './router/index.js'
 import { useAuthStore } from './stores/auth.js'
+import { useOfflineStore } from './stores/offline.js'
+import { useFeaturesStore } from './stores/features.js'
 import App from './App.vue'
 import i18n from './i18n/index.js'
 import './assets/main.css'
@@ -17,5 +19,10 @@ app.use(i18n)
 const auth = useAuthStore()
 auth.initAuth()
 setupGuards(router)
+
+// Carica la coda offline da IndexedDB e prova subito a sincronizzarla
+useOfflineStore().init()
+
+useFeaturesStore().fetchFeatures()
 
 app.mount('#app')
