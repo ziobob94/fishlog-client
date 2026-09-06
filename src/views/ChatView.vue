@@ -70,7 +70,7 @@
 
     <!-- Thread con un amico -->
     <template v-else>
-      <div class="page-header chat-thread-header">
+      <div class="page-header chat-thread-header pt-4">
         <RouterLink to="/chat" class="btn btn-ghost btn-sm">{{ t('common.back') }}</RouterLink>
         <RouterLink v-if="friend" :to="`/users/${friend._id}`" class="chat-header-info">
           <img v-if="friend.avatar" :src="friend.avatar" class="mini-avatar" />
@@ -188,369 +188,515 @@
 </template>
 
 <script setup>
-import { ref, reactive, computed, watch, onMounted, onBeforeUnmount, nextTick } from 'vue'
-import { useRoute, useRouter, RouterLink } from 'vue-router'
-import { useI18n } from 'vue-i18n'
-import { MessagesSquare, AlertTriangle, Users, Paperclip, Mic, MapPin, FileText, Check, CheckCheck, Pencil, Trash2, Ban, X } from 'lucide-vue-next'
-import { useChatStore } from '../stores/chat.js'
-import { useFriendStore } from '../stores/friends.js'
-import { useUserStore } from '../stores/users.js'
-import { useAuthStore } from '../stores/auth.js'
-import { useDebouncedFn } from '../composables/useDebouncedFn.js'
-import { useToast } from '../composables/useToast.js'
-import { useVoiceRecorder } from '../composables/useVoiceRecorder.js'
-import MapDisplay from '../components/MapDisplay.vue'
+  import { ref, reactive, computed, watch, onMounted, onBeforeUnmount, nextTick } from 'vue'
+  import { useRoute, useRouter, RouterLink } from 'vue-router'
+  import { useI18n } from 'vue-i18n'
+  import { MessagesSquare, AlertTriangle, Users, Paperclip, Mic, MapPin, FileText, Check, CheckCheck, Pencil, Trash2, Ban, X } from 'lucide-vue-next'
+  import { useChatStore } from '../stores/chat.js'
+  import { useFriendStore } from '../stores/friends.js'
+  import { useUserStore } from '../stores/users.js'
+  import { useAuthStore } from '../stores/auth.js'
+  import { useDebouncedFn } from '../composables/useDebouncedFn.js'
+  import { useToast } from '../composables/useToast.js'
+  import { useVoiceRecorder } from '../composables/useVoiceRecorder.js'
+  import MapDisplay from '../components/MapDisplay.vue'
 
-const { t } = useI18n()
-const route  = useRoute()
-const router = useRouter()
-const chatStore   = useChatStore()
-const friendStore = useFriendStore()
-const userStore   = useUserStore()
-const auth        = useAuthStore()
-const { toast }   = useToast()
+  const { t } = useI18n()
+  const route = useRoute()
+  const router = useRouter()
+  const chatStore = useChatStore()
+  const friendStore = useFriendStore()
+  const userStore = useUserStore()
+  const auth = useAuthStore()
+  const { toast } = useToast()
 
-const draft       = ref('')
-const scrollEl     = ref(null)
-const threadError  = ref('')
-const editingId    = ref(null)
-let pollTimer = null
+  const draft = ref('')
+  const scrollEl = ref(null)
+  const threadError = ref('')
+  const editingId = ref(null)
+  let pollTimer = null
 
-function startEdit(m) {
-  editingId.value = m._id
-  draft.value = m.body || ''
-}
-
-function cancelEdit() {
-  editingId.value = null
-  draft.value = ''
-}
-
-async function removeMessage(messageId) {
-  if (!window.confirm(t('chat.confirmDelete'))) return
-  await chatStore.deleteMessage(messageId)
-}
-
-// Allegati: menu "+" (media/file/posizione) e registrazione vocale
-const attachMenuOpen = ref(false)
-const attachWrapper  = ref(null)
-const mediaInputEl   = ref(null)
-const fileInputEl    = ref(null)
-const { recording, elapsedSeconds, start: startRecording, stop: stopRecording, cancel: cancelRecording } = useVoiceRecorder()
-
-function closeAttachMenuOnOutsideClick(event) {
-  if (attachMenuOpen.value && attachWrapper.value && !attachWrapper.value.contains(event.target)) {
-    attachMenuOpen.value = false
+  function startEdit(m) {
+    editingId.value = m._id
+    draft.value = m.body || ''
   }
-}
 
-function triggerMediaInput() { attachMenuOpen.value = false; mediaInputEl.value?.click() }
-function triggerFileInput()  { attachMenuOpen.value = false; fileInputEl.value?.click() }
-
-async function onFileChosen(e) {
-  const file = e.target.files?.[0]
-  e.target.value = ''
-  if (!file) return
-  await chatStore.sendMedia(route.params.userId, file)
-  await scrollToBottom()
-}
-
-function shareLocation() {
-  attachMenuOpen.value = false
-  if (!navigator.geolocation) { toast(t('chat.attach.locationUnsupported'), { type: 'danger' }); return }
-  navigator.geolocation.getCurrentPosition(
-    async (pos) => {
-      await chatStore.sendLocation(route.params.userId, { lat: pos.coords.latitude, lng: pos.coords.longitude })
-      await scrollToBottom()
-    },
-    () => toast(t('chat.attach.locationDenied'), { type: 'danger' })
-  )
-}
-
-async function startVoice() {
-  try {
-    await startRecording()
-  } catch (e) {
-    const key = e?.name === 'NotAllowedError' ? 'chat.attach.micDenied' : 'chat.attach.micUnsupported'
-    toast(t(key), { type: 'danger' })
-  }
-}
-
-async function stopAndSendVoice() {
-  const blob = await stopRecording()
-  if (!blob) { toast(t('chat.attach.voiceEmpty'), { type: 'danger' }); return }
-  // L'estensione riflette il mimetype reale negoziato dal browser (webm su
-  // Chrome/Firefox, mp4 su Safari): forzarla a .webm su file non-webm rende
-  // il file illeggibile ai player (durata 0 / errore di riproduzione).
-  const ext = blob.type.includes('mp4') ? 'm4a' : blob.type.includes('ogg') ? 'ogg' : 'webm'
-  const file = new File([blob], `vocale-${Date.now()}.${ext}`, { type: blob.type })
-  await chatStore.sendMedia(route.params.userId, file)
-  await scrollToBottom()
-}
-
-function cancelVoice() { cancelRecording() }
-
-function formatElapsed(s) {
-  const m = Math.floor(s / 60).toString().padStart(2, '0')
-  const sec = (s % 60).toString().padStart(2, '0')
-  return `${m}:${sec}`
-}
-
-function formatTime(date) {
-  return new Date(date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-}
-
-function formatSize(bytes) {
-  if (!bytes) return ''
-  const units = ['B', 'KB', 'MB', 'GB']
-  let n = bytes, i = 0
-  while (n >= 1024 && i < units.length - 1) { n /= 1024; i++ }
-  return `${n.toFixed(i > 0 && n < 10 ? 1 : 0)} ${units[i]}`
-}
-
-function mapsLink(loc) {
-  return `https://maps.google.com/?q=${loc.lat},${loc.lng}`
-}
-
-function previewText(lastMessage) {
-  if (!lastMessage) return ''
-  switch (lastMessage.type) {
-    case 'image':    return '📷 Foto'
-    case 'video':    return '🎥 Video'
-    case 'audio':    return '🎤 Messaggio vocale'
-    case 'location': return '📍 Posizione'
-    case 'file':     return `📎 ${lastMessage.media?.originalName || 'File'}`
-    default:         return lastMessage.body
-  }
-}
-
-// ricerca amici per inviare richiesta direttamente dal pannello chat
-const query = ref('')
-const requestStatus = reactive({})
-
-function statusFor(userId) {
-  if (requestStatus[userId] && requestStatus[userId] !== 'sending') return requestStatus[userId]
-  if (friendStore.friends.some(f => f._id === userId)) return 'friends'
-  if (friendStore.sent.some(r => r.recipient._id === userId)) return 'sent'
-  if (friendStore.received.some(r => r.requester._id === userId)) return 'received'
-  return requestStatus[userId] === 'sending' ? 'sending' : null
-}
-
-const runSearch = useDebouncedFn(async (q) => { await userStore.searchUsers(q) }, 350)
-
-function onSearch() {
-  const q = query.value.trim()
-  if (q.length < 2) { userStore.results = []; return }
-  runSearch(q)
-}
-
-async function sendRequest(u) {
-  requestStatus[u._id] = 'sending'
-  const ok = await friendStore.sendRequest(u._id)
-  if (ok) {
-    requestStatus[u._id] = 'sent'
-    await friendStore.fetchRequests()
-  } else {
-    delete requestStatus[u._id]
-    toast(friendStore.error, { type: 'danger' })
-  }
-}
-
-const friend = computed(() => friendStore.friends.find(f => f._id === route.params.userId))
-
-// Amici con cui non è ancora stata scambiata nessuna conversazione: solo
-// quelli compaiono nel "nuova chat", gli altri sono già nella lista sotto.
-const startableFriends = computed(() => {
-  const withThread = new Set(chatStore.conversations.map(c => c.user._id))
-  return friendStore.friends.filter(f => !withThread.has(f._id))
-})
-
-function initials(u) {
-  const name = u?.displayName || u?.email || '?'
-  return name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2)
-}
-
-function goToThread(userId) {
-  router.push(`/chat/${userId}`)
-}
-
-async function scrollToBottom() {
-  await nextTick()
-  if (scrollEl.value) scrollEl.value.scrollTop = scrollEl.value.scrollHeight
-}
-
-async function loadThread(userId) {
-  threadError.value = ''
-  try {
-    const conversationId = await chatStore.openConversationWith(userId)
-    await chatStore.fetchMessages(conversationId)
-    await chatStore.markRead(conversationId)
-    await chatStore.fetchUnreadCount()
-    await scrollToBottom()
-    clearInterval(pollTimer)
-    pollTimer = setInterval(async () => {
-      const before = chatStore.messages.length
-      await chatStore.fetchMessages(conversationId)
-      if (chatStore.messages.length > before) {
-        await chatStore.markRead(conversationId)
-        await chatStore.fetchUnreadCount()
-        await scrollToBottom()
-      }
-    }, 4000)
-  } catch (e) {
-    threadError.value = e.response?.data?.error || t('common.error')
-  }
-}
-
-async function send() {
-  const body = draft.value.trim()
-  if (!body) return
-  draft.value = ''
-  if (editingId.value) {
-    const id = editingId.value
+  function cancelEdit() {
     editingId.value = null
-    await chatStore.editMessage(id, body)
-    return
+    draft.value = ''
   }
-  await chatStore.sendMessage(route.params.userId, body)
-  await scrollToBottom()
-}
 
-watch(() => route.params.userId, (userId) => {
-  clearInterval(pollTimer)
-  chatStore.messages = []
-  editingId.value = null
-  if (userId) loadThread(userId)
-  else chatStore.fetchConversations()
-}, { immediate: true })
+  async function removeMessage(messageId) {
+    if (!window.confirm(t('chat.confirmDelete'))) return
+    await chatStore.deleteMessage(messageId)
+  }
 
-onMounted(() => {
-  friendStore.fetchFriends()
-  friendStore.fetchRequests()
-  chatStore.fetchConversations()
-  document.addEventListener('click', closeAttachMenuOnOutsideClick)
-})
+  // Allegati: menu "+" (media/file/posizione) e registrazione vocale
+  const attachMenuOpen = ref(false)
+  const attachWrapper = ref(null)
+  const mediaInputEl = ref(null)
+  const fileInputEl = ref(null)
+  const { recording, elapsedSeconds, start: startRecording, stop: stopRecording, cancel: cancelRecording } = useVoiceRecorder()
 
-onBeforeUnmount(() => {
-  clearInterval(pollTimer)
-  document.removeEventListener('click', closeAttachMenuOnOutsideClick)
-})
+  function closeAttachMenuOnOutsideClick(event) {
+    if (attachMenuOpen.value && attachWrapper.value && !attachWrapper.value.contains(event.target)) {
+      attachMenuOpen.value = false
+    }
+  }
+
+  function triggerMediaInput() { attachMenuOpen.value = false; mediaInputEl.value?.click() }
+  function triggerFileInput() { attachMenuOpen.value = false; fileInputEl.value?.click() }
+
+  async function onFileChosen(e) {
+    const file = e.target.files?.[0]
+    e.target.value = ''
+    if (!file) return
+    await chatStore.sendMedia(route.params.userId, file)
+    await scrollToBottom()
+  }
+
+  function shareLocation() {
+    attachMenuOpen.value = false
+    if (!navigator.geolocation) { toast(t('chat.attach.locationUnsupported'), { type: 'danger' }); return }
+    navigator.geolocation.getCurrentPosition(
+      async (pos) => {
+        await chatStore.sendLocation(route.params.userId, { lat: pos.coords.latitude, lng: pos.coords.longitude })
+        await scrollToBottom()
+      },
+      () => toast(t('chat.attach.locationDenied'), { type: 'danger' })
+    )
+  }
+
+  async function startVoice() {
+    try {
+      await startRecording()
+    } catch (e) {
+      const key = e?.name === 'NotAllowedError' ? 'chat.attach.micDenied' : 'chat.attach.micUnsupported'
+      toast(t(key), { type: 'danger' })
+    }
+  }
+
+  async function stopAndSendVoice() {
+    const blob = await stopRecording()
+    if (!blob) { toast(t('chat.attach.voiceEmpty'), { type: 'danger' }); return }
+    // L'estensione riflette il mimetype reale negoziato dal browser (webm su
+    // Chrome/Firefox, mp4 su Safari): forzarla a .webm su file non-webm rende
+    // il file illeggibile ai player (durata 0 / errore di riproduzione).
+    const ext = blob.type.includes('mp4') ? 'm4a' : blob.type.includes('ogg') ? 'ogg' : 'webm'
+    const file = new File([blob], `vocale-${Date.now()}.${ext}`, { type: blob.type })
+    await chatStore.sendMedia(route.params.userId, file)
+    await scrollToBottom()
+  }
+
+  function cancelVoice() { cancelRecording() }
+
+  function formatElapsed(s) {
+    const m = Math.floor(s / 60).toString().padStart(2, '0')
+    const sec = (s % 60).toString().padStart(2, '0')
+    return `${m}:${sec}`
+  }
+
+  function formatTime(date) {
+    return new Date(date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+  }
+
+  function formatSize(bytes) {
+    if (!bytes) return ''
+    const units = ['B', 'KB', 'MB', 'GB']
+    let n = bytes, i = 0
+    while (n >= 1024 && i < units.length - 1) { n /= 1024; i++ }
+    return `${n.toFixed(i > 0 && n < 10 ? 1 : 0)} ${units[i]}`
+  }
+
+  function mapsLink(loc) {
+    return `https://maps.google.com/?q=${loc.lat},${loc.lng}`
+  }
+
+  function previewText(lastMessage) {
+    if (!lastMessage) return ''
+    switch (lastMessage.type) {
+      case 'image': return '📷 Foto'
+      case 'video': return '🎥 Video'
+      case 'audio': return '🎤 Messaggio vocale'
+      case 'location': return '📍 Posizione'
+      case 'file': return `📎 ${lastMessage.media?.originalName || 'File'}`
+      default: return lastMessage.body
+    }
+  }
+
+  // ricerca amici per inviare richiesta direttamente dal pannello chat
+  const query = ref('')
+  const requestStatus = reactive({})
+
+  function statusFor(userId) {
+    if (requestStatus[userId] && requestStatus[userId] !== 'sending') return requestStatus[userId]
+    if (friendStore.friends.some(f => f._id === userId)) return 'friends'
+    if (friendStore.sent.some(r => r.recipient._id === userId)) return 'sent'
+    if (friendStore.received.some(r => r.requester._id === userId)) return 'received'
+    return requestStatus[userId] === 'sending' ? 'sending' : null
+  }
+
+  const runSearch = useDebouncedFn(async (q) => { await userStore.searchUsers(q) }, 350)
+
+  function onSearch() {
+    const q = query.value.trim()
+    if (q.length < 2) { userStore.results = []; return }
+    runSearch(q)
+  }
+
+  async function sendRequest(u) {
+    requestStatus[u._id] = 'sending'
+    const ok = await friendStore.sendRequest(u._id)
+    if (ok) {
+      requestStatus[u._id] = 'sent'
+      await friendStore.fetchRequests()
+    } else {
+      delete requestStatus[u._id]
+      toast(friendStore.error, { type: 'danger' })
+    }
+  }
+
+  const friend = computed(() => friendStore.friends.find(f => f._id === route.params.userId))
+
+  // Amici con cui non è ancora stata scambiata nessuna conversazione: solo
+  // quelli compaiono nel "nuova chat", gli altri sono già nella lista sotto.
+  const startableFriends = computed(() => {
+    const withThread = new Set(chatStore.conversations.map(c => c.user._id))
+    return friendStore.friends.filter(f => !withThread.has(f._id))
+  })
+
+  function initials(u) {
+    const name = u?.displayName || u?.email || '?'
+    return name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2)
+  }
+
+  function goToThread(userId) {
+    router.push(`/chat/${userId}`)
+  }
+
+  async function scrollToBottom() {
+    await nextTick()
+    if (scrollEl.value) scrollEl.value.scrollTop = scrollEl.value.scrollHeight
+  }
+
+  async function loadThread(userId) {
+    threadError.value = ''
+    try {
+      const conversationId = await chatStore.openConversationWith(userId)
+      await chatStore.fetchMessages(conversationId)
+      await chatStore.markRead(conversationId)
+      await chatStore.fetchUnreadCount()
+      await scrollToBottom()
+      clearInterval(pollTimer)
+      pollTimer = setInterval(async () => {
+        const before = chatStore.messages.length
+        await chatStore.fetchMessages(conversationId)
+        if (chatStore.messages.length > before) {
+          await chatStore.markRead(conversationId)
+          await chatStore.fetchUnreadCount()
+          await scrollToBottom()
+        }
+      }, 4000)
+    } catch (e) {
+      threadError.value = e.response?.data?.error || t('common.error')
+    }
+  }
+
+  async function send() {
+    const body = draft.value.trim()
+    if (!body) return
+    draft.value = ''
+    if (editingId.value) {
+      const id = editingId.value
+      editingId.value = null
+      await chatStore.editMessage(id, body)
+      return
+    }
+    await chatStore.sendMessage(route.params.userId, body)
+    await scrollToBottom()
+  }
+
+  watch(() => route.params.userId, (userId) => {
+    clearInterval(pollTimer)
+    chatStore.messages = []
+    editingId.value = null
+    if (userId) loadThread(userId)
+    else chatStore.fetchConversations()
+  }, { immediate: true })
+
+  onMounted(() => {
+    friendStore.fetchFriends()
+    friendStore.fetchRequests()
+    chatStore.fetchConversations()
+    document.addEventListener('click', closeAttachMenuOnOutsideClick)
+  })
+
+  onBeforeUnmount(() => {
+    clearInterval(pollTimer)
+    document.removeEventListener('click', closeAttachMenuOnOutsideClick)
+  })
 </script>
 
 <style scoped>
-.page-header { @apply flex items-center justify-between gap-4 mb-6; }
-.chat-thread-header { @apply border-b border-border pb-4 justify-start; }
-.chat-header-info { @apply flex items-center gap-2.5 no-underline text-inherit min-w-0; }
-.chat-header-text { @apply flex flex-col min-w-0; }
-.chat-header-name { @apply font-semibold text-foam truncate; }
-.chat-header-email { @apply text-xs text-muted truncate; }
-.error-banner { @apply bg-danger/10 border border-danger rounded-sm text-danger px-4 py-3 mb-4 inline-flex items-center gap-2; }
+  .page-header {
+    @apply flex items-center justify-between gap-4 mb-6;
+  }
 
-.search-card  { @apply mb-4 relative; }
-.search-results {
-  @apply flex flex-col gap-1 mt-2 max-h-64 overflow-y-auto;
-}
-.search-result-row { @apply flex items-center justify-between gap-2 py-1.5; }
-.no-results { @apply text-muted text-sm py-2; }
-.member-info { @apply flex items-center gap-2 text-sm text-foam no-underline; }
+  .chat-thread-header {
+    @apply border-b border-border pb-4 justify-start;
+  }
 
-.new-chat-card { @apply mb-4; }
-.friend-picker { @apply flex flex-wrap gap-2 mt-2; }
-.friend-chip {
-  @apply flex items-center gap-2 bg-surface-2 border border-border rounded-full
-         text-sm text-foam px-3 py-1.5 cursor-pointer hover:border-ocean transition-colors;
-}
+  .chat-header-info {
+    @apply flex items-center gap-2.5 no-underline text-inherit min-w-0;
+  }
 
-.conversations-list { @apply flex flex-col gap-1; }
-.conversation-row {
-  @apply flex items-center gap-3 bg-transparent border-none text-left w-full
-         px-2 py-2.5 rounded-sm cursor-pointer hover:bg-surface-2 transition-colors;
-}
-.conversation-info  { @apply flex flex-col min-w-0 flex-1; }
-.conversation-name   { @apply text-sm font-semibold text-foam; }
-.conversation-preview { @apply text-xs text-muted truncate; }
+  .chat-header-text {
+    @apply flex flex-col min-w-0;
+  }
 
-.mini-avatar { @apply w-9 h-9 rounded-full object-cover shrink-0; }
-.mini-placeholder {
-  @apply w-9 h-9 rounded-full border border-ocean text-ocean flex items-center
-         justify-center text-xs font-bold shrink-0;
-  background: var(--ocean-glow);
-}
+  .chat-header-name {
+    @apply font-semibold text-foam truncate;
+  }
 
-.chat-fullheight { @apply flex flex-col flex-1 min-h-0; }
-.chat-fullheight .chat-thread-header { @apply shrink-0; }
-.chat-fullheight .error-banner { @apply shrink-0; }
-.chat-fullheight .thread { @apply flex-1 min-h-0; }
+  .chat-header-email {
+    @apply text-xs text-muted truncate;
+  }
 
-.thread { @apply flex flex-col gap-3; }
-.messages-list { @apply flex-1 min-h-0 overflow-y-auto flex flex-col gap-2 pr-1; }
+  .error-banner {
+    @apply bg-danger/10 border border-danger rounded-sm text-danger px-4 py-3 mb-4 inline-flex items-center gap-2;
+  }
 
-.message-row { @apply flex items-end gap-1; }
-.message-row.mine { @apply justify-end flex-row-reverse; }
-.message-bubble {
-  @apply max-w-[75%] min-w-[4.5rem] flex flex-col gap-1 bg-surface-2 border border-border rounded-lg px-3 py-2 text-sm text-foam;
-}
-.message-row.mine .message-bubble { @apply bg-ocean border-ocean text-white; }
-.message-text { @apply whitespace-pre-wrap; }
+  .search-card {
+    @apply mb-4 relative;
+  }
 
-.message-bubble.deleted { @apply opacity-70 italic; }
-.message-deleted-text { @apply flex items-center gap-1.5 text-muted; }
-.message-row.mine .message-deleted-text { @apply text-white/70; }
+  .search-results {
+    @apply flex flex-col gap-1 mt-2 max-h-64 overflow-y-auto;
+  }
 
-.message-meta { @apply self-end flex items-center gap-1 text-[0.65rem] opacity-90 mt-0.5 whitespace-nowrap; }
-.message-edited { @apply italic opacity-80; }
-.tick { @apply opacity-90; }
-.tick-read { @apply text-sky-300 opacity-100; }
+  .search-result-row {
+    @apply flex items-center justify-between gap-2 py-1.5;
+  }
 
-.message-actions {
-  @apply flex flex-col gap-0.5 opacity-0 transition-opacity duration-150;
-}
-.message-row:hover .message-actions { @apply opacity-100; }
-.message-action-btn {
-  @apply flex items-center justify-center w-6 h-6 rounded text-muted bg-transparent border-none
-         cursor-pointer hover:bg-surface-2 hover:text-ocean transition-colors;
-}
+  .no-results {
+    @apply text-muted text-sm py-2;
+  }
 
-.message-media-image { @apply max-w-full rounded-sm max-h-72 object-cover cursor-pointer; }
-.message-media-video { @apply max-w-full rounded-sm max-h-72; }
-.message-audio       { @apply max-w-full; }
+  .member-info {
+    @apply flex items-center gap-2 text-sm text-foam no-underline;
+  }
 
-.message-file {
-  @apply flex items-center gap-2 no-underline text-inherit bg-black/10 rounded-sm px-2 py-1.5;
-}
-.message-file-info { @apply flex flex-col min-w-0; }
-.message-file-name { @apply text-sm font-medium truncate max-w-[180px]; }
-.message-file-size { @apply text-xs opacity-70; }
+  .new-chat-card {
+    @apply mb-4;
+  }
 
-.message-location { @apply flex flex-col gap-1 no-underline text-inherit; }
-.message-location-map :deep(.map-display) { height: 140px; width: 220px; }
-.message-location-link { @apply flex items-center gap-1 text-xs; }
+  .friend-picker {
+    @apply flex flex-wrap gap-2 mt-2;
+  }
 
-.editing-banner {
-  @apply flex items-center gap-2 text-xs text-ocean bg-ocean/10 border-l-2 border-ocean px-3 py-1.5 rounded-sm;
-}
-.editing-banner .icon-btn-sm { @apply ml-auto; }
+  .friend-chip {
+    @apply flex items-center gap-2 bg-surface-2 border border-border rounded-full text-sm text-foam px-3 py-1.5 cursor-pointer hover:border-ocean transition-colors;
+  }
 
-.message-input-row { @apply flex items-center gap-2 border-t border-border pt-3 relative; }
-.message-input-row input { @apply text-sm flex-1; }
+  .conversations-list {
+    @apply flex flex-col gap-1;
+  }
 
-.icon-btn {
-  @apply flex items-center justify-center w-9 h-9 rounded-lg text-muted bg-transparent border-none
-         cursor-pointer hover:bg-surface-2 hover:text-ocean transition-colors shrink-0;
-}
-.icon-btn-sm { @apply w-6 h-6; }
-.hidden-input { @apply hidden; }
+  .conversation-row {
+    @apply flex items-center gap-3 bg-transparent border-none text-left w-full px-2 py-2.5 rounded-sm cursor-pointer hover:bg-surface-2 transition-colors;
+  }
 
-.attach-wrap { @apply relative; }
-.attach-menu {
-  @apply absolute bottom-11 left-0 flex flex-col gap-0.5 bg-surface border border-border
-         rounded-lg p-1 z-10 min-w-[160px] shadow-lg;
-}
-.attach-menu button {
-  @apply text-left text-sm px-3 py-2 rounded bg-transparent border-none text-foam
-         cursor-pointer hover:bg-surface-2 transition-colors;
-}
+  .conversation-info {
+    @apply flex flex-col min-w-0 flex-1;
+  }
 
-.recording-indicator { @apply flex items-center gap-2 text-sm text-danger flex-1; }
-.rec-dot { @apply w-2.5 h-2.5 rounded-full bg-danger animate-pulse; }
+  .conversation-name {
+    @apply text-sm font-semibold text-foam;
+  }
+
+  .conversation-preview {
+    @apply text-xs text-muted truncate;
+  }
+
+  .mini-avatar {
+    @apply w-9 h-9 rounded-full object-cover shrink-0;
+  }
+
+  .mini-placeholder {
+    @apply w-9 h-9 rounded-full border border-ocean text-ocean flex items-center justify-center text-xs font-bold shrink-0;
+    background: var(--ocean-glow);
+  }
+
+  .chat-fullheight {
+    @apply flex flex-col flex-1 min-h-0;
+  }
+
+  .chat-fullheight .chat-thread-header {
+    @apply shrink-0;
+  }
+
+  .chat-fullheight .error-banner {
+    @apply shrink-0;
+  }
+
+  .chat-fullheight .thread {
+    @apply flex-1 min-h-0;
+  }
+
+  .thread {
+    @apply flex flex-col gap-3;
+  }
+
+  .messages-list {
+    @apply flex-1 min-h-0 overflow-y-auto flex flex-col gap-2 pr-1;
+  }
+
+  .message-row {
+    @apply flex items-end gap-1;
+  }
+
+  .message-row.mine {
+    @apply justify-end flex-row-reverse;
+  }
+
+  .message-bubble {
+    @apply max-w-[75%] min-w-[4.5rem] flex flex-col gap-1 bg-surface-2 border border-border rounded-lg px-3 py-2 text-sm text-foam;
+  }
+
+  .message-row.mine .message-bubble {
+    @apply bg-ocean border-ocean text-white;
+  }
+
+  .message-text {
+    @apply whitespace-pre-wrap;
+  }
+
+  .message-bubble.deleted {
+    @apply opacity-70 italic;
+  }
+
+  .message-deleted-text {
+    @apply flex items-center gap-1.5 text-muted;
+  }
+
+  .message-row.mine .message-deleted-text {
+    @apply text-white/70;
+  }
+
+  .message-meta {
+    @apply self-end flex items-center gap-1 text-[0.65rem] opacity-90 mt-0.5 whitespace-nowrap;
+  }
+
+  .message-edited {
+    @apply italic opacity-80;
+  }
+
+  .tick {
+    @apply opacity-90;
+  }
+
+  .tick-read {
+    @apply text-sky-300 opacity-100;
+  }
+
+  .message-actions {
+    @apply flex flex-col gap-0.5 opacity-0 transition-opacity duration-150;
+  }
+
+  .message-row:hover .message-actions {
+    @apply opacity-100;
+  }
+
+  .message-action-btn {
+    @apply flex items-center justify-center w-6 h-6 rounded text-muted bg-transparent border-none cursor-pointer hover:bg-surface-2 hover:text-ocean transition-colors;
+  }
+
+  .message-media-image {
+    @apply max-w-full rounded-sm max-h-72 object-cover cursor-pointer;
+  }
+
+  .message-media-video {
+    @apply max-w-full rounded-sm max-h-72;
+  }
+
+  .message-audio {
+    @apply max-w-full;
+  }
+
+  .message-file {
+    @apply flex items-center gap-2 no-underline text-inherit bg-black/10 rounded-sm px-2 py-1.5;
+  }
+
+  .message-file-info {
+    @apply flex flex-col min-w-0;
+  }
+
+  .message-file-name {
+    @apply text-sm font-medium truncate max-w-[180px];
+  }
+
+  .message-file-size {
+    @apply text-xs opacity-70;
+  }
+
+  .message-location {
+    @apply flex flex-col gap-1 no-underline text-inherit;
+  }
+
+  .message-location-map :deep(.map-display) {
+    height: 140px;
+    width: 220px;
+  }
+
+  .message-location-link {
+    @apply flex items-center gap-1 text-xs;
+  }
+
+  .editing-banner {
+    @apply flex items-center gap-2 text-xs text-ocean bg-ocean/10 border-l-2 border-ocean px-3 py-1.5 rounded-sm;
+  }
+
+  .editing-banner .icon-btn-sm {
+    @apply ml-auto;
+  }
+
+  .message-input-row {
+    @apply flex items-center gap-2 border-t border-border pt-3 relative;
+  }
+
+  .message-input-row input {
+    @apply text-sm flex-1;
+  }
+
+  .icon-btn {
+    @apply flex items-center justify-center w-9 h-9 rounded-lg text-muted bg-transparent border-none cursor-pointer hover:bg-surface-2 hover:text-ocean transition-colors shrink-0;
+  }
+
+  .icon-btn-sm {
+    @apply w-6 h-6;
+  }
+
+  .hidden-input {
+    @apply hidden;
+  }
+
+  .attach-wrap {
+    @apply relative;
+  }
+
+  .attach-menu {
+    @apply absolute bottom-11 left-0 flex flex-col gap-0.5 bg-surface border border-border rounded-lg p-1 z-10 min-w-[160px] shadow-lg;
+  }
+
+  .attach-menu button {
+    @apply text-left text-sm px-3 py-2 rounded bg-transparent border-none text-foam cursor-pointer hover:bg-surface-2 transition-colors;
+  }
+
+  .recording-indicator {
+    @apply flex items-center gap-2 text-sm text-danger flex-1;
+  }
+
+  .rec-dot {
+    @apply w-2.5 h-2.5 rounded-full bg-danger animate-pulse;
+  }
 </style>
