@@ -1,3 +1,10 @@
+# [1.7.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.6.0...client-v1.7.0) (2026-09-06)
+
+
+### Features
+
+* Aggiungi messaggio per chat senza amici e stile per i pulsanti OAuth nella pagina di login ([4d60e48](https://github.com/ziobob94/fishlog-client/commit/4d60e48918bb0eb6f7e92af31934d15a8ea0aee9))
+
 # [1.6.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.5.0...client-v1.6.0) (2026-09-06)
 
 
