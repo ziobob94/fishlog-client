@@ -1,3 +1,10 @@
+# [1.9.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.8.0...client-v1.9.0) (2026-09-06)
+
+
+### Features
+
+* Aggiungi componente PasswordInput e integra in diverse viste per migliorare la gestione delle password ([8cab9c5](https://github.com/ziobob94/fishlog-client/commit/8cab9c56d3a791f63402ddbcbeca469c585f6e0d))
+
 # [1.8.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.7.0...client-v1.8.0) (2026-09-06)
 
 
