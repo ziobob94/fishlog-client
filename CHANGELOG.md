@@ -1,3 +1,10 @@
+# [1.10.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.9.0...client-v1.10.0) (2026-09-06)
+
+
+### Features
+
+* Aggiungi margine per i pulsanti OAuth nelle viste di login e registrazione ([d2ca57e](https://github.com/ziobob94/fishlog-client/commit/d2ca57e32b8f2cf8b8f1051c7d8e57bc13ce1f42))
+
 # [1.9.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.8.0...client-v1.9.0) (2026-09-06)
 
 
