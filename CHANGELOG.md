@@ -1,3 +1,10 @@
+## [1.2.3](https://github.com/ziobob94/fishlog-client/compare/client-v1.2.2...client-v1.2.3) (2026-09-06)
+
+
+### Bug Fixes
+
+* Aggiungi filtri per data e posizione nella vista feed ([9e93047](https://github.com/ziobob94/fishlog-client/commit/9e93047af3896a441cb62f1feb1ab0478e7590cf))
+
 ## [1.2.2](https://github.com/ziobob94/fishlog-client/compare/client-v1.2.1...client-v1.2.2) (2026-09-05)
 
 
