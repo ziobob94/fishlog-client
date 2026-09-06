@@ -1,3 +1,10 @@
+# [1.6.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.5.0...client-v1.6.0) (2026-09-06)
+
+
+### Features
+
+* Aggiungi gestione degli errori di caricamento dei chunk e ricarica della pagina ([d4c7fa2](https://github.com/ziobob94/fishlog-client/commit/d4c7fa2447bbf0e1f0495c61127a95b88a85ea1d))
+
 # [1.5.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.4.0...client-v1.5.0) (2026-09-06)
 
 
