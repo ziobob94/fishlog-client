@@ -29,7 +29,9 @@
         </div>
         <div v-else-if="status === 'friends'" class="row-actions">
           <span class="badge badge-success">{{ t('friends.status.friends') }}</span>
-          <button class="btn btn-ghost btn-sm" :disabled="acting" @click="onRemove">{{ t('friends.actions.remove') }}</button>
+          <button class="icon-btn" :disabled="acting" :title="t('friends.actions.remove')" @click="onRemove">
+            <UserX :size="16" />
+          </button>
         </div>
       </div>
 
@@ -46,6 +48,7 @@
 import { ref, computed, onMounted } from 'vue'
 import { useRoute, RouterLink } from 'vue-router'
 import { useI18n } from 'vue-i18n'
+import { UserX } from 'lucide-vue-next'
 import { useUserStore } from '../stores/users.js'
 import { useFriendStore } from '../stores/friends.js'
 
@@ -110,6 +113,7 @@ async function onAccept() {
 }
 
 async function onRemove() {
+  if (!window.confirm(t('friends.actions.confirmRemove', { name: user.value?.displayName || user.value?.email }))) return
   acting.value = true
   await friendStore.removeFriend(route.params.id)
   status.value = 'none'
@@ -131,6 +135,11 @@ async function onRemove() {
 
 .friend-action { @apply mb-2; }
 .row-actions { @apply flex items-center gap-2; }
+
+.icon-btn {
+  @apply flex items-center justify-center w-9 h-9 rounded-lg text-muted bg-transparent border-none
+         cursor-pointer hover:bg-surface-2 hover:text-danger transition-colors shrink-0;
+}
 
 .common-groups { @apply flex flex-wrap gap-2; }
 </style>

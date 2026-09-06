@@ -18,7 +18,7 @@
             <RouterLink :to="`/users/${u._id}`" class="member-info">
               <img v-if="u.avatar" :src="u.avatar" class="mini-avatar" />
               <span v-else class="mini-placeholder">{{ initials(u) }}</span>
-              <span>{{ u.displayName || u.email }}</span>
+              <span class="member-name">{{ u.displayName || u.email }}</span>
             </RouterLink>
             <button
               class="btn btn-secondary btn-sm"
@@ -477,14 +477,16 @@
   .search-result-row {
     @apply flex items-center justify-between gap-2 py-1.5;
   }
+  .search-result-row .btn, .search-result-row .badge { @apply shrink-0; }
 
   .no-results {
     @apply text-muted text-sm py-2;
   }
 
   .member-info {
-    @apply flex items-center gap-2 text-sm text-foam no-underline;
+    @apply flex items-center gap-2 text-sm text-foam no-underline min-w-0 flex-1;
   }
+  .member-info .member-name { @apply truncate; }
 
   .new-chat-card {
     @apply mb-4;
@@ -495,8 +497,9 @@
   }
 
   .friend-chip {
-    @apply flex items-center gap-2 bg-surface-2 border border-border rounded-full text-sm text-foam px-3 py-1.5 cursor-pointer hover:border-ocean transition-colors;
+    @apply flex items-center gap-2 bg-surface-2 border border-border rounded-full text-sm text-foam px-3 py-1.5 cursor-pointer hover:border-ocean transition-colors max-w-full;
   }
+  .friend-chip span:last-child { @apply truncate; }
 
   .conversations-list {
     @apply flex flex-col gap-1;
@@ -511,7 +514,7 @@
   }
 
   .conversation-name {
-    @apply text-sm font-semibold text-foam;
+    @apply text-sm font-semibold text-foam truncate;
   }
 
   .conversation-preview {

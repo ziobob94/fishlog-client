@@ -29,12 +29,12 @@
             <div class="member-info">
               <img v-if="m.avatar" :src="m.avatar" class="mini-avatar" />
               <span v-else class="mini-placeholder">{{ initials(m) }}</span>
-              <span>{{ m.displayName || m.email }}</span>
-              <span v-if="m._id === g.owner?._id" class="badge badge-sand" style="font-size:.6rem">{{ t('groups.owner') }}</span>
+              <span class="member-name">{{ m.displayName || m.email }}</span>
+              <span v-if="m._id === g.owner?._id" class="badge badge-sand shrink-0" style="font-size:.6rem">{{ t('groups.owner') }}</span>
             </div>
             <button
               v-if="canRemove(g, m)"
-              class="btn btn-ghost btn-sm"
+              class="btn btn-ghost btn-sm shrink-0"
               @click="removeMember(g, m)"
             ><X :size="14" /></button>
           </div>
@@ -203,8 +203,9 @@ async function removeMember(g, m) {
 .group-header { @apply flex items-start justify-between; }
 
 .members-list { @apply flex flex-col gap-1.5; }
-.member-row   { @apply flex items-center justify-between; }
-.member-info  { @apply flex items-center gap-2 text-sm text-foam; }
+.member-row   { @apply flex items-center justify-between gap-2; }
+.member-info  { @apply flex items-center gap-2 text-sm text-foam min-w-0 flex-1; }
+.member-name  { @apply truncate; }
 
 .mini-avatar { @apply w-7 h-7 rounded-full object-cover; }
 .mini-placeholder {

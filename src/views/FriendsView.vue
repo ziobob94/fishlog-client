@@ -14,7 +14,7 @@
             <img v-if="u.avatar" :src="u.avatar" class="mini-avatar" />
             <span v-else class="mini-placeholder">{{ initials(u) }}</span>
             <span class="member-text">
-              <span>{{ u.displayName || u.email }}</span>
+              <span class="member-name">{{ u.displayName || u.email }}</span>
               <span v-if="u.displayName && u.email" class="member-email">{{ u.email }}</span>
             </span>
           </RouterLink>
@@ -39,7 +39,7 @@
             <img v-if="r.requester.avatar" :src="r.requester.avatar" class="mini-avatar" />
             <span v-else class="mini-placeholder">{{ initials(r.requester) }}</span>
             <span class="member-text">
-              <span>{{ r.requester.displayName || r.requester.email }}</span>
+              <span class="member-name">{{ r.requester.displayName || r.requester.email }}</span>
               <span v-if="r.requester.displayName && r.requester.email" class="member-email">{{ r.requester.email }}</span>
             </span>
           </RouterLink>
@@ -60,7 +60,7 @@
             <img v-if="r.recipient.avatar" :src="r.recipient.avatar" class="mini-avatar" />
             <span v-else class="mini-placeholder">{{ initials(r.recipient) }}</span>
             <span class="member-text">
-              <span>{{ r.recipient.displayName || r.recipient.email }}</span>
+              <span class="member-name">{{ r.recipient.displayName || r.recipient.email }}</span>
               <span v-if="r.recipient.displayName && r.recipient.email" class="member-email">{{ r.recipient.email }}</span>
             </span>
           </RouterLink>
@@ -86,11 +86,13 @@
             <img v-if="f.avatar" :src="f.avatar" class="mini-avatar" />
             <span v-else class="mini-placeholder">{{ initials(f) }}</span>
             <span class="member-text">
-              <span>{{ f.displayName || f.email }}</span>
+              <span class="member-name">{{ f.displayName || f.email }}</span>
               <span v-if="f.displayName && f.email" class="member-email">{{ f.email }}</span>
             </span>
           </RouterLink>
-          <button class="btn btn-ghost btn-sm" @click="removeFriend(f)">{{ t('friends.actions.remove') }}</button>
+          <button class="icon-btn" :title="t('friends.actions.remove')" @click="removeFriend(f)">
+            <UserX :size="16" />
+          </button>
         </div>
       </div>
     </section>
@@ -101,7 +103,7 @@
 import { ref, reactive, onMounted } from 'vue'
 import { RouterLink } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { Users } from 'lucide-vue-next'
+import { Users, UserX } from 'lucide-vue-next'
 import { useFriendStore } from '../stores/friends.js'
 import { useUserStore } from '../stores/users.js'
 import { useDebouncedFn } from '../composables/useDebouncedFn.js'
@@ -169,6 +171,7 @@ async function cancel(r) {
 }
 
 async function removeFriend(f) {
+  if (!window.confirm(t('friends.actions.confirmRemove', { name: f.displayName || f.email }))) return
   await friendStore.removeFriend(f._id)
 }
 </script>
@@ -180,6 +183,7 @@ async function removeFriend(f) {
   @apply flex flex-col gap-1 mt-2 max-h-64 overflow-y-auto;
 }
 .search-result-row { @apply flex items-center justify-between gap-2 py-1.5; }
+.search-result-row .btn { @apply shrink-0; }
 .no-results { @apply text-muted text-sm py-2; }
 
 .section-block { @apply mb-4; }
@@ -187,10 +191,16 @@ async function removeFriend(f) {
 
 .people-list { @apply flex flex-col gap-2; }
 .member-row  { @apply flex items-center justify-between gap-2; }
-.member-info { @apply flex items-center gap-2 text-sm text-foam no-underline; }
-.member-text { @apply flex flex-col leading-tight; }
-.member-email { @apply text-xs text-muted; }
-.row-actions { @apply flex gap-2; }
+.member-info { @apply flex items-center gap-2 text-sm text-foam no-underline min-w-0 flex-1; }
+
+.icon-btn {
+  @apply flex items-center justify-center w-9 h-9 rounded-lg text-muted bg-transparent border-none
+         cursor-pointer hover:bg-surface-2 hover:text-danger transition-colors shrink-0;
+}
+.member-text { @apply flex flex-col leading-tight min-w-0; }
+.member-name { @apply truncate; }
+.member-email { @apply text-xs text-muted truncate; }
+.row-actions { @apply flex gap-2 shrink-0; }
 
 .mini-avatar { @apply w-7 h-7 rounded-full object-cover; }
 .mini-placeholder {

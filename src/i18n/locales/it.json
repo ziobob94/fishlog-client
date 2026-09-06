@@ -223,7 +223,8 @@
 			"accept": "Accetta",
 			"decline": "Rifiuta",
 			"cancel": "Annulla richiesta",
-			"remove": "Rimuovi amicizia"
+			"remove": "Rimuovi amicizia",
+			"confirmRemove": "Rimuovere {name} dai tuoi amici?"
 		},
 		"status": {
 			"none": "—",
