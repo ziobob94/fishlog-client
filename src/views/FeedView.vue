@@ -113,7 +113,15 @@
 
       <div v-if="tab === 'event' && showLocationPicker" class="location-picker-wrap">
         <p class="filters-desc">{{ t('posts.filters.pickOnMapHint') }}</p>
-        <LocationPicker :lat="pickerLat" :lng="pickerLng" @update:lat="onPickLat" @update:lng="onPickLng" />
+        <LocationPicker
+          :lat="pickerLat"
+          :lng="pickerLng"
+          :name="pickerName"
+          :name-placeholder="t('posts.filters.searchLocationPlaceholder')"
+          @update:lat="onPickLat"
+          @update:lng="onPickLng"
+          @update:name="v => pickerName = v"
+        />
       </div>
 
       <div v-if="tab === 'event'" class="filter-field sort-field">
@@ -192,10 +200,11 @@
   const showLocationPicker = ref(false)
   const pickerLat = ref(null)
   const pickerLng = ref(null)
+  const pickerName = ref('')
   let pickCommitTimer = null
 
   watch(() => filters.near, (value) => {
-    if (!value) { pickerLat.value = null; pickerLng.value = null; return }
+    if (!value) { pickerLat.value = null; pickerLng.value = null; pickerName.value = ''; return }
     const [lat, lng] = value.split(',').map(Number)
     pickerLat.value = lat
     pickerLng.value = lng
