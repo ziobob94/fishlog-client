@@ -1,3 +1,10 @@
+## [1.11.2](https://github.com/ziobob94/fishlog-client/compare/client-v1.11.1...client-v1.11.2) (2026-09-06)
+
+
+### Bug Fixes
+
+* sincronizza il centro notifiche quando la chat viene letta altrove ([93b7d61](https://github.com/ziobob94/fishlog-client/commit/93b7d61e975a22b011965bb487efb94856d19c09))
+
 ## [1.11.1](https://github.com/ziobob94/fishlog-client/compare/client-v1.11.0...client-v1.11.1) (2026-09-06)
 
 
