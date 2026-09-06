@@ -99,7 +99,16 @@ export const usePostStore = defineStore('posts', () => {
 
   async function respond(id, message) {
     const { data } = await api.post(`/posts/${id}/responses`, { message })
-    if (current.value?._id === id) current.value.responses.push(data)
+    const post = feed.value.find(p => p._id === id)
+    if (post) post.responses = [...(post.responses || []), data]
+    if (current.value?._id === id) current.value.responses = [...(current.value.responses || []), data]
+    return data
+  }
+
+  async function setAttendance(id, status, guests) {
+    const { data } = await api.post(`/posts/${id}/attendance`, { status, guests })
+    feed.value = feed.value.map(p => p._id === id ? data : p)
+    if (current.value?._id === id) current.value = data
     return data
   }
 
@@ -112,7 +121,7 @@ export const usePostStore = defineStore('posts', () => {
 
   return {
     feed, current, pagination, loading, error, unread,
-    fetchPosts, fetchPost, createPost, updatePost, deletePost, respond, setEventStatus,
+    fetchPosts, fetchPost, createPost, updatePost, deletePost, respond, setEventStatus, setAttendance,
     fetchUnreadCount, markSeen, addComment, deleteComment, toggleLike
   }
 })

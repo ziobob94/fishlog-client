@@ -25,6 +25,7 @@
         @like="onLike"
         @comment="onComment"
         @delete-comment="onDeleteComment"
+        @attend="onAttend"
       />
     </div>
   </div>
@@ -53,10 +54,11 @@ onMounted(() => {
 function onCreated() { store.fetchPosts({ author: auth.user?._id }) }
 async function onDelete(post) { await store.deletePost(post._id) }
 async function onCloseEvent(post) { await store.setEventStatus(post._id, 'closed') }
-async function onRespond(post, message) { await store.respond(post._id, message); await store.fetchPosts({ author: auth.user?._id }) }
+async function onRespond(post, message) { await store.respond(post._id, message) }
 async function onLike(post) { await store.toggleLike(post._id, auth.user?._id) }
 async function onComment(post, message) { await store.addComment(post._id, message) }
 async function onDeleteComment(post, comment) { await store.deleteComment(post._id, comment._id) }
+async function onAttend(post, status, guests) { await store.setAttendance(post._id, status, guests) }
 </script>
 
 <style scoped>

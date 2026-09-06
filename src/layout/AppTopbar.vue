@@ -28,10 +28,10 @@
     <RouterLink
       v-else-if="!sessions.ongoing"
       to="/new"
-      class="ml-auto flex items-center justify-center w-9 h-9 rounded-lg text-ink bg-ocean hover:bg-ocean/90 transition-colors"
+      class="ml-auto flex items-center gap-1.5 px-3 h-9 rounded-lg text-ink bg-ocean hover:bg-ocean/90 transition-colors text-sm font-semibold"
       :title="t('nav.newSession')"
     >
-      <Plus :size="20" />
+      <Plus :size="18" /> {{ t('nav.newSession') }}
     </RouterLink>
 
     <span

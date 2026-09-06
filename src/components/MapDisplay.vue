@@ -4,14 +4,7 @@
 
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue'
-import L from 'leaflet'
-import 'leaflet/dist/leaflet.css'
-import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png'
-import markerIcon   from 'leaflet/dist/images/marker-icon.png'
-import markerShadow from 'leaflet/dist/images/marker-shadow.png'
-
-delete L.Icon.Default.prototype._getIconUrl
-L.Icon.Default.mergeOptions({ iconRetinaUrl: markerIcon2x, iconUrl: markerIcon, shadowUrl: markerShadow })
+import { loadGoogleMaps } from '../utils/googleMaps.js'
 
 const props = defineProps({
   lat: { type: Number, required: true },
@@ -21,16 +14,19 @@ const props = defineProps({
 const mapEl = ref(null)
 let map = null
 
-onMounted(() => {
-  map = L.map(mapEl.value).setView([props.lat, props.lng], 13)
-  L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-    attribution: 'Tiles © Esri'
-  }).addTo(map)
-  L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}').addTo(map)
-  L.marker([props.lat, props.lng]).addTo(map)
+onMounted(async () => {
+  const gmaps = await loadGoogleMaps()
+  const center = { lat: props.lat, lng: props.lng }
+  map = new gmaps.Map(mapEl.value, {
+    center,
+    zoom: 13,
+    mapTypeId: gmaps.MapTypeId.HYBRID,
+    streetViewControl: false,
+  })
+  new gmaps.Marker({ position: center, map })
 })
 
-onUnmounted(() => { map?.remove() })
+onUnmounted(() => { map = null })
 </script>
 
 <style scoped>
