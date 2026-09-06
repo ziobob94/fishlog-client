@@ -223,13 +223,22 @@ function shareLocation() {
 }
 
 async function startVoice() {
-  try { await startRecording() } catch (e) { toast(t('chat.attach.micDenied'), { type: 'danger' }) }
+  try {
+    await startRecording()
+  } catch (e) {
+    const key = e?.name === 'NotAllowedError' ? 'chat.attach.micDenied' : 'chat.attach.micUnsupported'
+    toast(t(key), { type: 'danger' })
+  }
 }
 
 async function stopAndSendVoice() {
   const blob = await stopRecording()
-  if (!blob) return
-  const file = new File([blob], `vocale-${Date.now()}.webm`, { type: 'audio/webm' })
+  if (!blob) { toast(t('chat.attach.voiceEmpty'), { type: 'danger' }); return }
+  // L'estensione riflette il mimetype reale negoziato dal browser (webm su
+  // Chrome/Firefox, mp4 su Safari): forzarla a .webm su file non-webm rende
+  // il file illeggibile ai player (durata 0 / errore di riproduzione).
+  const ext = blob.type.includes('mp4') ? 'm4a' : blob.type.includes('ogg') ? 'ogg' : 'webm'
+  const file = new File([blob], `vocale-${Date.now()}.${ext}`, { type: blob.type })
   await chatStore.sendMedia(route.params.userId, file)
   await scrollToBottom()
 }

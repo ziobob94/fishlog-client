@@ -193,7 +193,9 @@
 			"openMaps": "Apri in Maps",
 			"locationUnsupported": "Il tuo dispositivo non supporta la geolocalizzazione",
 			"locationDenied": "Permesso posizione negato",
-			"micDenied": "Permesso microfono negato"
+			"micDenied": "Permesso microfono negato",
+			"micUnsupported": "Registrazione vocale non supportata su questo dispositivo",
+			"voiceEmpty": "Registrazione troppo breve, riprova"
 		}
 	},
 	"friends": {
