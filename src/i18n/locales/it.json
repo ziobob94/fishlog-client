@@ -184,6 +184,12 @@
 		},
 		"messagePlaceholder": "Scrivi un messaggio...",
 		"send": "Invia",
+		"edit": "Modifica",
+		"delete": "Elimina",
+		"editing": "Modifica messaggio",
+		"edited": "modificato",
+		"deletedMessage": "Messaggio eliminato",
+		"confirmDelete": "Eliminare questo messaggio?",
 		"attach": {
 			"label": "Allega",
 			"media": "Foto o video",

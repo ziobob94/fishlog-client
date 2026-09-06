@@ -30,6 +30,14 @@ function handleMessage(event) {
     if (chat.conversations.length) chat.fetchConversations()
   } else if (message.type === 'notifications:read') {
     useNotificationStore().markConversationRead(message.conversationId, message.count)
+  } else if (message.type === 'chat:message-updated') {
+    const chat = useChatStore()
+    chat.applyUpdated(message.message)
+    if (chat.conversations.length) chat.fetchConversations()
+  } else if (message.type === 'chat:message-deleted') {
+    const chat = useChatStore()
+    chat.applyDeleted(message.messageId)
+    if (chat.conversations.length) chat.fetchConversations()
   }
 }
 

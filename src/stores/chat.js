@@ -84,6 +84,43 @@ export const useChatStore = defineStore('chat', () => {
     try { await api.post(`/chat/${conversationId}/read`) } catch (e) { /* non critico */ }
   }
 
+  async function editMessage(messageId, body) {
+    try {
+      const { data } = await api.patch(`/chat/messages/${messageId}`, { body })
+      const i = messages.value.findIndex(m => m._id === messageId)
+      if (i !== -1) messages.value[i] = data
+      return data
+    } catch (e) {
+      error.value = e.response?.data?.error || 'Errore modifica messaggio'
+      return null
+    }
+  }
+
+  async function deleteMessage(messageId) {
+    try {
+      await api.delete(`/chat/messages/${messageId}`)
+      applyDeleted(messageId)
+      return true
+    } catch (e) {
+      error.value = e.response?.data?.error || 'Errore eliminazione messaggio'
+      return false
+    }
+  }
+
+  // Applica localmente una modifica/eliminazione ricevuta via websocket
+  // (l'altro partecipante ha modificato o cancellato un messaggio).
+  function applyUpdated(message) {
+    const i = messages.value.findIndex(m => m._id === message._id)
+    if (i !== -1) messages.value[i] = message
+  }
+
+  function applyDeleted(messageId) {
+    const i = messages.value.findIndex(m => m._id === messageId)
+    if (i !== -1) {
+      messages.value[i] = { ...messages.value[i], deleted: true, body: null, media: null, location: null }
+    }
+  }
+
   // Aggiornamento realtime del badge via websocket, senza rifare la fetch.
   function setUnreadCount(count) {
     unreadCount.value = count
@@ -92,6 +129,6 @@ export const useChatStore = defineStore('chat', () => {
   return {
     conversations, messages, unreadCount, loading, error,
     fetchConversations, fetchUnreadCount, openConversationWith, fetchMessages, sendMessage, sendMedia, sendLocation,
-    markRead, setUnreadCount
+    markRead, editMessage, deleteMessage, applyUpdated, applyDeleted, setUnreadCount
   }
 })

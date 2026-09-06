@@ -77,7 +77,7 @@
 
       <div v-if="threadError" class="error-banner"><AlertTriangle :size="16" /> {{ threadError }}</div>
 
-      <div v-else class="thread card">
+      <div v-else class="thread">
         <div ref="scrollEl" class="messages-list">
           <div v-if="chatStore.loading && !chatStore.messages.length" class="state-center"><div class="spinner"></div></div>
           <div
@@ -86,31 +86,38 @@
             class="message-row"
             :class="{ mine: m.sender?._id === auth.user?._id }"
           >
-            <div class="message-bubble">
-              <span v-if="!m.type || m.type === 'text'" class="message-text">{{ m.body }}</span>
+            <div class="message-bubble" :class="{ deleted: m.deleted }">
+              <span v-if="m.deleted" class="message-text message-deleted-text">
+                <Ban :size="14" /> {{ t('chat.deletedMessage') }}
+              </span>
 
-              <a v-else-if="m.type === 'image'" :href="m.media?.url" target="_blank" rel="noopener">
-                <img :src="m.media?.url" class="message-media-image" />
-              </a>
+              <template v-else>
+                <span v-if="!m.type || m.type === 'text'" class="message-text">{{ m.body }}</span>
 
-              <video v-else-if="m.type === 'video'" :src="m.media?.url" controls class="message-media-video"></video>
+                <a v-else-if="m.type === 'image'" :href="m.media?.url" target="_blank" rel="noopener">
+                  <img :src="m.media?.url" class="message-media-image" />
+                </a>
 
-              <audio v-else-if="m.type === 'audio'" :src="m.media?.url" controls class="message-audio"></audio>
+                <video v-else-if="m.type === 'video'" :src="m.media?.url" controls class="message-media-video"></video>
 
-              <a v-else-if="m.type === 'file'" :href="m.media?.url" target="_blank" rel="noopener" class="message-file">
-                <FileText :size="20" />
-                <span class="message-file-info">
-                  <span class="message-file-name">{{ m.media?.originalName }}</span>
-                  <span class="message-file-size">{{ formatSize(m.media?.size) }}</span>
-                </span>
-              </a>
+                <audio v-else-if="m.type === 'audio'" :src="m.media?.url" controls class="message-audio"></audio>
 
-              <a v-else-if="m.type === 'location'" :href="mapsLink(m.location)" target="_blank" rel="noopener" class="message-location">
-                <MapDisplay class="message-location-map" :lat="m.location.lat" :lng="m.location.lng" />
-                <span class="message-location-link"><MapPin :size="14" /> {{ t('chat.attach.openMaps') }}</span>
-              </a>
+                <a v-else-if="m.type === 'file'" :href="m.media?.url" target="_blank" rel="noopener" class="message-file">
+                  <FileText :size="20" />
+                  <span class="message-file-info">
+                    <span class="message-file-name">{{ m.media?.originalName }}</span>
+                    <span class="message-file-size">{{ formatSize(m.media?.size) }}</span>
+                  </span>
+                </a>
+
+                <a v-else-if="m.type === 'location'" :href="mapsLink(m.location)" target="_blank" rel="noopener" class="message-location">
+                  <MapDisplay class="message-location-map" :lat="m.location.lat" :lng="m.location.lng" />
+                  <span class="message-location-link"><MapPin :size="14" /> {{ t('chat.attach.openMaps') }}</span>
+                </a>
+              </template>
 
               <span class="message-meta">
+                <span v-if="m.editedAt && !m.deleted" class="message-edited">{{ t('chat.edited') }}</span>
                 {{ formatTime(m.createdAt) }}
                 <template v-if="m.sender?._id === auth.user?._id">
                   <Check v-if="!m.readAt" :size="14" class="tick" />
@@ -118,11 +125,25 @@
                 </template>
               </span>
             </div>
+
+            <div v-if="!m.deleted && m.sender?._id === auth.user?._id" class="message-actions">
+              <button v-if="m.type === 'text'" class="message-action-btn" :title="t('chat.edit')" @click="startEdit(m)">
+                <Pencil :size="13" />
+              </button>
+              <button class="message-action-btn" :title="t('chat.delete')" @click="removeMessage(m._id)">
+                <Trash2 :size="13" />
+              </button>
+            </div>
           </div>
         </div>
 
+        <div v-if="editingId" class="editing-banner">
+          <Pencil :size="14" /> {{ t('chat.editing') }}
+          <button class="icon-btn icon-btn-sm" type="button" @click="cancelEdit"><X :size="14" /></button>
+        </div>
+
         <div class="message-input-row" ref="attachWrapper">
-          <div class="attach-wrap">
+          <div v-if="!editingId" class="attach-wrap">
             <button class="icon-btn" type="button" :title="t('chat.attach.label')" @click="attachMenuOpen = !attachMenuOpen">
               <Paperclip :size="18" />
             </button>
@@ -147,7 +168,7 @@
               :placeholder="t('chat.messagePlaceholder')"
               @keydown.enter="send"
             />
-            <button v-if="draft.trim()" class="btn btn-primary btn-sm" type="button" @click="send">{{ t('chat.send') }}</button>
+            <button v-if="draft.trim() || editingId" class="btn btn-primary btn-sm" type="button" :disabled="!draft.trim()" @click="send">{{ t('chat.send') }}</button>
             <button v-else class="icon-btn" type="button" :title="t('chat.attach.voice')" @click="startVoice">
               <Mic :size="18" />
             </button>
@@ -162,7 +183,7 @@
 import { ref, reactive, computed, watch, onMounted, onBeforeUnmount, nextTick } from 'vue'
 import { useRoute, useRouter, RouterLink } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { MessagesSquare, AlertTriangle, Users, Paperclip, Mic, MapPin, FileText, Check, CheckCheck } from 'lucide-vue-next'
+import { MessagesSquare, AlertTriangle, Users, Paperclip, Mic, MapPin, FileText, Check, CheckCheck, Pencil, Trash2, Ban, X } from 'lucide-vue-next'
 import { useChatStore } from '../stores/chat.js'
 import { useFriendStore } from '../stores/friends.js'
 import { useUserStore } from '../stores/users.js'
@@ -184,7 +205,23 @@ const { toast }   = useToast()
 const draft       = ref('')
 const scrollEl     = ref(null)
 const threadError  = ref('')
+const editingId    = ref(null)
 let pollTimer = null
+
+function startEdit(m) {
+  editingId.value = m._id
+  draft.value = m.body || ''
+}
+
+function cancelEdit() {
+  editingId.value = null
+  draft.value = ''
+}
+
+async function removeMessage(messageId) {
+  if (!window.confirm(t('chat.confirmDelete'))) return
+  await chatStore.deleteMessage(messageId)
+}
 
 // Allegati: menu "+" (media/file/posizione) e registrazione vocale
 const attachMenuOpen = ref(false)
@@ -361,6 +398,12 @@ async function send() {
   const body = draft.value.trim()
   if (!body) return
   draft.value = ''
+  if (editingId.value) {
+    const id = editingId.value
+    editingId.value = null
+    await chatStore.editMessage(id, body)
+    return
+  }
   await chatStore.sendMessage(route.params.userId, body)
   await scrollToBottom()
 }
@@ -368,6 +411,7 @@ async function send() {
 watch(() => route.params.userId, (userId) => {
   clearInterval(pollTimer)
   chatStore.messages = []
+  editingId.value = null
   if (userId) loadThread(userId)
   else chatStore.fetchConversations()
 }, { immediate: true })
@@ -423,17 +467,31 @@ onBeforeUnmount(() => {
 .thread { @apply flex flex-col gap-3 h-[65vh]; }
 .messages-list { @apply flex-1 overflow-y-auto flex flex-col gap-2 pr-1; }
 
-.message-row { @apply flex; }
-.message-row.mine { @apply justify-end; }
+.message-row { @apply flex items-end gap-1; }
+.message-row.mine { @apply justify-end flex-row-reverse; }
 .message-bubble {
-  @apply max-w-[75%] flex flex-col gap-1 bg-surface-2 border border-border rounded-lg px-3 py-2 text-sm text-foam;
+  @apply max-w-[75%] min-w-[4.5rem] flex flex-col gap-1 bg-surface-2 border border-border rounded-lg px-3 py-2 text-sm text-foam;
 }
 .message-row.mine .message-bubble { @apply bg-ocean border-ocean text-white; }
 .message-text { @apply whitespace-pre-wrap; }
 
-.message-meta { @apply self-end flex items-center gap-1 text-[0.65rem] opacity-70 mt-0.5; }
-.tick { @apply opacity-70; }
+.message-bubble.deleted { @apply opacity-70 italic; }
+.message-deleted-text { @apply flex items-center gap-1.5 text-muted; }
+.message-row.mine .message-deleted-text { @apply text-white/70; }
+
+.message-meta { @apply self-end flex items-center gap-1 text-[0.65rem] opacity-90 mt-0.5 whitespace-nowrap; }
+.message-edited { @apply italic opacity-80; }
+.tick { @apply opacity-90; }
 .tick-read { @apply text-sky-300 opacity-100; }
+
+.message-actions {
+  @apply flex flex-col gap-0.5 opacity-0 transition-opacity duration-150;
+}
+.message-row:hover .message-actions { @apply opacity-100; }
+.message-action-btn {
+  @apply flex items-center justify-center w-6 h-6 rounded text-muted bg-transparent border-none
+         cursor-pointer hover:bg-surface-2 hover:text-ocean transition-colors;
+}
 
 .message-media-image { @apply max-w-full rounded-sm max-h-72 object-cover cursor-pointer; }
 .message-media-video { @apply max-w-full rounded-sm max-h-72; }
@@ -450,6 +508,11 @@ onBeforeUnmount(() => {
 .message-location-map :deep(.map-display) { height: 140px; width: 220px; }
 .message-location-link { @apply flex items-center gap-1 text-xs; }
 
+.editing-banner {
+  @apply flex items-center gap-2 text-xs text-ocean bg-ocean/10 border-l-2 border-ocean px-3 py-1.5 rounded-sm;
+}
+.editing-banner .icon-btn-sm { @apply ml-auto; }
+
 .message-input-row { @apply flex items-center gap-2 border-t border-border pt-3 relative; }
 .message-input-row input { @apply text-sm flex-1; }
 
@@ -457,6 +520,7 @@ onBeforeUnmount(() => {
   @apply flex items-center justify-center w-9 h-9 rounded-lg text-muted bg-transparent border-none
          cursor-pointer hover:bg-surface-2 hover:text-ocean transition-colors shrink-0;
 }
+.icon-btn-sm { @apply w-6 h-6; }
 .hidden-input { @apply hidden; }
 
 .attach-wrap { @apply relative; }
