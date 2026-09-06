@@ -1,3 +1,10 @@
+# [1.14.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.13.1...client-v1.14.0) (2026-09-06)
+
+
+### Features
+
+* modifica/eliminazione messaggi, larghezza minima bubble, chat senza riquadro ([7e44d2a](https://github.com/ziobob94/fishlog-client/commit/7e44d2a25af6dd013ad5a560e630c22eea1a9fd6))
+
 ## [1.13.1](https://github.com/ziobob94/fishlog-client/compare/client-v1.13.0...client-v1.13.1) (2026-09-06)
 
 
