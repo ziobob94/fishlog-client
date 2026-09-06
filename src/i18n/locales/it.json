@@ -160,6 +160,8 @@
 		"title": "Notifiche",
 		"empty": "Nessuna notifica",
 		"markAllRead": "Segna tutte come lette",
+		"deleteAll": "Elimina tutte",
+		"delete": "Elimina",
 		"types": {
 			"friend_request": "{name} ti ha inviato una richiesta di amicizia",
 			"friend_accept": "{name} ha accettato la tua richiesta di amicizia",

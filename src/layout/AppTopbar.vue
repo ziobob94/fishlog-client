@@ -27,17 +27,25 @@
         <div v-if="notifPanelOpen" class="notif-panel card">
           <div class="notif-panel-header">
             <h4>{{ t('notifications.title') }}</h4>
-            <button v-if="notifications.unreadCount" class="btn btn-ghost btn-sm" @click="notifications.markAllRead()">
-              {{ t('notifications.markAllRead') }}
-            </button>
+            <div class="notif-panel-actions">
+              <button v-if="notifications.unreadCount" class="btn btn-ghost btn-sm" @click="notifications.markAllRead()">
+                {{ t('notifications.markAllRead') }}
+              </button>
+              <button v-if="notifications.items.length" class="btn btn-ghost btn-sm" @click="notifications.removeAll()">
+                {{ t('notifications.deleteAll') }}
+              </button>
+            </div>
           </div>
           <p v-if="!notifications.items.length" class="text-muted text-sm p-3">{{ t('notifications.empty') }}</p>
           <ul v-else class="notif-list">
-            <li v-for="n in notifications.items" :key="n._id">
-              <RouterLink :to="notificationLink(n)" class="notif-row" :class="{ unread: !n.read }" @click="onNotificationClick(n)">
+            <li v-for="n in notifications.items" :key="n._id" class="notif-row" :class="{ unread: !n.read }">
+              <RouterLink :to="notificationLink(n)" class="notif-row-link" @click="onNotificationClick(n)">
                 <span>{{ t(`notifications.types.${n.type}`, { name: n.actor?.displayName || n.actor?.email || '' }) }}</span>
                 <span class="text-muted text-xs">{{ formatTime(n.createdAt) }}</span>
               </RouterLink>
+              <button class="notif-remove" :title="t('notifications.delete')" @click="notifications.remove(n._id)">
+                <X :size="14" />
+              </button>
             </li>
           </ul>
         </div>
@@ -85,7 +93,7 @@
 import { computed, onMounted, onBeforeUnmount, ref } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { Fish, WifiOff, RefreshCw, AlertTriangle, Hourglass, Plus, Bell } from 'lucide-vue-next'
+import { Fish, WifiOff, RefreshCw, AlertTriangle, Hourglass, Plus, Bell, X } from 'lucide-vue-next'
 import { useOfflineStore } from '../stores/offline.js'
 import { useSessionStore } from '../stores/sessions.js'
 import { useAuthStore } from '../stores/auth.js'
@@ -157,12 +165,21 @@ const statusTitle = computed(() => {
   @apply absolute right-0 top-11 w-80 max-h-96 overflow-y-auto z-[110] p-0;
 }
 .notif-panel-header {
-  @apply flex items-center justify-between px-3 py-2 border-b border-border;
+  @apply flex items-center justify-between px-3 py-2 border-b border-border gap-2;
 }
 .notif-panel-header h4 { @apply font-semibold text-sm; }
+.notif-panel-actions { @apply flex items-center gap-1; }
 .notif-list { @apply divide-y divide-border; }
 .notif-row {
-  @apply flex flex-col gap-0.5 px-3 py-2 text-sm no-underline text-inherit hover:bg-surface-2 transition-colors;
+  @apply flex items-center gap-1 hover:bg-surface-2 transition-colors;
 }
-.notif-row.unread { @apply bg-ocean/5 font-medium; }
+.notif-row.unread { @apply bg-ocean/5; }
+.notif-row-link {
+  @apply flex-1 min-w-0 flex flex-col gap-0.5 px-3 py-2 text-sm no-underline text-inherit;
+}
+.notif-row.unread .notif-row-link { @apply font-medium; }
+.notif-remove {
+  @apply flex items-center justify-center w-7 h-7 mr-2 rounded text-muted bg-transparent border-none
+         cursor-pointer hover:text-danger hover:bg-danger/10 transition-colors shrink-0;
+}
 </style>

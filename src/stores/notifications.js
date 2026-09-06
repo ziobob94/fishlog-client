@@ -44,6 +44,23 @@ export const useNotificationStore = defineStore('notifications', () => {
     } catch (e) { /* non critico */ }
   }
 
+  async function remove(id) {
+    try {
+      await api.delete(`/notifications/${id}`)
+      const item = items.value.find(n => n._id === id)
+      if (item && !item.read) unreadCount.value = Math.max(0, unreadCount.value - 1)
+      items.value = items.value.filter(n => n._id !== id)
+    } catch (e) { /* non critico */ }
+  }
+
+  async function removeAll() {
+    try {
+      await api.delete('/notifications')
+      items.value = []
+      unreadCount.value = 0
+    } catch (e) { /* non critico */ }
+  }
+
   // Evento ricevuto via websocket: prepend in cima alla lista e incrementa il badge.
   function applyRealtimeEvent(notification) {
     items.value = [notification, ...items.value]
@@ -62,6 +79,7 @@ export const useNotificationStore = defineStore('notifications', () => {
 
   return {
     items, unreadCount, loading, error,
-    fetchNotifications, fetchUnreadCount, markRead, markAllRead, applyRealtimeEvent, markConversationRead
+    fetchNotifications, fetchUnreadCount, markRead, markAllRead, remove, removeAll,
+    applyRealtimeEvent, markConversationRead
   }
 })
