@@ -32,10 +32,9 @@
       <div class="section-separator"></div>
     </template>
 
-    <button type="button" class="filters-toggle" @click="showFilters = !showFilters">
-      <Filter :size="15" />
-      <span>{{ t('posts.filters.title') }}</span>
-      <ChevronDown :size="16" class="chevron" :class="{ open: showFilters }" />
+    <button type="button" class="filters-toggle" @click="showFilters = !showFilters" :aria-pressed="showFilters">
+      <span class="filters-toggle-label"><Filter :size="15" /> {{ t('posts.filters.title') }}</span>
+      <span class="switch" :class="{ on: showFilters }"><span class="switch-knob"></span></span>
     </button>
 
     <div v-if="showFilters" class="filters-panel">
@@ -53,13 +52,12 @@
         </div>
 
         <div class="filter-field">
-          <label>{{ t('posts.filters.dateFrom') }}</label>
-          <input type="date" v-model="filters.dateFrom" @change="reload" />
-        </div>
-
-        <div class="filter-field">
-          <label>{{ t('posts.filters.dateTo') }}</label>
-          <input type="date" v-model="filters.dateTo" @change="reload" />
+          <label>{{ t('posts.filters.dateRangeLabel') }}</label>
+          <div class="date-range">
+            <input type="date" v-model="filters.dateFrom" :title="t('posts.filters.dateFrom')" @change="reload" />
+            <span class="date-range-sep">{{ t('posts.filters.dateRangeSep') }}</span>
+            <input type="date" v-model="filters.dateTo" :title="t('posts.filters.dateTo')" @change="reload" />
+          </div>
         </div>
 
         <div class="filter-field author-filter">
@@ -85,34 +83,51 @@
         <template v-if="tab === 'event'">
           <div class="filter-field">
             <label>{{ t('posts.filters.locationLabel') }}</label>
-            <button type="button" class="btn btn-ghost btn-sm" :disabled="locating" @click="useMyLocation">
-              <MapPin :size="14" /> {{ filters.near ? t('posts.filters.locationSet') : t('posts.filters.useMyLocation') }}
-            </button>
+            <div class="location-buttons">
+              <button type="button" class="btn btn-ghost btn-sm" :disabled="locating" @click="useMyLocation">
+                <MapPin :size="14" /> {{ t('posts.filters.useMyLocation') }}
+              </button>
+              <button type="button" class="btn btn-ghost btn-sm" @click="showLocationPicker = !showLocationPicker">
+                <MapIcon :size="14" /> {{ t('posts.filters.pickOnMap') }}
+              </button>
+              <span v-if="filters.near" class="chip">
+                {{ t('posts.filters.locationSet') }}
+                <button type="button" @click="clearLocation"><X :size="12" /></button>
+              </span>
+            </div>
           </div>
 
-          <div v-if="filters.near" class="filter-field">
-            <label>{{ t('posts.filters.radiusLabel') }}</label>
+          <div v-if="filters.near" class="filter-field radius-field">
+            <label>{{ t('posts.filters.radiusLabel') }}: <strong>{{ filters.radiusKm }} km</strong></label>
             <input
-              type="number"
+              type="range"
               min="1"
+              max="200"
+              step="1"
               v-model.number="filters.radiusKm"
-              :placeholder="t('posts.filters.radiusPlaceholder')"
               @change="reload"
             />
-          </div>
-
-          <div class="filter-field">
-            <label>{{ t('posts.filters.sortLabel') }}</label>
-            <select v-model="filters.sort" @change="reload">
-              <option value="date">{{ t('posts.filters.sortDate') }}</option>
-              <option value="proximity" :disabled="!filters.near">{{ t('posts.filters.sortProximity') }}</option>
-            </select>
           </div>
         </template>
       </div>
 
+      <div v-if="tab === 'event' && showLocationPicker" class="location-picker-wrap">
+        <p class="filters-desc">{{ t('posts.filters.pickOnMapHint') }}</p>
+        <LocationPicker :lat="pickerLat" :lng="pickerLng" @update:lat="onPickLat" @update:lng="onPickLng" />
+      </div>
+
+      <div v-if="tab === 'event'" class="filter-field sort-field">
+        <label>{{ t('posts.filters.sortLabel') }}</label>
+        <select v-model="filters.sort" @change="reload">
+          <option value="date">{{ t('posts.filters.sortDate') }}</option>
+          <option value="proximity" :disabled="!filters.near">{{ t('posts.filters.sortProximity') }}</option>
+        </select>
+      </div>
+
       <button type="button" class="btn btn-ghost btn-sm mt-2" @click="resetFilters">{{ t('posts.filters.reset') }}</button>
     </div>
+
+    <div class="section-separator"></div>
 
     <div v-if="store.loading" class="state-center mt-4"><div class="spinner"></div></div>
 
@@ -140,178 +155,314 @@
 </template>
 
 <script setup>
-import { onMounted, reactive, ref } from 'vue'
-import { useI18n } from 'vue-i18n'
-import { Newspaper, CalendarDays, MapPin, X, Plus, Filter, ChevronDown } from 'lucide-vue-next'
-import { usePostStore } from '../stores/posts.js'
-import { useAuthStore } from '../stores/auth.js'
-import { useUserStore } from '../stores/users.js'
-import PostForm from '../components/post/PostForm.vue'
-import PostCard from '../components/post/PostCard.vue'
+  import { onMounted, reactive, ref, watch } from 'vue'
+  import { useI18n } from 'vue-i18n'
+  import { Newspaper, CalendarDays, MapPin, Map as MapIcon, X, Plus, Filter } from 'lucide-vue-next'
+  import { usePostStore } from '../stores/posts.js'
+  import { useAuthStore } from '../stores/auth.js'
+  import { useUserStore } from '../stores/users.js'
+  import PostForm from '../components/post/PostForm.vue'
+  import PostCard from '../components/post/PostCard.vue'
+  import LocationPicker from '../components/form/LocationPicker.vue'
 
-const { t } = useI18n()
-const store = usePostStore()
-const auth  = useAuthStore()
-const userStore = useUserStore()
+  const { t } = useI18n()
+  const store = usePostStore()
+  const auth = useAuthStore()
+  const userStore = useUserStore()
 
-const tab = ref('post')
-const showForm = ref(false)
-const showFilters = ref(false)
-const filters = reactive({
-  visibility: '',
-  dateFrom: '',
-  dateTo: '',
-  author: '',
-  near: '',
-  radiusKm: '',
-  sort: 'date'
-})
+  const tab = ref('post')
+  const showForm = ref(false)
+  const showFilters = ref(false)
+  const filters = reactive({
+    visibility: '',
+    dateFrom: '',
+    dateTo: '',
+    author: '',
+    near: '',
+    radiusKm: 25,
+    sort: 'date'
+  })
 
-const authorQuery    = ref('')
-const selectedAuthor = ref(null)
-const userResults    = ref([])
-const locating       = ref(false)
-let authorSearchTimer = null
+  const authorQuery = ref('')
+  const selectedAuthor = ref(null)
+  const userResults = ref([])
+  const locating = ref(false)
+  let authorSearchTimer = null
 
-function buildParams() {
-  const params = { type: tab.value }
-  if (filters.visibility) params.visibility = filters.visibility
-  if (filters.dateFrom) params.dateFrom = filters.dateFrom
-  if (filters.dateTo) params.dateTo = filters.dateTo
-  if (filters.author) params.author = filters.author
-  if (tab.value === 'event') {
-    if (filters.near) params.near = filters.near
-    if (filters.near && filters.radiusKm) params.radiusKm = filters.radiusKm
-    params.sort = filters.sort
+  const showLocationPicker = ref(false)
+  const pickerLat = ref(null)
+  const pickerLng = ref(null)
+  let pickCommitTimer = null
+
+  watch(() => filters.near, (value) => {
+    if (!value) { pickerLat.value = null; pickerLng.value = null; return }
+    const [lat, lng] = value.split(',').map(Number)
+    pickerLat.value = lat
+    pickerLng.value = lng
+  })
+
+  function schedulePickCommit() {
+    clearTimeout(pickCommitTimer)
+    pickCommitTimer = setTimeout(() => {
+      if (pickerLat.value != null && pickerLng.value != null) {
+        filters.near = `${pickerLat.value},${pickerLng.value}`
+        reload()
+      }
+    }, 0)
   }
-  return params
-}
+  function onPickLat(v) { pickerLat.value = v; schedulePickCommit() }
+  function onPickLng(v) { pickerLng.value = v; schedulePickCommit() }
 
-function reload() { store.fetchPosts(buildParams()) }
+  function clearLocation() {
+    filters.near = ''
+    showLocationPicker.value = false
+    reload()
+  }
 
-function setTab(value) {
-  tab.value = value
-  if (value === 'post') { filters.near = ''; filters.radiusKm = ''; filters.sort = 'date' }
-  reload()
-}
+  function buildParams() {
+    const params = { type: tab.value }
+    if (filters.visibility) params.visibility = filters.visibility
+    if (filters.dateFrom) params.dateFrom = filters.dateFrom
+    if (filters.dateTo) params.dateTo = filters.dateTo
+    if (filters.author) params.author = filters.author
+    if (tab.value === 'event') {
+      if (filters.near) params.near = filters.near
+      if (filters.near && filters.radiusKm) params.radiusKm = filters.radiusKm
+      params.sort = filters.sort
+    }
+    return params
+  }
 
-function onAuthorSearch() {
-  clearTimeout(authorSearchTimer)
-  authorSearchTimer = setTimeout(async () => {
-    userResults.value = await userStore.searchUsers(authorQuery.value)
-  }, 300)
-}
+  function reload() { store.fetchPosts(buildParams()) }
 
-function pickAuthor(u) {
-  selectedAuthor.value = u
-  filters.author = u._id
-  authorQuery.value = ''
-  userResults.value = []
-  reload()
-}
+  function setTab(value) {
+    tab.value = value
+    if (value === 'post') {
+      filters.near = ''
+      filters.radiusKm = 25
+      filters.sort = 'date'
+      showLocationPicker.value = false
+    }
+    reload()
+  }
 
-function clearAuthor() {
-  selectedAuthor.value = null
-  filters.author = ''
-  reload()
-}
+  function onAuthorSearch() {
+    clearTimeout(authorSearchTimer)
+    authorSearchTimer = setTimeout(async () => {
+      userResults.value = await userStore.searchUsers(authorQuery.value)
+    }, 300)
+  }
 
-function useMyLocation() {
-  if (!navigator.geolocation) return
-  locating.value = true
-  navigator.geolocation.getCurrentPosition(
-    pos => {
-      const lat = parseFloat(pos.coords.latitude.toFixed(6))
-      const lng = parseFloat(pos.coords.longitude.toFixed(6))
-      filters.near = `${lat},${lng}`
-      locating.value = false
-      reload()
-    },
-    err => { locating.value = false; console.warn('GPS error', err) },
-    { timeout: 10000, enableHighAccuracy: true }
-  )
-}
+  function pickAuthor(u) {
+    selectedAuthor.value = u
+    filters.author = u._id
+    authorQuery.value = ''
+    userResults.value = []
+    reload()
+  }
 
-function resetFilters() {
-  filters.visibility = ''
-  filters.dateFrom = ''
-  filters.dateTo = ''
-  filters.author = ''
-  filters.near = ''
-  filters.radiusKm = ''
-  filters.sort = 'date'
-  selectedAuthor.value = null
-  authorQuery.value = ''
-  userResults.value = []
-  reload()
-}
+  function clearAuthor() {
+    selectedAuthor.value = null
+    filters.author = ''
+    reload()
+  }
 
-onMounted(() => {
-  reload()
-  store.markSeen('feed')
-})
+  function useMyLocation() {
+    if (!navigator.geolocation) return
+    locating.value = true
+    navigator.geolocation.getCurrentPosition(
+      pos => {
+        const lat = parseFloat(pos.coords.latitude.toFixed(6))
+        const lng = parseFloat(pos.coords.longitude.toFixed(6))
+        filters.near = `${lat},${lng}`
+        locating.value = false
+        reload()
+      },
+      err => { locating.value = false; console.warn('GPS error', err) },
+      { timeout: 10000, enableHighAccuracy: true }
+    )
+  }
 
-function onCreated() { showForm.value = false; reload() }
-async function onDelete(post) { await store.deletePost(post._id) }
-async function onCloseEvent(post) { await store.setEventStatus(post._id, 'closed') }
-async function onRespond(post, message) { await store.respond(post._id, message) }
-async function onLike(post) { await store.toggleLike(post._id, auth.user?._id) }
-async function onComment(post, message) { await store.addComment(post._id, message) }
-async function onDeleteComment(post, comment) { await store.deleteComment(post._id, comment._id) }
-async function onAttend(post, status, guests) { await store.setAttendance(post._id, status, guests) }
+  function resetFilters() {
+    filters.visibility = ''
+    filters.dateFrom = ''
+    filters.dateTo = ''
+    filters.author = ''
+    filters.near = ''
+    filters.radiusKm = 25
+    filters.sort = 'date'
+    selectedAuthor.value = null
+    authorQuery.value = ''
+    userResults.value = []
+    showLocationPicker.value = false
+    reload()
+  }
+
+  onMounted(() => {
+    reload()
+    store.markSeen('feed')
+  })
+
+  function onCreated() { showForm.value = false; reload() }
+  async function onDelete(post) { await store.deletePost(post._id) }
+  async function onCloseEvent(post) { await store.setEventStatus(post._id, 'closed') }
+  async function onRespond(post, message) { await store.respond(post._id, message) }
+  async function onLike(post) { await store.toggleLike(post._id, auth.user?._id) }
+  async function onComment(post, message) { await store.addComment(post._id, message) }
+  async function onDeleteComment(post, comment) { await store.deleteComment(post._id, comment._id) }
+  async function onAttend(post, status, guests) { await store.setAttendance(post._id, status, guests) }
 </script>
 
 <style scoped>
-.page-header { @apply flex items-center justify-between mb-6; }
-.tabs-row    { @apply flex items-center gap-2 border-b border-border; }
-.tabs        { @apply flex gap-5; }
-.posts-list  { @apply flex flex-col gap-4; }
+  .page-header {
+    @apply flex items-center justify-between mb-6;
+  }
 
-.tab-btn {
-  @apply inline-flex items-center gap-1.5 text-sm font-medium text-muted bg-transparent border-none
-         border-b-2 border-transparent cursor-pointer px-1 py-2.5 -mb-px transition-colors;
-}
-.tab-btn:hover { @apply text-foam; }
-.tab-btn.active { @apply text-ocean border-ocean; }
+  .tabs-row {
+    @apply flex items-center gap-2 border-b border-border;
+  }
 
-.post-form-wrap { @apply mt-4; }
+  .tabs {
+    @apply flex gap-2;
+  }
 
-.section-separator { @apply border-t border-border my-4; }
+  .posts-list {
+    @apply flex flex-col gap-4;
+  }
 
-.page-desc { @apply text-sm text-muted mt-1; }
+  .tab-btn {
+    @apply inline-flex items-center gap-2 text-[0.95rem] font-semibold text-muted bg-transparent border border-transparent border-b-[3px] rounded-t-md cursor-pointer px-3 py-2.5 -mb-px transition-colors;
+  }
 
-.filters-toggle {
-  @apply inline-flex items-center gap-2 text-sm font-medium text-foam bg-transparent border-none
-         cursor-pointer px-0 py-3 transition-colors;
-}
-.filters-toggle:hover { @apply text-ocean; }
-.filters-toggle .chevron { @apply text-muted transition-transform duration-200; }
-.filters-toggle .chevron.open { transform: rotate(180deg); }
+  .tab-btn:hover {
+    @apply text-foam bg-surface-2;
+  }
 
-.filters-panel { @apply flex flex-col gap-3 pb-4 border-b border-border; }
-.filters-desc  { @apply text-sm text-muted; }
+  .tab-btn.active {
+    @apply text-ocean border-ocean bg-surface-2;
+  }
 
-.filters-grid { @apply flex flex-wrap items-end gap-4; }
+  .post-form-wrap {
+    @apply mt-4;
+  }
 
-.filter-field { @apply flex flex-col gap-1.5; }
-.filter-field label { @apply text-xs font-medium text-muted; }
-.filter-field select,
-.filter-field input[type="date"],
-.filter-field input[type="number"],
-.filter-field input[type="text"] { @apply text-sm w-auto; }
+  .section-separator {
+    @apply border-t border-border my-4;
+  }
 
-.author-filter  { @apply relative; }
-.author-filter input { @apply text-sm; }
-.chip {
-  @apply inline-flex items-center gap-1.5 text-xs bg-surface-2 border border-border rounded-full px-3 py-1.5;
-}
-.chip button { @apply bg-transparent border-none cursor-pointer text-muted flex items-center; }
+  .page-desc {
+    @apply text-sm text-muted mt-1;
+  }
 
-.author-results {
-  @apply absolute top-full left-0 mt-1 flex flex-col bg-surface-2 border border-border rounded-sm
-         shadow-lg z-10 min-w-[180px] max-h-48 overflow-y-auto;
-}
-.author-result-row {
-  @apply text-sm text-left bg-transparent border-none cursor-pointer px-3 py-2 hover:bg-surface;
-}
+  .filters-toggle {
+    @apply flex items-center justify-between w-full gap-2 text-sm font-medium text-foam mt-4 bg-transparent border-none cursor-pointer px-0 py-3 transition-colors;
+  }
+
+  .filters-toggle:hover {
+    @apply text-ocean;
+  }
+
+  .filters-toggle-label {
+    @apply inline-flex items-center gap-2;
+  }
+
+  .switch {
+    @apply relative inline-flex items-center w-9 h-5 rounded-full bg-surface-2 border border-border transition-colors;
+  }
+
+  .switch.on {
+    @apply bg-ocean border-ocean;
+  }
+
+  .switch-knob {
+    @apply absolute left-0.5 w-3.5 h-3.5 rounded-full bg-muted transition-transform duration-200;
+  }
+
+  .switch.on .switch-knob {
+    @apply bg-white;
+    transform: translateX(1rem);
+  }
+
+  .filters-panel {
+    @apply flex flex-col gap-3 pb-4;
+  }
+
+  .filters-desc {
+    @apply text-sm text-muted;
+  }
+
+  .filters-grid {
+    @apply flex flex-wrap items-end gap-4;
+  }
+
+  .filter-field {
+    @apply flex flex-col gap-1.5;
+  }
+
+  .filter-field label {
+    @apply text-xs font-medium text-muted;
+  }
+
+  .filter-field select,
+  .filter-field input[type="date"],
+  .filter-field input[type="number"],
+  .filter-field input[type="text"] {
+    @apply text-sm w-auto;
+  }
+
+  .author-filter {
+    @apply relative;
+  }
+
+  .author-filter input {
+    @apply text-sm;
+  }
+
+  .chip {
+    @apply inline-flex items-center gap-1.5 text-xs bg-surface-2 border border-border rounded-full px-3 py-1.5;
+  }
+
+  .chip button {
+    @apply bg-transparent border-none cursor-pointer text-muted flex items-center;
+  }
+
+  .author-results {
+    @apply absolute top-full left-0 mt-1 flex flex-col bg-surface-2 border border-border rounded-sm shadow-lg z-10 min-w-[180px] max-h-48 overflow-y-auto;
+  }
+
+  .author-result-row {
+    @apply text-sm text-left bg-transparent border-none cursor-pointer px-3 py-2 hover:bg-surface;
+  }
+
+  .date-range {
+    @apply flex items-center gap-2;
+  }
+
+  .date-range-sep {
+    @apply text-xs text-muted;
+  }
+
+  .location-buttons {
+    @apply flex items-center flex-wrap gap-2;
+  }
+
+  .radius-field {
+    @apply min-w-[180px];
+  }
+
+  .radius-field input[type="range"] {
+    @apply w-full;
+  }
+
+  .sort-field {
+    @apply w-full;
+  }
+
+  .sort-field select {
+    @apply w-auto;
+  }
+
+  .location-picker-wrap {
+    @apply flex flex-col gap-2 mt-1;
+  }
 </style>
