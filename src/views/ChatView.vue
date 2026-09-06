@@ -43,6 +43,10 @@
           </button>
         </div>
       </div>
+      <div v-else-if="!friendStore.friends.length" class="card new-chat-card">
+        <label>{{ t('chat.newChat.label') }}</label>
+        <p class="text-muted mt-1">{{ t('chat.newChat.noFriends') }}</p>
+      </div>
 
       <div v-if="chatStore.loading" class="state-center"><div class="spinner"></div></div>
 

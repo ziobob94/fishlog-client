@@ -160,7 +160,8 @@
 		"empty": "Nessuna conversazione: scrivi a un amico qui sopra per iniziare",
 		"friendsLink": "Vai ai tuoi amici",
 		"newChat": {
-			"label": "Nuova chat"
+			"label": "Nuova chat",
+			"noFriends": "Nessun amico disponibile: aggiungine uno per iniziare una chat"
 		},
 		"addFriend": {
 			"label": "Aggiungi un amico",
