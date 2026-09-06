@@ -1,3 +1,11 @@
+# [1.4.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.3.0...client-v1.4.0) (2026-09-06)
+
+
+### Features
+
+* Aggiungi gestione delle preferenze di notifica nel profilo utente ([f10fd16](https://github.com/ziobob94/fishlog-client/commit/f10fd168f703f03a52481335594bc735eadc9182))
+* Aggiungi gestione delle richieste di amicizia e badge di notifica nel profilo ([a8f0bd8](https://github.com/ziobob94/fishlog-client/commit/a8f0bd8af8a1e0ebecdac73b4008432a923bf206))
+
 # [1.3.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.2.3...client-v1.3.0) (2026-09-06)
 
 
