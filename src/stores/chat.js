@@ -54,6 +54,32 @@ export const useChatStore = defineStore('chat', () => {
     }
   }
 
+  async function sendMedia(userId, file) {
+    try {
+      const form = new FormData()
+      form.append('file', file)
+      const { data } = await api.post(`/chat/with/${userId}/messages/media`, form, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      })
+      messages.value = [...messages.value, data]
+      return data
+    } catch (e) {
+      error.value = e.response?.data?.error || 'Errore invio allegato'
+      return null
+    }
+  }
+
+  async function sendLocation(userId, { lat, lng, name }) {
+    try {
+      const { data } = await api.post(`/chat/with/${userId}/messages/location`, { lat, lng, name })
+      messages.value = [...messages.value, data]
+      return data
+    } catch (e) {
+      error.value = e.response?.data?.error || 'Errore invio posizione'
+      return null
+    }
+  }
+
   async function markRead(conversationId) {
     try { await api.post(`/chat/${conversationId}/read`) } catch (e) { /* non critico */ }
   }
@@ -65,7 +91,7 @@ export const useChatStore = defineStore('chat', () => {
 
   return {
     conversations, messages, unreadCount, loading, error,
-    fetchConversations, fetchUnreadCount, openConversationWith, fetchMessages, sendMessage, markRead,
-    setUnreadCount
+    fetchConversations, fetchUnreadCount, openConversationWith, fetchMessages, sendMessage, sendMedia, sendLocation,
+    markRead, setUnreadCount
   }
 })

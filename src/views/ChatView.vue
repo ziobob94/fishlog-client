@@ -61,7 +61,7 @@
           <span v-else class="mini-placeholder">{{ initials(c.user) }}</span>
           <div class="conversation-info">
             <span class="conversation-name">{{ c.user?.displayName || c.user?.email }}</span>
-            <span class="conversation-preview">{{ c.lastMessage?.body }}</span>
+            <span class="conversation-preview">{{ previewText(c.lastMessage) }}</span>
           </div>
           <span v-if="c.unreadCount" class="badge badge-ocean">{{ c.unreadCount }}</span>
         </button>
@@ -86,18 +86,72 @@
             class="message-row"
             :class="{ mine: m.sender?._id === auth.user?._id }"
           >
-            <span class="message-bubble">{{ m.body }}</span>
+            <div class="message-bubble">
+              <span v-if="!m.type || m.type === 'text'" class="message-text">{{ m.body }}</span>
+
+              <a v-else-if="m.type === 'image'" :href="m.media?.url" target="_blank" rel="noopener">
+                <img :src="m.media?.url" class="message-media-image" />
+              </a>
+
+              <video v-else-if="m.type === 'video'" :src="m.media?.url" controls class="message-media-video"></video>
+
+              <audio v-else-if="m.type === 'audio'" :src="m.media?.url" controls class="message-audio"></audio>
+
+              <a v-else-if="m.type === 'file'" :href="m.media?.url" target="_blank" rel="noopener" class="message-file">
+                <FileText :size="20" />
+                <span class="message-file-info">
+                  <span class="message-file-name">{{ m.media?.originalName }}</span>
+                  <span class="message-file-size">{{ formatSize(m.media?.size) }}</span>
+                </span>
+              </a>
+
+              <a v-else-if="m.type === 'location'" :href="mapsLink(m.location)" target="_blank" rel="noopener" class="message-location">
+                <MapDisplay class="message-location-map" :lat="m.location.lat" :lng="m.location.lng" />
+                <span class="message-location-link"><MapPin :size="14" /> {{ t('chat.attach.openMaps') }}</span>
+              </a>
+
+              <span class="message-meta">
+                {{ formatTime(m.createdAt) }}
+                <template v-if="m.sender?._id === auth.user?._id">
+                  <Check v-if="!m.readAt" :size="14" class="tick" />
+                  <CheckCheck v-else :size="14" class="tick tick-read" />
+                </template>
+              </span>
+            </div>
           </div>
         </div>
 
-        <div class="message-input-row">
-          <input
-            v-model="draft"
-            type="text"
-            :placeholder="t('chat.messagePlaceholder')"
-            @keydown.enter="send"
-          />
-          <button class="btn btn-primary btn-sm" :disabled="!draft.trim()" @click="send">{{ t('chat.send') }}</button>
+        <div class="message-input-row" ref="attachWrapper">
+          <div class="attach-wrap">
+            <button class="icon-btn" type="button" :title="t('chat.attach.label')" @click="attachMenuOpen = !attachMenuOpen">
+              <Paperclip :size="18" />
+            </button>
+            <div v-if="attachMenuOpen" class="attach-menu">
+              <button type="button" @click="triggerMediaInput">{{ t('chat.attach.media') }}</button>
+              <button type="button" @click="triggerFileInput">{{ t('chat.attach.file') }}</button>
+              <button type="button" @click="shareLocation">{{ t('chat.attach.location') }}</button>
+            </div>
+            <input ref="mediaInputEl" type="file" accept="image/*,video/*" class="hidden-input" @change="onFileChosen" />
+            <input ref="fileInputEl" type="file" class="hidden-input" @change="onFileChosen" />
+          </div>
+
+          <template v-if="recording">
+            <div class="recording-indicator"><span class="rec-dot"></span> {{ formatElapsed(elapsedSeconds) }}</div>
+            <button class="btn btn-ghost btn-sm" type="button" @click="cancelVoice">{{ t('common.cancel') }}</button>
+            <button class="btn btn-primary btn-sm" type="button" @click="stopAndSendVoice">{{ t('chat.send') }}</button>
+          </template>
+          <template v-else>
+            <input
+              v-model="draft"
+              type="text"
+              :placeholder="t('chat.messagePlaceholder')"
+              @keydown.enter="send"
+            />
+            <button v-if="draft.trim()" class="btn btn-primary btn-sm" type="button" @click="send">{{ t('chat.send') }}</button>
+            <button v-else class="icon-btn" type="button" :title="t('chat.attach.voice')" @click="startVoice">
+              <Mic :size="18" />
+            </button>
+          </template>
         </div>
       </div>
     </template>
@@ -108,13 +162,15 @@
 import { ref, reactive, computed, watch, onMounted, onBeforeUnmount, nextTick } from 'vue'
 import { useRoute, useRouter, RouterLink } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { MessagesSquare, AlertTriangle, Users } from 'lucide-vue-next'
+import { MessagesSquare, AlertTriangle, Users, Paperclip, Mic, MapPin, FileText, Check, CheckCheck } from 'lucide-vue-next'
 import { useChatStore } from '../stores/chat.js'
 import { useFriendStore } from '../stores/friends.js'
 import { useUserStore } from '../stores/users.js'
 import { useAuthStore } from '../stores/auth.js'
 import { useDebouncedFn } from '../composables/useDebouncedFn.js'
 import { useToast } from '../composables/useToast.js'
+import { useVoiceRecorder } from '../composables/useVoiceRecorder.js'
+import MapDisplay from '../components/MapDisplay.vue'
 
 const { t } = useI18n()
 const route  = useRoute()
@@ -129,6 +185,90 @@ const draft       = ref('')
 const scrollEl     = ref(null)
 const threadError  = ref('')
 let pollTimer = null
+
+// Allegati: menu "+" (media/file/posizione) e registrazione vocale
+const attachMenuOpen = ref(false)
+const attachWrapper  = ref(null)
+const mediaInputEl   = ref(null)
+const fileInputEl    = ref(null)
+const { recording, elapsedSeconds, start: startRecording, stop: stopRecording, cancel: cancelRecording } = useVoiceRecorder()
+
+function closeAttachMenuOnOutsideClick(event) {
+  if (attachMenuOpen.value && attachWrapper.value && !attachWrapper.value.contains(event.target)) {
+    attachMenuOpen.value = false
+  }
+}
+
+function triggerMediaInput() { attachMenuOpen.value = false; mediaInputEl.value?.click() }
+function triggerFileInput()  { attachMenuOpen.value = false; fileInputEl.value?.click() }
+
+async function onFileChosen(e) {
+  const file = e.target.files?.[0]
+  e.target.value = ''
+  if (!file) return
+  await chatStore.sendMedia(route.params.userId, file)
+  await scrollToBottom()
+}
+
+function shareLocation() {
+  attachMenuOpen.value = false
+  if (!navigator.geolocation) { toast(t('chat.attach.locationUnsupported'), { type: 'danger' }); return }
+  navigator.geolocation.getCurrentPosition(
+    async (pos) => {
+      await chatStore.sendLocation(route.params.userId, { lat: pos.coords.latitude, lng: pos.coords.longitude })
+      await scrollToBottom()
+    },
+    () => toast(t('chat.attach.locationDenied'), { type: 'danger' })
+  )
+}
+
+async function startVoice() {
+  try { await startRecording() } catch (e) { toast(t('chat.attach.micDenied'), { type: 'danger' }) }
+}
+
+async function stopAndSendVoice() {
+  const blob = await stopRecording()
+  if (!blob) return
+  const file = new File([blob], `vocale-${Date.now()}.webm`, { type: 'audio/webm' })
+  await chatStore.sendMedia(route.params.userId, file)
+  await scrollToBottom()
+}
+
+function cancelVoice() { cancelRecording() }
+
+function formatElapsed(s) {
+  const m = Math.floor(s / 60).toString().padStart(2, '0')
+  const sec = (s % 60).toString().padStart(2, '0')
+  return `${m}:${sec}`
+}
+
+function formatTime(date) {
+  return new Date(date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+}
+
+function formatSize(bytes) {
+  if (!bytes) return ''
+  const units = ['B', 'KB', 'MB', 'GB']
+  let n = bytes, i = 0
+  while (n >= 1024 && i < units.length - 1) { n /= 1024; i++ }
+  return `${n.toFixed(i > 0 && n < 10 ? 1 : 0)} ${units[i]}`
+}
+
+function mapsLink(loc) {
+  return `https://maps.google.com/?q=${loc.lat},${loc.lng}`
+}
+
+function previewText(lastMessage) {
+  if (!lastMessage) return ''
+  switch (lastMessage.type) {
+    case 'image':    return '📷 Foto'
+    case 'video':    return '🎥 Video'
+    case 'audio':    return '🎤 Messaggio vocale'
+    case 'location': return '📍 Posizione'
+    case 'file':     return `📎 ${lastMessage.media?.originalName || 'File'}`
+    default:         return lastMessage.body
+  }
+}
 
 // ricerca amici per inviare richiesta direttamente dal pannello chat
 const query = ref('')
@@ -227,9 +367,13 @@ onMounted(() => {
   friendStore.fetchFriends()
   friendStore.fetchRequests()
   chatStore.fetchConversations()
+  document.addEventListener('click', closeAttachMenuOnOutsideClick)
 })
 
-onBeforeUnmount(() => clearInterval(pollTimer))
+onBeforeUnmount(() => {
+  clearInterval(pollTimer)
+  document.removeEventListener('click', closeAttachMenuOnOutsideClick)
+})
 </script>
 
 <style scoped>
@@ -273,10 +417,49 @@ onBeforeUnmount(() => clearInterval(pollTimer))
 .message-row { @apply flex; }
 .message-row.mine { @apply justify-end; }
 .message-bubble {
-  @apply max-w-[75%] bg-surface-2 border border-border rounded-lg px-3 py-2 text-sm text-foam whitespace-pre-wrap;
+  @apply max-w-[75%] flex flex-col gap-1 bg-surface-2 border border-border rounded-lg px-3 py-2 text-sm text-foam;
 }
 .message-row.mine .message-bubble { @apply bg-ocean border-ocean text-white; }
+.message-text { @apply whitespace-pre-wrap; }
 
-.message-input-row { @apply flex gap-2 border-t border-border pt-3; }
+.message-meta { @apply self-end flex items-center gap-1 text-[0.65rem] opacity-70 mt-0.5; }
+.tick { @apply opacity-70; }
+.tick-read { @apply text-sky-300 opacity-100; }
+
+.message-media-image { @apply max-w-full rounded-sm max-h-72 object-cover cursor-pointer; }
+.message-media-video { @apply max-w-full rounded-sm max-h-72; }
+.message-audio       { @apply max-w-full; }
+
+.message-file {
+  @apply flex items-center gap-2 no-underline text-inherit bg-black/10 rounded-sm px-2 py-1.5;
+}
+.message-file-info { @apply flex flex-col min-w-0; }
+.message-file-name { @apply text-sm font-medium truncate max-w-[180px]; }
+.message-file-size { @apply text-xs opacity-70; }
+
+.message-location { @apply flex flex-col gap-1 no-underline text-inherit; }
+.message-location-map :deep(.map-display) { height: 140px; width: 220px; }
+.message-location-link { @apply flex items-center gap-1 text-xs; }
+
+.message-input-row { @apply flex items-center gap-2 border-t border-border pt-3 relative; }
 .message-input-row input { @apply text-sm flex-1; }
+
+.icon-btn {
+  @apply flex items-center justify-center w-9 h-9 rounded-lg text-muted bg-transparent border-none
+         cursor-pointer hover:bg-surface-2 hover:text-ocean transition-colors shrink-0;
+}
+.hidden-input { @apply hidden; }
+
+.attach-wrap { @apply relative; }
+.attach-menu {
+  @apply absolute bottom-11 left-0 flex flex-col gap-0.5 bg-surface border border-border
+         rounded-lg p-1 z-10 min-w-[160px] shadow-lg;
+}
+.attach-menu button {
+  @apply text-left text-sm px-3 py-2 rounded bg-transparent border-none text-foam
+         cursor-pointer hover:bg-surface-2 transition-colors;
+}
+
+.recording-indicator { @apply flex items-center gap-2 text-sm text-danger flex-1; }
+.rec-dot { @apply w-2.5 h-2.5 rounded-full bg-danger animate-pulse; }
 </style>

@@ -183,7 +183,18 @@
 			"noResults": "Nessun utente trovato"
 		},
 		"messagePlaceholder": "Scrivi un messaggio...",
-		"send": "Invia"
+		"send": "Invia",
+		"attach": {
+			"label": "Allega",
+			"media": "Foto o video",
+			"file": "File",
+			"location": "Posizione",
+			"voice": "Registra vocale",
+			"openMaps": "Apri in Maps",
+			"locationUnsupported": "Il tuo dispositivo non supporta la geolocalizzazione",
+			"locationDenied": "Permesso posizione negato",
+			"micDenied": "Permesso microfono negato"
+		}
 	},
 	"friends": {
 		"titlePrefix": "I tuoi",
