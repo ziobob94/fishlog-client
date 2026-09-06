@@ -91,7 +91,7 @@ async function handleLogin() {
 .auth-page  { @apply flex items-center justify-center min-h-[80vh]; }
 .auth-card  { @apply max-w-sm w-full p-8; }
 .auth-logo  { @apply text-2xl font-extrabold mb-1; }
-.oauth-buttons { @apply flex flex-col gap-3 mt-4; }
+.oauth-buttons { @apply flex flex-col gap-4 mt-4; }
 .btn-oauth  {
   @apply flex items-center justify-center gap-2.5 bg-surface-2 border border-border
          rounded-sm text-foam text-sm font-semibold px-4 py-2.5
