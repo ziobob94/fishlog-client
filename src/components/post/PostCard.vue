@@ -41,11 +41,7 @@
     </div>
 
     <div v-if="post.type === 'event'" class="attendance-block">
-      <div class="attendance-summary">
-        <span v-if="maybeCount" class="text-xs text-muted">{{ t('posts.event.attendance.maybeCount', { count: maybeCount }) }}</span>
-      </div>
-
-      <div v-if="post.event?.status === 'open'" class="attendance-actions">
+      <div v-if="post.event?.status === 'open'" class="attendance-actions my-2">
         <div class="attendance-buttons">
           <button
             class="btn btn-sm"
@@ -78,7 +74,7 @@
         @click="showAttendees = !showAttendees"
       >
         <span><Users :size="15" /> {{ goingCount }}<template v-if="goingGuests">+{{ goingGuests }}</template> {{ showAttendees ? t('posts.event.attendance.hideList') : t('posts.event.attendance.showList') }}</span>
-        <ChevronDown :size="16" class="chevron" :class="{ open: showAttendees }" />
+        <span class="switch" :class="{ on: showAttendees }"><span class="switch-knob"></span></span>
       </button>
 
       <div v-if="showAttendees && attendeesList.length" class="attendees-list">
@@ -112,7 +108,7 @@
         @click="showResponses = !showResponses"
       >
         <span><MessageCircle :size="15" /> {{ post.responses.length }} {{ showResponses ? t('posts.event.hideResponses') : t('posts.event.showResponses') }}</span>
-        <ChevronDown :size="16" class="chevron" :class="{ open: showResponses }" />
+        <span class="switch" :class="{ on: showResponses }"><span class="switch-knob"></span></span>
       </button>
 
       <div v-if="showResponses && post.responses?.length" class="responses-list">
@@ -134,7 +130,7 @@
       @click="showResponses = !showResponses"
     >
       <span><MessageCircle :size="15" /> {{ post.responses.length }} {{ showResponses ? t('posts.event.hideResponses') : t('posts.event.showResponses') }}</span>
-      <ChevronDown :size="16" class="chevron" :class="{ open: showResponses }" />
+      <span class="switch" :class="{ on: showResponses }"><span class="switch-knob"></span></span>
     </button>
 
     <div v-if="showResponses" class="responses-list">
@@ -216,7 +212,7 @@
   import { ref, computed, watch } from 'vue'
   import { useI18n } from 'vue-i18n'
   import { RouterLink } from 'vue-router'
-  import { MapPin, Calendar, Heart, MessageCircle, X, Users, ChevronDown } from 'lucide-vue-next'
+  import { MapPin, Calendar, Heart, MessageCircle, X, Users } from 'lucide-vue-next'
   import { useAuthStore } from '../../stores/auth.js'
 
   const props = defineProps({ post: { type: Object, required: true } })
@@ -240,7 +236,6 @@
   const myAttendance = computed(() => attendeesList.value.find(a => a.user?._id === auth.user?._id))
   const goingCount = computed(() => attendeesList.value.filter(a => a.status === 'going').length)
   const goingGuests = computed(() => attendeesList.value.filter(a => a.status === 'going').reduce((sum, a) => sum + (a.guests || 0), 0))
-  const maybeCount = computed(() => attendeesList.value.filter(a => a.status === 'maybe').length)
 
   const guestsInput = ref(myAttendance.value?.guests || 0)
   watch(myAttendance, (a) => { guestsInput.value = a?.guests || 0 })
@@ -357,10 +352,6 @@
     @apply flex flex-col gap-2 border-t border-border pt-2;
   }
 
-  .attendance-summary {
-    @apply flex items-center gap-2;
-  }
-
   .attendance-actions {
     @apply flex flex-col gap-2;
   }
@@ -410,16 +401,21 @@
     @apply inline-flex items-center gap-2;
   }
 
-  .accordion-toggle .chevron {
-    @apply text-muted transition-transform duration-200 shrink-0;
+  .switch {
+    @apply relative inline-flex items-center w-9 h-5 rounded-full bg-surface-2 border border-border shrink-0 transition-colors;
   }
 
-  .accordion-toggle:hover .chevron {
-    @apply text-ocean;
+  .switch.on {
+    @apply bg-ocean border-ocean;
   }
 
-  .accordion-toggle .chevron.open {
-    transform: rotate(180deg);
+  .switch-knob {
+    @apply absolute left-0.5 w-3.5 h-3.5 rounded-full bg-muted transition-transform duration-200;
+  }
+
+  .switch.on .switch-knob {
+    @apply bg-white;
+    transform: translateX(1rem);
   }
 
   .event-info {
