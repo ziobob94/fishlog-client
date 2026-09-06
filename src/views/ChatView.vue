@@ -70,9 +70,17 @@
 
     <!-- Thread con un amico -->
     <template v-else>
-      <div class="page-header">
+      <div class="page-header chat-thread-header">
         <RouterLink to="/chat" class="btn btn-ghost btn-sm">{{ t('common.back') }}</RouterLink>
-        <h2>{{ friend?.displayName || friend?.email || '...' }}</h2>
+        <RouterLink v-if="friend" :to="`/users/${friend._id}`" class="chat-header-info">
+          <img v-if="friend.avatar" :src="friend.avatar" class="mini-avatar" />
+          <span v-else class="mini-placeholder">{{ initials(friend) }}</span>
+          <span class="chat-header-text">
+            <span class="chat-header-name">{{ friend.displayName || friend.email }}</span>
+            <span v-if="friend.email" class="chat-header-email">{{ friend.email }}</span>
+          </span>
+        </RouterLink>
+        <h2 v-else>...</h2>
       </div>
 
       <div v-if="threadError" class="error-banner"><AlertTriangle :size="16" /> {{ threadError }}</div>
@@ -431,6 +439,11 @@ onBeforeUnmount(() => {
 
 <style scoped>
 .page-header { @apply flex items-center justify-between gap-4 mb-6; }
+.chat-thread-header { @apply border-b border-border pb-4 justify-start; }
+.chat-header-info { @apply flex items-center gap-2.5 no-underline text-inherit min-w-0; }
+.chat-header-text { @apply flex flex-col min-w-0; }
+.chat-header-name { @apply font-semibold text-foam truncate; }
+.chat-header-email { @apply text-xs text-muted truncate; }
 .error-banner { @apply bg-danger/10 border border-danger rounded-sm text-danger px-4 py-3 mb-4 inline-flex items-center gap-2; }
 
 .search-card  { @apply mb-4 relative; }
@@ -464,7 +477,13 @@ onBeforeUnmount(() => {
   background: var(--ocean-glow);
 }
 
-.thread { @apply flex flex-col gap-3 h-[65vh]; }
+.thread {
+  @apply flex flex-col gap-3;
+  height: calc(100dvh - 16rem);
+}
+@media (min-width: 768px) {
+  .thread { height: calc(100dvh - 11rem); }
+}
 .messages-list { @apply flex-1 overflow-y-auto flex flex-col gap-2 pr-1; }
 
 .message-row { @apply flex items-end gap-1; }

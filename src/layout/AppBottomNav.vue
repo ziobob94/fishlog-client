@@ -1,5 +1,5 @@
 <template>
-  <nav class="bottom-nav md:hidden">
+  <nav v-if="route.name !== 'chat-thread'" class="bottom-nav md:hidden">
     <RouterLink to="/" class="bottom-nav-item">
       <Home :size="20" /> <span>{{ t('nav.home') }}</span>
     </RouterLink>
@@ -28,13 +28,14 @@
 </template>
 
 <script setup>
-import { RouterLink } from 'vue-router'
+import { RouterLink, useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { Home, Newspaper, ShoppingBag, MessagesSquare, UserCircle } from 'lucide-vue-next'
 import { usePostStore } from '../stores/posts.js'
 import { useChatStore } from '../stores/chat.js'
 
 const { t } = useI18n()
+const route = useRoute()
 const posts = usePostStore()
 const chat = useChatStore()
 </script>
