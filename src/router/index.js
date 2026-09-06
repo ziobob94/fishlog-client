@@ -37,4 +37,22 @@ export function setupGuards(router) {
       if (!to.meta.public && !auth.isLoggedIn) return '/login'
       if (to.meta.role && auth.user?.role !== to.meta.role) return '/'
     })
+
+    // Una navigazione riuscita azzera il flag, cosi un futuro chunk error puo ritentare
+    router.afterEach(() => {
+      sessionStorage.removeItem('chunk-reload-attempted')
+    })
+
+    // Dopo un nuovo deploy i vecchi chunk (hash cambiato) spariscono dal server:
+    // se il browser ha ancora l'index.html/JS vecchio in cache, l'import dinamico
+    // fallisce. Ricarichiamo la pagina una sola volta per recuperare i chunk nuovi.
+    router.onError((error, to) => {
+      const isChunkError = /Failed to fetch dynamically imported module|Importing a module script failed|error loading dynamically imported module/i.test(error?.message || '')
+      if (!isChunkError) return
+
+      const key = 'chunk-reload-attempted'
+      if (sessionStorage.getItem(key)) return
+      sessionStorage.setItem(key, '1')
+      window.location.href = to.fullPath
+    })
 }
