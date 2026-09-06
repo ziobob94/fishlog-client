@@ -23,7 +23,11 @@ function handleMessage(event) {
   if (message.type === 'notification') {
     useNotificationStore().applyRealtimeEvent(message.payload)
   } else if (message.type === 'chat:unread') {
-    useChatStore().setUnreadCount(message.count)
+    const chat = useChatStore()
+    chat.setUnreadCount(message.count)
+    // Aggiorna anteprima/non letti nella lista conversazioni se è già caricata
+    // (es. utente sulla pagina /chat con un'altra chat aperta o sulla lista).
+    if (chat.conversations.length) chat.fetchConversations()
   }
 }
 
