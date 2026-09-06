@@ -1,3 +1,10 @@
+## [1.11.1](https://github.com/ziobob94/fishlog-client/compare/client-v1.11.0...client-v1.11.1) (2026-09-06)
+
+
+### Bug Fixes
+
+* aggiorna la lista chat in realtime alla ricezione di un messaggio ([9cc2a9c](https://github.com/ziobob94/fishlog-client/commit/9cc2a9c53ba257b2e500f6ba41988c4656ae4fb7))
+
 # [1.11.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.10.0...client-v1.11.0) (2026-09-06)
 
 
