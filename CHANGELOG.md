@@ -1,3 +1,10 @@
+# [1.13.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.12.0...client-v1.13.0) (2026-09-06)
+
+
+### Features
+
+* chat completa - orario, media, file, posizione, vocali ([13536bc](https://github.com/ziobob94/fishlog-client/commit/13536bc51b9835c6e7c456e817d0018cb9e4f9b3))
+
 # [1.12.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.11.2...client-v1.12.0) (2026-09-06)
 
 
