@@ -1,3 +1,10 @@
+## [1.14.3](https://github.com/ziobob94/fishlog-client/compare/client-v1.14.2...client-v1.14.3) (2026-09-06)
+
+
+### Bug Fixes
+
+* aggiungi padding alla header della chat e migliora la gestione dei messaggi ([846dd4d](https://github.com/ziobob94/fishlog-client/commit/846dd4de2ae3be44de91646cc8f8b86b2e2f26bd))
+
 ## [1.14.2](https://github.com/ziobob94/fishlog-client/compare/client-v1.14.1...client-v1.14.2) (2026-09-06)
 
 
