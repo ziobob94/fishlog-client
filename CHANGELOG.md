@@ -1,3 +1,10 @@
+# [1.11.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.10.0...client-v1.11.0) (2026-09-06)
+
+
+### Features
+
+* centro notifiche realtime e fix badge amicizie/chat ([206536c](https://github.com/ziobob94/fishlog-client/commit/206536c50a1ffa2a145d580e5862ff4a72cfa008))
+
 # [1.10.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.9.0...client-v1.10.0) (2026-09-06)
 
 
