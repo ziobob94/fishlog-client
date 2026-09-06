@@ -1,3 +1,10 @@
+## [1.13.1](https://github.com/ziobob94/fishlog-client/compare/client-v1.13.0...client-v1.13.1) (2026-09-06)
+
+
+### Bug Fixes
+
+* vocali illeggibili su alcuni dispositivi (durata 0 / errore) ([855a55d](https://github.com/ziobob94/fishlog-client/commit/855a55d580e515d3868a4bf023600b510dcf1bda))
+
 # [1.13.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.12.0...client-v1.13.0) (2026-09-06)
 
 
