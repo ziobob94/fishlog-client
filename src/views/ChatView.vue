@@ -477,7 +477,7 @@
   .search-result-row {
     @apply flex items-center justify-between gap-2 py-1.5;
   }
-  .search-result-row .btn, .search-result-row .badge { @apply shrink-0; }
+  .search-result-row .btn, .search-result-row .badge { @apply shrink-0 whitespace-nowrap; }
 
   .no-results {
     @apply text-muted text-sm py-2;
