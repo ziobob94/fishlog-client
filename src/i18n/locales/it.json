@@ -750,6 +750,18 @@
 			"linkedProviders": "Provider collegati",
 			"disabled": "Cambio password ed email temporaneamente disabilitato."
 		},
+		"notifications": {
+			"title": "Notifiche",
+			"hint": "Scegli per quali eventi vuoi ricevere un'email",
+			"emailChatMessages": "Nuovi messaggi in chat",
+			"emailChatMessagesHint": "Ricevi un'email quando qualcuno ti scrive",
+			"emailComments": "Nuovi commenti",
+			"emailCommentsHint": "Ricevi un'email quando qualcuno commenta un tuo post",
+			"emailLikes": "Nuovi like",
+			"emailLikesHint": "Ricevi un'email quando qualcuno mette like a un tuo post",
+			"emailFriendRequests": "Richieste di amicizia",
+			"emailFriendRequestsHint": "Ricevi un'email quando qualcuno ti invia una richiesta di amicizia"
+		},
 		"privacy": {
 			"title": "Privacy",
 			"defaultVisibilityLabel": "Visibilità di default",

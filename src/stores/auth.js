@@ -64,6 +64,12 @@ export const useAuthStore = defineStore('auth', () => {
     return data
   }
 
+  async function updateNotificationPreferences(payload) {
+    const { data } = await api.patch('/auth/me/notifications', payload)
+    persistUser(data)
+    return data
+  }
+
   async function uploadAvatar(file) {
     const form = new FormData()
     form.append('file', file)
@@ -97,7 +103,7 @@ export const useAuthStore = defineStore('auth', () => {
 
   return {
     token, user, isLoggedIn, setAuth, clearAuth, initAuth, login, register, fetchMe, logout,
-    updateProfile, uploadAvatar, changePassword, changeEmail, deleteAccount,
+    updateProfile, updateNotificationPreferences, uploadAvatar, changePassword, changeEmail, deleteAccount,
     forgotPassword, resetPassword
   }
 })
