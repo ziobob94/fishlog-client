@@ -510,8 +510,9 @@
 			"group": "Gruppi specifici"
 		},
 		"autoFill": {
-			"title": "Compila meteo e condizioni acqua automaticamente",
-			"subtitle": "Recupera i dati storici del giorno selezionato tramite Open-Meteo",
+			"title": "Compila posizione, meteo e condizioni acqua automaticamente",
+			"subtitle": "Rileva la tua posizione GPS e recupera i dati storici del giorno selezionato tramite Open-Meteo",
+			"collapsedHint": "Compilazione automatica di posizione, meteo e condizioni acqua",
 			"disclaimer": "I dati sono una stima basata sulla zona e sulla data: possono non rispecchiare esattamente le condizioni reali nel punto in cui hai pescato.",
 			"loading": "Recupero...",
 			"button": "Compila",
@@ -773,6 +774,10 @@
 			"title": "Privacy",
 			"defaultVisibilityLabel": "Visibilità di default",
 			"hint": "Usata come preselezione quando crei una nuova uscita o un nuovo post"
+		},
+		"session": {
+			"title": "Sessione",
+			"text": "Esci dal tuo account su questo dispositivo."
 		},
 		"danger": {
 			"title": "Elimina account",

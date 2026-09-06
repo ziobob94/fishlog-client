@@ -13,7 +13,10 @@
           <RouterLink :to="`/users/${u._id}`" class="member-info">
             <img v-if="u.avatar" :src="u.avatar" class="mini-avatar" />
             <span v-else class="mini-placeholder">{{ initials(u) }}</span>
-            <span>{{ u.displayName || u.email }}</span>
+            <span class="member-text">
+              <span>{{ u.displayName || u.email }}</span>
+              <span v-if="u.displayName && u.email" class="member-email">{{ u.email }}</span>
+            </span>
           </RouterLink>
           <button
             class="btn btn-secondary btn-sm"
@@ -35,7 +38,10 @@
           <RouterLink :to="`/users/${r.requester._id}`" class="member-info">
             <img v-if="r.requester.avatar" :src="r.requester.avatar" class="mini-avatar" />
             <span v-else class="mini-placeholder">{{ initials(r.requester) }}</span>
-            <span>{{ r.requester.displayName || r.requester.email }}</span>
+            <span class="member-text">
+              <span>{{ r.requester.displayName || r.requester.email }}</span>
+              <span v-if="r.requester.displayName && r.requester.email" class="member-email">{{ r.requester.email }}</span>
+            </span>
           </RouterLink>
           <div class="row-actions">
             <button class="btn btn-primary btn-sm" @click="accept(r)">{{ t('friends.actions.accept') }}</button>
@@ -53,7 +59,10 @@
           <RouterLink :to="`/users/${r.recipient._id}`" class="member-info">
             <img v-if="r.recipient.avatar" :src="r.recipient.avatar" class="mini-avatar" />
             <span v-else class="mini-placeholder">{{ initials(r.recipient) }}</span>
-            <span>{{ r.recipient.displayName || r.recipient.email }}</span>
+            <span class="member-text">
+              <span>{{ r.recipient.displayName || r.recipient.email }}</span>
+              <span v-if="r.recipient.displayName && r.recipient.email" class="member-email">{{ r.recipient.email }}</span>
+            </span>
           </RouterLink>
           <button class="btn btn-ghost btn-sm" @click="cancel(r)">{{ t('friends.actions.cancel') }}</button>
         </div>
@@ -76,7 +85,10 @@
           <RouterLink :to="`/users/${f._id}`" class="member-info">
             <img v-if="f.avatar" :src="f.avatar" class="mini-avatar" />
             <span v-else class="mini-placeholder">{{ initials(f) }}</span>
-            <span>{{ f.displayName || f.email }}</span>
+            <span class="member-text">
+              <span>{{ f.displayName || f.email }}</span>
+              <span v-if="f.displayName && f.email" class="member-email">{{ f.email }}</span>
+            </span>
           </RouterLink>
           <button class="btn btn-ghost btn-sm" @click="removeFriend(f)">{{ t('friends.actions.remove') }}</button>
         </div>
@@ -176,6 +188,8 @@ async function removeFriend(f) {
 .people-list { @apply flex flex-col gap-2; }
 .member-row  { @apply flex items-center justify-between gap-2; }
 .member-info { @apply flex items-center gap-2 text-sm text-foam no-underline; }
+.member-text { @apply flex flex-col leading-tight; }
+.member-email { @apply text-xs text-muted; }
 .row-actions { @apply flex gap-2; }
 
 .mini-avatar { @apply w-7 h-7 rounded-full object-cover; }

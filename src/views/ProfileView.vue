@@ -124,6 +124,15 @@
         </button>
       </section>
 
+      <!-- Sessione -->
+      <section class="card">
+        <h3>{{ t('profile.session.title') }}</h3>
+        <p class="text-muted text-sm">{{ t('profile.session.text') }}</p>
+        <button class="btn btn-secondary btn-sm mt-2" @click="logout">
+          {{ t('nav.logout') }}
+        </button>
+      </section>
+
       <!-- Danger zone -->
       <section class="card danger-zone">
         <h3>{{ t('profile.danger.title') }}</h3>
@@ -284,6 +293,12 @@ const showDeleteDialog = ref(false)
 const deletePassword = ref('')
 const deleteError = ref('')
 const deleting = ref(false)
+
+// ── sessione ──
+function logout() {
+  auth.logout()
+  router.push('/login')
+}
 
 async function doDeleteAccount() {
   deleteError.value = ''
