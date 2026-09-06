@@ -1,3 +1,10 @@
+# [1.8.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.7.0...client-v1.8.0) (2026-09-06)
+
+
+### Features
+
+* Aggiungi funzionalità di auto-compilazione per meteo e condizioni acqua, con miglioramenti UI e messaggi di avviso ([86e6511](https://github.com/ziobob94/fishlog-client/commit/86e651121be2a98675b2cbde7f2e7a631e974445))
+
 # [1.7.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.6.0...client-v1.7.0) (2026-09-06)
 
 
