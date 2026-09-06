@@ -1,3 +1,10 @@
+## [1.14.5](https://github.com/ziobob94/fishlog-client/compare/client-v1.14.4...client-v1.14.5) (2026-09-06)
+
+
+### Bug Fixes
+
+* pannello notifiche fuori schermo su mobile ([11c4559](https://github.com/ziobob94/fishlog-client/commit/11c455961311c3402767419d4cd1b5a9400b33a1))
+
 ## [1.14.4](https://github.com/ziobob94/fishlog-client/compare/client-v1.14.3...client-v1.14.4) (2026-09-06)
 
 
