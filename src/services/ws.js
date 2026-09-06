@@ -28,6 +28,8 @@ function handleMessage(event) {
     // Aggiorna anteprima/non letti nella lista conversazioni se è già caricata
     // (es. utente sulla pagina /chat con un'altra chat aperta o sulla lista).
     if (chat.conversations.length) chat.fetchConversations()
+  } else if (message.type === 'notifications:read') {
+    useNotificationStore().markConversationRead(message.conversationId, message.count)
   }
 }
 

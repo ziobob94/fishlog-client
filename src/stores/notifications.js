@@ -50,8 +50,18 @@ export const useNotificationStore = defineStore('notifications', () => {
     unreadCount.value += 1
   }
 
+  // La chat è stata letta aprendo direttamente la conversazione (non dal
+  // centro notifiche): allinea localmente le notifiche "nuovo messaggio"
+  // di quella conversazione, così il badge e la lista restano coerenti.
+  function markConversationRead(conversationId, count) {
+    items.value.forEach(n => {
+      if (n.type === 'chat_message' && n.data?.conversationId === conversationId) n.read = true
+    })
+    unreadCount.value = count
+  }
+
   return {
     items, unreadCount, loading, error,
-    fetchNotifications, fetchUnreadCount, markRead, markAllRead, applyRealtimeEvent
+    fetchNotifications, fetchUnreadCount, markRead, markAllRead, applyRealtimeEvent, markConversationRead
   }
 })
