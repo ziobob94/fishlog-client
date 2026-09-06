@@ -1,3 +1,10 @@
+## [1.14.4](https://github.com/ziobob94/fishlog-client/compare/client-v1.14.3...client-v1.14.4) (2026-09-06)
+
+
+### Bug Fixes
+
+* bottone rimozione amico come icona con conferma, overflow righe liste ([c32ffd8](https://github.com/ziobob94/fishlog-client/commit/c32ffd8f62e334b3a67cf6620e45e60fe78f8a9b))
+
 ## [1.14.3](https://github.com/ziobob94/fishlog-client/compare/client-v1.14.2...client-v1.14.3) (2026-09-06)
 
 
