@@ -1,3 +1,10 @@
+## [1.14.2](https://github.com/ziobob94/fishlog-client/compare/client-v1.14.1...client-v1.14.2) (2026-09-06)
+
+
+### Bug Fixes
+
+* chat a tutta altezza invece di calcolo vh approssimato ([94402c6](https://github.com/ziobob94/fishlog-client/commit/94402c6945857738780c4597662d039efeb5f3a7))
+
 ## [1.14.1](https://github.com/ziobob94/fishlog-client/compare/client-v1.14.0...client-v1.14.1) (2026-09-06)
 
 
