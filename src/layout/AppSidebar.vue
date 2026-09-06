@@ -39,6 +39,7 @@
       </RouterLink>
       <RouterLink to="/friends" class="nav-item" @click="$emit('close')">
         <span class="w-5 text-center flex justify-center"><UserPlus :size="16" /></span> {{ t('nav.friends') }}
+        <span v-if="friends.pendingCount" class="nav-badge">{{ friends.pendingCount }}</span>
       </RouterLink>
       <RouterLink to="/feed" class="nav-item" @click="$emit('close')">
         <span class="w-5 text-center flex justify-center"><Newspaper :size="16" /></span> {{ t('nav.feed') }}
@@ -107,6 +108,7 @@
   import { useSessionStore } from '../stores/sessions.js'
   import { usePostStore } from '../stores/posts.js'
   import { useChatStore } from '../stores/chat.js'
+  import { useFriendStore } from '../stores/friends.js'
 
   const { t } = useI18n()
   defineProps({
@@ -120,6 +122,7 @@
   const sessions = useSessionStore()
   const posts = usePostStore()
   const chat = useChatStore()
+  const friends = useFriendStore()
 
   onMounted(() => { if (auth.isLoggedIn) sessions.fetchOngoing() })
 

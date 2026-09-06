@@ -21,7 +21,11 @@
       <span>{{ t('nav.chat') }}</span>
     </RouterLink>
     <RouterLink to="/profile" class="bottom-nav-item">
-      <UserCircle :size="20" /> <span>{{ t('nav.profile') }}</span>
+      <span class="icon-wrap">
+        <UserCircle :size="20" />
+        <span v-if="friends.pendingCount" class="unread-dot"></span>
+      </span>
+      <span>{{ t('nav.profile') }}</span>
     </RouterLink>
   </nav>
 </template>
@@ -32,10 +36,12 @@ import { useI18n } from 'vue-i18n'
 import { Home, Newspaper, ShoppingBag, MessagesSquare, UserCircle } from 'lucide-vue-next'
 import { usePostStore } from '../stores/posts.js'
 import { useChatStore } from '../stores/chat.js'
+import { useFriendStore } from '../stores/friends.js'
 
 const { t } = useI18n()
 const posts = usePostStore()
 const chat = useChatStore()
+const friends = useFriendStore()
 </script>
 
 <style scoped>

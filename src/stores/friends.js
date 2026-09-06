@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import api from '../utils/api.js'
 
 export const useFriendStore = defineStore('friends', () => {
@@ -8,6 +8,8 @@ export const useFriendStore = defineStore('friends', () => {
   const sent     = ref([])
   const loading  = ref(false)
   const error    = ref(null)
+
+  const pendingCount = computed(() => received.value.length)
 
   async function fetchFriends() {
     loading.value = true; error.value = null
@@ -76,7 +78,7 @@ export const useFriendStore = defineStore('friends', () => {
   }
 
   return {
-    friends, received, sent, loading, error,
+    friends, received, sent, loading, error, pendingCount,
     fetchFriends, fetchRequests, fetchStatus, fetchCommonGroups,
     sendRequest, acceptRequest, declineRequest, removeFriend
   }

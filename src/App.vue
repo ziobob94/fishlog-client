@@ -1,5 +1,12 @@
 <template>
-  <div class="flex min-h-dvh">
+  <div v-if="isPublicRoute" class="flex min-h-dvh">
+    <main class="flex-1 w-full max-w-[1100px] mx-auto px-6 py-8">
+      <RouterView />
+    </main>
+    <ToastContainer />
+  </div>
+
+  <div v-else class="flex min-h-dvh">
     <!-- Overlay -->
     <div
       v-if="sidebarOpen && !sidebarLocked"
@@ -30,8 +37,8 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
-import { RouterView } from 'vue-router'
+import { ref, computed, onMounted } from 'vue'
+import { RouterView, useRoute } from 'vue-router'
 import AppSidebar from './layout/AppSidebar.vue'
 import AppTopbar  from './layout/AppTopbar.vue'
 import AppBottomNav from './layout/AppBottomNav.vue'
@@ -39,18 +46,24 @@ import ToastContainer from './components/ToastContainer.vue'
 import { useAuthStore } from './stores/auth.js'
 import { usePostStore } from './stores/posts.js'
 import { useChatStore } from './stores/chat.js'
+import { useFriendStore } from './stores/friends.js'
+
+const route = useRoute()
+const isPublicRoute = computed(() => !!route.meta.public)
 
 const sidebarOpen   = ref(false)
 const sidebarLocked = ref(localStorage.getItem('sidebar_locked') === 'true')
-const auth  = useAuthStore()
-const posts = usePostStore()
-const chat  = useChatStore()
+const auth    = useAuthStore()
+const posts   = usePostStore()
+const chat    = useChatStore()
+const friends = useFriendStore()
 
 onMounted(() => {
   if (sidebarLocked.value) sidebarOpen.value = true
   if (auth.isLoggedIn) {
     posts.fetchUnreadCount()
     chat.fetchUnreadCount()
+    friends.fetchRequests()
   }
 })
 
