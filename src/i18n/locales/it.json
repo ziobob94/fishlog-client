@@ -156,6 +156,16 @@
 			"confirm": "Sei sicuro di voler eliminare {name}?"
 		}
 	},
+	"notifications": {
+		"title": "Notifiche",
+		"empty": "Nessuna notifica",
+		"markAllRead": "Segna tutte come lette",
+		"types": {
+			"friend_request": "{name} ti ha inviato una richiesta di amicizia",
+			"friend_accept": "{name} ha accettato la tua richiesta di amicizia",
+			"chat_message": "Nuovo messaggio da {name}"
+		}
+	},
 	"chat": {
 		"titlePrefix": "Le tue",
 		"titleHighlight": "chat",

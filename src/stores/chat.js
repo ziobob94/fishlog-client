@@ -58,8 +58,14 @@ export const useChatStore = defineStore('chat', () => {
     try { await api.post(`/chat/${conversationId}/read`) } catch (e) { /* non critico */ }
   }
 
+  // Aggiornamento realtime del badge via websocket, senza rifare la fetch.
+  function setUnreadCount(count) {
+    unreadCount.value = count
+  }
+
   return {
     conversations, messages, unreadCount, loading, error,
-    fetchConversations, fetchUnreadCount, openConversationWith, fetchMessages, sendMessage, markRead
+    fetchConversations, fetchUnreadCount, openConversationWith, fetchMessages, sendMessage, markRead,
+    setUnreadCount
   }
 })

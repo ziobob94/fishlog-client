@@ -68,6 +68,7 @@
   .badge-ocean   { background: var(--ocean-glow); @apply border border-ocean text-ocean; }
   .badge-sand    { @apply bg-amber-500/10 border border-sand text-sand; }
   .badge-success { @apply bg-green-500/10 border border-success text-success; }
+  .badge-danger  { @apply bg-danger text-white border border-danger normal-case tracking-normal; }
 
   .form-grid {
     @apply grid gap-3;

@@ -37,7 +37,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import { RouterView, useRoute } from 'vue-router'
 import AppSidebar from './layout/AppSidebar.vue'
 import AppTopbar  from './layout/AppTopbar.vue'
@@ -47,6 +47,8 @@ import { useAuthStore } from './stores/auth.js'
 import { usePostStore } from './stores/posts.js'
 import { useChatStore } from './stores/chat.js'
 import { useFriendStore } from './stores/friends.js'
+import { useNotificationStore } from './stores/notifications.js'
+import { connectWebSocket, disconnectWebSocket } from './services/ws.js'
 
 const route = useRoute()
 const isPublicRoute = computed(() => !!route.meta.public)
@@ -57,6 +59,7 @@ const auth    = useAuthStore()
 const posts   = usePostStore()
 const chat    = useChatStore()
 const friends = useFriendStore()
+const notifications = useNotificationStore()
 
 onMounted(() => {
   if (sidebarLocked.value) sidebarOpen.value = true
@@ -64,7 +67,13 @@ onMounted(() => {
     posts.fetchUnreadCount()
     chat.fetchUnreadCount()
     friends.fetchRequests()
+    notifications.fetchUnreadCount()
+    connectWebSocket()
   }
+})
+
+watch(() => auth.isLoggedIn, (loggedIn) => {
+  if (!loggedIn) disconnectWebSocket()
 })
 
 function toggleSidebar() { sidebarOpen.value = !sidebarOpen.value }
