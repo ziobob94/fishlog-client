@@ -1,3 +1,10 @@
+# [1.3.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.2.3...client-v1.3.0) (2026-09-06)
+
+
+### Features
+
+* Aggiungi funzionalità di ricerca per posizione nella vista eventi ([04a6baa](https://github.com/ziobob94/fishlog-client/commit/04a6baa55306e52d52bd8689b8c4156108114e3f))
+
 ## [1.2.3](https://github.com/ziobob94/fishlog-client/compare/client-v1.2.2...client-v1.2.3) (2026-09-06)
 
 
