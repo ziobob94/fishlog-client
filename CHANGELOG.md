@@ -1,3 +1,10 @@
+## [1.14.1](https://github.com/ziobob94/fishlog-client/compare/client-v1.14.0...client-v1.14.1) (2026-09-06)
+
+
+### Bug Fixes
+
+* layout chat (input coperto dal menu) e link Market mancante in sidebar ([b09495a](https://github.com/ziobob94/fishlog-client/commit/b09495a335b451e70f607bdbf2f1afe7f7e148b9))
+
 # [1.14.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.13.1...client-v1.14.0) (2026-09-06)
 
 
