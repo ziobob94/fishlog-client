@@ -1,3 +1,10 @@
+## [1.14.6](https://github.com/ziobob94/fishlog-client/compare/client-v1.14.5...client-v1.14.6) (2026-09-06)
+
+
+### Bug Fixes
+
+* badge stato richiesta va su due righe nella lista amici suggeriti ([d787e8f](https://github.com/ziobob94/fishlog-client/commit/d787e8f14f57f1a0e42e9ee2987dfde1209b7fbc))
+
 ## [1.14.5](https://github.com/ziobob94/fishlog-client/compare/client-v1.14.4...client-v1.14.5) (2026-09-06)
 
 
