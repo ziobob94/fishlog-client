@@ -36,7 +36,7 @@
           </div>
           <div class="form-group mb-2">
             <label>{{ t('login.passwordLabel') }}</label>
-            <input v-model="password" type="password" :placeholder="t('register.passwordPlaceholder')" required />
+            <PasswordInput v-model="password" :placeholder="t('register.passwordPlaceholder')" required />
           </div>
           <div v-if="error" class="error-msg">{{ error }}</div>
           <button type="submit" class="btn btn-primary w-full" :disabled="loading">
@@ -61,6 +61,7 @@ import { useI18n } from 'vue-i18n'
 import { Fish } from 'lucide-vue-next'
 import { useAuthStore } from '../stores/auth.js'
 import { useFeaturesStore } from '../stores/features.js'
+import PasswordInput from '../components/PasswordInput.vue'
 
 const { t }       = useI18n()
 const auth        = useAuthStore()

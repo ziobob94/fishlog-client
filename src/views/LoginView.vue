@@ -32,7 +32,7 @@
           </div>
           <div class="form-group mb-1">
             <label>{{ t('login.passwordLabel') }}</label>
-            <input v-model="password" type="password" :placeholder="t('login.passwordPlaceholder')" required />
+            <PasswordInput v-model="password" :placeholder="t('login.passwordPlaceholder')" required />
           </div>
           <p class="forgot-link mb-2">
             <RouterLink to="/forgot-password">{{ t('login.forgotPassword') }}</RouterLink>
@@ -61,6 +61,7 @@ import { useI18n } from 'vue-i18n'
 import { Fish } from 'lucide-vue-next'
 import { useAuthStore } from '../stores/auth.js'
 import { useFeaturesStore } from '../stores/features.js'
+import PasswordInput from '../components/PasswordInput.vue'
 
 const { t }    = useI18n()
 const auth     = useAuthStore()

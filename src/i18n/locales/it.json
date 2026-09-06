@@ -14,7 +14,9 @@
 		"login": "Accedi",
 		"error": "Errore",
 		"none": "—",
-		"fieldInfo": "Informazioni sul campo"
+		"fieldInfo": "Informazioni sul campo",
+		"showPassword": "Mostra password",
+		"hidePassword": "Nascondi password"
 	},
 	"nav": {
 		"home": "Home",

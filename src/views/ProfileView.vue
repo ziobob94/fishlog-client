@@ -43,11 +43,11 @@
           <h4>{{ t('profile.credentials.passwordTitle') }}</h4>
           <div class="form-group">
             <label>{{ t('profile.credentials.currentPassword') }}</label>
-            <input v-model="pwForm.currentPassword" type="password" />
+            <PasswordInput v-model="pwForm.currentPassword" />
           </div>
           <div class="form-group mt-1">
             <label>{{ t('profile.credentials.newPassword') }}</label>
-            <input v-model="pwForm.newPassword" type="password" />
+            <PasswordInput v-model="pwForm.newPassword" />
           </div>
           <p v-if="pwError" class="error-msg mt-1">{{ pwError }}</p>
           <p v-if="pwSaved" class="success-msg mt-1">{{ t('profile.credentials.passwordUpdated') }}</p>
@@ -68,7 +68,7 @@
           </div>
           <div v-if="auth.user?.hasPassword" class="form-group mt-1">
             <label>{{ t('profile.credentials.currentPassword') }}</label>
-            <input v-model="emailForm.currentPassword" type="password" />
+            <PasswordInput v-model="emailForm.currentPassword" />
           </div>
           <p v-if="emailError" class="error-msg mt-1">{{ emailError }}</p>
           <p v-if="emailSaved" class="success-msg mt-1">{{ t('profile.credentials.emailPending') }}</p>
@@ -150,7 +150,7 @@
           <p class="text-muted mt-1">{{ t('profile.danger.confirm') }}</p>
           <div v-if="auth.user?.hasPassword" class="form-group mt-2">
             <label>{{ t('profile.credentials.currentPassword') }}</label>
-            <input v-model="deletePassword" type="password" />
+            <PasswordInput v-model="deletePassword" />
           </div>
           <p v-if="deleteError" class="error-msg mt-2">{{ deleteError }}</p>
           <div style="display:flex;gap:.75rem;justify-content:flex-end;margin-top:1.25rem">
@@ -171,6 +171,7 @@ import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useAuthStore } from '../stores/auth.js'
 import { useFeaturesStore } from '../stores/features.js'
+import PasswordInput from '../components/PasswordInput.vue'
 
 const { t } = useI18n()
 const auth  = useAuthStore()
