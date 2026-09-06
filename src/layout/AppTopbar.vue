@@ -162,7 +162,9 @@ const statusTitle = computed(() => {
   @apply absolute -top-1 -right-1 bg-danger text-white text-[0.65rem] font-bold rounded-full px-1.5 py-0.5 leading-none;
 }
 .notif-panel {
-  @apply absolute right-0 top-11 w-80 max-h-96 overflow-y-auto z-[110] p-0;
+  @apply fixed right-3 max-h-96 overflow-y-auto z-[110] p-0;
+  top: 3.75rem;
+  width: min(20rem, calc(100vw - 1.5rem));
 }
 .notif-panel-header {
   @apply flex items-center justify-between px-3 py-2 border-b border-border gap-2;
