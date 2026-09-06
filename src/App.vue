@@ -6,7 +6,7 @@
     <ToastContainer />
   </div>
 
-  <div v-else class="flex min-h-dvh">
+  <div v-else class="flex" :class="isFullHeight ? 'h-dvh overflow-hidden' : 'min-h-dvh'">
     <!-- Overlay -->
     <div
       v-if="sidebarOpen && !sidebarLocked"
@@ -22,11 +22,14 @@
     />
 
     <div
-      class="flex flex-col flex-1 min-w-0 transition-[margin] duration-300"
+      class="flex flex-col flex-1 min-w-0 min-h-0 transition-[margin] duration-300"
       :class="sidebarLocked ? 'ml-60' : 'ml-0'"
     >
       <AppTopbar @toggle-sidebar="toggleSidebar" />
-      <main class="flex-1 w-full max-w-[1100px] mx-auto px-6 py-8 pb-24 md:pb-8">
+      <main
+        class="flex-1 w-full max-w-[1100px] mx-auto px-6"
+        :class="isFullHeight ? 'flex flex-col min-h-0 overflow-hidden' : 'py-8 pb-24 md:pb-8'"
+      >
         <RouterView />
       </main>
     </div>
@@ -52,6 +55,7 @@ import { connectWebSocket, disconnectWebSocket } from './services/ws.js'
 
 const route = useRoute()
 const isPublicRoute = computed(() => !!route.meta.public)
+const isFullHeight  = computed(() => !!route.meta.fullHeight)
 
 const sidebarOpen   = ref(false)
 const sidebarLocked = ref(localStorage.getItem('sidebar_locked') === 'true')

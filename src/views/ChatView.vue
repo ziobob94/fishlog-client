@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div :class="{ 'chat-fullheight': route.params.userId }">
     <!-- Lista conversazioni -->
     <template v-if="!route.params.userId">
       <div class="page-header">
@@ -477,14 +477,13 @@ onBeforeUnmount(() => {
   background: var(--ocean-glow);
 }
 
-.thread {
-  @apply flex flex-col gap-3;
-  height: calc(100dvh - 16rem);
-}
-@media (min-width: 768px) {
-  .thread { height: calc(100dvh - 11rem); }
-}
-.messages-list { @apply flex-1 overflow-y-auto flex flex-col gap-2 pr-1; }
+.chat-fullheight { @apply flex flex-col flex-1 min-h-0; }
+.chat-fullheight .chat-thread-header { @apply shrink-0; }
+.chat-fullheight .error-banner { @apply shrink-0; }
+.chat-fullheight .thread { @apply flex-1 min-h-0; }
+
+.thread { @apply flex flex-col gap-3; }
+.messages-list { @apply flex-1 min-h-0 overflow-y-auto flex flex-col gap-2 pr-1; }
 
 .message-row { @apply flex items-end gap-1; }
 .message-row.mine { @apply justify-end flex-row-reverse; }

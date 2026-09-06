@@ -24,7 +24,7 @@ export default createRouter({
     { path: '/board', name: 'board', component: () => import('../views/MyBoardView.vue') },
     { path: '/market', name: 'market', component: () => import('../views/MarketView.vue') },
     { path: '/chat',   name: 'chat',   component: () => import('../views/ChatView.vue') },
-    { path: '/chat/:userId', name: 'chat-thread', component: () => import('../views/ChatView.vue') },
+    { path: '/chat/:userId', name: 'chat-thread', component: () => import('../views/ChatView.vue'), meta: { fullHeight: true } },
     { path: '/profile', name: 'profile', component: () => import('../views/ProfileView.vue') },
     { path: '/stats',   name: 'stats',   component: () => import('../views/StatsView.vue') },
   ]
