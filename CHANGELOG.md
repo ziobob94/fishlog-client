@@ -1,3 +1,10 @@
+# [1.5.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.4.0...client-v1.5.0) (2026-09-06)
+
+
+### Features
+
+* Aggiungi funzionalità di ricerca e invio richieste di amicizia nella chat ([825b1e6](https://github.com/ziobob94/fishlog-client/commit/825b1e601f56f9fa83c69addb5a58571b9b223bb))
+
 # [1.4.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.3.0...client-v1.4.0) (2026-09-06)
 
 
