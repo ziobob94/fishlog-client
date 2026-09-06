@@ -158,8 +158,14 @@
 		"titlePrefix": "Le tue",
 		"titleHighlight": "chat",
 		"empty": "Nessuna conversazione: scrivi a un amico qui sopra per iniziare",
+		"friendsLink": "Vai ai tuoi amici",
 		"newChat": {
 			"label": "Nuova chat"
+		},
+		"addFriend": {
+			"label": "Aggiungi un amico",
+			"placeholder": "Nome o email...",
+			"noResults": "Nessun utente trovato"
 		},
 		"messagePlaceholder": "Scrivi un messaggio...",
 		"send": "Invia"
