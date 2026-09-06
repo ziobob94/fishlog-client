@@ -1,3 +1,10 @@
+# [1.12.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.11.2...client-v1.12.0) (2026-09-06)
+
+
+### Features
+
+* elimina singola notifica o svuota il centro notifiche ([7c4fafc](https://github.com/ziobob94/fishlog-client/commit/7c4fafc60b9fd698000bec266078c0c162e671f6))
+
 ## [1.11.2](https://github.com/ziobob94/fishlog-client/compare/client-v1.11.1...client-v1.11.2) (2026-09-06)
 
 
