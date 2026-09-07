@@ -38,7 +38,7 @@
 	},
 	"admin": {
 		"title": "Pannello Admin",
-		"tabs": { "users": "Utenti", "sessions": "Sessioni", "shops": "Negozi" },
+		"tabs": { "users": "Utenti", "sessions": "Sessioni", "shops": "Negozi", "config": "Configurazioni" },
 		"users": {
 			"searchPlaceholder": "Cerca utente...",
 			"table": {
@@ -78,6 +78,15 @@
 				"requestedAt": "Richiesto il",
 				"actions": "Azioni"
 			}
+		},
+		"config": {
+			"intro": "Queste configurazioni si applicano subito, senza bisogno di riavviare il server.",
+			"saved": "Configurazione salvata",
+			"saveError": "Errore nel salvataggio della configurazione",
+			"loadError": "Errore nel caricamento della configurazione",
+			"secretSetHint": "Impostato — lascia vuoto per non modificarlo",
+			"secretPlaceholder": "Non impostato",
+			"save": "Salva configurazione"
 		}
 	},
 	"auth": {

@@ -9,6 +9,7 @@
         {{ t('admin.tabs.shops') }}
         <span v-if="pendingShops.length" class="badge badge-sand ml-1">{{ pendingShops.length }}</span>
       </button>
+      <button class="btn" :class="tab === 'config' ? 'btn-primary' : 'btn-ghost'" @click="tab = 'config'">{{ t('admin.tabs.config') }}</button>
     </div>
 
     <!-- UTENTI -->
@@ -125,6 +126,35 @@
       </table>
     </div>
 
+    <!-- CONFIGURAZIONI -->
+    <div v-if="tab === 'config'">
+      <p class="text-muted text-sm mb-3">{{ t('admin.config.intro') }}</p>
+
+      <div v-if="loadingConfig" class="state-center"><div class="spinner"></div></div>
+      <template v-else>
+        <section v-for="group in configGroups" :key="group.name" class="card mb-3">
+          <h3>{{ group.name }}</h3>
+          <div v-for="field in group.fields" :key="field.key" class="form-group">
+            <label>{{ field.label }}</label>
+
+            <label v-if="field.type === 'boolean'" class="switch">
+              <input type="checkbox" v-model="configForm[field.key]" />
+              <span class="switch-track"></span>
+            </label>
+            <input
+              v-else
+              :type="field.secret ? 'password' : (field.type === 'number' ? 'number' : 'text')"
+              v-model="configForm[field.key]"
+              :placeholder="field.secret ? (field.hasValue ? t('admin.config.secretSetHint') : t('admin.config.secretPlaceholder')) : ''"
+              autocomplete="off"
+            />
+          </div>
+        </section>
+
+        <button class="btn btn-primary" :disabled="savingConfig" @click="saveConfig">{{ t('admin.config.save') }}</button>
+      </template>
+    </div>
+
     <!-- Confirm delete dialog -->
     <Teleport to="body">
       <div v-if="deleteTarget" class="dialog-overlay" @click.self="deleteTarget = null">
@@ -142,14 +172,16 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, reactive, computed, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useAuthStore } from '../stores/auth.js'
 import { usePagination } from '../composables/usePagination.js'
 import { useDebouncedFn } from '../composables/useDebouncedFn.js'
+import { useToast } from '../composables/useToast.js'
 import api from '../utils/api.js'
 
 const { t } = useI18n()
+const { toast } = useToast()
 const authStore = useAuthStore()
 const tab = ref('users')
 
@@ -221,7 +253,50 @@ async function rejectShop(u) {
   pendingShops.value = pendingShops.value.filter(x => x._id !== u._id)
 }
 
-onMounted(() => { pagination.load(); fetchSessions(); fetchPendingShops() })
+// Configurazioni (eBay, OAuth, SMTP, feature flag...): niente più editing
+// di file + riavvio, si salva da qui e vale subito.
+const configFields  = ref([])
+const configForm    = reactive({})
+const loadingConfig = ref(false)
+const savingConfig  = ref(false)
+
+const configGroups = computed(() => {
+  const byGroup = new Map()
+  for (const field of configFields.value) {
+    if (!byGroup.has(field.group)) byGroup.set(field.group, [])
+    byGroup.get(field.group).push(field)
+  }
+  return Array.from(byGroup, ([name, fields]) => ({ name, fields }))
+})
+
+async function fetchConfig() {
+  loadingConfig.value = true
+  try {
+    const { data } = await api.get('/admin/config')
+    configFields.value = data
+    data.forEach(field => { configForm[field.key] = field.value ?? (field.type === 'boolean' ? false : '') })
+  } catch {
+    toast(t('admin.config.loadError'), { type: 'danger' })
+  } finally {
+    loadingConfig.value = false
+  }
+}
+
+async function saveConfig() {
+  savingConfig.value = true
+  try {
+    const payload = configFields.value.map(field => ({ key: field.key, value: configForm[field.key] }))
+    await api.put('/admin/config', payload)
+    toast(t('admin.config.saved'), { type: 'success' })
+    await fetchConfig()
+  } catch {
+    toast(t('admin.config.saveError'), { type: 'danger' })
+  } finally {
+    savingConfig.value = false
+  }
+}
+
+onMounted(() => { pagination.load(); fetchSessions(); fetchPendingShops(); fetchConfig() })
 </script>
 
 <style scoped>
