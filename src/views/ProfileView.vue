@@ -124,6 +124,41 @@
         </button>
       </section>
 
+      <!-- Negozio / Market -->
+      <section class="card">
+        <h3>{{ t('profile.shop.title') }}</h3>
+        <div class="notification-row">
+          <div>
+            <strong>{{ t('profile.shop.enable') }}</strong>
+            <p class="text-muted text-sm">{{ t('profile.shop.enableHint') }}</p>
+          </div>
+          <label class="switch">
+            <input type="checkbox" v-model="shopForm.enabled" @change="saveShop" />
+            <span class="switch-track"></span>
+          </label>
+        </div>
+
+        <template v-if="shopForm.enabled">
+          <div class="form-group mt-3">
+            <label>{{ t('profile.shop.nameLabel') }}</label>
+            <input v-model="shopForm.name" type="text" />
+          </div>
+          <div class="form-group mt-2">
+            <label>{{ t('profile.shop.descriptionLabel') }}</label>
+            <textarea v-model="shopForm.description" rows="3"></textarea>
+          </div>
+          <button class="btn btn-primary btn-sm mt-2" :disabled="savingShop" @click="saveShop">
+            {{ t('common.save') }}
+          </button>
+          <RouterLink to="/market/mine" class="btn btn-secondary btn-sm mt-2 ml-2">
+            {{ t('profile.shop.myListings') }}
+          </RouterLink>
+        </template>
+
+        <p v-if="shopError" class="error-msg mt-2">{{ shopError }}</p>
+        <p v-if="shopSaved" class="success-msg mt-2">{{ t('common.save') }} ✓</p>
+      </section>
+
       <!-- Sessione -->
       <section class="card">
         <h3>{{ t('profile.session.title') }}</h3>
@@ -167,7 +202,7 @@
 
 <script setup>
 import { ref, computed } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRouter, RouterLink } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useAuthStore } from '../stores/auth.js'
 import { useFeaturesStore } from '../stores/features.js'
@@ -287,6 +322,29 @@ async function saveNotifications() {
       notificationItems.map(({ key }) => [key, auth.user?.notificationPreferences?.[key] !== false])
     )
   }
+}
+
+// ── negozio ──
+const shopForm = ref({
+  enabled: auth.user?.shop?.enabled || false,
+  name: auth.user?.shop?.name || '',
+  description: auth.user?.shop?.description || ''
+})
+const savingShop = ref(false)
+const shopError  = ref('')
+const shopSaved  = ref(false)
+
+async function saveShop() {
+  shopError.value = ''
+  shopSaved.value = false
+  savingShop.value = true
+  try {
+    await auth.updateShop(shopForm.value)
+    shopSaved.value = true
+    setTimeout(() => shopSaved.value = false, 2000)
+  } catch (e) {
+    shopError.value = e.response?.data?.error || t('common.error')
+  } finally { savingShop.value = false }
 }
 
 // ── danger zone ──

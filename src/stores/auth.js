@@ -78,6 +78,12 @@ export const useAuthStore = defineStore('auth', () => {
     return data
   }
 
+  async function updateShop(payload) {
+    const { data } = await api.patch('/auth/me/shop', payload)
+    persistUser(data)
+    return data
+  }
+
   async function changePassword(currentPassword, newPassword) {
     await api.patch('/auth/me/password', { currentPassword, newPassword })
   }
@@ -103,7 +109,7 @@ export const useAuthStore = defineStore('auth', () => {
 
   return {
     token, user, isLoggedIn, setAuth, clearAuth, initAuth, login, register, fetchMe, logout,
-    updateProfile, updateNotificationPreferences, uploadAvatar, changePassword, changeEmail, deleteAccount,
+    updateProfile, updateNotificationPreferences, updateShop, uploadAvatar, changePassword, changeEmail, deleteAccount,
     forgotPassword, resetPassword
   }
 })
