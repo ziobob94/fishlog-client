@@ -1,3 +1,10 @@
+# [1.16.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.15.0...client-v1.16.0) (2026-09-07)
+
+
+### Features
+
+* mostra stato verifica negozio in profilo, market e admin ([bed2f31](https://github.com/ziobob94/fishlog-client/commit/bed2f31b0add047ab4dff22741d05ee3c2f59bba))
+
 # [1.15.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.14.6...client-v1.15.0) (2026-09-07)
 
 
