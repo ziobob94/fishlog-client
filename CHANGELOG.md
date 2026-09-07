@@ -1,3 +1,10 @@
+# [1.15.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.14.6...client-v1.15.0) (2026-09-07)
+
+
+### Features
+
+* aggiungi market (annunci P2P, vetrine negozio, fallback eBay) ([3c946da](https://github.com/ziobob94/fishlog-client/commit/3c946daf3345466e9912918576376617fcaf278c))
+
 ## [1.14.6](https://github.com/ziobob94/fishlog-client/compare/client-v1.14.5...client-v1.14.6) (2026-09-06)
 
 
