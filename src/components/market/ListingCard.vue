@@ -17,8 +17,8 @@
       <span class="badge absolute bottom-2 left-2" :class="listing.condition === 'nuovo' ? 'badge-success' : 'badge-sand'">
         {{ t(`market.condition.${listing.condition}`) }}
       </span>
-      <span v-if="listing.sellerType === 'negozio'" class="badge badge-ocean absolute bottom-2 right-2 icon-inline">
-        <Store :size="12" /> {{ t('market.sellerType.negozio') }}
+      <span v-if="listing.sellerType === 'negozio'" class="badge absolute bottom-2 right-2 icon-inline" :class="isVerifiedShop ? 'badge-ocean' : 'badge-sand'">
+        <Store :size="12" /> {{ isVerifiedShop ? t('market.sellerType.negozio') : t('market.sellerType.unverified') }}
       </span>
       <span v-if="listing.status !== 'active'" class="badge badge-danger absolute top-2 left-2">
         {{ t(`market.status.${listing.status}`) }}
@@ -37,12 +37,15 @@
 </template>
 
 <script setup>
+import { computed } from 'vue'
 import { RouterLink } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { Package, Tag, MapPin, Store } from 'lucide-vue-next'
 
 const { t } = useI18n()
-defineProps({ listing: { type: Object, required: true } })
+const props = defineProps({ listing: { type: Object, required: true } })
+
+const isVerifiedShop = computed(() => props.listing.seller?.shop?.verificationStatus === 'verified')
 
 function formatPrice(price, currency) {
   return new Intl.NumberFormat('it-IT', { style: 'currency', currency: currency || 'EUR' }).format(price)

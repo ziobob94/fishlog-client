@@ -5,6 +5,10 @@
     <div class="admin-tabs">
       <button class="btn" :class="tab === 'users' ? 'btn-primary' : 'btn-ghost'" @click="tab = 'users'">{{ t('admin.tabs.users') }}</button>
       <button class="btn" :class="tab === 'sessions' ? 'btn-primary' : 'btn-ghost'" @click="tab = 'sessions'">{{ t('admin.tabs.sessions') }}</button>
+      <button class="btn" :class="tab === 'shops' ? 'btn-primary' : 'btn-ghost'" @click="tab = 'shops'">
+        {{ t('admin.tabs.shops') }}
+        <span v-if="pendingShops.length" class="badge badge-sand ml-1">{{ pendingShops.length }}</span>
+      </button>
     </div>
 
     <!-- UTENTI -->
@@ -92,6 +96,35 @@
       </table>
     </div>
 
+    <!-- NEGOZI -->
+    <div v-if="tab === 'shops'">
+      <div v-if="loadingShops" class="state-center"><div class="spinner"></div></div>
+
+      <div v-else-if="!pendingShops.length" class="state-center">
+        <p class="text-muted">{{ t('admin.shops.empty') }}</p>
+      </div>
+
+      <table v-else class="admin-table">
+        <thead>
+          <tr><th>{{ t('admin.shops.table.name') }}</th><th>{{ t('admin.shops.table.owner') }}</th><th>{{ t('admin.shops.table.description') }}</th><th>{{ t('admin.shops.table.requestedAt') }}</th><th>{{ t('admin.shops.table.actions') }}</th></tr>
+        </thead>
+        <tbody>
+          <tr v-for="u in pendingShops" :key="u._id">
+            <td>{{ u.shop.name || t('common.none') }}</td>
+            <td class="text-muted" style="font-size:.82rem">{{ u.displayName || u.email }}</td>
+            <td class="text-muted" style="font-size:.82rem;max-width:280px">{{ u.shop.description }}</td>
+            <td class="text-mono text-muted" style="font-size:.78rem">{{ fmtDate(u.shop.verificationRequestedAt) }}</td>
+            <td>
+              <div class="flex gap-1.5">
+                <button class="btn btn-primary btn-sm" @click="approveShop(u)">{{ t('admin.shops.approve') }}</button>
+                <button class="btn btn-danger btn-sm" @click="rejectShop(u)">{{ t('admin.shops.reject') }}</button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
     <!-- Confirm delete dialog -->
     <Teleport to="body">
       <div v-if="deleteTarget" class="dialog-overlay" @click.self="deleteTarget = null">
@@ -166,7 +199,29 @@ async function toggleHide(s) {
 
 const fmtDate = d => new Date(d).toLocaleDateString('it-IT', { day: '2-digit', month: 'short', year: 'numeric' })
 
-onMounted(() => { pagination.load(); fetchSessions() })
+// Negozi in attesa di verifica
+const pendingShops  = ref([])
+const loadingShops  = ref(false)
+
+async function fetchPendingShops() {
+  loadingShops.value = true
+  try {
+    const { data } = await api.get('/admin/shops/pending')
+    pendingShops.value = data.data
+  } finally { loadingShops.value = false }
+}
+
+async function approveShop(u) {
+  await api.post(`/admin/shops/${u._id}/approve`)
+  pendingShops.value = pendingShops.value.filter(x => x._id !== u._id)
+}
+
+async function rejectShop(u) {
+  await api.post(`/admin/shops/${u._id}/reject`)
+  pendingShops.value = pendingShops.value.filter(x => x._id !== u._id)
+}
+
+onMounted(() => { pagination.load(); fetchSessions(); fetchPendingShops() })
 </script>
 
 <style scoped>

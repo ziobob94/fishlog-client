@@ -38,7 +38,7 @@
 	},
 	"admin": {
 		"title": "Pannello Admin",
-		"tabs": { "users": "Utenti", "sessions": "Sessioni" },
+		"tabs": { "users": "Utenti", "sessions": "Sessioni", "shops": "Negozi" },
 		"users": {
 			"searchPlaceholder": "Cerca utente...",
 			"table": {
@@ -66,6 +66,18 @@
 		"deleteUser": {
 			"title": "Elimina utente",
 			"warning": "Verranno eliminate anche tutte le sessioni di {name}."
+		},
+		"shops": {
+			"empty": "Nessuna richiesta di negozio in attesa",
+			"approve": "Approva",
+			"reject": "Rifiuta",
+			"table": {
+				"name": "Negozio",
+				"owner": "Proprietario",
+				"description": "Descrizione",
+				"requestedAt": "Richiesto il",
+				"actions": "Azioni"
+			}
 		}
 	},
 	"auth": {
@@ -801,7 +813,8 @@
 		},
 		"sellerType": {
 			"privato": "Privato",
-			"negozio": "Negozio"
+			"negozio": "Negozio",
+			"unverified": "Negozio (in verifica)"
 		},
 		"status": {
 			"active": "Disponibile",
@@ -884,7 +897,15 @@
 			"enableHint": "I tuoi annunci nel market saranno etichettati come \"negozio\" e avrai una vetrina pubblica",
 			"nameLabel": "Nome negozio",
 			"descriptionLabel": "Descrizione",
-			"myListings": "I miei annunci"
+			"myListings": "I miei annunci",
+			"pendingHint": "Richiesta in revisione: finché non viene approvata i tuoi annunci restano visibili ma etichettati \"in verifica\".",
+			"rejectedHint": "Richiesta rifiutata. Puoi modificare i dati e salvare di nuovo per rimetterla in revisione.",
+			"status": {
+				"none": "Non richiesta",
+				"pending": "In attesa di verifica",
+				"verified": "Verificato",
+				"rejected": "Rifiutato"
+			}
 		},
 		"session": {
 			"title": "Sessione",

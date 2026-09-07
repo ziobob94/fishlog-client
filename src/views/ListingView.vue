@@ -28,7 +28,9 @@
       <p v-if="listing.description" class="text-muted mt-3 whitespace-pre-line">{{ listing.description }}</p>
 
       <div class="seller-row mt-4">
-        <span v-if="listing.sellerType === 'negozio'" class="badge badge-ocean icon-inline"><Store :size="12" /> {{ t('market.sellerType.negozio') }}</span>
+        <span v-if="listing.sellerType === 'negozio'" class="badge icon-inline" :class="isVerifiedShop ? 'badge-ocean' : 'badge-sand'">
+          <Store :size="12" /> {{ isVerifiedShop ? t('market.sellerType.negozio') : t('market.sellerType.unverified') }}
+        </span>
         <RouterLink :to="`/users/${listing.seller._id}`" class="text-ocean hover:underline">
           {{ listing.seller.displayName || listing.seller.email }}
         </RouterLink>
@@ -75,6 +77,7 @@ const activeMedia = ref(null)
 const statusModel = ref('active')
 
 const isOwner = computed(() => listing.value && (listing.value.seller._id === auth.user?._id || auth.user?.role === 'admin'))
+const isVerifiedShop = computed(() => listing.value?.seller?.shop?.verificationStatus === 'verified')
 
 watch(listing, (l) => {
   if (l) {

@@ -139,6 +139,16 @@
         </div>
 
         <template v-if="shopForm.enabled">
+          <span class="badge mt-3" :class="verificationBadgeClass">
+            {{ t(`profile.shop.status.${auth.user?.shop?.verificationStatus || 'none'}`) }}
+          </span>
+          <p v-if="auth.user?.shop?.verificationStatus === 'pending'" class="text-muted text-sm mt-1">
+            {{ t('profile.shop.pendingHint') }}
+          </p>
+          <p v-if="auth.user?.shop?.verificationStatus === 'rejected'" class="text-muted text-sm mt-1">
+            {{ t('profile.shop.rejectedHint') }}
+          </p>
+
           <div class="form-group mt-3">
             <label>{{ t('profile.shop.nameLabel') }}</label>
             <input v-model="shopForm.name" type="text" />
@@ -325,6 +335,10 @@ async function saveNotifications() {
 }
 
 // ── negozio ──
+const verificationBadgeClass = computed(() => ({
+  verified: 'badge-success', pending: 'badge-sand', rejected: 'badge-danger', none: 'badge-sand'
+}[auth.user?.shop?.verificationStatus || 'none']))
+
 const shopForm = ref({
   enabled: auth.user?.shop?.enabled || false,
   name: auth.user?.shop?.name || '',
