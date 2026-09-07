@@ -339,6 +339,10 @@
     @apply flex flex-col gap-4;
   }
 
+  .posts-list > :last-child :deep(.post-card) {
+    @apply border-b-0 pb-0;
+  }
+
   .tab-btn {
     @apply inline-flex items-center gap-2 text-[0.95rem] font-semibold text-muted bg-transparent border border-transparent border-b-[3px] rounded-t-md cursor-pointer px-3 py-2.5 -mb-px transition-colors;
   }

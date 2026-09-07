@@ -1,6 +1,6 @@
 <template>
   <header class="sticky top-0 z-[100] flex items-center gap-4 px-5 py-3 border-b border-border"
-    style="background: rgba(13,17,23,0.92); backdrop-filter: blur(12px)">
+    style="background: rgb(var(--color-ink) / 0.92); backdrop-filter: blur(12px)">
     <button
       class="flex flex-col gap-1.5 p-1 bg-transparent border-none cursor-pointer group"
       @click="$emit('toggle-sidebar')"
