@@ -53,4 +53,5 @@ async function onRespond(post, message) { await store.respond(post._id, message)
 <style scoped>
 .page-header { @apply flex items-center justify-between mb-6; }
 .posts-list  { @apply flex flex-col gap-4; }
+.posts-list > :last-child :deep(.post-card) { @apply border-b-0 pb-0; }
 </style>

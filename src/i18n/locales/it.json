@@ -591,6 +591,12 @@
       "linkedProviders": "Provider collegati",
       "disabled": "Cambio password ed email temporaneamente disabilitato."
     },
+    "appearance": {
+      "title": "Aspetto",
+      "hint": "Scegli come vuoi vedere l'app",
+      "light": "Chiaro",
+      "dark": "Scuro"
+    },
     "privacy": {
       "title": "Privacy",
       "defaultVisibilityLabel": "Visibilità di default",

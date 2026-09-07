@@ -11,8 +11,17 @@
   <meta property="og:title" content="FishLog" />
   <meta property="og:image" content="/og-banner.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/src/assets/main.css" />
+  <script>
+    (function () {
+      try {
+        var stored = localStorage.getItem('fishlog_theme');
+        var mode = stored || (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+        document.documentElement.setAttribute('data-theme', mode);
+      } catch (e) {}
+    })();
+  </script>
 </head>
 <body>
   <div id="app"></div>

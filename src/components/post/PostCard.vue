@@ -1,5 +1,5 @@
 <template>
-  <div class="card post-card">
+  <div class="post-card">
     <div class="post-header">
       <div class="post-author">
         <img v-if="post.author?.avatar" :src="post.author.avatar" class="mini-avatar" />
@@ -86,7 +86,7 @@ function submitResponse() {
 </script>
 
 <style scoped>
-.post-card    { @apply flex flex-col gap-2; }
+.post-card    { @apply flex flex-col gap-2 border-b border-border/60 pb-4; }
 .post-header  { @apply flex items-center gap-2; }
 .post-author  { @apply flex items-center gap-2 flex-1; }
 .post-title   { @apply font-semibold; }

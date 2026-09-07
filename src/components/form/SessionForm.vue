@@ -778,7 +778,7 @@
   }
 
   .form-actions {
-    background: #0d1117;
+    background: var(--ink);
     border-top: 1px solid var(--border);
     bottom: 0;
     left: 0;

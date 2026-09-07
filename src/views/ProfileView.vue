@@ -86,6 +86,30 @@
         </div>
       </section>
 
+      <!-- Aspetto -->
+      <section class="card">
+        <h3>{{ t('profile.appearance.title') }}</h3>
+        <p class="text-muted text-sm mb-3">{{ t('profile.appearance.hint') }}</p>
+        <div class="theme-toggle">
+          <button
+            type="button"
+            class="btn btn-sm"
+            :class="theme.mode === 'light' ? 'btn-primary' : 'btn-ghost'"
+            @click="theme.setMode('light')"
+          >
+            <Sun :size="15" /> {{ t('profile.appearance.light') }}
+          </button>
+          <button
+            type="button"
+            class="btn btn-sm"
+            :class="theme.mode === 'dark' ? 'btn-primary' : 'btn-ghost'"
+            @click="theme.setMode('dark')"
+          >
+            <Moon :size="15" /> {{ t('profile.appearance.dark') }}
+          </button>
+        </div>
+      </section>
+
       <!-- Privacy -->
       <section class="card">
         <h3>{{ t('profile.privacy.title') }}</h3>
@@ -140,12 +164,15 @@
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
+import { Sun, Moon } from 'lucide-vue-next'
 import { useAuthStore } from '../stores/auth.js'
 import { useFeaturesStore } from '../stores/features.js'
+import { useThemeStore } from '../stores/theme.js'
 
 const { t } = useI18n()
 const auth  = useAuthStore()
 const features = useFeaturesStore()
+const theme = useThemeStore()
 const router = useRouter()
 
 const initials = computed(() => {
@@ -251,6 +278,9 @@ async function doDeleteAccount() {
 <style scoped>
 .page-header  { @apply mb-6; }
 .profile-grid { @apply grid gap-4; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); }
+
+.theme-toggle { @apply flex gap-2; }
+.theme-toggle .btn { @apply gap-1.5; }
 
 .avatar-row { @apply flex items-center gap-4; }
 .avatar { @apply w-16 h-16 rounded-full object-cover; }
