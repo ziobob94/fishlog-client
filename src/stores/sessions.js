@@ -64,12 +64,12 @@ export const useSessionStore = defineStore('sessions', () => {
       .map(i => placeholderSession(i.localId, i.data))
   }
 
-  async function fetchSessions(params = {}) {
+  async function fetchSessions(params = {}, { append = false } = {}) {
     loading.value = true; error.value = null
     try {
       const { data } = await api.get('/sessions', { params })
-      const pending = (!params.page || params.page === 1) ? pendingCreatedSessions() : []
-      sessions.value  = [...pending, ...data.data]
+      const pending = append ? [] : pendingCreatedSessions()
+      sessions.value  = append ? [...sessions.value, ...data.data] : [...pending, ...data.data]
       pagination.value = data.pagination
     } catch (e) {
       error.value = e.response?.data?.error || 'Errore caricamento'
@@ -187,8 +187,9 @@ export const useSessionStore = defineStore('sessions', () => {
     const fd = new FormData()
     for (const f of files) fd.append('files', f)
     try {
+      // Niente Content-Type esplicito: senza il boundary generato dal browser
+      // per il FormData, il multipart non è più parsabile lato server.
       const { data } = await api.post(`/media/upload/${sessionId}`, fd, {
-        headers: { 'Content-Type': 'multipart/form-data' },
         onUploadProgress: onProgress
       })
       await fetchSession(sessionId)
@@ -206,9 +207,9 @@ export const useSessionStore = defineStore('sessions', () => {
     const fd = new FormData()
     for (const f of files) fd.append('files', f)
     try {
-      const { data } = await api.post(`/media/upload/${sessionId}/catch/${catchId}`, fd, {
-        headers: { 'Content-Type': 'multipart/form-data' }
-      })
+      // Niente Content-Type esplicito: senza il boundary generato dal browser
+      // per il FormData, il multipart non è più parsabile lato server.
+      const { data } = await api.post(`/media/upload/${sessionId}/catch/${catchId}`, fd)
       return data.uploaded
     } catch (e) {
       error.value = 'Errore upload foto cattura'

@@ -15,7 +15,7 @@
       {{ t('home.historyTitle') }}
     </h2>
 
-    <div v-if="store.loading" class="state-center">
+    <div v-if="infiniteLoading" class="state-center">
       <div class="spinner"></div>
     </div>
 
@@ -32,11 +32,7 @@
       <SessionCard v-for="s in historySessions" :key="s._id" :session="s" />
     </div>
 
-    <PaginationBar
-      :current="pagination.page.value"
-      :pages="store.pagination.pages"
-      @change="pagination.goTo"
-    />
+    <InfiniteSentinel :active="hasMore" :loading="loadingMore" @trigger="loadMore" />
   </div>
 </template>
 
@@ -46,11 +42,11 @@ import { RouterLink } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { Fish } from 'lucide-vue-next'
 import { useSessionStore } from '../stores/sessions.js'
-import { usePagination } from '../composables/usePagination.js'
+import { useInfiniteScroll } from '../composables/useInfiniteScroll.js'
 import { useDebouncedFn } from '../composables/useDebouncedFn.js'
 import SessionCard    from '../components/SessionCard.vue'
 import SessionFilters from '../components/SessionFilters.vue'
-import PaginationBar  from '../components/PaginationBar.vue'
+import InfiniteSentinel from '../components/InfiniteSentinel.vue'
 
 const { t } = useI18n()
 const store = useSessionStore()
@@ -67,29 +63,29 @@ const newSessionTarget = computed(() =>
     : { path: '/new' }
 )
 
-async function fetchData(page) {
-  await store.fetchSessions({
+const pagesRef = computed(() => store.pagination.pages)
+const { loading: infiniteLoading, loadingMore, hasMore, reset, loadMore } = useInfiniteScroll(
+  (page, { append }) => store.fetchSessions({
     page,
     search:    filters.value.search    || undefined,
     technique: filters.value.technique || undefined,
     dateFrom:  filters.value.dateFrom  || undefined,
     dateTo:    filters.value.dateTo    || undefined
-  })
-  return store.pagination.pages
-}
+  }, { append }),
+  pagesRef
+)
 
-const pagination = usePagination(fetchData)
-const debouncedReset = useDebouncedFn(() => pagination.reset(), 320)
+const debouncedReset = useDebouncedFn(() => reset(), 320)
 
 watch(filters, debouncedReset, { deep: true })
 
 function resetFilters() {
   filters.value = { search: '', technique: '', dateFrom: '', dateTo: '' }
-  pagination.reset()
+  reset()
 }
 
 onMounted(() => {
-  pagination.load()
+  reset()
   store.fetchOngoing()
 })
 </script>

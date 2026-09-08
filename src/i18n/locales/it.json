@@ -444,10 +444,6 @@
 			"confirm": "L'operazione non è reversibile."
 		}
 	},
-	"pagination": {
-		"prev": "← Prec",
-		"next": "Succ →"
-	},
 	"sessionFilters": {
 		"searchPlaceholder": "Cerca luogo, note...",
 		"allTechniques": "Tutte le tecniche",

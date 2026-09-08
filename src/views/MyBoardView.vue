@@ -2,9 +2,9 @@
   <div>
     <PostForm :create-fn="store.createPost" @created="onCreated" />
 
-    <div v-if="store.loading" class="state-center mt-4"><div class="spinner"></div></div>
+    <div v-if="infiniteLoading" class="state-center mt-4"><div class="spinner"></div></div>
 
-    <div v-else-if="!myPosts.length" class="state-center mt-4">
+    <div v-else-if="!store.feed.length" class="state-center mt-4">
       <div style="font-size:3rem; display:flex; justify-content:center"><Pin :size="48" /></div>
       <h3>{{ t('posts.board.empty.title') }}</h3>
       <p class="text-muted mt-1">{{ t('posts.board.empty.text') }}</p>
@@ -12,7 +12,7 @@
 
     <div v-else class="posts-list mt-4">
       <PostCard
-        v-for="p in myPosts"
+        v-for="p in store.feed"
         :key="p._id"
         :post="p"
         @delete="onDelete"
@@ -23,6 +23,7 @@
         @delete-comment="onDeleteComment"
         @attend="onAttend"
       />
+      <InfiniteSentinel :active="hasMore" :loading="loadingMore" @trigger="loadMore" />
     </div>
   </div>
 </template>
@@ -33,21 +34,27 @@ import { useI18n } from 'vue-i18n'
 import { Pin } from 'lucide-vue-next'
 import { usePostStore } from '../stores/posts.js'
 import { useAuthStore } from '../stores/auth.js'
+import { useInfiniteScroll } from '../composables/useInfiniteScroll.js'
 import PostForm from '../components/post/PostForm.vue'
 import PostCard from '../components/post/PostCard.vue'
+import InfiniteSentinel from '../components/InfiniteSentinel.vue'
 
 const { t } = useI18n()
 const store = usePostStore()
 const auth  = useAuthStore()
 
-const myPosts = computed(() => store.feed)
+const pagesRef = computed(() => store.pagination.pages)
+const { loading: infiniteLoading, loadingMore, hasMore, reset, loadMore } = useInfiniteScroll(
+  (page, { append }) => store.fetchPosts({ author: auth.user?._id, page }, { append }),
+  pagesRef
+)
 
 onMounted(() => {
-  store.fetchPosts({ author: auth.user?._id })
+  reset()
   store.markSeen('board')
 })
 
-function onCreated() { store.fetchPosts({ author: auth.user?._id }) }
+function onCreated() { reset() }
 async function onDelete(post) { await store.deletePost(post._id) }
 async function onCloseEvent(post) { await store.setEventStatus(post._id, 'closed') }
 async function onRespond(post, message) { await store.respond(post._id, message) }

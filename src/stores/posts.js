@@ -25,11 +25,11 @@ export const usePostStore = defineStore('posts', () => {
     try { await api.post('/posts/mark-seen', { scope }) } catch (e) { /* non critico */ }
   }
 
-  async function fetchPosts(params = {}) {
+  async function fetchPosts(params = {}, { append = false } = {}) {
     loading.value = true
     try {
       const { data } = await api.get('/posts', { params })
-      feed.value = data.data
+      feed.value = append ? [...feed.value, ...data.data] : data.data
       pagination.value = data.pagination
     } catch (e) {
       error.value = e.response?.data?.error || 'Errore caricamento bacheca'
