@@ -54,6 +54,14 @@
         <span class="w-5 text-center flex justify-center"><MessagesSquare :size="16" /></span> {{ t('nav.chat') }}
         <span v-if="chat.unreadCount" class="nav-badge">{{ chat.unreadCount }}</span>
       </RouterLink>
+      <div class="nav-item nav-item-disabled" :title="t('home.hub.comingSoon')">
+        <span class="w-5 text-center flex justify-center"><MessageSquare :size="16" /></span> {{ t('nav.forum') }}
+        <span class="nav-soon-badge badge badge-sand">{{ t('home.hub.comingSoon') }}</span>
+      </div>
+      <div class="nav-item nav-item-disabled" :title="t('home.hub.comingSoon')">
+        <span class="w-5 text-center flex justify-center"><BookOpen :size="16" /></span> {{ t('nav.culture') }}
+        <span class="nav-soon-badge badge badge-sand">{{ t('home.hub.comingSoon') }}</span>
+      </div>
 
       <RouterLink to="/market" class="nav-item mt-1" @click="$emit('close')">
         <span class="w-5 text-center flex justify-center"><ShoppingBag :size="16" /></span> {{ t('nav.market') }}
@@ -110,7 +118,7 @@
   import { computed, onMounted } from 'vue'
   import { RouterLink, useRouter } from 'vue-router'
   import { useI18n } from 'vue-i18n'
-  import { Fish, Home, Pin, MapPin, Users, UserPlus, Newspaper, MessagesSquare, Settings, BarChart3, UserCircle, Plus, Waves, ShoppingBag, Tag } from 'lucide-vue-next'
+  import { Fish, Home, Pin, MapPin, Users, UserPlus, Newspaper, MessagesSquare, Settings, BarChart3, UserCircle, Plus, Waves, ShoppingBag, Tag, MessageSquare, BookOpen } from 'lucide-vue-next'
   import { useAuthStore } from '../stores/auth.js'
   import { useSessionStore } from '../stores/sessions.js'
   import { usePostStore } from '../stores/posts.js'
@@ -183,5 +191,17 @@
 
   .nav-subitem {
     @apply pl-8 text-[0.85rem] font-medium;
+  }
+
+  .nav-item-disabled {
+    @apply cursor-default opacity-60;
+  }
+
+  .nav-item-disabled:hover {
+    @apply bg-transparent text-muted;
+  }
+
+  .nav-soon-badge {
+    @apply ml-auto text-[0.6rem] px-1.5 py-0.5 leading-none;
   }
 </style>
