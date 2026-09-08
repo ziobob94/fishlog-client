@@ -137,10 +137,12 @@
           <div v-for="field in group.fields" :key="field.key" class="form-group">
             <label>{{ field.label }}</label>
 
-            <label v-if="field.type === 'boolean'" class="switch">
-              <input type="checkbox" v-model="configForm[field.key]" />
-              <span class="switch-track"></span>
-            </label>
+            <input
+              v-if="field.type === 'boolean'"
+              type="checkbox"
+              v-model="configForm[field.key]"
+              class="config-checkbox"
+            />
             <input
               v-else
               :type="field.secret ? 'password' : (field.type === 'number' ? 'number' : 'text')"
@@ -320,4 +322,6 @@ onMounted(() => { pagination.load(); fetchSessions(); fetchPendingShops(); fetch
 
 .dialog-overlay { @apply fixed inset-0 z-[1000] bg-black/60 flex items-center justify-center; }
 .dialog         { @apply max-w-sm w-[90%]; }
+
+.config-checkbox { @apply w-auto accent-ocean; }
 </style>
