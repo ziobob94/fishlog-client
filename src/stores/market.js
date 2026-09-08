@@ -77,9 +77,9 @@ export const useMarketStore = defineStore('market', () => {
   async function uploadMedia(id, files) {
     const form = new FormData()
     for (const f of files) form.append('file', f)
-    const { data } = await api.post(`/media/upload/listing/${id}`, form, {
-      headers: { 'Content-Type': 'multipart/form-data' }
-    })
+    // Niente Content-Type esplicito: senza il boundary generato dal browser
+    // per il FormData, il multipart non è più parsabile lato server.
+    const { data } = await api.post(`/media/upload/listing/${id}`, form)
     return data.uploaded
   }
 

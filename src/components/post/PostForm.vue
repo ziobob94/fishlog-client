@@ -177,8 +177,9 @@ async function submit() {
     if (pendingFiles.value.length) {
       const fd = new FormData()
       for (const item of pendingFiles.value) fd.append('files', item.file)
+      // Niente Content-Type esplicito: senza il boundary generato dal browser
+      // per il FormData, il multipart non è più parsabile lato server.
       await api.post(`/media/upload/post/${created._id}`, fd, {
-        headers: { 'Content-Type': 'multipart/form-data' },
         onUploadProgress: e => { uploadProgress.value = Math.round((e.loaded / e.total) * 100) }
       })
       const { data } = await api.get(`/posts/${created._id}`)
