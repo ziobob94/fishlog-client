@@ -1,9 +1,5 @@
 <template>
   <div>
-    <div class="page-header">
-      <h2>{{ t('posts.board.titlePrefix') }} <span class="text-ocean">{{ t('posts.board.titleHighlight') }}</span></h2>
-    </div>
-
     <PostForm :create-fn="store.createPost" @created="onCreated" />
 
     <div v-if="store.loading" class="state-center mt-4"><div class="spinner"></div></div>
@@ -62,7 +58,6 @@ async function onAttend(post, status, guests) { await store.setAttendance(post._
 </script>
 
 <style scoped>
-.page-header { @apply flex items-center justify-between mb-6; }
 .posts-list  { @apply flex flex-col gap-4; }
 .posts-list > :last-child :deep(.post-card) { @apply border-b-0 pb-0; }
 </style>

@@ -781,8 +781,6 @@
 			"viewProfile": "Vedi profilo"
 		},
 		"board": {
-			"titlePrefix": "La mia",
-			"titleHighlight": "bacheca",
 			"empty": {
 				"title": "Nessun post",
 				"text": "Pubblica il tuo primo post o evento"
