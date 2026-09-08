@@ -1,9 +1,11 @@
 <template>
-  <div v-if="isPublicRoute" class="flex min-h-dvh">
+  <div v-if="isPublicRoute" class="flex flex-col min-h-dvh">
     <main class="flex-1 w-full max-w-[1100px] mx-auto px-6 py-8">
       <RouterView />
     </main>
+    <LegalFooter />
     <ToastContainer />
+    <LocalStorageNotice />
   </div>
 
   <div v-else class="flex" :class="isFullHeight ? 'h-dvh overflow-hidden' : 'min-h-dvh'">
@@ -32,9 +34,11 @@
       >
         <RouterView />
       </main>
+      <LegalFooter v-if="!isFullHeight" />
     </div>
 
     <ToastContainer />
+    <LocalStorageNotice />
   </div>
 </template>
 
@@ -44,6 +48,8 @@ import { RouterView, useRoute } from 'vue-router'
 import AppSidebar from './layout/AppSidebar.vue'
 import AppTopbar  from './layout/AppTopbar.vue'
 import ToastContainer from './components/ToastContainer.vue'
+import LegalFooter from './components/LegalFooter.vue'
+import LocalStorageNotice from './components/LocalStorageNotice.vue'
 import { useAuthStore } from './stores/auth.js'
 import { usePostStore } from './stores/posts.js'
 import { useChatStore } from './stores/chat.js'
