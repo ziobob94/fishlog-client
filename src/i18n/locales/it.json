@@ -895,6 +895,12 @@
 			"emailFriendRequests": "Richieste di amicizia",
 			"emailFriendRequestsHint": "Ricevi un'email quando qualcuno ti invia una richiesta di amicizia"
 		},
+		"appearance": {
+			"title": "Aspetto",
+			"hint": "Scegli come vuoi vedere l'app",
+			"light": "Chiaro",
+			"dark": "Scuro"
+		},
 		"privacy": {
 			"title": "Privacy",
 			"defaultVisibilityLabel": "Visibilità di default",

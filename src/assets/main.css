@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -6,6 +6,65 @@
 
 :root {
   --ocean-glow: rgba(14, 165, 233, 0.14);
+
+  /* Dark theme (default) */
+  --color-ink: 13 17 23;
+  --color-ink-light: 26 35 50;
+  --color-surface: 17 24 39;
+  --color-surface-2: 31 45 61;
+  --color-border: 42 63 85;
+  --color-border-light: 58 84 112;
+  --color-ocean: 14 165 233;
+  --color-ocean-dark: 3 105 161;
+  --color-sand: 245 158 11;
+  --color-sand-light: 252 211 77;
+  --color-foam: 226 232 240;
+  --color-muted: 100 116 139;
+  --color-danger: 239 68 68;
+  --color-success: 34 197 94;
+}
+
+:root[data-theme='light'] {
+  --ocean-glow: rgba(14, 165, 233, 0.1);
+
+  --color-ink: 246 248 250;
+  --color-ink-light: 237 241 245;
+  --color-surface: 255 255 255;
+  --color-surface-2: 240 244 248;
+  --color-border: 219 226 233;
+  --color-border-light: 196 206 216;
+  --color-ocean: 3 130 195;
+  --color-ocean-dark: 3 105 161;
+  --color-sand: 217 119 6;
+  --color-sand-light: 245 158 11;
+  --color-foam: 15 23 42;
+  --color-muted: 100 116 139;
+  --color-danger: 220 38 38;
+  --color-success: 22 163 74;
+}
+
+/*
+ * Legacy color aliases: several components (SessionForm, CatchesSection,
+ * ToastContainer, FieldInfo, LocationPicker, SpeciesQuickAdd, MapDisplay)
+ * reference these plain custom properties directly in scoped <style> blocks
+ * instead of Tailwind utilities. Defining them here makes those components
+ * theme-aware too, using the same palette as everything else.
+ */
+:root {
+  --ink: rgb(var(--color-ink));
+  --ink-light: rgb(var(--color-ink-light));
+  --surface: rgb(var(--color-surface));
+  --surface-2: rgb(var(--color-surface-2));
+  --border: rgb(var(--color-border));
+  --border-light: rgb(var(--color-border-light));
+  --ocean: rgb(var(--color-ocean));
+  --ocean-dark: rgb(var(--color-ocean-dark));
+  --sand: rgb(var(--color-sand));
+  --sand-light: rgb(var(--color-sand-light));
+  --foam: rgb(var(--color-foam));
+  --text-muted: rgb(var(--color-muted));
+  --danger: rgb(var(--color-danger));
+  --success: rgb(var(--color-success));
 }
 
 @layer base {
@@ -59,7 +118,7 @@
   .btn:disabled  { @apply opacity-40 cursor-not-allowed translate-y-0; }
 
   .card {
-    @apply bg-surface border border-border rounded-lg p-5;
+    @apply bg-surface border border-border/60 rounded-lg p-4;
   }
 
   .badge {
