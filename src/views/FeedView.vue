@@ -165,6 +165,7 @@
 <script setup>
   import { onMounted, reactive, ref, watch } from 'vue'
   import { useI18n } from 'vue-i18n'
+  import { useRoute, useRouter } from 'vue-router'
   import { Newspaper, CalendarDays, MapPin, Map as MapIcon, X, Plus, Filter } from 'lucide-vue-next'
   import { usePostStore } from '../stores/posts.js'
   import { useAuthStore } from '../stores/auth.js'
@@ -174,6 +175,8 @@
   import LocationPicker from '../components/form/LocationPicker.vue'
 
   const { t } = useI18n()
+  const route = useRoute()
+  const router = useRouter()
   const store = usePostStore()
   const auth = useAuthStore()
   const userStore = useUserStore()
@@ -310,6 +313,12 @@
   onMounted(() => {
     reload()
     store.markSeen('feed')
+
+    // Arrivo dal menu "Crea nuovo" della topbar: apre subito il form.
+    if (route.query.compose) {
+      showForm.value = true
+      router.replace({ query: { ...route.query, compose: undefined } })
+    }
   })
 
   function onCreated() { showForm.value = false; reload() }

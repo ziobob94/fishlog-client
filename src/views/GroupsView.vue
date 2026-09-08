@@ -103,12 +103,15 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { useRoute, useRouter } from 'vue-router'
 import { Users, X, Pencil, Trash2 } from 'lucide-vue-next'
 import { useGroupStore } from '../stores/groups.js'
 import { useAuthStore } from '../stores/auth.js'
 import api from '../utils/api.js'
 
 const { t }     = useI18n()
+const route     = useRoute()
+const router    = useRouter()
 const store    = useGroupStore()
 const authStore = useAuthStore()
 
@@ -122,7 +125,15 @@ const errors      = ref({})
 
 const groupForm = ref({ name: '', description: '' })
 
-onMounted(() => store.fetchGroups())
+onMounted(() => {
+  store.fetchGroups()
+
+  // Arrivo dal menu "Crea nuovo" della topbar: apre subito il modal.
+  if (route.query.compose) {
+    showCreate.value = true
+    router.replace({ query: { ...route.query, compose: undefined } })
+  }
+})
 
 function isOwnerOrAdmin(g) {
   return g.owner?._id === authStore.user?._id || authStore.user?.role === 'admin'

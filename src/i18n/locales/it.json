@@ -36,6 +36,15 @@
 		"lock": "Blocca",
 		"unlock": "Sblocca"
 	},
+	"createMenu": {
+		"title": "Crea nuovo",
+		"resumeSession": "Continua uscita in corso",
+		"newSession": "Nuova pescata",
+		"newPost": "Nuovo post",
+		"newListing": "Nuovo annuncio",
+		"newMessage": "Nuovo messaggio",
+		"newGroup": "Nuovo gruppo"
+	},
 	"admin": {
 		"title": "Pannello Admin",
 		"tabs": { "users": "Utenti", "sessions": "Sessioni", "shops": "Negozi", "config": "Configurazioni" },

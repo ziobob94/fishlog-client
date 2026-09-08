@@ -51,26 +51,45 @@
         </div>
       </div>
 
-      <RouterLink
-        v-if="sessions.ongoing && !onOngoingEditPage"
-        :to="{ path: `/session/${sessions.ongoing._id}/edit`, hash: '#section-catches' }"
-        class="relative flex items-center justify-center w-9 h-9 rounded-lg text-ink bg-sand hover:bg-sand/90 transition-colors"
-        :title="t('nav.ongoingSession')"
-      >
-        <Fish :size="18" />
-        <span class="absolute -top-0.5 -right-0.5 flex h-2.5 w-2.5">
-          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-ink/60"></span>
-          <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-ink"></span>
-        </span>
-      </RouterLink>
-      <RouterLink
-        v-else
-        to="/new"
-        class="flex items-center justify-center w-9 h-9 rounded-lg text-ink bg-ocean hover:bg-ocean/90 transition-colors"
-        :title="t('nav.newSession')"
-      >
-        <Plus :size="18" />
-      </RouterLink>
+      <div class="relative" ref="createWrapper">
+        <button
+          class="relative flex items-center justify-center w-9 h-9 rounded-lg text-ink bg-ocean hover:bg-ocean/90 transition-colors border-none cursor-pointer"
+          :title="t('createMenu.title')"
+          @click="toggleCreateMenu"
+        >
+          <Plus :size="18" />
+          <span v-if="sessions.ongoing && !onOngoingEditPage" class="absolute -top-0.5 -right-0.5 flex h-2.5 w-2.5">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-sand/70"></span>
+            <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-sand"></span>
+          </span>
+        </button>
+
+        <div v-if="createMenuOpen" class="create-menu card">
+          <RouterLink
+            v-if="sessions.ongoing && !onOngoingEditPage"
+            :to="{ path: `/session/${sessions.ongoing._id}/edit`, hash: '#section-catches' }"
+            class="create-menu-item create-menu-item-accent"
+            @click="createMenuOpen = false"
+          >
+            <Fish :size="16" /> {{ t('createMenu.resumeSession') }}
+          </RouterLink>
+          <RouterLink to="/new" class="create-menu-item" @click="createMenuOpen = false">
+            <Fish :size="16" /> {{ t('createMenu.newSession') }}
+          </RouterLink>
+          <RouterLink :to="{ path: '/feed', query: { compose: '1' } }" class="create-menu-item" @click="createMenuOpen = false">
+            <Newspaper :size="16" /> {{ t('createMenu.newPost') }}
+          </RouterLink>
+          <RouterLink to="/market/new" class="create-menu-item" @click="createMenuOpen = false">
+            <ShoppingBag :size="16" /> {{ t('createMenu.newListing') }}
+          </RouterLink>
+          <RouterLink to="/chat" class="create-menu-item" @click="createMenuOpen = false">
+            <MessagesSquare :size="16" /> {{ t('createMenu.newMessage') }}
+          </RouterLink>
+          <RouterLink :to="{ path: '/groups', query: { compose: '1' } }" class="create-menu-item" @click="createMenuOpen = false">
+            <Users :size="16" /> {{ t('createMenu.newGroup') }}
+          </RouterLink>
+        </div>
+      </div>
     </div>
 
     <span
@@ -93,7 +112,7 @@
 import { computed, onMounted, onBeforeUnmount, ref } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { Fish, WifiOff, RefreshCw, AlertTriangle, Hourglass, Plus, Bell, X } from 'lucide-vue-next'
+import { Fish, WifiOff, RefreshCw, AlertTriangle, Hourglass, Plus, Bell, X, Newspaper, ShoppingBag, MessagesSquare, Users } from 'lucide-vue-next'
 import { useOfflineStore } from '../stores/offline.js'
 import { useSessionStore } from '../stores/sessions.js'
 import { useAuthStore } from '../stores/auth.js'
@@ -110,15 +129,26 @@ const notifications = useNotificationStore()
 
 const notifPanelOpen = ref(false)
 const notifWrapper = ref(null)
+const createMenuOpen = ref(false)
+const createWrapper = ref(null)
 
 function toggleNotifications() {
+  createMenuOpen.value = false
   notifPanelOpen.value = !notifPanelOpen.value
   if (notifPanelOpen.value) notifications.fetchNotifications()
+}
+
+function toggleCreateMenu() {
+  notifPanelOpen.value = false
+  createMenuOpen.value = !createMenuOpen.value
 }
 
 function handleOutsideClick(event) {
   if (notifPanelOpen.value && notifWrapper.value && !notifWrapper.value.contains(event.target)) {
     notifPanelOpen.value = false
+  }
+  if (createMenuOpen.value && createWrapper.value && !createWrapper.value.contains(event.target)) {
+    createMenuOpen.value = false
   }
 }
 
@@ -183,5 +213,22 @@ const statusTitle = computed(() => {
 .notif-remove {
   @apply flex items-center justify-center w-7 h-7 mr-2 rounded text-muted bg-transparent border-none
          cursor-pointer hover:text-danger hover:bg-danger/10 transition-colors shrink-0;
+}
+
+.create-menu {
+  @apply fixed right-3 z-[110] p-1.5 flex flex-col gap-0.5;
+  top: 3.75rem;
+  width: min(14rem, calc(100vw - 1.5rem));
+}
+.create-menu-item {
+  @apply flex items-center gap-2.5 px-3 py-2 rounded-sm text-sm font-semibold text-foam no-underline
+         hover:bg-surface-2 transition-colors;
+}
+.create-menu-item-accent {
+  @apply text-ink;
+  background: var(--sand);
+}
+.create-menu-item-accent:hover {
+  opacity: .9;
 }
 </style>
