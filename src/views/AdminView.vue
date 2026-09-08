@@ -19,42 +19,44 @@
       </div>
 
       <div v-if="pagination.loading.value" class="state-center"><div class="spinner"></div></div>
-      <table v-else class="admin-table">
-        <thead>
-          <tr><th>{{ t('admin.users.table.user') }}</th><th>{{ t('admin.users.table.email') }}</th><th>{{ t('admin.users.table.role') }}</th><th>{{ t('admin.users.table.registered') }}</th><th>{{ t('admin.users.table.actions') }}</th></tr>
-        </thead>
-        <tbody>
-          <tr v-for="u in users" :key="u._id">
-            <td>
-              <div class="user-cell">
-                <img v-if="u.avatar" :src="u.avatar" class="mini-avatar" />
-                <span>{{ u.displayName }}</span>
-              </div>
-            </td>
-            <td class="text-muted text-mono" style="font-size:.8rem">{{ u.email }}</td>
-            <td>
-              <select
-                :value="u.role"
-                class="role-select"
-                :disabled="u._id === authStore.user._id"
-                @change="changeRole(u, $event.target.value)"
-              >
-                <option value="user">user</option>
-                <option value="moderator">moderator</option>
-                <option value="admin">admin</option>
-              </select>
-            </td>
-            <td class="text-muted text-mono" style="font-size:.78rem">{{ fmtDate(u.createdAt) }}</td>
-            <td>
-              <button
-                class="btn btn-danger btn-sm"
-                :disabled="u._id === authStore.user._id"
-                @click="confirmDeleteUser(u)"
-              >{{ t('common.delete') }}</button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      <div v-else class="table-scroll">
+        <table class="admin-table">
+          <thead>
+            <tr><th>{{ t('admin.users.table.user') }}</th><th>{{ t('admin.users.table.email') }}</th><th>{{ t('admin.users.table.role') }}</th><th>{{ t('admin.users.table.registered') }}</th><th>{{ t('admin.users.table.actions') }}</th></tr>
+          </thead>
+          <tbody>
+            <tr v-for="u in users" :key="u._id">
+              <td>
+                <div class="user-cell">
+                  <img v-if="u.avatar" :src="u.avatar" class="mini-avatar" />
+                  <span>{{ u.displayName }}</span>
+                </div>
+              </td>
+              <td class="text-muted text-mono" style="font-size:.8rem">{{ u.email }}</td>
+              <td>
+                <select
+                  :value="u.role"
+                  class="role-select"
+                  :disabled="u._id === authStore.user._id"
+                  @change="changeRole(u, $event.target.value)"
+                >
+                  <option value="user">user</option>
+                  <option value="moderator">moderator</option>
+                  <option value="admin">admin</option>
+                </select>
+              </td>
+              <td class="text-muted text-mono" style="font-size:.78rem">{{ fmtDate(u.createdAt) }}</td>
+              <td>
+                <button
+                  class="btn btn-danger btn-sm"
+                  :disabled="u._id === authStore.user._id"
+                  @click="confirmDeleteUser(u)"
+                >{{ t('common.delete') }}</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
 
       <div class="pagination mt-2">
         <button class="btn btn-ghost btn-sm" :disabled="pagination.page.value <= 1" @click="pagination.goTo(pagination.page.value - 1)">{{ t('common.prevPage') }}</button>
@@ -73,28 +75,30 @@
       </div>
 
       <div v-if="loadingSessions" class="state-center"><div class="spinner"></div></div>
-      <table v-else class="admin-table">
-        <thead>
-          <tr><th>{{ t('admin.sessions.table.title') }}</th><th>{{ t('admin.sessions.table.author') }}</th><th>{{ t('admin.sessions.table.date') }}</th><th>{{ t('admin.sessions.table.visibility') }}</th><th>{{ t('admin.sessions.table.hidden') }}</th><th>{{ t('admin.sessions.table.actions') }}</th></tr>
-        </thead>
-        <tbody>
-          <tr v-for="s in adminSessions" :key="s._id" :class="{ 'row-hidden': s.hidden }">
-            <td>{{ s.title || s.location?.name }}</td>
-            <td class="text-muted" style="font-size:.82rem">{{ s.userId?.displayName || s.userId?.email }}</td>
-            <td class="text-mono text-muted" style="font-size:.78rem">{{ fmtDate(s.date) }}</td>
-            <td><span class="badge badge-ocean">{{ s.visibility }}</span></td>
-            <td>
-              <span v-if="s.hidden" class="badge badge-sand">{{ t('admin.sessions.hiddenBadge') }}</span>
-              <span v-else class="text-muted" style="font-size:.8rem">{{ t('common.none') }}</span>
-            </td>
-            <td>
-              <button class="btn btn-ghost btn-sm" @click="toggleHide(s)">
-                {{ s.hidden ? t('admin.sessions.show') : t('admin.sessions.hide') }}
-              </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      <div v-else class="table-scroll">
+        <table class="admin-table">
+          <thead>
+            <tr><th>{{ t('admin.sessions.table.title') }}</th><th>{{ t('admin.sessions.table.author') }}</th><th>{{ t('admin.sessions.table.date') }}</th><th>{{ t('admin.sessions.table.visibility') }}</th><th>{{ t('admin.sessions.table.hidden') }}</th><th>{{ t('admin.sessions.table.actions') }}</th></tr>
+          </thead>
+          <tbody>
+            <tr v-for="s in adminSessions" :key="s._id" :class="{ 'row-hidden': s.hidden }">
+              <td>{{ s.title || s.location?.name }}</td>
+              <td class="text-muted" style="font-size:.82rem">{{ s.userId?.displayName || s.userId?.email }}</td>
+              <td class="text-mono text-muted" style="font-size:.78rem">{{ fmtDate(s.date) }}</td>
+              <td><span class="badge badge-ocean">{{ s.visibility }}</span></td>
+              <td>
+                <span v-if="s.hidden" class="badge badge-sand">{{ t('admin.sessions.hiddenBadge') }}</span>
+                <span v-else class="text-muted" style="font-size:.8rem">{{ t('common.none') }}</span>
+              </td>
+              <td>
+                <button class="btn btn-ghost btn-sm" @click="toggleHide(s)">
+                  {{ s.hidden ? t('admin.sessions.show') : t('admin.sessions.hide') }}
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
 
     <!-- NEGOZI -->
@@ -105,25 +109,27 @@
         <p class="text-muted">{{ t('admin.shops.empty') }}</p>
       </div>
 
-      <table v-else class="admin-table">
-        <thead>
-          <tr><th>{{ t('admin.shops.table.name') }}</th><th>{{ t('admin.shops.table.owner') }}</th><th>{{ t('admin.shops.table.description') }}</th><th>{{ t('admin.shops.table.requestedAt') }}</th><th>{{ t('admin.shops.table.actions') }}</th></tr>
-        </thead>
-        <tbody>
-          <tr v-for="u in pendingShops" :key="u._id">
-            <td>{{ u.shop.name || t('common.none') }}</td>
-            <td class="text-muted" style="font-size:.82rem">{{ u.displayName || u.email }}</td>
-            <td class="text-muted" style="font-size:.82rem;max-width:280px">{{ u.shop.description }}</td>
-            <td class="text-mono text-muted" style="font-size:.78rem">{{ fmtDate(u.shop.verificationRequestedAt) }}</td>
-            <td>
-              <div class="flex gap-1.5">
-                <button class="btn btn-primary btn-sm" @click="approveShop(u)">{{ t('admin.shops.approve') }}</button>
-                <button class="btn btn-danger btn-sm" @click="rejectShop(u)">{{ t('admin.shops.reject') }}</button>
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      <div v-else class="table-scroll">
+        <table class="admin-table">
+          <thead>
+            <tr><th>{{ t('admin.shops.table.name') }}</th><th>{{ t('admin.shops.table.owner') }}</th><th>{{ t('admin.shops.table.description') }}</th><th>{{ t('admin.shops.table.requestedAt') }}</th><th>{{ t('admin.shops.table.actions') }}</th></tr>
+          </thead>
+          <tbody>
+            <tr v-for="u in pendingShops" :key="u._id">
+              <td>{{ u.shop.name || t('common.none') }}</td>
+              <td class="text-muted" style="font-size:.82rem">{{ u.displayName || u.email }}</td>
+              <td class="text-muted" style="font-size:.82rem;max-width:280px">{{ u.shop.description }}</td>
+              <td class="text-mono text-muted" style="font-size:.78rem">{{ fmtDate(u.shop.verificationRequestedAt) }}</td>
+              <td>
+                <div class="flex gap-1.5">
+                  <button class="btn btn-primary btn-sm" @click="approveShop(u)">{{ t('admin.shops.approve') }}</button>
+                  <button class="btn btn-danger btn-sm" @click="rejectShop(u)">{{ t('admin.shops.reject') }}</button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
 
     <!-- CONFIGURAZIONI -->
@@ -302,10 +308,11 @@ onMounted(() => { pagination.load(); fetchSessions(); fetchPendingShops(); fetch
 </script>
 
 <style scoped>
-.admin-tabs { @apply flex gap-2 my-5; }
-.toolbar    { @apply flex items-center gap-4 mb-4; }
+.admin-tabs { @apply flex flex-wrap gap-2 my-5; }
+.toolbar    { @apply flex flex-wrap items-center gap-4 mb-4; }
 
-.admin-table { @apply w-full border-collapse; }
+.table-scroll { @apply w-full overflow-x-auto; -webkit-overflow-scrolling: touch; }
+.admin-table { @apply w-full border-collapse; min-width: 640px; }
 .admin-table th,
 .admin-table td { @apply border-b border-border px-3 py-2.5 text-left text-sm; }
 .admin-table th { @apply text-muted text-xs uppercase tracking-wide font-bold; }

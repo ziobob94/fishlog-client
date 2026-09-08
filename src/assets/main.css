@@ -70,7 +70,7 @@
 @layer base {
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-  html { font-size: 18px; }
+  html { font-size: 18px; @apply overflow-x-hidden; }
 
   body {
     @apply bg-ink text-foam font-display antialiased min-h-screen overflow-x-hidden;

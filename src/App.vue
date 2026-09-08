@@ -27,7 +27,7 @@
     >
       <AppTopbar @toggle-sidebar="toggleSidebar" />
       <main
-        class="flex-1 w-full max-w-[1100px] mx-auto px-6"
+        class="flex-1 w-full max-w-[1100px] mx-auto px-6 min-w-0"
         :class="isFullHeight ? 'flex flex-col min-h-0 overflow-hidden' : 'py-8'"
       >
         <RouterView />
