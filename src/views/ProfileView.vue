@@ -228,6 +228,20 @@
         </button>
       </section>
 
+      <!-- Dati personali (GDPR) -->
+      <section class="card">
+        <h3>I tuoi dati</h3>
+        <p class="text-muted text-sm">
+          Scarica una copia di tutti i tuoi dati (profilo, sessioni, post, annunci, amicizie, messaggi
+          inviati) in formato JSON. Consulta anche l'
+          <RouterLink to="/privacy-policy">Informativa Privacy</RouterLink>.
+        </p>
+        <button class="btn btn-secondary btn-sm mt-2" :disabled="exporting" @click="exportData">
+          {{ exporting ? t('profile.account.saving') : 'Esporta i miei dati' }}
+        </button>
+        <p v-if="exportError" class="error-msg mt-2">{{ exportError }}</p>
+      </section>
+
       <!-- Danger zone -->
       <section class="card danger-zone">
         <h3>{{ t('profile.danger.title') }}</h3>
@@ -270,6 +284,7 @@ import { useFeaturesStore } from '../stores/features.js'
 import { useMarketStore } from '../stores/market.js'
 import PasswordInput from '../components/PasswordInput.vue'
 import { useThemeStore } from '../stores/theme.js'
+import api from '../utils/api.js'
 
 const { t } = useI18n()
 const auth  = useAuthStore()
@@ -418,6 +433,29 @@ async function saveShop() {
   } catch (e) {
     shopError.value = e.response?.data?.error || t('common.error')
   } finally { savingShop.value = false }
+}
+
+// ── esportazione dati ──
+const exporting = ref(false)
+const exportError = ref('')
+
+async function exportData() {
+  exportError.value = ''
+  exporting.value = true
+  try {
+    const { data } = await api.get('/auth/me/export')
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = 'fishlog-dati.json'
+    document.body.appendChild(a)
+    a.click()
+    a.remove()
+    URL.revokeObjectURL(url)
+  } catch (e) {
+    exportError.value = e.response?.data?.error || t('common.error')
+  } finally { exporting.value = false }
 }
 
 // ── preferenze market ──

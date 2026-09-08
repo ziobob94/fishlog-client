@@ -14,6 +14,11 @@
           {{ t('register.facebook') }}
         </a>
       </div>
+      <p class="oauth-terms-note">
+        Continuando con Google o Facebook confermi di avere almeno 14 anni e accetti
+        <RouterLink to="/termini" target="_blank">Termini</RouterLink> e
+        <RouterLink to="/privacy-policy" target="_blank">Privacy</RouterLink>.
+      </p>
 
       <template v-if="features.loaded && !features.passwordAuthEnabled">
         <div class="divider"><span>{{ t('common.or') }}</span></div>
@@ -38,8 +43,17 @@
             <label>{{ t('login.passwordLabel') }}</label>
             <PasswordInput v-model="password" :placeholder="t('register.passwordPlaceholder')" required />
           </div>
+          <label class="terms-check">
+            <input v-model="acceptTerms" type="checkbox" required />
+            <span>
+              Ho almeno 14 anni e accetto
+              <RouterLink to="/termini" target="_blank">Termini di Servizio</RouterLink>
+              e
+              <RouterLink to="/privacy-policy" target="_blank">Informativa Privacy</RouterLink>
+            </span>
+          </label>
           <div v-if="error" class="error-msg">{{ error }}</div>
-          <button type="submit" class="btn btn-primary w-full" :disabled="loading">
+          <button type="submit" class="btn btn-primary w-full" :disabled="loading || !acceptTerms">
             <span v-if="loading" class="spinner" style="width:15px;height:15px"></span>
             {{ loading ? t('register.loading') : t('register.submit') }}
           </button>
@@ -70,15 +84,17 @@ const router      = useRouter()
 const displayName = ref('')
 const email       = ref('')
 const password    = ref('')
+const acceptTerms = ref(false)
 const loading     = ref(false)
 const error       = ref('')
 
 const apiBase = `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001'}/api`
 
 async function handleRegister() {
+  if (!acceptTerms.value) return
   loading.value = true; error.value = ''
   try {
-    await auth.register(email.value, password.value, displayName.value)
+    await auth.register(email.value, password.value, displayName.value, acceptTerms.value)
     router.push('/')
   } catch (e) {
     error.value = e.response?.data?.error || t('register.error')
@@ -105,6 +121,13 @@ async function handleRegister() {
 .error-msg {
   @apply bg-danger/10 border border-danger rounded-sm text-danger text-sm px-3 py-2 mb-3;
 }
+.terms-check {
+  @apply flex items-start gap-2 text-xs text-muted mb-3 cursor-pointer;
+}
+.terms-check input { @apply mt-0.5 shrink-0; }
+.terms-check a { @apply text-ocean hover:underline; }
+.oauth-terms-note { @apply text-[0.68rem] text-muted text-center mt-2; }
+.oauth-terms-note a { @apply text-ocean hover:underline; }
 .auth-switch { @apply text-muted text-sm text-center mt-5; }
 .coming-soon { @apply flex items-center gap-2 text-muted text-sm; }
 </style>
