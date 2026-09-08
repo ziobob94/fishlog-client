@@ -4,18 +4,18 @@
       <h1>Informativa sulla Privacy</h1>
       <p class="legal-updated">Ultimo aggiornamento: 8 settembre 2026</p>
 
-      <p class="legal-placeholder-notice">
-        ⚠️ Questo documento contiene segnaposto (tra parentesi quadre) da completare con i dati reali del
-        Titolare del trattamento prima della pubblicazione definitiva del servizio.
+      <p v-if="legal.loaded && !legalComplete" class="legal-placeholder-notice">
+        ⚠️ I dati del Titolare del trattamento non sono ancora stati compilati. Un amministratore può
+        impostarli dal pannello Admin → Configurazioni → "Dati legali (Privacy/Termini)".
       </p>
 
       <h2>1. Titolare del trattamento</h2>
       <p>
         Il Titolare del trattamento dei dati raccolti tramite FishLog è
-        <strong>[NOME / RAGIONE SOCIALE DEL TITOLARE]</strong>, con sede in
-        <strong>[INDIRIZZO COMPLETO]</strong>, [Codice Fiscale / P.IVA: [CF/P.IVA]].
+        <strong>{{ legal.companyNameOrPlaceholder() }}</strong>, con sede in
+        <strong>{{ legal.addressOrPlaceholder() }}</strong>, [Codice Fiscale / P.IVA: {{ legal.taxIdOrPlaceholder() }}].
         Per qualsiasi richiesta relativa al trattamento dei dati personali è possibile scrivere a
-        <strong>[EMAIL DI CONTATTO PRIVACY]</strong>.
+        <strong>{{ legal.contactEmailOrPlaceholder() }}</strong>.
       </p>
 
       <h2>2. Dati raccolti</h2>
@@ -70,7 +70,7 @@
       </ul>
       <p>
         Per esercitare i diritti non disponibili in autonomia dal Profilo, scrivi a
-        <strong>[EMAIL DI CONTATTO PRIVACY]</strong>.
+        <strong>{{ legal.contactEmailOrPlaceholder() }}</strong>.
       </p>
 
       <h2>7. Minori</h2>
@@ -102,6 +102,20 @@
     </div>
   </div>
 </template>
+
+<script setup>
+import { computed, onMounted } from 'vue'
+import { useLegalStore } from '../../stores/legal.js'
+
+const legal = useLegalStore()
+const legalComplete = computed(() =>
+  !!(legal.companyName && legal.address && legal.taxId && legal.contactEmail)
+)
+
+onMounted(() => {
+  if (!legal.loaded) legal.fetchLegalInfo()
+})
+</script>
 
 <style scoped>
 .legal-page  { @apply flex justify-center; }

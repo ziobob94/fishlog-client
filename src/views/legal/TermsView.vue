@@ -4,9 +4,9 @@
       <h1>Termini di Servizio</h1>
       <p class="legal-updated">Ultimo aggiornamento: 8 settembre 2026</p>
 
-      <p class="legal-placeholder-notice">
-        ⚠️ Questo documento contiene segnaposto (tra parentesi quadre) da completare con i dati reali del
-        gestore del servizio prima della pubblicazione definitiva.
+      <p v-if="legal.loaded && !legal.contactEmail" class="legal-placeholder-notice">
+        ⚠️ L'email di contatto non è ancora stata compilata. Un amministratore può impostarla dal pannello
+        Admin → Configurazioni → "Dati legali (Privacy/Termini)".
       </p>
 
       <h2>1. Oggetto</h2>
@@ -97,11 +97,22 @@
 
       <h2>11. Contatti</h2>
       <p>
-        Per domande su questi Termini scrivi a <strong>[EMAIL DI CONTATTO]</strong>.
+        Per domande su questi Termini scrivi a <strong>{{ legal.contactEmailOrPlaceholder() }}</strong>.
       </p>
     </div>
   </div>
 </template>
+
+<script setup>
+import { onMounted } from 'vue'
+import { useLegalStore } from '../../stores/legal.js'
+
+const legal = useLegalStore()
+
+onMounted(() => {
+  if (!legal.loaded) legal.fetchLegalInfo()
+})
+</script>
 
 <style scoped>
 .legal-page  { @apply flex justify-center; }
