@@ -36,8 +36,8 @@ export const useAuthStore = defineStore('auth', () => {
     return data.user
   }
 
-  async function register(email, password, displayName) {
-    const { data } = await api.post('/auth/register', { email, password, displayName })
+  async function register(email, password, displayName, acceptTerms) {
+    const { data } = await api.post('/auth/register', { email, password, displayName, acceptTerms })
     setAuth(data.token, data.user)
     return data.user
   }
@@ -66,6 +66,12 @@ export const useAuthStore = defineStore('auth', () => {
 
   async function updateNotificationPreferences(payload) {
     const { data } = await api.patch('/auth/me/notifications', payload)
+    persistUser(data)
+    return data
+  }
+
+  async function updateMarketPreferences(payload) {
+    const { data } = await api.patch('/auth/me/market-preferences', payload)
     persistUser(data)
     return data
   }
@@ -109,7 +115,7 @@ export const useAuthStore = defineStore('auth', () => {
 
   return {
     token, user, isLoggedIn, setAuth, clearAuth, initAuth, login, register, fetchMe, logout,
-    updateProfile, updateNotificationPreferences, updateShop, uploadAvatar, changePassword, changeEmail, deleteAccount,
+    updateProfile, updateNotificationPreferences, updateMarketPreferences, updateShop, uploadAvatar, changePassword, changeEmail, deleteAccount,
     forgotPassword, resetPassword
   }
 })

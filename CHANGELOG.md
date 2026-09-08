@@ -1,3 +1,17 @@
+## [1.17.1](https://github.com/ziobob94/fishlog-client/compare/client-v1.17.0...client-v1.17.1) (2026-09-08)
+
+
+### Bug Fixes
+
+* checkbox attrezzatura del sondaggio market rese illeggibili dallo stile globale label ([70dd9bd](https://github.com/ziobob94/fishlog-client/commit/70dd9bde000d9c26fd82a2f2dabb9649025d6d82))
+
+# [1.17.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.16.0...client-v1.17.0) (2026-09-08)
+
+
+### Features
+
+* sondaggio opzionale sulle preferenze market + sezione profilo ([8efd574](https://github.com/ziobob94/fishlog-client/commit/8efd57461e39e751713cc2bc11672eb9ff18e484))
+
 # [1.16.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.15.0...client-v1.16.0) (2026-09-07)
 
 
