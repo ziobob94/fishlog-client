@@ -25,22 +25,16 @@
       <RouterLink to="/" class="nav-item" @click="$emit('close')">
         <span class="w-5 text-center flex justify-center"><Home :size="16" /></span> {{ t('nav.home') }}
       </RouterLink>
+
+      <div class="nav-section-label">{{ t('nav.sections.fishing') }}</div>
       <RouterLink to="/sessions" class="nav-item" @click="$emit('close')">
         <span class="w-5 text-center flex justify-center"><Fish :size="16" /></span> {{ t('nav.sessions') }}
       </RouterLink>
-    <!--  <RouterLink :to="newSessionTarget" class="nav-item nav-accent mb-2" @click="$emit('close')">
-        <span class="w-5 text-center flex justify-center">
-          <component :is="sessions.ongoing ? Waves : Plus" :size="16" />
-        </span>
-        {{ sessions.ongoing ? t('nav.ongoingSession') : t('nav.newSession') }}
-      </RouterLink> -->
-      <RouterLink to="/groups" class="nav-item" @click="$emit('close')">
-        <span class="w-5 text-center flex justify-center"><Users :size="16" /></span> {{ t('nav.groups') }}
+      <RouterLink to="/stats" class="nav-item" @click="$emit('close')">
+        <span class="w-5 text-center flex justify-center"><BarChart3 :size="16" /></span> {{ t('nav.stats') }}
       </RouterLink>
-      <RouterLink to="/friends" class="nav-item" @click="$emit('close')">
-        <span class="w-5 text-center flex justify-center"><UserPlus :size="16" /></span> {{ t('nav.friends') }}
-        <span v-if="friends.pendingCount" class="nav-badge">{{ friends.pendingCount }}</span>
-      </RouterLink>
+
+      <div class="nav-section-label">{{ t('nav.sections.community') }}</div>
       <RouterLink to="/feed" class="nav-item" @click="$emit('close')">
         <span class="w-5 text-center flex justify-center"><Newspaper :size="16" /></span> {{ t('nav.feed') }}
         <span v-if="posts.unread.feed" class="nav-badge">{{ posts.unread.feed }}</span>
@@ -49,16 +43,26 @@
         <span class="w-5 text-center flex justify-center"><Pin :size="16" /></span> {{ t('nav.board') }}
         <span v-if="posts.unread.board" class="nav-badge">{{ posts.unread.board }}</span>
       </RouterLink>
-      <RouterLink to="/market" class="nav-item" @click="$emit('close')">
-        <span class="w-5 text-center flex justify-center"><ShoppingBag :size="16" /></span> {{ t('nav.market') }}
+      <RouterLink to="/groups" class="nav-item" @click="$emit('close')">
+        <span class="w-5 text-center flex justify-center"><Users :size="16" /></span> {{ t('nav.groups') }}
+      </RouterLink>
+      <RouterLink to="/friends" class="nav-item" @click="$emit('close')">
+        <span class="w-5 text-center flex justify-center"><UserPlus :size="16" /></span> {{ t('nav.friends') }}
+        <span v-if="friends.pendingCount" class="nav-badge">{{ friends.pendingCount }}</span>
       </RouterLink>
       <RouterLink to="/chat" class="nav-item" @click="$emit('close')">
         <span class="w-5 text-center flex justify-center"><MessagesSquare :size="16" /></span> {{ t('nav.chat') }}
         <span v-if="chat.unreadCount" class="nav-badge">{{ chat.unreadCount }}</span>
       </RouterLink>
-      <RouterLink to="/stats" class="nav-item" @click="$emit('close')">
-        <span class="w-5 text-center flex justify-center"><BarChart3 :size="16" /></span> {{ t('nav.stats') }}
+
+      <RouterLink to="/market" class="nav-item mt-1" @click="$emit('close')">
+        <span class="w-5 text-center flex justify-center"><ShoppingBag :size="16" /></span> {{ t('nav.market') }}
       </RouterLink>
+      <RouterLink to="/market/mine" class="nav-item nav-subitem" @click="$emit('close')">
+        <span class="w-5 text-center flex justify-center"><Tag :size="14" /></span> {{ t('nav.myListings') }}
+      </RouterLink>
+
+      <div class="nav-section-label">{{ t('nav.sections.account') }}</div>
       <RouterLink to="/profile" class="nav-item" @click="$emit('close')">
         <span class="w-5 text-center flex justify-center"><UserCircle :size="16" /></span> {{ t('nav.profile') }}
       </RouterLink>
@@ -106,7 +110,7 @@
   import { computed, onMounted } from 'vue'
   import { RouterLink, useRouter } from 'vue-router'
   import { useI18n } from 'vue-i18n'
-  import { Fish, Home, Pin, MapPin, Users, UserPlus, Newspaper, MessagesSquare, Settings, BarChart3, UserCircle, Plus, Waves, ShoppingBag } from 'lucide-vue-next'
+  import { Fish, Home, Pin, MapPin, Users, UserPlus, Newspaper, MessagesSquare, Settings, BarChart3, UserCircle, Plus, Waves, ShoppingBag, Tag } from 'lucide-vue-next'
   import { useAuthStore } from '../stores/auth.js'
   import { useSessionStore } from '../stores/sessions.js'
   import { usePostStore } from '../stores/posts.js'
@@ -167,5 +171,17 @@
 
   .nav-badge {
     @apply ml-auto bg-danger text-white text-[0.65rem] font-bold rounded-full px-1.5 py-0.5 leading-none;
+  }
+
+  .nav-section-label {
+    @apply px-3 pt-4 pb-1 text-[0.68rem] font-bold uppercase tracking-wide text-muted;
+  }
+
+  .nav-section-label:first-child {
+    @apply pt-1;
+  }
+
+  .nav-subitem {
+    @apply pl-8 text-[0.85rem] font-medium;
   }
 </style>

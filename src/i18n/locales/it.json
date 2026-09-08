@@ -28,13 +28,19 @@
 		"feed": "Bacheca",
 		"board": "La mia bacheca",
 		"market": "Market",
+		"myListings": "I miei annunci",
 		"chat": "Chat",
 		"stats": "Statistiche",
 		"profile": "Profilo",
 		"admin": "Admin",
 		"logout": "Esci",
 		"lock": "Blocca",
-		"unlock": "Sblocca"
+		"unlock": "Sblocca",
+		"sections": {
+			"fishing": "Pesca",
+			"community": "Community",
+			"account": "Account"
+		}
 	},
 	"createMenu": {
 		"title": "Crea nuovo",
