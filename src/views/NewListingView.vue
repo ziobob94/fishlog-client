@@ -1,8 +1,5 @@
 <template>
   <div>
-    <div class="page-header">
-      <h2>{{ t('market.newListing') }}</h2>
-    </div>
     <ListingForm
       :categories="store.categories"
       :submit-label="t('market.form.publish')"

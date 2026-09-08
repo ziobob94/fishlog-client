@@ -2,7 +2,6 @@
   <div>
     <div class="page-header">
       <RouterLink to="/sessions" class="btn btn-ghost btn-sm">{{ t('common.back') }}</RouterLink>
-      <h2>{{ t('session.new.title') }}</h2>
     </div>
 
     <div v-if="error" class="error-banner" style="display:inline-flex;align-items:center;gap:.4rem"><AlertTriangle :size="16" /> {{ error }}</div>
@@ -63,7 +62,7 @@ async function onSubmit(payload, pendingPhotosByIndex) {
 </script>
 
 <style scoped>
-.page-header  { @apply flex items-center gap-4 mb-7; }
+.page-header  { @apply flex items-center gap-4 mb-4; }
 .error-banner { @apply bg-danger/10 border border-danger rounded-sm text-danger px-4 py-3 mb-4; }
 .state-center { @apply flex items-center justify-center p-16; }
 </style>

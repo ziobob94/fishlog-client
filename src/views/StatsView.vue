@@ -1,9 +1,5 @@
 <template>
   <div>
-    <div class="page-header">
-      <h2>{{ t('stats.titlePrefix') }} <span class="text-ocean">{{ t('stats.titleHighlight') }}</span></h2>
-    </div>
-
     <div v-if="loading" class="state-center"><div class="spinner"></div></div>
 
     <div v-else class="stats-grid">
@@ -43,7 +39,6 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-.page-header { @apply mb-6; }
 .stats-grid  { @apply grid gap-4; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
 .stat-card   { @apply flex flex-col items-center justify-center gap-1 py-8; }
 .stat-value  { @apply text-3xl font-extrabold text-ocean; }

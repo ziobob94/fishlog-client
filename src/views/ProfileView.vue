@@ -1,9 +1,5 @@
 <template>
   <div>
-    <div class="page-header">
-      <h2>{{ t('profile.titlePrefix') }} <span class="text-ocean">{{ t('profile.titleHighlight') }}</span></h2>
-    </div>
-
     <div class="profile-grid">
       <!-- Account -->
       <section class="card">
@@ -413,7 +409,6 @@ async function doDeleteAccount() {
 </script>
 
 <style scoped>
-.page-header  { @apply mb-6; }
 .profile-grid { @apply grid gap-4; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); }
 
 .theme-toggle { @apply flex gap-2; }

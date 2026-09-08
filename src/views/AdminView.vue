@@ -1,7 +1,5 @@
 <template>
   <div>
-    <h2>{{ t('admin.title') }}</h2>
-
     <div class="admin-tabs">
       <button class="btn" :class="tab === 'users' ? 'btn-primary' : 'btn-ghost'" @click="tab = 'users'">{{ t('admin.tabs.users') }}</button>
       <button class="btn" :class="tab === 'sessions' ? 'btn-primary' : 'btn-ghost'" @click="tab = 'sessions'">{{ t('admin.tabs.sessions') }}</button>

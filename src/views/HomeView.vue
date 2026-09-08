@@ -1,10 +1,5 @@
 <template>
   <div>
-    <div class="home-hero">
-      <h1>{{ t('home.hub.titlePrefix') }} <span class="text-ocean">{{ t('home.hub.titleHighlight') }}</span></h1>
-      <p class="text-muted mt-1">{{ t('home.hub.subtitle') }}</p>
-    </div>
-
     <div class="hub-grid">
       <component
         :is="section.to ? 'RouterLink' : 'div'"
@@ -59,7 +54,6 @@ const sections = [
 </script>
 
 <style scoped>
-.home-hero { @apply mb-6; }
 .hub-grid  { @apply grid gap-4; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
 
 .hub-card {

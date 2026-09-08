@@ -1,11 +1,7 @@
 <template>
   <div>
-    <div class="home-hero">
-      <div>
-        <h1>{{ t('home.titlePrefix') }} <span class="text-ocean">{{ t('home.titleHighlight') }}</span></h1>
-        <p class="text-muted mt-1">{{ t('home.sessionsCount', { n: store.total }) }}</p>
-      </div>
-      <RouterLink :to="newSessionTarget" class="btn btn-primary">
+    <div class="sessions-toolbar">
+      <RouterLink :to="newSessionTarget" class="btn btn-primary btn-sm ml-auto">
         {{ store.ongoing ? t('nav.ongoingSession') : t('home.newSession') }}
       </RouterLink>
     </div>
@@ -105,8 +101,8 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.home-hero {
-  @apply flex items-end justify-between mb-6;
+.sessions-toolbar {
+  @apply flex items-center mb-4;
 }
 .sessions-grid {
   @apply grid gap-4;

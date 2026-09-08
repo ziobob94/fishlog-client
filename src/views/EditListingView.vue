@@ -1,8 +1,5 @@
 <template>
   <div v-if="store.current">
-    <div class="page-header">
-      <h2>{{ t('market.form.edit') }}</h2>
-    </div>
     <ListingForm
       :initial="store.current"
       :categories="store.categories"

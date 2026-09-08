@@ -4,7 +4,6 @@
       <RouterLink :to="`/session/${route.params.id}`" class="btn btn-ghost btn-sm icon-inline">
         <FileText :size="14" /> {{ t('session.edit.viewSummary') }}
       </RouterLink>
-      <h2>{{ store.current?.status === 'ongoing' ? t('session.ongoing.title') : t('session.edit.title') }}</h2>
     </div>
 
     <div v-if="store.loading && !store.current" class="state-center">
@@ -90,7 +89,7 @@ async function onSubmit(payload, pendingPhotosByIndex) {
 </script>
 
 <style scoped>
-.page-header  { @apply flex items-center gap-4 mb-7; }
+.page-header  { @apply flex items-center gap-4 mb-4; }
 .icon-inline  { display: inline-flex; align-items: center; gap: .35rem; }
 .error-banner { @apply bg-danger/10 border border-danger rounded-sm text-danger px-4 py-3 mb-4; }
 .state-center { @apply flex items-center justify-center p-16; }

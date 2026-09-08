@@ -46,7 +46,6 @@
 		"newGroup": "Nuovo gruppo"
 	},
 	"admin": {
-		"title": "Pannello Admin",
 		"tabs": { "users": "Utenti", "sessions": "Sessioni", "shops": "Negozi", "config": "Configurazioni" },
 		"users": {
 			"searchPlaceholder": "Cerca utente...",
@@ -153,8 +152,6 @@
 		"error": "Link non valido o scaduto."
 	},
 	"groups": {
-		"titlePrefix": "I tuoi",
-		"titleHighlight": "gruppi",
 		"newGroup": "+ Nuovo gruppo",
 		"empty": {
 			"title": "Nessun gruppo",
@@ -199,8 +196,6 @@
 		}
 	},
 	"chat": {
-		"titlePrefix": "Le tue",
-		"titleHighlight": "chat",
 		"empty": "Nessuna conversazione: scrivi a un amico qui sopra per iniziare",
 		"friendsLink": "Vai ai tuoi amici",
 		"newChat": {
@@ -235,8 +230,6 @@
 		}
 	},
 	"friends": {
-		"titlePrefix": "I tuoi",
-		"titleHighlight": "amici",
 		"search": {
 			"label": "Cerca persone",
 			"placeholder": "Nome o email...",
@@ -274,9 +267,6 @@
 		}
 	},
 	"home": {
-		"titlePrefix": "Le tue",
-		"titleHighlight": "uscite",
-		"sessionsCount": "{n} sessioni registrate",
 		"newSession": "Nuova uscita",
 		"ongoingTitle": "In corso",
 		"historyTitle": "Storico",
@@ -286,9 +276,6 @@
 			"register": "+ Registra uscita"
 		},
 		"hub": {
-			"titlePrefix": "Benvenuto su",
-			"titleHighlight": "FishLog",
-			"subtitle": "Tutto quello che ti serve per le tue uscite di pesca, in un unico posto",
 			"comingSoon": "Prossimamente",
 			"sections": {
 				"sessions": {
@@ -336,11 +323,9 @@
 		}
 	},
 	"session": {
-		"new": { "title": "Nuova uscita" },
-		"edit": { "title": "Modifica uscita", "viewSummary": "Riepilogo" },
+		"edit": { "viewSummary": "Riepilogo" },
 		"untitled": "Uscita",
 		"ongoing": {
-			"title": "Uscita in corso",
 			"close": "Chiudi uscita",
 			"closed": "Uscita chiusa",
 			"editFull": "Modifica altri dati"
@@ -796,7 +781,6 @@
 			"text": "Prova a modificare i filtri, oppure pubblica il primo annuncio"
 		},
 		"mine": {
-			"title": "I miei annunci",
 			"empty": "Non hai ancora pubblicato nessun annuncio"
 		},
 		"external": {
@@ -851,13 +835,10 @@
 			"photos": "Foto",
 			"addPhotos": "Aggiungi foto",
 			"publish": "Pubblica annuncio",
-			"edit": "Modifica annuncio",
 			"saving": "Salvataggio..."
 		}
 	},
 	"profile": {
-		"titlePrefix": "Il tuo",
-		"titleHighlight": "profilo",
 		"account": {
 			"title": "Account",
 			"nameLabel": "Nome visualizzato",
@@ -934,8 +915,6 @@
 		}
 	},
 	"stats": {
-		"titlePrefix": "Le tue",
-		"titleHighlight": "statistiche",
 		"totalSessions": "Uscite totali",
 		"totalCatches": "Catture totali",
 		"avgRating": "Voto medio"

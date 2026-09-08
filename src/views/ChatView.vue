@@ -3,8 +3,7 @@
     <!-- Lista conversazioni -->
     <template v-if="!route.params.userId">
       <div class="page-header">
-        <h2>{{ t('chat.titlePrefix') }} <span class="text-ocean">{{ t('chat.titleHighlight') }}</span></h2>
-        <RouterLink to="/friends" class="btn btn-ghost btn-sm">
+        <RouterLink to="/friends" class="btn btn-ghost btn-sm ml-auto">
           <Users :size="16" /> {{ t('chat.friendsLink') }}
         </RouterLink>
       </div>
@@ -439,7 +438,7 @@
 
 <style scoped>
   .page-header {
-    @apply flex items-center justify-between gap-4 mb-6;
+    @apply flex items-center justify-between gap-4 mb-4;
   }
 
   .chat-thread-header {

@@ -1,9 +1,5 @@
 <template>
   <div>
-    <div class="page-header">
-      <h2>{{ t('friends.titlePrefix') }} <span class="text-ocean">{{ t('friends.titleHighlight') }}</span></h2>
-    </div>
-
     <!-- Ricerca utenti -->
     <div class="card search-card">
       <label>{{ t('friends.search.label') }}</label>
@@ -177,7 +173,6 @@ async function removeFriend(f) {
 </script>
 
 <style scoped>
-.page-header  { @apply flex items-center justify-between mb-6; }
 .search-card  { @apply mb-4 relative; }
 .search-results {
   @apply flex flex-col gap-1 mt-2 max-h-64 overflow-y-auto;

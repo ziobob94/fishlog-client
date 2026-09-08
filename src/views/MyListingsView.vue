@@ -1,8 +1,7 @@
 <template>
   <div>
-    <div class="home-hero">
-      <h2>{{ t('market.mine.title') }}</h2>
-      <RouterLink to="/market/new" class="btn btn-primary">
+    <div class="listings-toolbar">
+      <RouterLink to="/market/new" class="btn btn-primary btn-sm ml-auto">
         <Plus :size="16" /> {{ t('market.newListing') }}
       </RouterLink>
     </div>
@@ -32,7 +31,7 @@ onMounted(() => store.fetchMine())
 </script>
 
 <style scoped>
-.home-hero { @apply flex items-end justify-between mb-6; }
+.listings-toolbar { @apply flex items-center mb-4; }
 .listings-grid {
   @apply grid gap-4;
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));

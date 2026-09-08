@@ -1,8 +1,7 @@
 <template>
   <div>
     <div class="page-header">
-      <h2>{{ t('groups.titlePrefix') }} <span class="text-ocean">{{ t('groups.titleHighlight') }}</span></h2>
-      <button class="btn btn-primary" @click="showCreate = true">{{ t('groups.newGroup') }}</button>
+      <button class="btn btn-primary btn-sm ml-auto" @click="showCreate = true">{{ t('groups.newGroup') }}</button>
     </div>
 
     <div v-if="store.loading" class="state-center"><div class="spinner"></div></div>
@@ -208,7 +207,7 @@ async function removeMember(g, m) {
 </script>
 
 <style scoped>
-.page-header  { @apply flex items-center justify-between mb-6; }
+.page-header  { @apply flex items-center mb-4; }
 .groups-grid  { @apply grid gap-4; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); }
 .group-card   { @apply flex flex-col gap-3; }
 .group-header { @apply flex items-start justify-between; }
