@@ -809,25 +809,19 @@
     border-top: 1px solid var(--border);
     bottom: 0;
     left: 0;
+    padding-bottom: env(safe-area-inset-bottom);
     position: fixed;
     right: 0;
-    /* sopra la bottom-nav mobile (z-150 in AppBottomNav.vue), altrimenti
-       la copre e il tasto Salva risulta invisibile su schermi piccoli */
     z-index: 160;
   }
 
   @media (max-width: 767.98px) {
-    .form-actions {
-      /* si impila sopra la bottom-nav mobile invece di sovrapporvisi */
-      bottom: calc(56px + env(safe-area-inset-bottom));
-    }
-
-    /* la barra azioni + la bottom-nav sotto restano fisse e coprono il
-       fondo dello schermo: senza questo spazio l'ultimo contenuto
-       (es. le card di suggerimento specie) resta permanentemente
-       nascosto dietro di esse, non basta scrollare. */
+    /* la barra azioni resta fissa e copre il fondo dello schermo: senza
+       questo spazio l'ultimo contenuto (es. le card di suggerimento
+       specie) resta permanentemente nascosto dietro di essa, non basta
+       scrollare. */
     .session-form {
-      padding-bottom: calc(56px + env(safe-area-inset-bottom) + 6rem);
+      padding-bottom: calc(env(safe-area-inset-bottom) + 6rem);
     }
   }
 
