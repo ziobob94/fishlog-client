@@ -1,28 +1,30 @@
 <template>
   <div>
-    <div class="page-header">
-      <div>
-        <h2>{{ t('posts.feed.titlePrefix') }} <span class="text-ocean">{{ t('posts.feed.titleHighlight') }}</span></h2>
-        <p class="page-desc">{{ t('posts.feed.description') }}</p>
-      </div>
-    </div>
-
-    <div class="tabs-row">
+    <div class="feed-toolbar">
       <div class="tabs" role="tablist">
         <button
           type="button" role="tab" :aria-selected="tab === 'post'"
-          class="tab-btn" :class="{ active: tab === 'post' }"
+          class="tab-pill" :class="{ active: tab === 'post' }"
           @click="setTab('post')"
-        ><Newspaper :size="15" /> {{ t('posts.tabs.posts') }}</button>
+        ><Newspaper :size="14" /> {{ t('posts.tabs.posts') }}</button>
         <button
           type="button" role="tab" :aria-selected="tab === 'event'"
-          class="tab-btn" :class="{ active: tab === 'event' }"
+          class="tab-pill" :class="{ active: tab === 'event' }"
           @click="setTab('event')"
-        ><CalendarDays :size="15" /> {{ t('posts.tabs.events') }}</button>
+        ><CalendarDays :size="14" /> {{ t('posts.tabs.events') }}</button>
       </div>
-      <button type="button" class="btn btn-sm btn-primary ml-auto" @click="showForm = !showForm">
-        <Plus :size="14" /> {{ showForm ? t('posts.feed.hideForm') : t('posts.feed.newPost') }}
-      </button>
+      <div class="toolbar-actions">
+        <button
+          type="button" class="icon-btn" :class="{ active: showFilters }"
+          :title="t('posts.filters.title')" :aria-pressed="showFilters"
+          @click="showFilters = !showFilters; showForm = false"
+        ><Filter :size="17" /></button>
+        <button
+          type="button" class="icon-btn" :class="{ active: showForm }"
+          :title="showForm ? t('posts.feed.hideForm') : t('posts.feed.newPost')" :aria-pressed="showForm"
+          @click="showForm = !showForm; showFilters = false"
+        ><Plus :size="18" /></button>
+      </div>
     </div>
 
     <template v-if="showForm">
@@ -31,11 +33,6 @@
       </div>
       <div class="section-separator"></div>
     </template>
-
-    <button type="button" class="filters-toggle" @click="showFilters = !showFilters" :aria-pressed="showFilters">
-      <span class="filters-toggle-label"><Filter :size="15" /> {{ t('posts.filters.title') }}</span>
-      <span class="switch" :class="{ on: showFilters }"><span class="switch-knob"></span></span>
-    </button>
 
     <div v-if="showFilters" class="filters-panel">
       <p class="filters-desc">{{ t('posts.filters.description') }}</p>
@@ -332,16 +329,12 @@
 </script>
 
 <style scoped>
-  .page-header {
-    @apply flex items-center justify-between mb-6;
-  }
-
-  .tabs-row {
-    @apply flex items-center gap-2 border-b border-border;
+  .feed-toolbar {
+    @apply flex items-center justify-between gap-2;
   }
 
   .tabs {
-    @apply flex gap-2;
+    @apply flex gap-1 p-1 bg-surface-2 rounded-full;
   }
 
   .posts-list {
@@ -352,61 +345,44 @@
     @apply border-b-0 pb-0;
   }
 
-  .tab-btn {
-    @apply inline-flex items-center gap-2 text-[0.95rem] font-semibold text-muted bg-transparent border border-transparent border-b-[3px] rounded-t-md cursor-pointer px-3 py-2.5 -mb-px transition-colors;
+  .tab-pill {
+    @apply inline-flex items-center gap-1.5 text-xs font-semibold text-muted bg-transparent border-none rounded-full cursor-pointer px-3 py-1.5 transition-colors;
   }
 
-  .tab-btn:hover {
+  .tab-pill:hover {
+    @apply text-foam;
+  }
+
+  .tab-pill.active {
+    @apply text-ink bg-ocean;
+  }
+
+  .toolbar-actions {
+    @apply flex items-center gap-1;
+  }
+
+  .icon-btn {
+    @apply flex items-center justify-center w-8 h-8 rounded-lg text-muted bg-transparent border-none cursor-pointer transition-colors;
+  }
+
+  .icon-btn:hover {
     @apply text-foam bg-surface-2;
   }
 
-  .tab-btn.active {
-    @apply text-ocean border-ocean bg-surface-2;
+  .icon-btn.active {
+    @apply text-ocean bg-ocean/10;
   }
 
   .post-form-wrap {
-    @apply mt-4;
+    @apply mt-3;
   }
 
   .section-separator {
-    @apply border-t border-border my-4;
-  }
-
-  .page-desc {
-    @apply text-sm text-muted mt-1;
-  }
-
-  .filters-toggle {
-    @apply flex items-center justify-between w-full gap-2 text-sm font-medium text-foam mt-4 bg-transparent border-none cursor-pointer px-0 py-3 transition-colors;
-  }
-
-  .filters-toggle:hover {
-    @apply text-ocean;
-  }
-
-  .filters-toggle-label {
-    @apply inline-flex items-center gap-2;
-  }
-
-  .switch {
-    @apply relative inline-flex items-center w-9 h-5 rounded-full bg-surface-2 border border-border transition-colors;
-  }
-
-  .switch.on {
-    @apply bg-ocean border-ocean;
-  }
-
-  .switch-knob {
-    @apply absolute left-0.5 w-3.5 h-3.5 rounded-full bg-muted transition-transform duration-200;
-  }
-
-  .switch.on .switch-knob {
-    @apply bg-white;
-    transform: translateX(1rem);
+    @apply border-t border-border my-3;
   }
 
   .filters-panel {
-    @apply flex flex-col gap-3 pb-4;
+    @apply flex flex-col gap-3 pt-3 pb-1;
   }
 
   .filters-desc {

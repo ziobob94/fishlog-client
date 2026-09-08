@@ -770,11 +770,8 @@
 			"reset": "Reimposta filtri"
 		},
 		"feed": {
-			"titlePrefix": "Bacheca",
-			"titleHighlight": "generale",
-			"description": "Qui trovi i post e gli eventi di tutta la community.",
-			"newPost": "Nuovo",
-			"hideForm": "Annulla",
+			"newPost": "Nuovo post",
+			"hideForm": "Chiudi",
 			"empty": {
 				"title": "Nessun post",
 				"text": "Non ci sono ancora post da mostrare"
