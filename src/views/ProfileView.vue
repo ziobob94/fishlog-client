@@ -43,11 +43,11 @@
           <h4>{{ t('profile.credentials.passwordTitle') }}</h4>
           <div class="form-group">
             <label>{{ t('profile.credentials.currentPassword') }}</label>
-            <input v-model="pwForm.currentPassword" type="password" />
+            <PasswordInput v-model="pwForm.currentPassword" />
           </div>
           <div class="form-group mt-1">
             <label>{{ t('profile.credentials.newPassword') }}</label>
-            <input v-model="pwForm.newPassword" type="password" />
+            <PasswordInput v-model="pwForm.newPassword" />
           </div>
           <p v-if="pwError" class="error-msg mt-1">{{ pwError }}</p>
           <p v-if="pwSaved" class="success-msg mt-1">{{ t('profile.credentials.passwordUpdated') }}</p>
@@ -68,7 +68,7 @@
           </div>
           <div v-if="auth.user?.hasPassword" class="form-group mt-1">
             <label>{{ t('profile.credentials.currentPassword') }}</label>
-            <input v-model="emailForm.currentPassword" type="password" />
+            <PasswordInput v-model="emailForm.currentPassword" />
           </div>
           <p v-if="emailError" class="error-msg mt-1">{{ emailError }}</p>
           <p v-if="emailSaved" class="success-msg mt-1">{{ t('profile.credentials.emailPending') }}</p>
@@ -84,6 +84,26 @@
             <span v-if="auth.user.providers.facebook" class="badge badge-ocean">Facebook</span>
           </div>
         </div>
+      </section>
+
+      <!-- Notifiche -->
+      <section class="card">
+        <h3>{{ t('profile.notifications.title') }}</h3>
+        <p class="text-muted text-sm mb-3">{{ t('profile.notifications.hint') }}</p>
+
+        <div v-for="item in notificationItems" :key="item.key" class="notification-row">
+          <div>
+            <strong>{{ t(`profile.notifications.${item.key}`) }}</strong>
+            <p class="text-muted text-sm">{{ t(`profile.notifications.${item.key}Hint`) }}</p>
+          </div>
+          <label class="switch">
+            <input type="checkbox" v-model="notifForm[item.key]" @change="saveNotifications" />
+            <span class="switch-track"></span>
+          </label>
+        </div>
+
+        <p v-if="notifError" class="error-msg mt-2">{{ notifError }}</p>
+        <p v-if="notifSaved" class="success-msg mt-2">{{ t('common.save') }} ✓</p>
       </section>
 
       <!-- Aspetto -->
@@ -128,6 +148,60 @@
         </button>
       </section>
 
+      <!-- Negozio / Market -->
+      <section class="card">
+        <h3>{{ t('profile.shop.title') }}</h3>
+        <div class="notification-row">
+          <div>
+            <strong>{{ t('profile.shop.enable') }}</strong>
+            <p class="text-muted text-sm">{{ t('profile.shop.enableHint') }}</p>
+          </div>
+          <label class="switch">
+            <input type="checkbox" v-model="shopForm.enabled" @change="saveShop" />
+            <span class="switch-track"></span>
+          </label>
+        </div>
+
+        <template v-if="shopForm.enabled">
+          <span class="badge mt-3" :class="verificationBadgeClass">
+            {{ t(`profile.shop.status.${auth.user?.shop?.verificationStatus || 'none'}`) }}
+          </span>
+          <p v-if="auth.user?.shop?.verificationStatus === 'pending'" class="text-muted text-sm mt-1">
+            {{ t('profile.shop.pendingHint') }}
+          </p>
+          <p v-if="auth.user?.shop?.verificationStatus === 'rejected'" class="text-muted text-sm mt-1">
+            {{ t('profile.shop.rejectedHint') }}
+          </p>
+
+          <div class="form-group mt-3">
+            <label>{{ t('profile.shop.nameLabel') }}</label>
+            <input v-model="shopForm.name" type="text" />
+          </div>
+          <div class="form-group mt-2">
+            <label>{{ t('profile.shop.descriptionLabel') }}</label>
+            <textarea v-model="shopForm.description" rows="3"></textarea>
+          </div>
+          <button class="btn btn-primary btn-sm mt-2" :disabled="savingShop" @click="saveShop">
+            {{ t('common.save') }}
+          </button>
+          <RouterLink to="/market/mine" class="btn btn-secondary btn-sm mt-2 ml-2">
+            {{ t('profile.shop.myListings') }}
+          </RouterLink>
+        </template>
+
+        <p v-if="shopError" class="error-msg mt-2">{{ shopError }}</p>
+        <p v-if="shopSaved" class="success-msg mt-2">{{ t('common.save') }} ✓</p>
+      </section>
+
+      <!-- Sessione -->
+      <section class="card">
+        <h3>{{ t('profile.session.title') }}</h3>
+        <p class="text-muted text-sm">{{ t('profile.session.text') }}</p>
+        <button class="btn btn-secondary btn-sm mt-2" @click="logout">
+          {{ t('nav.logout') }}
+        </button>
+      </section>
+
       <!-- Danger zone -->
       <section class="card danger-zone">
         <h3>{{ t('profile.danger.title') }}</h3>
@@ -145,7 +219,7 @@
           <p class="text-muted mt-1">{{ t('profile.danger.confirm') }}</p>
           <div v-if="auth.user?.hasPassword" class="form-group mt-2">
             <label>{{ t('profile.credentials.currentPassword') }}</label>
-            <input v-model="deletePassword" type="password" />
+            <PasswordInput v-model="deletePassword" />
           </div>
           <p v-if="deleteError" class="error-msg mt-2">{{ deleteError }}</p>
           <div style="display:flex;gap:.75rem;justify-content:flex-end;margin-top:1.25rem">
@@ -162,11 +236,12 @@
 
 <script setup>
 import { ref, computed } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRouter, RouterLink } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { Sun, Moon } from 'lucide-vue-next'
 import { useAuthStore } from '../stores/auth.js'
 import { useFeaturesStore } from '../stores/features.js'
+import PasswordInput from '../components/PasswordInput.vue'
 import { useThemeStore } from '../stores/theme.js'
 
 const { t } = useI18n()
@@ -257,11 +332,73 @@ async function saveEmail() {
   } finally { savingEmail.value = false }
 }
 
+// ── notifiche ──
+const notificationItems = [
+  { key: 'emailChatMessages' },
+  { key: 'emailComments' },
+  { key: 'emailLikes' },
+  { key: 'emailFriendRequests' }
+]
+const notifForm = ref(Object.fromEntries(
+  notificationItems.map(({ key }) => [key, auth.user?.notificationPreferences?.[key] !== false])
+))
+const notifError = ref('')
+const notifSaved = ref(false)
+
+async function saveNotifications() {
+  notifError.value = ''
+  notifSaved.value = false
+  try {
+    await auth.updateNotificationPreferences(notifForm.value)
+    notifSaved.value = true
+    setTimeout(() => notifSaved.value = false, 2000)
+  } catch (e) {
+    notifError.value = e.response?.data?.error || t('common.error')
+    await auth.fetchMe()
+    notifForm.value = Object.fromEntries(
+      notificationItems.map(({ key }) => [key, auth.user?.notificationPreferences?.[key] !== false])
+    )
+  }
+}
+
+// ── negozio ──
+const verificationBadgeClass = computed(() => ({
+  verified: 'badge-success', pending: 'badge-sand', rejected: 'badge-danger', none: 'badge-sand'
+}[auth.user?.shop?.verificationStatus || 'none']))
+
+const shopForm = ref({
+  enabled: auth.user?.shop?.enabled || false,
+  name: auth.user?.shop?.name || '',
+  description: auth.user?.shop?.description || ''
+})
+const savingShop = ref(false)
+const shopError  = ref('')
+const shopSaved  = ref(false)
+
+async function saveShop() {
+  shopError.value = ''
+  shopSaved.value = false
+  savingShop.value = true
+  try {
+    await auth.updateShop(shopForm.value)
+    shopSaved.value = true
+    setTimeout(() => shopSaved.value = false, 2000)
+  } catch (e) {
+    shopError.value = e.response?.data?.error || t('common.error')
+  } finally { savingShop.value = false }
+}
+
 // ── danger zone ──
 const showDeleteDialog = ref(false)
 const deletePassword = ref('')
 const deleteError = ref('')
 const deleting = ref(false)
+
+// ── sessione ──
+function logout() {
+  auth.logout()
+  router.push('/login')
+}
 
 async function doDeleteAccount() {
   deleteError.value = ''
@@ -296,6 +433,24 @@ async function doDeleteAccount() {
 
 .error-msg   { @apply bg-danger/10 border border-danger rounded-sm text-danger text-xs px-2.5 py-1.5; }
 .success-msg { @apply bg-success/10 border border-success rounded-sm text-success text-xs px-2.5 py-1.5; }
+
+.notification-row { @apply flex items-center justify-between gap-3; }
+
+.switch { @apply relative inline-block; width: 40px; height: 22px; flex-shrink: 0; }
+.switch input { @apply absolute opacity-0 w-0 h-0; }
+.switch-track {
+  @apply absolute inset-0 rounded-full cursor-pointer;
+  background: var(--border, #cbd5e1);
+  transition: background .15s;
+}
+.switch-track::before {
+  content: '';
+  position: absolute; left: 2px; top: 2px;
+  width: 18px; height: 18px; border-radius: 50%;
+  background: #fff; transition: transform .15s;
+}
+.switch input:checked + .switch-track { background: var(--ocean, #0ea5e9); }
+.switch input:checked + .switch-track::before { transform: translateX(18px); }
 
 .danger-zone { @apply border border-danger/40; }
 

@@ -20,6 +20,7 @@
           <p class="text-muted">{{ t(`home.hub.sections.${section.key}.text`) }}</p>
         </div>
         <span v-if="!section.to" class="badge badge-sand">{{ t('home.hub.comingSoon') }}</span>
+        <span v-else-if="badgeCount(section.key)" class="badge badge-danger">{{ badgeCount(section.key) }}</span>
       </component>
     </div>
   </div>
@@ -29,16 +30,25 @@
 import { useI18n } from 'vue-i18n'
 import {
   Fish, Users, Newspaper, Pin, ShoppingBag, MessageSquare,
-  BookOpen, MessagesSquare, UserCircle, BarChart3
+  BookOpen, MessagesSquare, UserCircle, UserPlus, BarChart3
 } from 'lucide-vue-next'
+import { useFriendStore } from '../stores/friends.js'
 
 const { t } = useI18n()
+const friends = useFriendStore()
+
+// Badge numerico per box con contatori "da leggere/gestire" (gruppi: in sospeso).
+function badgeCount(key) {
+  if (key === 'friends') return friends.pendingCount
+  return 0
+}
 
 const sections = [
   { key: 'sessions',    to: '/sessions', icon: Fish },
   { key: 'feed',        to: '/feed',     icon: Newspaper },
   { key: 'board',       to: '/board',    icon: Pin },
   { key: 'groups',      to: '/groups',   icon: Users },
+  { key: 'friends',     to: '/friends',  icon: UserPlus },
   { key: 'profile',     to: '/profile',  icon: UserCircle },
   { key: 'stats',       to: '/stats',    icon: BarChart3 },
   { key: 'marketplace', to: '/market',   icon: ShoppingBag },

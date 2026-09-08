@@ -64,10 +64,22 @@ export const useAuthStore = defineStore('auth', () => {
     return data
   }
 
+  async function updateNotificationPreferences(payload) {
+    const { data } = await api.patch('/auth/me/notifications', payload)
+    persistUser(data)
+    return data
+  }
+
   async function uploadAvatar(file) {
     const form = new FormData()
     form.append('file', file)
     const { data } = await api.post('/auth/me/avatar', form, { headers: { 'Content-Type': 'multipart/form-data' } })
+    persistUser(data)
+    return data
+  }
+
+  async function updateShop(payload) {
+    const { data } = await api.patch('/auth/me/shop', payload)
     persistUser(data)
     return data
   }
@@ -97,7 +109,7 @@ export const useAuthStore = defineStore('auth', () => {
 
   return {
     token, user, isLoggedIn, setAuth, clearAuth, initAuth, login, register, fetchMe, logout,
-    updateProfile, uploadAvatar, changePassword, changeEmail, deleteAccount,
+    updateProfile, updateNotificationPreferences, updateShop, uploadAvatar, changePassword, changeEmail, deleteAccount,
     forgotPassword, resetPassword
   }
 })

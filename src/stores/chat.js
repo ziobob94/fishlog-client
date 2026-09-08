@@ -1,0 +1,134 @@
+import { defineStore } from 'pinia'
+import { ref } from 'vue'
+import api from '../utils/api.js'
+
+export const useChatStore = defineStore('chat', () => {
+  const conversations = ref([])
+  const messages      = ref([])
+  const unreadCount    = ref(0)
+  const loading        = ref(false)
+  const error          = ref(null)
+
+  async function fetchConversations() {
+    loading.value = true; error.value = null
+    try {
+      const { data } = await api.get('/chat/conversations')
+      conversations.value = data.data
+    } catch (e) {
+      error.value = e.response?.data?.error || 'Errore caricamento conversazioni'
+    } finally { loading.value = false }
+  }
+
+  async function fetchUnreadCount() {
+    try {
+      const { data } = await api.get('/chat/unread-count')
+      unreadCount.value = data.count
+    } catch (e) { /* badge non critico */ }
+  }
+
+  // Restituisce l'id della conversazione con questo amico, creandola al
+  // volo lato server se non esiste ancora (nessuno scambio di messaggi finora).
+  async function openConversationWith(userId) {
+    const { data } = await api.get(`/chat/with/${userId}`)
+    return data._id
+  }
+
+  async function fetchMessages(conversationId) {
+    loading.value = true; error.value = null
+    try {
+      const { data } = await api.get(`/chat/${conversationId}/messages`)
+      messages.value = data.data
+    } catch (e) {
+      error.value = e.response?.data?.error || 'Errore caricamento messaggi'
+    } finally { loading.value = false }
+  }
+
+  async function sendMessage(userId, body) {
+    try {
+      const { data } = await api.post(`/chat/with/${userId}/messages`, { body })
+      messages.value = [...messages.value, data]
+      return data
+    } catch (e) {
+      error.value = e.response?.data?.error || 'Errore invio messaggio'
+      return null
+    }
+  }
+
+  async function sendMedia(userId, file) {
+    try {
+      const form = new FormData()
+      form.append('file', file)
+      const { data } = await api.post(`/chat/with/${userId}/messages/media`, form, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      })
+      messages.value = [...messages.value, data]
+      return data
+    } catch (e) {
+      error.value = e.response?.data?.error || 'Errore invio allegato'
+      return null
+    }
+  }
+
+  async function sendLocation(userId, { lat, lng, name }) {
+    try {
+      const { data } = await api.post(`/chat/with/${userId}/messages/location`, { lat, lng, name })
+      messages.value = [...messages.value, data]
+      return data
+    } catch (e) {
+      error.value = e.response?.data?.error || 'Errore invio posizione'
+      return null
+    }
+  }
+
+  async function markRead(conversationId) {
+    try { await api.post(`/chat/${conversationId}/read`) } catch (e) { /* non critico */ }
+  }
+
+  async function editMessage(messageId, body) {
+    try {
+      const { data } = await api.patch(`/chat/messages/${messageId}`, { body })
+      const i = messages.value.findIndex(m => m._id === messageId)
+      if (i !== -1) messages.value[i] = data
+      return data
+    } catch (e) {
+      error.value = e.response?.data?.error || 'Errore modifica messaggio'
+      return null
+    }
+  }
+
+  async function deleteMessage(messageId) {
+    try {
+      await api.delete(`/chat/messages/${messageId}`)
+      applyDeleted(messageId)
+      return true
+    } catch (e) {
+      error.value = e.response?.data?.error || 'Errore eliminazione messaggio'
+      return false
+    }
+  }
+
+  // Applica localmente una modifica/eliminazione ricevuta via websocket
+  // (l'altro partecipante ha modificato o cancellato un messaggio).
+  function applyUpdated(message) {
+    const i = messages.value.findIndex(m => m._id === message._id)
+    if (i !== -1) messages.value[i] = message
+  }
+
+  function applyDeleted(messageId) {
+    const i = messages.value.findIndex(m => m._id === messageId)
+    if (i !== -1) {
+      messages.value[i] = { ...messages.value[i], deleted: true, body: null, media: null, location: null }
+    }
+  }
+
+  // Aggiornamento realtime del badge via websocket, senza rifare la fetch.
+  function setUnreadCount(count) {
+    unreadCount.value = count
+  }
+
+  return {
+    conversations, messages, unreadCount, loading, error,
+    fetchConversations, fetchUnreadCount, openConversationWith, fetchMessages, sendMessage, sendMedia, sendLocation,
+    markRead, editMessage, deleteMessage, applyUpdated, applyDeleted, setUnreadCount
+  }
+})

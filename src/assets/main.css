@@ -70,6 +70,8 @@
 @layer base {
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+  html { font-size: 18px; }
+
   body {
     @apply bg-ink text-foam font-display antialiased min-h-screen overflow-x-hidden;
   }
@@ -125,6 +127,7 @@
   .badge-ocean   { background: var(--ocean-glow); @apply border border-ocean text-ocean; }
   .badge-sand    { @apply bg-amber-500/10 border border-sand text-sand; }
   .badge-success { @apply bg-green-500/10 border border-success text-success; }
+  .badge-danger  { @apply bg-danger text-white border border-danger normal-case tracking-normal; }
 
   .form-grid {
     @apply grid gap-3;

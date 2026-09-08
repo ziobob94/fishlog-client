@@ -28,20 +28,33 @@
       <RouterLink to="/sessions" class="nav-item" @click="$emit('close')">
         <span class="w-5 text-center flex justify-center"><Fish :size="16" /></span> {{ t('nav.sessions') }}
       </RouterLink>
-      <RouterLink :to="newSessionTarget" class="nav-item nav-accent mb-2" @click="$emit('close')">
+    <!--  <RouterLink :to="newSessionTarget" class="nav-item nav-accent mb-2" @click="$emit('close')">
         <span class="w-5 text-center flex justify-center">
           <component :is="sessions.ongoing ? Waves : Plus" :size="16" />
         </span>
         {{ sessions.ongoing ? t('nav.ongoingSession') : t('nav.newSession') }}
-      </RouterLink>
+      </RouterLink> -->
       <RouterLink to="/groups" class="nav-item" @click="$emit('close')">
         <span class="w-5 text-center flex justify-center"><Users :size="16" /></span> {{ t('nav.groups') }}
       </RouterLink>
+      <RouterLink to="/friends" class="nav-item" @click="$emit('close')">
+        <span class="w-5 text-center flex justify-center"><UserPlus :size="16" /></span> {{ t('nav.friends') }}
+        <span v-if="friends.pendingCount" class="nav-badge">{{ friends.pendingCount }}</span>
+      </RouterLink>
       <RouterLink to="/feed" class="nav-item" @click="$emit('close')">
         <span class="w-5 text-center flex justify-center"><Newspaper :size="16" /></span> {{ t('nav.feed') }}
+        <span v-if="posts.unread.feed" class="nav-badge">{{ posts.unread.feed }}</span>
       </RouterLink>
       <RouterLink to="/board" class="nav-item" @click="$emit('close')">
         <span class="w-5 text-center flex justify-center"><Pin :size="16" /></span> {{ t('nav.board') }}
+        <span v-if="posts.unread.board" class="nav-badge">{{ posts.unread.board }}</span>
+      </RouterLink>
+      <RouterLink to="/market" class="nav-item" @click="$emit('close')">
+        <span class="w-5 text-center flex justify-center"><ShoppingBag :size="16" /></span> {{ t('nav.market') }}
+      </RouterLink>
+      <RouterLink to="/chat" class="nav-item" @click="$emit('close')">
+        <span class="w-5 text-center flex justify-center"><MessagesSquare :size="16" /></span> {{ t('nav.chat') }}
+        <span v-if="chat.unreadCount" class="nav-badge">{{ chat.unreadCount }}</span>
       </RouterLink>
       <RouterLink to="/stats" class="nav-item" @click="$emit('close')">
         <span class="w-5 text-center flex justify-center"><BarChart3 :size="16" /></span> {{ t('nav.stats') }}
@@ -90,49 +103,69 @@
 </template>
 
 <script setup>
-import { computed, onMounted } from 'vue'
-import { RouterLink, useRouter } from 'vue-router'
-import { useI18n } from 'vue-i18n'
-import { Fish, Home, Pin, MapPin, Users, Newspaper, Settings, BarChart3, UserCircle, Plus, Waves } from 'lucide-vue-next'
-import { useAuthStore } from '../stores/auth.js'
-import { useSessionStore } from '../stores/sessions.js'
+  import { computed, onMounted } from 'vue'
+  import { RouterLink, useRouter } from 'vue-router'
+  import { useI18n } from 'vue-i18n'
+  import { Fish, Home, Pin, MapPin, Users, UserPlus, Newspaper, MessagesSquare, Settings, BarChart3, UserCircle, Plus, Waves, ShoppingBag } from 'lucide-vue-next'
+  import { useAuthStore } from '../stores/auth.js'
+  import { useSessionStore } from '../stores/sessions.js'
+  import { usePostStore } from '../stores/posts.js'
+  import { useChatStore } from '../stores/chat.js'
+  import { useFriendStore } from '../stores/friends.js'
 
-const { t } = useI18n()
-defineProps({
-  open:   { type: Boolean, default: false },
-  locked: { type: Boolean, default: false }
-})
-defineEmits(['close', 'toggle-lock'])
+  const { t } = useI18n()
+  defineProps({
+    open: { type: Boolean, default: false },
+    locked: { type: Boolean, default: false }
+  })
+  defineEmits(['close', 'toggle-lock'])
 
-const auth     = useAuthStore()
-const router   = useRouter()
-const sessions = useSessionStore()
+  const auth = useAuthStore()
+  const router = useRouter()
+  const sessions = useSessionStore()
+  const posts = usePostStore()
+  const chat = useChatStore()
+  const friends = useFriendStore()
 
-onMounted(() => { if (auth.isLoggedIn) sessions.fetchOngoing() })
+  onMounted(() => { if (auth.isLoggedIn) sessions.fetchOngoing() })
 
-const newSessionTarget = computed(() =>
-  sessions.ongoing
-    ? { path: `/session/${sessions.ongoing._id}/edit`, hash: '#section-catches' }
-    : { path: '/new' }
-)
+  const newSessionTarget = computed(() =>
+    sessions.ongoing
+      ? { path: `/session/${sessions.ongoing._id}/edit`, hash: '#section-catches' }
+      : { path: '/new' }
+  )
 
-const initials = computed(() => {
-  const name = auth.user?.displayName || auth.user?.email || '?'
-  return name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2)
-})
+  const initials = computed(() => {
+    const name = auth.user?.displayName || auth.user?.email || '?'
+    return name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2)
+  })
 
-function logout() {
-  auth.logout()
-  router.push('/login')
-}
+  function logout() {
+    auth.logout()
+    router.push('/login')
+  }
 </script>
 
 <style scoped>
-.nav-item {
-  @apply flex items-center gap-2.5 px-3 py-2 rounded-sm text-sm font-semibold
-         text-muted transition-all duration-200 hover:bg-surface-2 hover:text-foam;
-}
-.nav-item.router-link-active { @apply text-ocean; background: var(--ocean-glow); }
-.nav-accent                  { background: var(--ocean-glow); @apply border border-ocean/20 text-ocean hover:bg-ocean hover:text-white; }
-.nav-accent.router-link-active { @apply bg-ocean text-white; }
+  .nav-item {
+    @apply flex items-center gap-2.5 px-3 py-2 rounded-sm text-sm font-semibold text-muted transition-all duration-200 hover:bg-surface-2 hover:text-foam;
+  }
+
+  .nav-item.router-link-active {
+    @apply text-ocean;
+    background: var(--ocean-glow);
+  }
+
+  .nav-accent {
+    background: var(--ocean-glow);
+    @apply border border-ocean/20 text-ocean hover:bg-ocean hover:text-white;
+  }
+
+  .nav-accent.router-link-active {
+    @apply bg-ocean text-white;
+  }
+
+  .nav-badge {
+    @apply ml-auto bg-danger text-white text-[0.65rem] font-bold rounded-full px-1.5 py-0.5 leading-none;
+  }
 </style>

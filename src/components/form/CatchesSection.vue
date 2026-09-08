@@ -352,7 +352,17 @@ const pendingPhotosByIndex = computed(() => {
   }
   return map
 })
-defineExpose({ pendingPhotosByIndex })
+// Esposto al form padre: libera le anteprime locali di un indice dopo che
+// le foto sono state caricate sul server (evita di ricaricarle ad ogni
+// nuovo salvataggio automatico).
+function clearPendingPhotos(i) {
+  const next = new Map(pendingFiles.value)
+  const list = next.get(i) ?? []
+  for (const p of list) URL.revokeObjectURL(p.url)
+  next.delete(i)
+  pendingFiles.value = next
+}
+defineExpose({ pendingPhotosByIndex, clearPendingPhotos })
 
 function toggleSub(i, id) {
   const next = new Map(openSubs.value)
@@ -624,18 +634,12 @@ function confirmRemove() {
     display: block; color: var(--text-muted, #6b8fa8);
     font-size: .68rem; font-weight: 700; letter-spacing: .03em; text-transform: uppercase;
   }
-  .catches-row {
-    grid-template-columns: 1fr 1fr auto auto auto auto;
-    grid-template-areas: "species species badge photos remove chevron" "weight length . . . .";
-    row-gap: .75rem;
+  .catches-row { flex-direction: column; }
+  .row-fields {
+    grid-template-columns: 1fr 1fr;
   }
-  .catches-row .field:nth-child(1) { grid-area: species; }
-  .catches-row .field:nth-child(2) { grid-area: weight; }
-  .catches-row .field:nth-child(3) { grid-area: length; }
-  .catches-row .released-badge { grid-area: badge; }
-  .catches-row .row-photo-actions { grid-area: photos; }
-  .catches-row .row-remove { grid-area: remove; }
-  .catches-row .row-chevron { grid-area: chevron; justify-self: end; }
+  .species-field { grid-column: 1 / -1; }
+  .row-actions { justify-content: space-between; }
 
   .detail-footer { flex-wrap: wrap; gap: .75rem; }
 }

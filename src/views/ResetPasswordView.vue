@@ -14,7 +14,7 @@
       <form v-else @submit.prevent="handleSubmit">
         <div class="form-group mb-2">
           <label>{{ t('resetPassword.newPasswordLabel') }}</label>
-          <input v-model="newPassword" type="password" required />
+          <PasswordInput v-model="newPassword" required />
         </div>
         <div v-if="error" class="error-msg">{{ error }}</div>
         <button type="submit" class="btn btn-primary w-full" :disabled="loading">
@@ -35,6 +35,7 @@ import { RouterLink, useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { Fish } from 'lucide-vue-next'
 import { useAuthStore } from '../stores/auth.js'
+import PasswordInput from '../components/PasswordInput.vue'
 
 const { t } = useI18n()
 const auth  = useAuthStore()

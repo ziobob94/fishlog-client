@@ -1,6 +1,29 @@
 <template>
   <form @submit.prevent="handleSubmit" class="session-form">
 
+    <!-- BOTTONE AUTO-FILL (sempre visibile, sopra a tutte le sezioni) -->
+    <div class="autofill-bar" v-if="!autofillCollapsed">
+      <div>
+        <p class="autofill-title">{{ t('sessionForm.autoFill.title') }}</p>
+        <p class="autofill-sub">{{ t('sessionForm.autoFill.subtitle') }}</p>
+        <p class="autofill-disclaimer">{{ t('sessionForm.autoFill.disclaimer') }}</p>
+      </div>
+      <button type="button" class="btn btn-secondary btn-sm"
+        :disabled="!canAutoFill || autoFilling || gpsLoading" @click="autoFillWeatherAndSea">
+        <span v-if="autoFilling || gpsLoading" class="spinner" style="width:13px;height:13px"></span>
+        {{ gpsLoading ? t('sessionForm.fields.gpsDetecting') : (autoFilling ? t('sessionForm.autoFill.loading') : t('sessionForm.autoFill.button')) }}
+      </button>
+    </div>
+    <div v-else class="autofill-bar autofill-bar-collapsed">
+      <span class="autofill-collapsed-btn" role="button" tabindex="0"
+        @click="autofillCollapsed = false" @keydown.enter="autofillCollapsed = false">
+        {{ t('sessionForm.autoFill.button') }}
+        <FieldInfo :text="t('sessionForm.autoFill.collapsedHint')" />
+      </span>
+    </div>
+    <p v-if="!autofillCollapsed && !canAutoFill" class="autofill-warning">{{ t('sessionForm.autoFill.warning') }}</p>
+    <div v-if="!autofillCollapsed && autoFillMsg" class="autofill-result" :class="autoFillMsg.type">{{ autoFillMsg.text }}</div>
+
     <!-- BASE -->
     <div class="accordion-section">
     <button type="button" class="section-divider accordion-header" :class="{ incomplete: !canLeaveSection('base') }" @click="toggleSection('base')">
@@ -50,22 +73,6 @@
       </div>
     </div>
     </div>
-
-    <!-- BOTTONE AUTO-FILL (sempre visibile, indipendente dall'accordion) -->
-    <div class="autofill-bar">
-      <div>
-        <p class="autofill-title">{{ t('sessionForm.autoFill.title') }}</p>
-        <p class="autofill-sub">{{ t('sessionForm.autoFill.subtitle') }}</p>
-        <p class="autofill-disclaimer">{{ t('sessionForm.autoFill.disclaimer') }}</p>
-      </div>
-      <button type="button" class="btn btn-secondary btn-sm"
-        :disabled="!canAutoFill || autoFilling || gpsLoading" @click="autoFillWeatherAndSea">
-        <span v-if="autoFilling || gpsLoading" class="spinner" style="width:13px;height:13px"></span>
-        {{ gpsLoading ? t('sessionForm.fields.gpsDetecting') : (autoFilling ? t('sessionForm.autoFill.loading') : t('sessionForm.autoFill.button')) }}
-      </button>
-    </div>
-    <p v-if="!canAutoFill" class="autofill-warning">{{ t('sessionForm.autoFill.warning') }}</p>
-    <div v-if="autoFillMsg" class="autofill-result" :class="autoFillMsg.type">{{ autoFillMsg.text }}</div>
 
     <!-- LUOGO -->
     <div class="accordion-section">
@@ -449,6 +456,7 @@
   const autoFilling = ref(false)
   const geocodeMsg = ref('')
   const autoFillMsg = ref(null)
+  const autofillCollapsed = ref(false)
   let geocodeTimer = null
 
   const canAutoFill = computed(() => !!f.value.date)
@@ -602,9 +610,12 @@
       : 'https://api.open-meteo.com/v1/forecast'
 
     try {
+      const isSaltwater = f.value.waterType === 'mare'
       const [weatherRes, marineRes] = await Promise.allSettled([
         fetch(`${weatherBase}?latitude=${lat}&longitude=${lng}&start_date=${date}&end_date=${date}&daily=weather_code,temperature_2m_max,temperature_2m_min,wind_speed_10m_max,wind_direction_10m_dominant&hourly=surface_pressure,relative_humidity_2m&timezone=auto`).then(r => r.json()),
-        fetch(`https://marine-api.open-meteo.com/v1/marine?latitude=${lat}&longitude=${lng}&start_date=${date}&end_date=${date}&daily=wave_height_max,wave_period_max&timezone=auto`).then(r => r.json()),
+        isSaltwater
+          ? fetch(`https://marine-api.open-meteo.com/v1/marine?latitude=${lat}&longitude=${lng}&start_date=${date}&end_date=${date}&daily=wave_height_max,wave_period_max&timezone=auto`).then(r => r.json())
+          : Promise.resolve(null),
       ])
 
       const filled = []
@@ -626,7 +637,7 @@
         if (pressure != null) { f.value.weather.pressure = Math.round(pressure); filled.push(t('sessionForm.autoFill.filledFields.pressure')) }
       }
 
-      if (isSea.value && marineRes.status === 'fulfilled' && marineRes.value?.daily) {
+      if (isSaltwater && marineRes.status === 'fulfilled' && marineRes.value?.daily) {
         const m = marineRes.value.daily
         const waveH = m.wave_height_max?.[0]
         const wavePeriod = m.wave_period_max?.[0]
@@ -644,6 +655,8 @@
       autoFillMsg.value = filled.length
         ? { type: 'success', text: t('sessionForm.autoFill.success', { fields: filled.join(', ') }) }
         : { type: 'warn', text: t('sessionForm.autoFill.noData') }
+
+      if (filled.length) autofillCollapsed.value = true
 
     } catch (err) {
       autoFillMsg.value = { type: 'error', text: t('sessionForm.autoFill.error') }
@@ -664,7 +677,10 @@
     d.sea = { ...def.sea, ...d.sea, tide: { state: '', notes: '', ...(d.sea?.tide || {}) } }
     d.weather = { ...def.weather, ...d.weather }
     f.value = { ...def, ...d }
-    openSections.value = new Set(d.status === 'ongoing' ? ['catches'] : ALL_SECTIONS)
+    // Uscite chiuse: qui di default. Uscite "ongoing" ci passano solo su
+    // richiesta esplicita ("Modifica altri dati" da OngoingCatchForm). In
+    // entrambi i casi tutte le sezioni aperte per la revisione/modifica.
+    openSections.value = new Set(ALL_SECTIONS)
   }, { immediate: true })
 
   const catchesRef = ref(null)
@@ -700,6 +716,17 @@
 
   .accordion-header:hover {
     background: var(--surface-2, #0d2035);
+  }
+
+  .accordion-header.section-divider {
+    font-size: .95rem;
+    color: var(--foam, #cde);
+  }
+
+  .accordion-header.section-divider::before,
+  .accordion-header.section-divider::after {
+    background: var(--ocean, #0ea5e9);
+    opacity: .35;
   }
 
   .accordion-header + * {
@@ -794,6 +821,14 @@
       /* si impila sopra la bottom-nav mobile invece di sovrapporvisi */
       bottom: calc(56px + env(safe-area-inset-bottom));
     }
+
+    /* la barra azioni + la bottom-nav sotto restano fisse e coprono il
+       fondo dello schermo: senza questo spazio l'ultimo contenuto
+       (es. le card di suggerimento specie) resta permanentemente
+       nascosto dietro di esse, non basta scrollare. */
+    .session-form {
+      padding-bottom: calc(56px + env(safe-area-inset-bottom) + 6rem);
+    }
   }
 
   .form-actions-inner {
@@ -860,6 +895,23 @@
     font-size: .72rem;
     font-style: italic;
     margin-top: .3rem;
+  }
+
+  .autofill-bar-collapsed {
+    padding: .4rem .6rem;
+  }
+
+  .autofill-collapsed-btn {
+    align-items: center;
+    color: var(--text-muted, #6b8fa8);
+    cursor: pointer;
+    display: flex;
+    font-size: .82rem;
+    gap: .4rem;
+  }
+
+  .autofill-collapsed-btn:hover {
+    color: var(--foam, #cde);
   }
 
   .autofill-warning {

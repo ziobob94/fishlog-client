@@ -1,619 +1,934 @@
 {
-  "common": {
-    "save": "Salva",
-    "cancel": "Annulla",
-    "delete": "Elimina",
-    "edit": "Modifica",
-    "add": "Aggiungi",
-    "loading": "Caricamento...",
-    "confirmDelete": "Sei sicuro di voler eliminare?",
-    "back": "← Indietro",
-    "prevPage": "← Prec",
-    "nextPage": "Succ →",
-    "or": "oppure",
-    "login": "Accedi",
-    "error": "Errore",
-    "none": "—",
-    "fieldInfo": "Informazioni sul campo"
-  },
-  "nav": {
-    "home": "Home",
-    "sessions": "Uscite",
-    "newSession": "+ Nuova uscita",
-    "ongoingSession": "Pescata in corso",
-    "groups": "Gruppi",
-    "feed": "Bacheca",
-    "board": "La mia bacheca",
-    "market": "Market",
-    "chat": "Chat",
-    "stats": "Statistiche",
-    "profile": "Profilo",
-    "admin": "Admin",
-    "logout": "Esci",
-    "lock": "Blocca",
-    "unlock": "Sblocca"
-  },
-  "admin": {
-    "title": "Pannello Admin",
-    "tabs": { "users": "Utenti", "sessions": "Sessioni" },
-    "users": {
-      "searchPlaceholder": "Cerca utente...",
-      "table": { "user": "Utente", "email": "Email", "role": "Ruolo", "registered": "Registrato", "actions": "Azioni" }
-    },
-    "sessions": {
-      "showHiddenOnly": "Mostra solo nascoste",
-      "table": { "title": "Titolo", "author": "Autore", "date": "Data", "visibility": "Visibilità", "hidden": "Nascosta", "actions": "Azioni" },
-      "hiddenBadge": "Nascosta",
-      "show": "Mostra",
-      "hide": "Nascondi"
-    },
-    "deleteUser": {
-      "title": "Elimina utente",
-      "warning": "Verranno eliminate anche tutte le sessioni di {name}."
-    }
-  },
-  "auth": {
-    "callback": {
-      "loggingIn": "Accesso in corso...",
-      "missingToken": "Errore: token mancante",
-      "authError": "Errore di autenticazione"
-    }
-  },
-  "login": {
-    "welcomeBack": "Bentornato",
-    "google": "Continua con Google",
-    "facebook": "Continua con Facebook",
-    "emailLabel": "Email",
-    "emailPlaceholder": "tu@email.com",
-    "passwordLabel": "Password",
-    "passwordPlaceholder": "••••••••",
-    "loading": "Accesso...",
-    "error": "Errore di accesso",
-    "noAccount": "Non hai un account?",
-    "register": "Registrati",
-    "forgotPassword": "Password dimenticata?"
-  },
-  "register": {
-    "title": "Crea account",
-    "google": "Registrati con Google",
-    "facebook": "Registrati con Facebook",
-    "nameLabel": "Nome",
-    "namePlaceholder": "Mario Rossi",
-    "passwordPlaceholder": "min. 6 caratteri",
-    "loading": "Registrazione...",
-    "submit": "Crea account",
-    "error": "Errore registrazione",
-    "hasAccount": "Hai già un account?",
-    "passwordAuthDisabled": "La registrazione via email è temporaneamente disabilitata. Usa Google o Facebook."
-  },
-  "forgotPassword": {
-    "title": "Password dimenticata",
-    "text": "Inserisci la tua email: se esiste un account riceverai un link per reimpostare la password.",
-    "submit": "Invia link",
-    "sending": "Invio...",
-    "sent": "Se l'indirizzo esiste, riceverai a breve un'email con le istruzioni.",
-    "disabled": "Il recupero password via email è temporaneamente disabilitato."
-  },
-  "resetPassword": {
-    "title": "Reimposta password",
-    "newPasswordLabel": "Nuova password",
-    "submit": "Reimposta password",
-    "missingToken": "Link non valido: token mancante.",
-    "success": "Password reimpostata con successo."
-  },
-  "confirmEmail": {
-    "title": "Conferma email",
-    "success": "Email confermata con successo. Ora puoi accedere con il nuovo indirizzo.",
-    "error": "Link non valido o scaduto."
-  },
-  "groups": {
-    "titlePrefix": "I tuoi",
-    "titleHighlight": "gruppi",
-    "newGroup": "+ Nuovo gruppo",
-    "empty": {
-      "title": "Nessun gruppo",
-      "text": "Crea un gruppo per condividere le uscite con amici specifici",
-      "create": "+ Crea gruppo"
-    },
-    "membersCount": "{n} membri",
-    "owner": "owner",
-    "addMemberPlaceholder": "Email utente da aggiungere...",
-    "errors": {
-      "userNotFound": "Utente non trovato"
-    },
-    "editAction": "Modifica",
-    "deleteAction": "Elimina",
-    "modal": {
-      "editTitle": "Modifica gruppo",
-      "newTitle": "Nuovo gruppo",
-      "nameLabel": "Nome *",
-      "namePlaceholder": "es. Amici di pesca",
-      "descLabel": "Descrizione",
-      "descPlaceholder": "Opzionale...",
-      "nameRequired": "Nome obbligatorio",
-      "update": "Aggiorna",
-      "create": "Crea",
-      "saving": "..."
-    },
-    "deleteDialog": {
-      "title": "Elimina gruppo",
-      "confirm": "Sei sicuro di voler eliminare {name}?"
-    }
-  },
-  "home": {
-    "titlePrefix": "Le tue",
-    "titleHighlight": "uscite",
-    "sessionsCount": "{n} sessioni registrate",
-    "newSession": "+ Nuova uscita",
-    "ongoingTitle": "In corso",
-    "historyTitle": "Storico",
-    "empty": {
-      "title": "Nessuna uscita trovata",
-      "text": "Registra la tua prima sessione",
-      "register": "+ Registra uscita"
-    },
-    "hub": {
-      "titlePrefix": "Benvenuto su",
-      "titleHighlight": "FishLog",
-      "subtitle": "Tutto quello che ti serve per le tue uscite di pesca, in un unico posto",
-      "comingSoon": "Prossimamente",
-      "sections": {
-        "sessions":    { "title": "Uscite", "text": "Registra e rivedi le tue sessioni di pesca" },
-        "feed":        { "title": "Bacheca generale", "text": "Post ed eventi della community e dei tuoi gruppi" },
-        "board":       { "title": "La mia bacheca", "text": "I tuoi post ed eventi, pubblici, di gruppo o privati" },
-        "groups":      { "title": "Gruppi", "text": "Gestisci i tuoi gruppi di amici e compagni di pesca" },
-        "marketplace": { "title": "Mercatino", "text": "Compra e vendi attrezzatura nuova e usata" },
-        "forum":       { "title": "Forum", "text": "Discussioni e consigli tra appassionati" },
-        "culture":     { "title": "Cultura della pesca", "text": "Articoli e approfondimenti" },
-        "chat":        { "title": "Chat", "text": "Messaggi privati e chat globale" },
-        "profile":     { "title": "Profilo", "text": "Credenziali, privacy e impostazioni account" },
-        "stats":       { "title": "Statistiche", "text": "Le statistiche delle tue uscite e catture" }
-      }
-    }
-  },
-  "session": {
-    "new": { "title": "Nuova uscita" },
-    "edit": { "title": "Modifica uscita", "viewSummary": "Riepilogo" },
-    "untitled": "Uscita",
-    "view": {
-      "notFound": "Sessione non trovata.",
-      "backToList": "← Torna alla lista",
-      "allSessions": "← Tutte le uscite",
-      "visibility": {
-        "private": "Privata",
-        "users": "Tutti gli utenti",
-        "group": "Gruppi"
-      },
-      "sections": {
-        "media": "Foto & Video",
-        "location": "Luogo",
-        "catches": "Catture ({n})",
-        "notes": "Note"
-      },
-      "water": {
-        "sea": "Condizioni mare",
-        "river": "Condizioni fiume",
-        "lake": "Condizioni lago",
-        "other": "Condizioni acqua"
-      },
-      "weather": {
-        "title": "Meteo"
-      },
-      "fields": {
-        "name": "Nome",
-        "spot": "Spot",
-        "region": "Regione",
-        "coordinates": "Coordinate",
-        "seaState": "Stato mare",
-        "waves": "Onde",
-        "wavePeriod": "Periodo",
-        "level": "Livello",
-        "current": "Corrente",
-        "waterColor": "Colore acqua",
-        "waterTemp": "Temp. acqua",
-        "tide": "Marea",
-        "tideNotes": "Note marea",
-        "condition": "Condizione",
-        "wind": "Vento",
-        "windSpeed": "Vel. vento",
-        "tempAir": "Temp. aria",
-        "pressure": "Pressione",
-        "presentation": "Presentazione",
-        "notes": "Note",
-        "hook": "Amo",
-        "sinker": "Piombo",
-        "line": "Filo",
-        "leader": "Terminale",
-        "swivel": "Girella",
-        "weight": "Peso",
-        "length": "Lunghezza",
-        "time": "Ora",
-        "distance": "Distanza",
-        "bait": "Esca",
-        "baitType": "Tipo esca",
-        "rig": "Montatura",
-        "direction": "Direzione"
-      },
-      "released": "rilasciata",
-      "sideLabels": {
-        "technique": "Tecnica",
-        "visibility": "Visibilità",
-        "rating": "Voto",
-        "registeredAt": "Registrata il"
-      },
-      "deleteDialog": {
-        "title": "Elimina uscita",
-        "confirm": "Sei sicuro? Verranno eliminati anche tutti i media associati.",
-        "deleting": "Eliminazione..."
-      },
-      "seaState": {
-        "piatto": "Piatto",
-        "poco_mosso": "Poco mosso",
-        "mosso": "Mosso",
-        "molto_mosso": "Molto mosso",
-        "agitato": "Agitato"
-      },
-      "waterLevel": {
-        "piena": "In piena",
-        "normale": "Normale",
-        "magra": "In magra"
-      },
-      "tideState": {
-        "crescente": "Crescente",
-        "calante": "Calante",
-        "alta": "Alta",
-        "bassa": "Bassa"
-      },
-      "statLabels": {
-        "time": "Orario",
-        "catches": "Catture",
-        "best": "Migliore"
-      }
-    }
-  },
-  "castsTable": {
-    "distance": "Distanza",
-    "direction": "Direzione",
-    "bait": "Esca",
-    "rig": "Montatura",
-    "result": "Risultato"
-  },
-  "mediaUploader": {
-    "dropHint": "Trascina foto / video o",
-    "dropHintClick": "clicca per selezionare",
-    "formatsHint": "JPG, PNG, WEBP, HEIC, MP4, MOV — max 200MB",
-    "uploadProgress": "Upload {progress}%",
-    "captionPlaceholder": "Didascalia...",
-    "deleteDialog": {
-      "title": "Elimina media",
-      "confirm": "L'operazione non è reversibile."
-    }
-  },
-  "pagination": {
-    "prev": "← Prec",
-    "next": "Succ →"
-  },
-  "sessionFilters": {
-    "searchPlaceholder": "Cerca luogo, note...",
-    "allTechniques": "Tutte le tecniche",
-    "reset": "Reset"
-  },
-  "sessionForm": {
-    "requiredToContinue": "Completa i campi obbligatori per continuare",
-    "blocked": {
-      "base": "Prima di chiudere questa sezione, inserisci la data dell'uscita.",
-      "location": "Prima di chiudere questa sezione, scrivi il nome del luogo dove hai pescato."
-    },
-    "sections": {
-      "base": "Dati uscita",
-      "baseDesc": "Quando sei andato a pescare e con quale tecnica. Basta compilare la data, il resto è facoltativo.",
-      "location": "Luogo",
-      "locationDesc": "Dove hai pescato. Scrivi il nome del posto oppure tocca la mappa per indicarlo.",
-      "waterDesc": "Le condizioni dell'acqua durante la pescata: quanto era mossa, che colore aveva, la temperatura.",
-      "weather": "Meteo",
-      "weatherDesc": "Che tempo faceva: sole, vento, pioggia o nuvole.",
-      "catches": "Catture",
-      "catchesDesc": "I pesci che hai preso. Tocca un suggerimento per aggiungerlo subito, oppure cercalo scrivendo il nome.",
-      "notes": "Note libere",
-      "notesDesc": "Chi può vedere questa uscita, e uno spazio libero per scrivere altri dettagli da ricordare."
-    },
-    "fields": {
-      "titleLabel": "Titolo (opzionale)",
-      "titlePlaceholder": "es. Alba alla foce, Uscita notturna...",
-      "titleInfo": "Un titolo a piacere per ricordarti questa uscita.",
-      "dateLabel": "Data",
-      "dateInfo": "Il giorno in cui sei andato a pescare.",
-      "startTimeLabel": "Ora inizio",
-      "startTimeInfo": "L'ora in cui hai iniziato a pescare.",
-      "endTimeLabel": "Ora fine",
-      "endTimeInfo": "L'ora in cui hai finito di pescare.",
-      "techniqueLabel": "Tecnica",
-      "techniqueInfo": "Il metodo di pesca che hai usato, es. Surfcasting, Spinning.",
-      "selectPlaceholder": "-- Seleziona --",
-      "waterTypeLabel": "Tipo di acqua",
-      "waterTypeInfo": "Dove hai pescato: mare, fiume, lago o altro tipo di acqua.",
-      "ratingLabel": "Voto uscita",
-      "ratingInfo": "Quanto ti è piaciuta questa uscita, da 1 a 5 stelle.",
-      "locationNameLabel": "Nome luogo",
-      "locationNamePlaceholder": "es. Foce Arno, Marina di Pisa",
-      "locationNameInfo": "Il nome del posto dove hai pescato, es. una spiaggia o una foce.",
-      "spotLabel": "Spot / Soprannome",
-      "spotPlaceholder": "es. Punta della Rena",
-      "spotInfo": "Un soprannome tuo per riconoscere il punto esatto, anche diverso dal nome ufficiale.",
-      "regionLabel": "Regione / Area",
-      "regionPlaceholder": "es. Toscana",
-      "regionInfo": "La regione o zona geografica in cui si trova il luogo.",
-      "latLabel": "Latitudine",
-      "latInfo": "La coordinata di latitudine del posto: si compila da sola usando la mappa o il GPS.",
-      "lngLabel": "Longitudine",
-      "lngInfo": "La coordinata di longitudine del posto: si compila da sola usando la mappa o il GPS.",
-      "locationNotesLabel": "Note luogo",
-      "locationNotesPlaceholder": "Accesso, parcheggio, fondo, caratteristiche...",
-      "locationNotesInfo": "Dettagli utili sul posto: come arrivarci, dove parcheggiare, il tipo di fondale.",
-      "gpsDetecting": "Rilevamento...",
-      "gpsButton": "Usa posizione GPS",
-      "seaStateLabel": "Stato mare",
-      "seaStateInfo": "Quanto era mosso il mare mentre pescavi.",
-      "waveHeightLabel": "Altezza onde",
-      "waveHeightPlaceholder": "es. 0.5-1m",
-      "waveHeightInfo": "Quanto erano alte le onde, in metri.",
-      "wavePeriodLabel": "Periodo onde",
-      "wavePeriodPlaceholder": "es. 6s",
-      "wavePeriodInfo": "Il tempo che passa tra un'onda e quella successiva.",
-      "waterLevelLabel": "Livello acqua",
-      "waterLevelInfo": "Se il livello del fiume era più alto, normale o più basso del solito.",
-      "currentLabel": "Corrente",
-      "currentPlaceholder": "es. corrente da nord",
-      "currentInfo": "Quanto era forte la corrente e da che direzione arrivava.",
-      "waterColorLabel": "Colore acqua",
-      "waterColorPlaceholder": "es. limpida, torbida, verde",
-      "waterColorInfo": "Il colore dell'acqua che hai osservato: limpida, torbida, verde, ecc.",
-      "waterTempLabel": "Temp. acqua (°C)",
-      "waterTempInfo": "La temperatura dell'acqua in gradi.",
-      "tideLabel": "Marea",
-      "tideInfo": "Se la marea stava salendo o scendendo mentre pescavi. Se non lo sai, lascia vuoto.",
-      "tideNotesLabel": "Note marea",
-      "tideNotesPlaceholder": "es. bassa alle 06:30",
-      "tideNotesInfo": "Altri dettagli sulla marea, es. l'orario di bassa o alta marea.",
-      "conditionLabel": "Condizione",
-      "conditionInfo": "Il tempo generale durante l'uscita: sole, nuvoloso, pioggia, ecc.",
-      "windDirectionLabel": "Vento direzione",
-      "windDirectionInfo": "Da quale direzione soffiava il vento.",
-      "windSpeedLabel": "Velocità vento (km/h)",
-      "windSpeedInfo": "Quanto forte soffiava il vento, in km/h.",
-      "tempAirLabel": "Temp. aria (°C)",
-      "tempAirInfo": "La temperatura dell'aria in gradi.",
-      "pressureLabel": "Pressione (hPa)",
-      "pressureInfo": "La pressione atmosferica del momento: influisce spesso sull'attività dei pesci.",
-      "weatherNotesLabel": "Note meteo",
-      "weatherNotesPlaceholder": "Osservazioni...",
-      "weatherNotesInfo": "Altre osservazioni sul meteo che vuoi ricordare.",
-      "visibilityLabel": "Visibilità",
-      "visibilityInfo": "Chi può vedere questa uscita: solo tu, tutti gli utenti o gruppi specifici.",
-      "allowedGroupsLabel": "Gruppi autorizzati",
-      "allowedGroupsInfo": "I gruppi che potranno vedere questa uscita.",
-      "noGroups": "Nessun gruppo —",
-      "createOne": "creane uno",
-      "generalNotesLabel": "Note generali",
-      "generalNotesPlaceholder": "Osservazioni, cosa provare la prossima volta, promemoria...",
-      "generalNotesInfo": "Uno spazio libero per scrivere altri dettagli da ricordare."
-    },
-    "visibility": {
-      "private": "Solo io",
-      "users": "Tutti gli utenti",
-      "group": "Gruppi specifici"
-    },
-    "autoFill": {
-      "title": "Compila meteo e condizioni acqua automaticamente",
-      "subtitle": "Recupera i dati storici del giorno selezionato tramite Open-Meteo",
-      "disclaimer": "I dati sono una stima basata sulla zona e sulla data: possono non rispecchiare esattamente le condizioni reali nel punto in cui hai pescato.",
-      "loading": "Recupero...",
-      "button": "Compila",
-      "warning": "Inserisci una data per abilitare il recupero automatico",
-      "success": "Compilati: {fields}",
-      "noData": "Nessun dato disponibile per questa data/posizione",
-      "error": "Errore durante il recupero dei dati",
-      "gpsUnsupported": "GPS non supportato dal browser",
-      "gpsFailed": "Impossibile rilevare la posizione",
-      "geocoding": "Ricerca indirizzo...",
-      "geocodeFound": "Trovato: {name}",
-      "filledFields": {
-        "condition": "condizione",
-        "temperature": "temperatura",
-        "wind": "vento",
-        "windDirection": "direzione vento",
-        "pressure": "pressione",
-        "seaState": "stato mare",
-        "waveHeight": "altezza onde",
-        "wavePeriod": "periodo onde"
-      }
-    },
-    "waterSection": {
-      "sea": "Condizioni mare",
-      "river": "Condizioni fiume",
-      "lake": "Condizioni lago",
-      "other": "Condizioni acqua"
-    },
-    "saving": "Salvataggio...",
-    "saved": "Modifiche salvate.",
-    "submitCreate": "Salva uscita",
-    "submitEdit": "Aggiorna uscita"
-  },
-  "baitsSection": {
-    "remove": "Rimuovi"
-  },
-  "catchesSection": {
-    "itemTitle": "Cattura {n}",
-    "speciesLabel": "Specie *",
-    "speciesPlaceholder": "es. Spigola, Orate, Rombo",
-    "weightLabel": "Peso (kg)",
-    "weightPlaceholder": "kg",
-    "lengthLabel": "Lunghezza (cm)",
-    "lengthPlaceholder": "cm",
-    "timeLabel": "Ora cattura",
-    "timeInfo": "L'ora in cui hai preso questo pesce.",
-    "distanceLabel": "Distanza (m)",
-    "distanceInfo": "Quanto lontano hai lanciato, in metri.",
-    "releasedLabel": "Rilasciata",
-    "releasedNo": "No (tenuta)",
-    "releasedYes": "Sì (rilasciata)",
-    "directionLabel": "Direzione lancio",
-    "directionPlaceholder": "es. Nord-Est, verso la scogliera",
-    "directionInfo": "Verso quale punto hai lanciato (es. verso il largo, parallelo alla riva, verso uno scoglio).",
-    "detailsSubtitle": "Altri dettagli",
-    "baitSubtitle": "Esca",
-    "baitUsedLabel": "Esca usata",
-    "baitUsedPlaceholder": "Scegli tra i suggerimenti o scrivi la tua",
-    "baitUsedInfo": "L'esca che hai usato per prendere questo pesce.",
-    "baitTypeLabel": "Tipo esca",
-    "baitTypeNatural": "Naturale",
-    "baitTypeArtificial": "Artificiale",
-    "baitTypeMixed": "Mista",
-    "baitTypeInfo": "Se l'esca era naturale (viva o pezzi), artificiale o un mix delle due.",
-    "baitPresentationLabel": "Presentazione",
-    "baitPresentationInfo": "Come hai presentato l'esca, es. statica sul fondo, a galla, in movimento.",
-    "rigSubtitle": "Montatura",
-    "rigUsedLabel": "Montatura usata",
-    "rigUsedInfo": "Il nome o il tipo di montatura che hai usato per pescare.",
-    "rigTypeLabel": "Tipo montatura",
-    "rigTypeInfo": "La categoria della montatura, es. scorrevole, fissa, paternoster.",
-    "hookSizeLabel": "Misura amo",
-    "hookSizeInfo": "La misura dell'amo, di solito indicata con un numero.",
-    "hookTypeLabel": "Tipo amo",
-    "hookTypeInfo": "La forma o il modello dell'amo che hai usato.",
-    "sinkerWeightLabel": "Peso piombo (g)",
-    "sinkerWeightInfo": "Il peso del piombo usato per affondare l'esca, in grammi.",
-    "sinkerTypeLabel": "Tipo piombo",
-    "sinkerTypeInfo": "La forma del piombo usato, es. piramidale, a goccia, scorrevole.",
-    "lineMainLabel": "Filo (lb)",
-    "lineMainInfo": "La resistenza del filo che usi per pescare, misurata in libbre (lb): più il numero è alto, più il filo è resistente.",
-    "leaderLabel": "Terminale (lb)",
-    "leaderInfo": "Il pezzo di filo finale, spesso più sottile o resistente, attaccato tra il filo principale e l'amo.",
-    "swivelLabel": "Girella",
-    "swivelInfo": "Il piccolo attrezzo metallico che collega filo e terminale, evitando che si attorciglino.",
-    "notesLabel": "Note",
-    "notesPlaceholder": "Dove esattamente, canna usata...",
-    "notesInfo": "Altri dettagli su questa cattura che vuoi ricordare.",
-    "photoSubtitle": "Foto",
-    "takePhoto": "Scatta foto",
-    "uploadPhoto": "Carica foto",
-    "photoHint": "Le foto scelte qui verranno caricate quando salvi l'uscita.",
-    "add": "+ Aggiungi cattura",
-    "empty": "Nessuna cattura registrata. Usa la ricerca o i suggerimenti qui sopra.",
-    "alreadyEmpty": "C'è già una cattura senza specie: completa quella prima di aggiungerne un'altra.",
-    "deleteDialog": {
-      "title": "Elimina cattura",
-      "confirm": "Sei sicuro di voler eliminare questa cattura? Non si può annullare."
-    }
-  },
-  "speciesQuickAdd": {
-    "caughtHere": "{n} volte qui",
-    "popularFallback": "Specie comune",
-    "searchPlaceholder": "Cerca un'altra specie...",
-    "noResults": "Nessun pesce trovato",
-    "reportMissing": "Segnala pesce mancante",
-    "reportNotePlaceholder": "Note per il supporto (opzionale)",
-    "reportSend": "Invia segnalazione",
-    "reportSent": "Segnalazione inviata, grazie!"
-  },
-  "locationPicker": {
-    "hint": "Clicca sulla mappa per impostare le coordinate"
-  },
-  "offline": {
-    "offlineBanner": "Sei offline — le modifiche restano salvate sul dispositivo e verranno inviate al server alla riconnessione",
-    "syncingBanner": "Sincronizzazione di {n} modifiche in corso...",
-    "pendingBanner": "{n} modifiche in attesa di sincronizzazione",
-    "errorBanner": "Alcune modifiche non sono state sincronizzate — richiedono una correzione",
-    "sessionPendingBadge": "Da sincronizzare",
-    "sessionPendingNotice": "Questa uscita è salvata solo su questo dispositivo. I media potranno essere caricati dopo la sincronizzazione con il server."
-  },
-  "posts": {
-    "eventBadge": "Evento",
-    "visibility": {
-      "public": "Pubblico",
-      "group": "Gruppo",
-      "private": "Privato"
-    },
-    "event": {
-      "open": "Aperto",
-      "closed": "Chiuso",
-      "closeAction": "Chiudi evento",
-      "respondPlaceholder": "Scrivi una risposta...",
-      "respondAction": "Rispondi"
-    },
-    "form": {
-      "typePost": "Post",
-      "typeEvent": "Evento",
-      "titlePlaceholder": "Titolo (es. Cerco compagni di pesca)",
-      "bodyPlaceholder": "Scrivi qualcosa...",
-      "locationPlaceholder": "Luogo",
-      "submit": "Pubblica",
-      "saving": "...",
-      "bodyRequired": "Testo obbligatorio",
-      "groupRequired": "Seleziona un gruppo"
-    },
-    "feed": {
-      "titlePrefix": "Bacheca",
-      "titleHighlight": "generale",
-      "empty": { "title": "Nessun post", "text": "Non ci sono ancora post da mostrare" }
-    },
-    "board": {
-      "titlePrefix": "La mia",
-      "titleHighlight": "bacheca",
-      "empty": { "title": "Nessun post", "text": "Pubblica il tuo primo post o evento" }
-    }
-  },
-  "profile": {
-    "titlePrefix": "Il tuo",
-    "titleHighlight": "profilo",
-    "account": {
-      "title": "Account",
-      "nameLabel": "Nome visualizzato",
-      "changeAvatar": "Cambia avatar",
-      "uploading": "Caricamento...",
-      "saving": "Salvataggio..."
-    },
-    "credentials": {
-      "title": "Credenziali",
-      "passwordTitle": "Password",
-      "currentPassword": "Password attuale",
-      "newPassword": "Nuova password",
-      "changePassword": "Aggiorna password",
-      "passwordUpdated": "Password aggiornata",
-      "oauthOnly": "Account collegato solo a provider social: nessuna password da gestire",
-      "emailTitle": "Email",
-      "newEmail": "Nuova email",
-      "changeEmail": "Aggiorna email",
-      "emailUpdated": "Email aggiornata",
-      "emailPending": "Ti abbiamo inviato un'email di conferma al nuovo indirizzo",
-      "pendingEmail": "Conferma in sospeso per: {email}",
-      "emailRequired": "Nuova email obbligatoria",
-      "linkedProviders": "Provider collegati",
-      "disabled": "Cambio password ed email temporaneamente disabilitato."
-    },
-    "appearance": {
-      "title": "Aspetto",
-      "hint": "Scegli come vuoi vedere l'app",
-      "light": "Chiaro",
-      "dark": "Scuro"
-    },
-    "privacy": {
-      "title": "Privacy",
-      "defaultVisibilityLabel": "Visibilità di default",
-      "hint": "Usata come preselezione quando crei una nuova uscita o un nuovo post"
-    },
-    "danger": {
-      "title": "Elimina account",
-      "text": "Azione irreversibile: verranno eliminati account, uscite e post.",
-      "deleteAccount": "Elimina il mio account",
-      "confirm": "Sei sicuro? L'operazione non è reversibile."
-    }
-  },
-  "stats": {
-    "titlePrefix": "Le tue",
-    "titleHighlight": "statistiche",
-    "totalSessions": "Uscite totali",
-    "totalCatches": "Catture totali",
-    "avgRating": "Voto medio"
-  }
+	"common": {
+		"save": "Salva",
+		"cancel": "Annulla",
+		"delete": "Elimina",
+		"edit": "Modifica",
+		"add": "Aggiungi",
+		"loading": "Caricamento...",
+		"confirmDelete": "Sei sicuro di voler eliminare?",
+		"back": "← Indietro",
+		"prevPage": "← Prec",
+		"nextPage": "Succ →",
+		"or": "oppure",
+		"login": "Accedi",
+		"error": "Errore",
+		"none": "—",
+		"fieldInfo": "Informazioni sul campo",
+		"showPassword": "Mostra password",
+		"hidePassword": "Nascondi password"
+	},
+	"nav": {
+		"home": "Home",
+		"sessions": "Uscite",
+		"newSession": "Nuova uscita",
+		"ongoingSession": "Pescata in corso",
+		"groups": "Gruppi",
+		"friends": "Amici",
+		"feed": "Bacheca",
+		"board": "La mia bacheca",
+		"market": "Market",
+		"chat": "Chat",
+		"stats": "Statistiche",
+		"profile": "Profilo",
+		"admin": "Admin",
+		"logout": "Esci",
+		"lock": "Blocca",
+		"unlock": "Sblocca"
+	},
+	"admin": {
+		"title": "Pannello Admin",
+		"tabs": { "users": "Utenti", "sessions": "Sessioni", "shops": "Negozi" },
+		"users": {
+			"searchPlaceholder": "Cerca utente...",
+			"table": {
+				"user": "Utente",
+				"email": "Email",
+				"role": "Ruolo",
+				"registered": "Registrato",
+				"actions": "Azioni"
+			}
+		},
+		"sessions": {
+			"showHiddenOnly": "Mostra solo nascoste",
+			"table": {
+				"title": "Titolo",
+				"author": "Autore",
+				"date": "Data",
+				"visibility": "Visibilità",
+				"hidden": "Nascosta",
+				"actions": "Azioni"
+			},
+			"hiddenBadge": "Nascosta",
+			"show": "Mostra",
+			"hide": "Nascondi"
+		},
+		"deleteUser": {
+			"title": "Elimina utente",
+			"warning": "Verranno eliminate anche tutte le sessioni di {name}."
+		},
+		"shops": {
+			"empty": "Nessuna richiesta di negozio in attesa",
+			"approve": "Approva",
+			"reject": "Rifiuta",
+			"table": {
+				"name": "Negozio",
+				"owner": "Proprietario",
+				"description": "Descrizione",
+				"requestedAt": "Richiesto il",
+				"actions": "Azioni"
+			}
+		}
+	},
+	"auth": {
+		"callback": {
+			"loggingIn": "Accesso in corso...",
+			"missingToken": "Errore: token mancante",
+			"authError": "Errore di autenticazione"
+		}
+	},
+	"login": {
+		"welcomeBack": "Bentornato",
+		"google": "Continua con Google",
+		"facebook": "Continua con Facebook",
+		"emailLabel": "Email",
+		"emailPlaceholder": "tu{'@'}email.com",
+		"passwordLabel": "Password",
+		"passwordPlaceholder": "••••••••",
+		"loading": "Accesso...",
+		"error": "Errore di accesso",
+		"noAccount": "Non hai un account?",
+		"register": "Registrati",
+		"forgotPassword": "Password dimenticata?"
+	},
+	"register": {
+		"title": "Crea account",
+		"google": "Registrati con Google",
+		"facebook": "Registrati con Facebook",
+		"nameLabel": "Nome",
+		"namePlaceholder": "Mario Rossi",
+		"passwordPlaceholder": "min. 6 caratteri",
+		"loading": "Registrazione...",
+		"submit": "Crea account",
+		"error": "Errore registrazione",
+		"hasAccount": "Hai già un account?",
+		"passwordAuthDisabled": "La registrazione via email è temporaneamente disabilitata. Usa Google o Facebook."
+	},
+	"forgotPassword": {
+		"title": "Password dimenticata",
+		"text": "Inserisci la tua email: se esiste un account riceverai un link per reimpostare la password.",
+		"submit": "Invia link",
+		"sending": "Invio...",
+		"sent": "Se l'indirizzo esiste, riceverai a breve un'email con le istruzioni.",
+		"disabled": "Il recupero password via email è temporaneamente disabilitato."
+	},
+	"resetPassword": {
+		"title": "Reimposta password",
+		"newPasswordLabel": "Nuova password",
+		"submit": "Reimposta password",
+		"missingToken": "Link non valido: token mancante.",
+		"success": "Password reimpostata con successo."
+	},
+	"confirmEmail": {
+		"title": "Conferma email",
+		"success": "Email confermata con successo. Ora puoi accedere con il nuovo indirizzo.",
+		"error": "Link non valido o scaduto."
+	},
+	"groups": {
+		"titlePrefix": "I tuoi",
+		"titleHighlight": "gruppi",
+		"newGroup": "+ Nuovo gruppo",
+		"empty": {
+			"title": "Nessun gruppo",
+			"text": "Crea un gruppo per condividere le uscite con amici specifici",
+			"create": "+ Crea gruppo"
+		},
+		"membersCount": "{n} membri",
+		"owner": "owner",
+		"addMemberPlaceholder": "Email utente da aggiungere...",
+		"errors": {
+			"userNotFound": "Utente non trovato"
+		},
+		"editAction": "Modifica",
+		"deleteAction": "Elimina",
+		"modal": {
+			"editTitle": "Modifica gruppo",
+			"newTitle": "Nuovo gruppo",
+			"nameLabel": "Nome *",
+			"namePlaceholder": "es. Amici di pesca",
+			"descLabel": "Descrizione",
+			"descPlaceholder": "Opzionale...",
+			"nameRequired": "Nome obbligatorio",
+			"update": "Aggiorna",
+			"create": "Crea",
+			"saving": "..."
+		},
+		"deleteDialog": {
+			"title": "Elimina gruppo",
+			"confirm": "Sei sicuro di voler eliminare {name}?"
+		}
+	},
+	"notifications": {
+		"title": "Notifiche",
+		"empty": "Nessuna notifica",
+		"markAllRead": "Segna tutte come lette",
+		"deleteAll": "Elimina tutte",
+		"delete": "Elimina",
+		"types": {
+			"friend_request": "{name} ti ha inviato una richiesta di amicizia",
+			"friend_accept": "{name} ha accettato la tua richiesta di amicizia",
+			"chat_message": "Nuovo messaggio da {name}"
+		}
+	},
+	"chat": {
+		"titlePrefix": "Le tue",
+		"titleHighlight": "chat",
+		"empty": "Nessuna conversazione: scrivi a un amico qui sopra per iniziare",
+		"friendsLink": "Vai ai tuoi amici",
+		"newChat": {
+			"label": "Nuova chat",
+			"noFriends": "Nessun amico disponibile: aggiungine uno per iniziare una chat"
+		},
+		"addFriend": {
+			"label": "Aggiungi un amico",
+			"placeholder": "Nome o email...",
+			"noResults": "Nessun utente trovato"
+		},
+		"messagePlaceholder": "Scrivi un messaggio...",
+		"send": "Invia",
+		"edit": "Modifica",
+		"delete": "Elimina",
+		"editing": "Modifica messaggio",
+		"edited": "modificato",
+		"deletedMessage": "Messaggio eliminato",
+		"confirmDelete": "Eliminare questo messaggio?",
+		"attach": {
+			"label": "Allega",
+			"media": "Foto o video",
+			"file": "File",
+			"location": "Posizione",
+			"voice": "Registra vocale",
+			"openMaps": "Apri in Maps",
+			"locationUnsupported": "Il tuo dispositivo non supporta la geolocalizzazione",
+			"locationDenied": "Permesso posizione negato",
+			"micDenied": "Permesso microfono negato",
+			"micUnsupported": "Registrazione vocale non supportata su questo dispositivo",
+			"voiceEmpty": "Registrazione troppo breve, riprova"
+		}
+	},
+	"friends": {
+		"titlePrefix": "I tuoi",
+		"titleHighlight": "amici",
+		"search": {
+			"label": "Cerca persone",
+			"placeholder": "Nome o email...",
+			"noResults": "Nessun utente trovato"
+		},
+		"received": { "title": "Richieste ricevute" },
+		"sent": { "title": "Richieste inviate" },
+		"list": {
+			"title": "Amici",
+			"empty": "Non hai ancora amici: cercali qui sopra"
+		},
+		"actions": {
+			"add": "Aggiungi",
+			"accept": "Accetta",
+			"decline": "Rifiuta",
+			"cancel": "Annulla richiesta",
+			"remove": "Rimuovi amicizia",
+			"confirmRemove": "Rimuovere {name} dai tuoi amici?"
+		},
+		"status": {
+			"none": "—",
+			"sent": "Richiesta inviata",
+			"received": "Richiesta ricevuta",
+			"friends": "Amici",
+			"sending": "Invio..."
+		},
+		"toasts": {
+			"accepted": "Richiesta accettata"
+		},
+		"profile": {
+			"notFound": "Utente non trovato.",
+			"memberSince": "Su FishLog dal {date}",
+			"commonGroups": "Gruppi in comune",
+			"noCommonGroups": "Nessun gruppo in comune"
+		}
+	},
+	"home": {
+		"titlePrefix": "Le tue",
+		"titleHighlight": "uscite",
+		"sessionsCount": "{n} sessioni registrate",
+		"newSession": "Nuova uscita",
+		"ongoingTitle": "In corso",
+		"historyTitle": "Storico",
+		"empty": {
+			"title": "Nessuna uscita trovata",
+			"text": "Registra la tua prima sessione",
+			"register": "+ Registra uscita"
+		},
+		"hub": {
+			"titlePrefix": "Benvenuto su",
+			"titleHighlight": "FishLog",
+			"subtitle": "Tutto quello che ti serve per le tue uscite di pesca, in un unico posto",
+			"comingSoon": "Prossimamente",
+			"sections": {
+				"sessions": {
+					"title": "Uscite",
+					"text": "Registra e rivedi le tue sessioni di pesca"
+				},
+				"feed": {
+					"title": "Bacheca generale",
+					"text": "Post ed eventi della community e dei tuoi gruppi"
+				},
+				"board": {
+					"title": "La mia bacheca",
+					"text": "I tuoi post ed eventi, pubblici, di gruppo o privati"
+				},
+				"groups": {
+					"title": "Gruppi",
+					"text": "Gestisci i tuoi gruppi di amici e compagni di pesca"
+				},
+				"friends": {
+					"title": "Amici",
+					"text": "Cerca persone, gestisci richieste e amicizie"
+				},
+				"marketplace": {
+					"title": "Mercatino",
+					"text": "Compra e vendi attrezzatura nuova e usata"
+				},
+				"forum": {
+					"title": "Forum",
+					"text": "Discussioni e consigli tra appassionati"
+				},
+				"culture": {
+					"title": "Cultura della pesca",
+					"text": "Articoli e approfondimenti"
+				},
+				"chat": { "title": "Chat", "text": "Messaggi privati e chat globale" },
+				"profile": {
+					"title": "Profilo",
+					"text": "Credenziali, privacy e impostazioni account"
+				},
+				"stats": {
+					"title": "Statistiche",
+					"text": "Le statistiche delle tue uscite e catture"
+				}
+			}
+		}
+	},
+	"session": {
+		"new": { "title": "Nuova uscita" },
+		"edit": { "title": "Modifica uscita", "viewSummary": "Riepilogo" },
+		"untitled": "Uscita",
+		"ongoing": {
+			"title": "Uscita in corso",
+			"close": "Chiudi uscita",
+			"closed": "Uscita chiusa",
+			"editFull": "Modifica altri dati"
+		},
+		"view": {
+			"notFound": "Sessione non trovata.",
+			"backToList": "← Torna alla lista",
+			"allSessions": "← Tutte le uscite",
+			"visibility": {
+				"private": "Privata",
+				"users": "Tutti gli utenti",
+				"group": "Gruppi"
+			},
+			"sections": {
+				"media": "Foto & Video",
+				"location": "Luogo",
+				"catches": "Catture ({n})",
+				"notes": "Note"
+			},
+			"water": {
+				"sea": "Condizioni mare",
+				"river": "Condizioni fiume",
+				"lake": "Condizioni lago",
+				"other": "Condizioni acqua"
+			},
+			"weather": {
+				"title": "Meteo"
+			},
+			"fields": {
+				"name": "Nome",
+				"spot": "Spot",
+				"region": "Regione",
+				"coordinates": "Coordinate",
+				"seaState": "Stato mare",
+				"waves": "Onde",
+				"wavePeriod": "Periodo",
+				"level": "Livello",
+				"current": "Corrente",
+				"waterColor": "Colore acqua",
+				"waterTemp": "Temp. acqua",
+				"tide": "Marea",
+				"tideNotes": "Note marea",
+				"condition": "Condizione",
+				"wind": "Vento",
+				"windSpeed": "Vel. vento",
+				"tempAir": "Temp. aria",
+				"pressure": "Pressione",
+				"presentation": "Presentazione",
+				"notes": "Note",
+				"hook": "Amo",
+				"sinker": "Piombo",
+				"line": "Filo",
+				"leader": "Terminale",
+				"swivel": "Girella",
+				"weight": "Peso",
+				"length": "Lunghezza",
+				"time": "Ora",
+				"distance": "Distanza",
+				"bait": "Esca",
+				"baitType": "Tipo esca",
+				"rig": "Montatura",
+				"direction": "Direzione"
+			},
+			"released": "rilasciata",
+			"sideLabels": {
+				"technique": "Tecnica",
+				"visibility": "Visibilità",
+				"rating": "Voto",
+				"registeredAt": "Registrata il"
+			},
+			"deleteDialog": {
+				"title": "Elimina uscita",
+				"confirm": "Sei sicuro? Verranno eliminati anche tutti i media associati.",
+				"deleting": "Eliminazione..."
+			},
+			"seaState": {
+				"piatto": "Piatto",
+				"poco_mosso": "Poco mosso",
+				"mosso": "Mosso",
+				"molto_mosso": "Molto mosso",
+				"agitato": "Agitato"
+			},
+			"waterLevel": {
+				"piena": "In piena",
+				"normale": "Normale",
+				"magra": "In magra"
+			},
+			"tideState": {
+				"crescente": "Crescente",
+				"calante": "Calante",
+				"alta": "Alta",
+				"bassa": "Bassa"
+			},
+			"statLabels": {
+				"time": "Orario",
+				"catches": "Catture",
+				"best": "Migliore"
+			}
+		}
+	},
+	"castsTable": {
+		"distance": "Distanza",
+		"direction": "Direzione",
+		"bait": "Esca",
+		"rig": "Montatura",
+		"result": "Risultato"
+	},
+	"mediaUploader": {
+		"dropHint": "Trascina foto / video o",
+		"dropHintClick": "clicca per selezionare",
+		"formatsHint": "JPG, PNG, WEBP, HEIC, MP4, MOV — max 200MB",
+		"uploadProgress": "Upload {progress}%",
+		"captionPlaceholder": "Didascalia...",
+		"deleteDialog": {
+			"title": "Elimina media",
+			"confirm": "L'operazione non è reversibile."
+		}
+	},
+	"pagination": {
+		"prev": "← Prec",
+		"next": "Succ →"
+	},
+	"sessionFilters": {
+		"searchPlaceholder": "Cerca luogo, note...",
+		"allTechniques": "Tutte le tecniche",
+		"reset": "Reset"
+	},
+	"sessionForm": {
+		"requiredToContinue": "Completa i campi obbligatori per continuare",
+		"blocked": {
+			"base": "Prima di chiudere questa sezione, inserisci la data dell'uscita.",
+			"location": "Prima di chiudere questa sezione, scrivi il nome del luogo dove hai pescato."
+		},
+		"sections": {
+			"base": "Dati uscita",
+			"baseDesc": "Quando sei andato a pescare e con quale tecnica. Basta compilare la data, il resto è facoltativo.",
+			"location": "Luogo",
+			"locationDesc": "Dove hai pescato. Scrivi il nome del posto oppure tocca la mappa per indicarlo.",
+			"waterDesc": "Le condizioni dell'acqua durante la pescata: quanto era mossa, che colore aveva, la temperatura.",
+			"weather": "Meteo",
+			"weatherDesc": "Che tempo faceva: sole, vento, pioggia o nuvole.",
+			"catches": "Catture",
+			"catchesDesc": "I pesci che hai preso. Tocca un suggerimento per aggiungerlo subito, oppure cercalo scrivendo il nome.",
+			"notes": "Note libere",
+			"notesDesc": "Chi può vedere questa uscita, e uno spazio libero per scrivere altri dettagli da ricordare."
+		},
+		"fields": {
+			"titleLabel": "Titolo (opzionale)",
+			"titlePlaceholder": "es. Alba alla foce, Uscita notturna...",
+			"titleInfo": "Un titolo a piacere per ricordarti questa uscita.",
+			"dateLabel": "Data",
+			"dateInfo": "Il giorno in cui sei andato a pescare.",
+			"startTimeLabel": "Ora inizio",
+			"startTimeInfo": "L'ora in cui hai iniziato a pescare.",
+			"endTimeLabel": "Ora fine",
+			"endTimeInfo": "L'ora in cui hai finito di pescare.",
+			"techniqueLabel": "Tecnica",
+			"techniqueInfo": "Il metodo di pesca che hai usato, es. Surfcasting, Spinning.",
+			"selectPlaceholder": "-- Seleziona --",
+			"waterTypeLabel": "Tipo di acqua",
+			"waterTypeInfo": "Dove hai pescato: mare, fiume, lago o altro tipo di acqua.",
+			"ratingLabel": "Voto uscita",
+			"ratingInfo": "Quanto ti è piaciuta questa uscita, da 1 a 5 stelle.",
+			"locationNameLabel": "Nome luogo",
+			"locationNamePlaceholder": "es. Foce Arno, Marina di Pisa",
+			"locationNameInfo": "Il nome del posto dove hai pescato, es. una spiaggia o una foce.",
+			"spotLabel": "Spot / Soprannome",
+			"spotPlaceholder": "es. Punta della Rena",
+			"spotInfo": "Un soprannome tuo per riconoscere il punto esatto, anche diverso dal nome ufficiale.",
+			"regionLabel": "Regione / Area",
+			"regionPlaceholder": "es. Toscana",
+			"regionInfo": "La regione o zona geografica in cui si trova il luogo.",
+			"latLabel": "Latitudine",
+			"latInfo": "La coordinata di latitudine del posto: si compila da sola usando la mappa o il GPS.",
+			"lngLabel": "Longitudine",
+			"lngInfo": "La coordinata di longitudine del posto: si compila da sola usando la mappa o il GPS.",
+			"locationNotesLabel": "Note luogo",
+			"locationNotesPlaceholder": "Accesso, parcheggio, fondo, caratteristiche...",
+			"locationNotesInfo": "Dettagli utili sul posto: come arrivarci, dove parcheggiare, il tipo di fondale.",
+			"gpsDetecting": "Rilevamento...",
+			"gpsButton": "Usa posizione GPS",
+			"seaStateLabel": "Stato mare",
+			"seaStateInfo": "Quanto era mosso il mare mentre pescavi.",
+			"waveHeightLabel": "Altezza onde",
+			"waveHeightPlaceholder": "es. 0.5-1m",
+			"waveHeightInfo": "Quanto erano alte le onde, in metri.",
+			"wavePeriodLabel": "Periodo onde",
+			"wavePeriodPlaceholder": "es. 6s",
+			"wavePeriodInfo": "Il tempo che passa tra un'onda e quella successiva.",
+			"waterLevelLabel": "Livello acqua",
+			"waterLevelInfo": "Se il livello del fiume era più alto, normale o più basso del solito.",
+			"currentLabel": "Corrente",
+			"currentPlaceholder": "es. corrente da nord",
+			"currentInfo": "Quanto era forte la corrente e da che direzione arrivava.",
+			"waterColorLabel": "Colore acqua",
+			"waterColorPlaceholder": "es. limpida, torbida, verde",
+			"waterColorInfo": "Il colore dell'acqua che hai osservato: limpida, torbida, verde, ecc.",
+			"waterTempLabel": "Temp. acqua (°C)",
+			"waterTempInfo": "La temperatura dell'acqua in gradi.",
+			"tideLabel": "Marea",
+			"tideInfo": "Se la marea stava salendo o scendendo mentre pescavi. Se non lo sai, lascia vuoto.",
+			"tideNotesLabel": "Note marea",
+			"tideNotesPlaceholder": "es. bassa alle 06:30",
+			"tideNotesInfo": "Altri dettagli sulla marea, es. l'orario di bassa o alta marea.",
+			"conditionLabel": "Condizione",
+			"conditionInfo": "Il tempo generale durante l'uscita: sole, nuvoloso, pioggia, ecc.",
+			"windDirectionLabel": "Vento direzione",
+			"windDirectionInfo": "Da quale direzione soffiava il vento.",
+			"windSpeedLabel": "Velocità vento (km/h)",
+			"windSpeedInfo": "Quanto forte soffiava il vento, in km/h.",
+			"tempAirLabel": "Temp. aria (°C)",
+			"tempAirInfo": "La temperatura dell'aria in gradi.",
+			"pressureLabel": "Pressione (hPa)",
+			"pressureInfo": "La pressione atmosferica del momento: influisce spesso sull'attività dei pesci.",
+			"weatherNotesLabel": "Note meteo",
+			"weatherNotesPlaceholder": "Osservazioni...",
+			"weatherNotesInfo": "Altre osservazioni sul meteo che vuoi ricordare.",
+			"visibilityLabel": "Visibilità",
+			"visibilityInfo": "Chi può vedere questa uscita: solo tu, tutti gli utenti o gruppi specifici.",
+			"allowedGroupsLabel": "Gruppi autorizzati",
+			"allowedGroupsInfo": "I gruppi che potranno vedere questa uscita.",
+			"noGroups": "Nessun gruppo —",
+			"createOne": "creane uno",
+			"generalNotesLabel": "Note generali",
+			"generalNotesPlaceholder": "Osservazioni, cosa provare la prossima volta, promemoria...",
+			"generalNotesInfo": "Uno spazio libero per scrivere altri dettagli da ricordare."
+		},
+		"visibility": {
+			"private": "Solo io",
+			"users": "Tutti gli utenti",
+			"group": "Gruppi specifici"
+		},
+		"autoFill": {
+			"title": "Compila posizione, meteo e condizioni acqua automaticamente",
+			"subtitle": "Rileva la tua posizione GPS e recupera i dati storici del giorno selezionato tramite Open-Meteo",
+			"collapsedHint": "Compilazione automatica di posizione, meteo e condizioni acqua",
+			"disclaimer": "I dati sono una stima basata sulla zona e sulla data: possono non rispecchiare esattamente le condizioni reali nel punto in cui hai pescato.",
+			"loading": "Recupero...",
+			"button": "Compila",
+			"warning": "Inserisci una data per abilitare il recupero automatico",
+			"success": "Compilati: {fields}",
+			"noData": "Nessun dato disponibile per questa data/posizione",
+			"error": "Errore durante il recupero dei dati",
+			"gpsUnsupported": "GPS non supportato dal browser",
+			"gpsFailed": "Impossibile rilevare la posizione",
+			"geocoding": "Ricerca indirizzo...",
+			"geocodeFound": "Trovato: {name}",
+			"filledFields": {
+				"condition": "condizione",
+				"temperature": "temperatura",
+				"wind": "vento",
+				"windDirection": "direzione vento",
+				"pressure": "pressione",
+				"seaState": "stato mare",
+				"waveHeight": "altezza onde",
+				"wavePeriod": "periodo onde"
+			}
+		},
+		"waterSection": {
+			"sea": "Condizioni mare",
+			"river": "Condizioni fiume",
+			"lake": "Condizioni lago",
+			"other": "Condizioni acqua"
+		},
+		"saving": "Salvataggio...",
+		"saved": "Modifiche salvate.",
+		"submitCreate": "Salva uscita",
+		"submitEdit": "Aggiorna uscita"
+	},
+	"baitsSection": {
+		"remove": "Rimuovi"
+	},
+	"catchesSection": {
+		"itemTitle": "Cattura {n}",
+		"speciesLabel": "Specie *",
+		"speciesPlaceholder": "es. Spigola, Orate, Rombo",
+		"weightLabel": "Peso (kg)",
+		"weightPlaceholder": "kg",
+		"lengthLabel": "Lunghezza (cm)",
+		"lengthPlaceholder": "cm",
+		"timeLabel": "Ora cattura",
+		"timeInfo": "L'ora in cui hai preso questo pesce.",
+		"distanceLabel": "Distanza (m)",
+		"distanceInfo": "Quanto lontano hai lanciato, in metri.",
+		"releasedLabel": "Rilasciata",
+		"releasedNo": "No (tenuta)",
+		"releasedYes": "Sì (rilasciata)",
+		"directionLabel": "Direzione lancio",
+		"directionPlaceholder": "es. Nord-Est, verso la scogliera",
+		"directionInfo": "Verso quale punto hai lanciato (es. verso il largo, parallelo alla riva, verso uno scoglio).",
+		"detailsSubtitle": "Altri dettagli",
+		"baitSubtitle": "Esca",
+		"baitUsedLabel": "Esca usata",
+		"baitUsedPlaceholder": "Scegli tra i suggerimenti o scrivi la tua",
+		"baitUsedInfo": "L'esca che hai usato per prendere questo pesce.",
+		"baitTypeLabel": "Tipo esca",
+		"baitTypeNatural": "Naturale",
+		"baitTypeArtificial": "Artificiale",
+		"baitTypeMixed": "Mista",
+		"baitTypeInfo": "Se l'esca era naturale (viva o pezzi), artificiale o un mix delle due.",
+		"baitPresentationLabel": "Presentazione",
+		"baitPresentationInfo": "Come hai presentato l'esca, es. statica sul fondo, a galla, in movimento.",
+		"rigSubtitle": "Montatura",
+		"rigUsedLabel": "Montatura usata",
+		"rigUsedInfo": "Il nome o il tipo di montatura che hai usato per pescare.",
+		"rigTypeLabel": "Tipo montatura",
+		"rigTypeInfo": "La categoria della montatura, es. scorrevole, fissa, paternoster.",
+		"hookSizeLabel": "Misura amo",
+		"hookSizeInfo": "La misura dell'amo, di solito indicata con un numero.",
+		"hookTypeLabel": "Tipo amo",
+		"hookTypeInfo": "La forma o il modello dell'amo che hai usato.",
+		"sinkerWeightLabel": "Peso piombo (g)",
+		"sinkerWeightInfo": "Il peso del piombo usato per affondare l'esca, in grammi.",
+		"sinkerTypeLabel": "Tipo piombo",
+		"sinkerTypeInfo": "La forma del piombo usato, es. piramidale, a goccia, scorrevole.",
+		"lineMainLabel": "Filo (lb)",
+		"lineMainInfo": "La resistenza del filo che usi per pescare, misurata in libbre (lb): più il numero è alto, più il filo è resistente.",
+		"leaderLabel": "Terminale (lb)",
+		"leaderInfo": "Il pezzo di filo finale, spesso più sottile o resistente, attaccato tra il filo principale e l'amo.",
+		"swivelLabel": "Girella",
+		"swivelInfo": "Il piccolo attrezzo metallico che collega filo e terminale, evitando che si attorciglino.",
+		"notesLabel": "Note",
+		"notesPlaceholder": "Dove esattamente, canna usata...",
+		"notesInfo": "Altri dettagli su questa cattura che vuoi ricordare.",
+		"photoSubtitle": "Foto",
+		"takePhoto": "Scatta foto",
+		"uploadPhoto": "Carica foto",
+		"photoHint": "Le foto scelte qui verranno caricate quando salvi l'uscita.",
+		"add": "+ Aggiungi cattura",
+		"empty": "Nessuna cattura registrata. Usa la ricerca o i suggerimenti qui sopra.",
+		"alreadyEmpty": "C'è già una cattura senza specie: completa quella prima di aggiungerne un'altra.",
+		"deleteDialog": {
+			"title": "Elimina cattura",
+			"confirm": "Sei sicuro di voler eliminare questa cattura? Non si può annullare."
+		}
+	},
+	"speciesQuickAdd": {
+		"caughtHere": "{n} volte qui",
+		"popularFallback": "Specie comune",
+		"searchPlaceholder": "Cerca un'altra specie...",
+		"noResults": "Nessun pesce trovato",
+		"reportMissing": "Segnala pesce mancante",
+		"reportNotePlaceholder": "Note per il supporto (opzionale)",
+		"reportSend": "Invia segnalazione",
+		"reportSent": "Segnalazione inviata, grazie!"
+	},
+	"locationPicker": {
+		"hint": "Cerca un luogo o clicca sulla mappa per impostare le coordinate",
+		"namePlaceholder": "Cerca un luogo..."
+	},
+	"offline": {
+		"offlineBanner": "Sei offline — le modifiche restano salvate sul dispositivo e verranno inviate al server alla riconnessione",
+		"syncingBanner": "Sincronizzazione di {n} modifiche in corso...",
+		"pendingBanner": "{n} modifiche in attesa di sincronizzazione",
+		"errorBanner": "Alcune modifiche non sono state sincronizzate — richiedono una correzione",
+		"sessionPendingBadge": "Da sincronizzare",
+		"sessionPendingNotice": "Questa uscita è salvata solo su questo dispositivo. I media potranno essere caricati dopo la sincronizzazione con il server."
+	},
+	"posts": {
+		"eventBadge": "Evento",
+		"comments": {
+			"placeholder": "Scrivi un commento...",
+			"send": "Invia"
+		},
+		"visibility": {
+			"public": "Pubblico",
+			"group": "Gruppo",
+			"private": "Privato"
+		},
+		"event": {
+			"open": "Aperto",
+			"closed": "Chiuso",
+			"closeAction": "Chiudi evento",
+			"respondSectionLabel": "Risposte",
+			"respondPlaceholder": "Scrivi una risposta...",
+			"respondAction": "Rispondi",
+			"showResponses": "Mostra risposte",
+			"hideResponses": "Nascondi risposte",
+			"attendance": {
+				"going": "Parteciperò",
+				"maybe": "Forse",
+				"notGoing": "Non parteciperò",
+				"guestsLabel": "Ospiti",
+				"goingCount": "{count} partecipanti (+{guests} ospiti)",
+				"maybeCount": "{count} forse",
+				"showList": "Mostra elenco",
+				"hideList": "Nascondi elenco"
+			}
+		},
+		"form": {
+			"typePost": "Post",
+			"typeEvent": "Evento",
+			"titlePlaceholder": "Titolo (es. Cerco compagni di pesca)",
+			"bodyPlaceholder": "Scrivi qualcosa...",
+			"locationPlaceholder": "Luogo",
+			"submit": "Pubblica",
+			"saving": "...",
+			"bodyRequired": "Testo obbligatorio",
+			"groupRequired": "Seleziona un gruppo",
+			"addPhotosHint": "Vuoi aggiungere delle foto?",
+			"done": "Fatto"
+		},
+		"tabs": {
+			"posts": "Post",
+			"events": "Eventi"
+		},
+		"filters": {
+			"title": "Filtri di ricerca",
+			"description": "Usa questi filtri per trovare più facilmente quello che cerchi.",
+			"visibilityLabel": "Chi può vederlo",
+			"allVisibility": "Tutti",
+			"dateRangeLabel": "Periodo",
+			"dateRangeSep": "→",
+			"dateFrom": "Dal giorno",
+			"dateTo": "Al giorno",
+			"authorLabel": "Scritto da",
+			"authorPlaceholder": "Cerca per nome...",
+			"locationLabel": "Posizione",
+			"useMyLocation": "Vicino a me",
+			"pickOnMap": "Scegli sulla mappa",
+			"pickOnMapHint": "Cerca un luogo o clicca sulla mappa per scegliere il punto da cui cercare gli eventi vicini.",
+			"searchLocationPlaceholder": "Cerca un luogo...",
+			"locationSet": "Posizione impostata",
+			"radiusLabel": "Raggio di ricerca",
+			"radiusPlaceholder": "Raggio in km",
+			"sortLabel": "Ordina per",
+			"sortDate": "Data evento",
+			"sortProximity": "Vicinanza",
+			"reset": "Reimposta filtri"
+		},
+		"feed": {
+			"titlePrefix": "Bacheca",
+			"titleHighlight": "generale",
+			"description": "Qui trovi i post e gli eventi di tutta la community.",
+			"newPost": "Nuovo",
+			"hideForm": "Annulla",
+			"empty": {
+				"title": "Nessun post",
+				"text": "Non ci sono ancora post da mostrare"
+			}
+		},
+		"userModal": {
+			"viewProfile": "Vedi profilo"
+		},
+		"board": {
+			"titlePrefix": "La mia",
+			"titleHighlight": "bacheca",
+			"empty": {
+				"title": "Nessun post",
+				"text": "Pubblica il tuo primo post o evento"
+			}
+		}
+	},
+	"market": {
+		"titlePrefix": "Il",
+		"titleHighlight": "market",
+		"listingsCount": "{n} annunci",
+		"newListing": "Nuovo annuncio",
+		"contactSeller": "Contatta venditore",
+		"deleteConfirm": "Eliminare questo annuncio?",
+		"empty": {
+			"title": "Nessun annuncio",
+			"text": "Prova a modificare i filtri, oppure pubblica il primo annuncio"
+		},
+		"mine": {
+			"title": "I miei annunci",
+			"empty": "Non hai ancora pubblicato nessun annuncio"
+		},
+		"external": {
+			"title": "Annunci simili da eBay",
+			"hint": "Pochi annunci disponibili su fishlog per questa ricerca: ecco alcuni risultati simili trovati su eBay",
+			"notConfigured": "Integrazione eBay non ancora attiva su questo server",
+			"empty": "Nessun risultato trovato su eBay"
+		},
+		"categories": {
+			"canne": "Canne",
+			"mulinelli": "Mulinelli",
+			"esche": "Esche",
+			"ami_terminali": "Ami e terminali",
+			"abbigliamento": "Abbigliamento",
+			"accessori": "Accessori",
+			"imbarcazioni": "Imbarcazioni",
+			"altro": "Altro"
+		},
+		"condition": {
+			"nuovo": "Nuovo",
+			"usato": "Usato"
+		},
+		"sellerType": {
+			"privato": "Privato",
+			"negozio": "Negozio",
+			"unverified": "Negozio (in verifica)"
+		},
+		"status": {
+			"active": "Disponibile",
+			"reserved": "Prenotato",
+			"sold": "Venduto",
+			"deleted": "Eliminato"
+		},
+		"filters": {
+			"searchPlaceholder": "Cerca annunci...",
+			"allCategories": "Tutte le categorie",
+			"allConditions": "Nuovo o usato",
+			"allSellers": "Privati e negozi",
+			"locationPlaceholder": "Zona",
+			"priceMin": "Prezzo min",
+			"priceMax": "Prezzo max"
+		},
+		"form": {
+			"title": "Titolo",
+			"description": "Descrizione",
+			"category": "Categoria",
+			"condition": "Condizione",
+			"price": "Prezzo (€)",
+			"location": "Zona",
+			"locationPlaceholder": "Es. Genova",
+			"photos": "Foto",
+			"addPhotos": "Aggiungi foto",
+			"publish": "Pubblica annuncio",
+			"edit": "Modifica annuncio",
+			"saving": "Salvataggio..."
+		}
+	},
+	"profile": {
+		"titlePrefix": "Il tuo",
+		"titleHighlight": "profilo",
+		"account": {
+			"title": "Account",
+			"nameLabel": "Nome visualizzato",
+			"changeAvatar": "Cambia avatar",
+			"uploading": "Caricamento...",
+			"saving": "Salvataggio..."
+		},
+		"credentials": {
+			"title": "Credenziali",
+			"passwordTitle": "Password",
+			"currentPassword": "Password attuale",
+			"newPassword": "Nuova password",
+			"changePassword": "Aggiorna password",
+			"passwordUpdated": "Password aggiornata",
+			"oauthOnly": "Account collegato solo a provider social: nessuna password da gestire",
+			"emailTitle": "Email",
+			"newEmail": "Nuova email",
+			"changeEmail": "Aggiorna email",
+			"emailUpdated": "Email aggiornata",
+			"emailPending": "Ti abbiamo inviato un'email di conferma al nuovo indirizzo",
+			"pendingEmail": "Conferma in sospeso per: {email}",
+			"emailRequired": "Nuova email obbligatoria",
+			"linkedProviders": "Provider collegati",
+			"disabled": "Cambio password ed email temporaneamente disabilitato."
+		},
+		"notifications": {
+			"title": "Notifiche",
+			"hint": "Scegli per quali eventi vuoi ricevere un'email",
+			"emailChatMessages": "Nuovi messaggi in chat",
+			"emailChatMessagesHint": "Ricevi un'email quando qualcuno ti scrive",
+			"emailComments": "Nuovi commenti",
+			"emailCommentsHint": "Ricevi un'email quando qualcuno commenta un tuo post",
+			"emailLikes": "Nuovi like",
+			"emailLikesHint": "Ricevi un'email quando qualcuno mette like a un tuo post",
+			"emailFriendRequests": "Richieste di amicizia",
+			"emailFriendRequestsHint": "Ricevi un'email quando qualcuno ti invia una richiesta di amicizia"
+		},
+		"appearance": {
+			"title": "Aspetto",
+			"hint": "Scegli come vuoi vedere l'app",
+			"light": "Chiaro",
+			"dark": "Scuro"
+		},
+		"privacy": {
+			"title": "Privacy",
+			"defaultVisibilityLabel": "Visibilità di default",
+			"hint": "Usata come preselezione quando crei una nuova uscita o un nuovo post"
+		},
+		"shop": {
+			"title": "Negozio",
+			"enable": "Attiva modalità negozio",
+			"enableHint": "I tuoi annunci nel market saranno etichettati come \"negozio\" e avrai una vetrina pubblica",
+			"nameLabel": "Nome negozio",
+			"descriptionLabel": "Descrizione",
+			"myListings": "I miei annunci",
+			"pendingHint": "Richiesta in revisione: finché non viene approvata i tuoi annunci restano visibili ma etichettati \"in verifica\".",
+			"rejectedHint": "Richiesta rifiutata. Puoi modificare i dati e salvare di nuovo per rimetterla in revisione.",
+			"status": {
+				"none": "Non richiesta",
+				"pending": "In attesa di verifica",
+				"verified": "Verificato",
+				"rejected": "Rifiutato"
+			}
+		},
+		"session": {
+			"title": "Sessione",
+			"text": "Esci dal tuo account su questo dispositivo."
+		},
+		"danger": {
+			"title": "Elimina account",
+			"text": "Azione irreversibile: verranno eliminati account, uscite e post.",
+			"deleteAccount": "Elimina il mio account",
+			"confirm": "Sei sicuro? L'operazione non è reversibile."
+		}
+	},
+	"stats": {
+		"titlePrefix": "Le tue",
+		"titleHighlight": "statistiche",
+		"totalSessions": "Uscite totali",
+		"totalCatches": "Catture totali",
+		"avgRating": "Voto medio"
+	}
 }
