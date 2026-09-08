@@ -189,6 +189,36 @@
         <p v-if="shopSaved" class="success-msg mt-2">{{ t('common.save') }} ✓</p>
       </section>
 
+      <!-- Preferenze market -->
+      <section class="card">
+        <h3>{{ t('profile.marketPreferences.title') }}</h3>
+        <p class="text-muted text-sm mb-3">{{ t('profile.marketPreferences.hint') }}</p>
+
+        <div class="form-group">
+          <label>{{ t('marketSurvey.techniqueLabel') }}</label>
+          <select v-model="marketPrefsForm.technique">
+            <option value="">{{ t('marketSurvey.techniquePlaceholder') }}</option>
+            <option v-for="tch in TECHNIQUES" :key="tch.v" :value="tch.v">{{ tch.l }}</option>
+          </select>
+        </div>
+
+        <div class="form-group mt-3">
+          <label>{{ t('marketSurvey.categoriesLabel') }}</label>
+          <div class="category-grid">
+            <label v-for="c in market.categories" :key="c" class="category-check">
+              <input v-model="marketPrefsForm.categories" type="checkbox" :value="c" />
+              {{ t(`market.categories.${c}`) }}
+            </label>
+          </div>
+        </div>
+
+        <p v-if="marketPrefsError" class="error-msg mt-2">{{ marketPrefsError }}</p>
+        <p v-if="marketPrefsSaved" class="success-msg mt-2">{{ t('common.save') }} ✓</p>
+        <button class="btn btn-primary btn-sm mt-2" :disabled="savingMarketPrefs" @click="saveMarketPreferences">
+          {{ savingMarketPrefs ? t('profile.account.saving') : t('common.save') }}
+        </button>
+      </section>
+
       <!-- Sessione -->
       <section class="card">
         <h3>{{ t('profile.session.title') }}</h3>
@@ -231,12 +261,13 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRouter, RouterLink } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { Sun, Moon } from 'lucide-vue-next'
 import { useAuthStore } from '../stores/auth.js'
 import { useFeaturesStore } from '../stores/features.js'
+import { useMarketStore } from '../stores/market.js'
 import PasswordInput from '../components/PasswordInput.vue'
 import { useThemeStore } from '../stores/theme.js'
 
@@ -244,7 +275,12 @@ const { t } = useI18n()
 const auth  = useAuthStore()
 const features = useFeaturesStore()
 const theme = useThemeStore()
+const market = useMarketStore()
 const router = useRouter()
+
+onMounted(() => {
+  if (!market.categories.length) market.fetchCategories()
+})
 
 const initials = computed(() => {
   const name = auth.user?.displayName || auth.user?.email || '?'
@@ -384,6 +420,33 @@ async function saveShop() {
   } finally { savingShop.value = false }
 }
 
+// ── preferenze market ──
+const TECHNIQUES = [
+  { v: 'surfcasting', l: 'Surfcasting' }, { v: 'feeder', l: 'Feeder' },
+  { v: 'spinning', l: 'Spinning' }, { v: 'bolentino', l: 'Bolentino' },
+  { v: 'mosca', l: 'Mosca' }, { v: 'altro', l: 'Altro' }
+]
+const marketPrefsForm = ref({
+  technique:  auth.user?.marketPreferences?.technique || '',
+  categories: [...(auth.user?.marketPreferences?.categories || [])]
+})
+const savingMarketPrefs = ref(false)
+const marketPrefsError  = ref('')
+const marketPrefsSaved  = ref(false)
+
+async function saveMarketPreferences() {
+  marketPrefsError.value = ''
+  marketPrefsSaved.value = false
+  savingMarketPrefs.value = true
+  try {
+    await auth.updateMarketPreferences(marketPrefsForm.value)
+    marketPrefsSaved.value = true
+    setTimeout(() => marketPrefsSaved.value = false, 2000)
+  } catch (e) {
+    marketPrefsError.value = e.response?.data?.error || t('common.error')
+  } finally { savingMarketPrefs.value = false }
+}
+
 // ── danger zone ──
 const showDeleteDialog = ref(false)
 const deletePassword = ref('')
@@ -430,6 +493,9 @@ async function doDeleteAccount() {
 .success-msg { @apply bg-success/10 border border-success rounded-sm text-success text-xs px-2.5 py-1.5; }
 
 .notification-row { @apply flex items-center justify-between gap-3; }
+
+.category-grid  { @apply grid grid-cols-2 gap-2 mt-1; }
+.category-check { @apply flex items-center gap-2 text-sm; }
 
 .switch { @apply relative inline-block; width: 40px; height: 22px; flex-shrink: 0; }
 .switch input { @apply absolute opacity-0 w-0 h-0; }
