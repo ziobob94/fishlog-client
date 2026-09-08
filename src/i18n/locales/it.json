@@ -739,9 +739,7 @@
 			"submit": "Pubblica",
 			"saving": "...",
 			"bodyRequired": "Testo obbligatorio",
-			"groupRequired": "Seleziona un gruppo",
-			"addPhotosHint": "Vuoi aggiungere delle foto?",
-			"done": "Fatto"
+			"groupRequired": "Seleziona un gruppo"
 		},
 		"tabs": {
 			"posts": "Post",
