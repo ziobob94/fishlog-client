@@ -444,10 +444,6 @@
 			"confirm": "L'operazione non è reversibile."
 		}
 	},
-	"pagination": {
-		"prev": "← Prec",
-		"next": "Succ →"
-	},
 	"sessionFilters": {
 		"searchPlaceholder": "Cerca luogo, note...",
 		"allTechniques": "Tutte le tecniche",
@@ -836,6 +832,15 @@
 			"saving": "Salvataggio..."
 		}
 	},
+	"marketSurvey": {
+		"title": "Personalizza il market",
+		"hint": "Raccontaci come peschi: useremo queste info per proporti attrezzatura più pertinente tra i risultati eBay del market. Puoi saltare e impostarle in un secondo momento dal profilo.",
+		"techniqueLabel": "Tecnica di pesca principale",
+		"techniquePlaceholder": "Nessuna preferenza",
+		"categoriesLabel": "Attrezzatura di interesse",
+		"skip": "Salta",
+		"save": "Salva preferenze"
+	},
 	"profile": {
 		"account": {
 			"title": "Account",
@@ -904,6 +909,10 @@
 		"session": {
 			"title": "Sessione",
 			"text": "Esci dal tuo account su questo dispositivo."
+		},
+		"marketPreferences": {
+			"title": "Preferenze market",
+			"hint": "Usate per proporti attrezzatura più pertinente tra i risultati eBay del market."
 		},
 		"danger": {
 			"title": "Elimina account",

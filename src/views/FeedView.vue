@@ -129,7 +129,7 @@
 
     <div class="section-separator"></div>
 
-    <div v-if="store.loading" class="state-center mt-4"><div class="spinner"></div></div>
+    <div v-if="infiniteLoading" class="state-center mt-4"><div class="spinner"></div></div>
 
     <div v-else-if="!store.feed.length" class="state-center mt-4">
       <div style="font-size:3rem; display:flex; justify-content:center"><Newspaper :size="48" /></div>
@@ -150,21 +150,24 @@
         @delete-comment="onDeleteComment"
         @attend="onAttend"
       />
+      <InfiniteSentinel :active="hasMore" :loading="loadingMore" @trigger="loadMore" />
     </div>
   </div>
 </template>
 
 <script setup>
-  import { onMounted, reactive, ref, watch } from 'vue'
+  import { computed, onMounted, reactive, ref, watch } from 'vue'
   import { useI18n } from 'vue-i18n'
   import { useRoute, useRouter } from 'vue-router'
   import { Newspaper, CalendarDays, MapPin, Map as MapIcon, X, Filter } from 'lucide-vue-next'
   import { usePostStore } from '../stores/posts.js'
   import { useAuthStore } from '../stores/auth.js'
   import { useUserStore } from '../stores/users.js'
+  import { useInfiniteScroll } from '../composables/useInfiniteScroll.js'
   import PostForm from '../components/post/PostForm.vue'
   import PostCard from '../components/post/PostCard.vue'
   import LocationPicker from '../components/form/LocationPicker.vue'
+  import InfiniteSentinel from '../components/InfiniteSentinel.vue'
 
   const { t } = useI18n()
   const route = useRoute()
@@ -237,7 +240,13 @@
     return params
   }
 
-  function reload() { store.fetchPosts(buildParams()) }
+  const pagesRef = computed(() => store.pagination.pages)
+  const { loading: infiniteLoading, loadingMore, hasMore, reset, loadMore } = useInfiniteScroll(
+    (page, { append }) => store.fetchPosts({ ...buildParams(), page }, { append }),
+    pagesRef
+  )
+
+  function reload() { return reset() }
 
   function setTab(value) {
     tab.value = value

@@ -39,6 +39,7 @@
 
     <ToastContainer />
     <LocalStorageNotice />
+    <MarketSurveyModal />
   </div>
 </template>
 
@@ -50,6 +51,7 @@ import AppTopbar  from './layout/AppTopbar.vue'
 import ToastContainer from './components/ToastContainer.vue'
 import LegalFooter from './components/LegalFooter.vue'
 import LocalStorageNotice from './components/LocalStorageNotice.vue'
+import MarketSurveyModal from './components/MarketSurveyModal.vue'
 import { useAuthStore } from './stores/auth.js'
 import { usePostStore } from './stores/posts.js'
 import { useChatStore } from './stores/chat.js'

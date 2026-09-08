@@ -14,11 +14,11 @@ export const useMarketStore = defineStore('market', () => {
   const externalConfigured = ref(true)
   const externalLoading   = ref(false)
 
-  async function fetchListings(params = {}) {
+  async function fetchListings(params = {}, { append = false } = {}) {
     loading.value = true
     try {
       const { data } = await api.get('/listings', { params })
-      listings.value = data.data
+      listings.value = append ? [...listings.value, ...data.data] : data.data
       pagination.value = data.pagination
       return pagination.value.pages
     } finally {
