@@ -1,16 +1,19 @@
 <template>
   <div>
-    <div class="home-hero">
-      <div>
-        <h2>{{ t('market.titlePrefix') }} <span class="text-ocean">{{ t('market.titleHighlight') }}</span></h2>
-        <p class="text-muted mt-1">{{ t('market.listingsCount', { n: store.pagination.total }) }}</p>
-      </div>
-      <RouterLink to="/market/new" class="btn btn-primary">
+    <div class="market-toolbar">
+      <button
+        type="button" class="btn btn-ghost btn-sm" :class="{ 'btn-toggle-active': showFilters }"
+        :aria-pressed="showFilters" @click="showFilters = !showFilters"
+      >
+        <Filter :size="14" /> {{ t('market.filters.title') }}
+        <span v-if="activeFilterCount" class="filter-count-badge">{{ activeFilterCount }}</span>
+      </button>
+      <RouterLink to="/market/new" class="btn btn-primary btn-sm ml-auto">
         <Plus :size="16" /> {{ t('market.newListing') }}
       </RouterLink>
     </div>
 
-    <ListingFilters v-model="filters" :categories="store.categories" @reset="resetFilters" />
+    <ListingFilters v-if="showFilters" v-model="filters" :categories="store.categories" @reset="resetFilters" />
 
     <div v-if="store.loading" class="state-center">
       <div class="spinner"></div>
@@ -50,10 +53,10 @@
 </template>
 
 <script setup>
-import { ref, watch, onMounted } from 'vue'
+import { ref, computed, watch, onMounted } from 'vue'
 import { RouterLink } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { Plus, Package, ExternalLink } from 'lucide-vue-next'
+import { Plus, Package, ExternalLink, Filter } from 'lucide-vue-next'
 import { useMarketStore } from '../stores/market.js'
 import { usePagination } from '../composables/usePagination.js'
 import { useDebouncedFn } from '../composables/useDebouncedFn.js'
@@ -67,6 +70,8 @@ const store = useMarketStore()
 
 const filters = ref({ search: '', category: '', condition: '', sellerType: '', location: '', priceMin: '', priceMax: '' })
 const zip = ref('')
+const showFilters = ref(false)
+const activeFilterCount = computed(() => Object.values(filters.value).filter(v => v).length)
 
 async function fetchData(page) {
   await store.fetchListings({
@@ -121,7 +126,16 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.home-hero { @apply flex items-end justify-between mb-6; }
+.market-toolbar { @apply flex items-center gap-2 mb-4; }
+
+.btn-toggle-active {
+  @apply text-ocean bg-ocean/10;
+}
+
+.filter-count-badge {
+  @apply inline-flex items-center justify-center min-w-[1.1rem] h-[1.1rem] rounded-full bg-ocean text-white text-[0.65rem] font-bold px-1;
+}
+
 .listings-grid {
   @apply grid gap-4;
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));

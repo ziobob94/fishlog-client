@@ -788,9 +788,6 @@
 		}
 	},
 	"market": {
-		"titlePrefix": "Il",
-		"titleHighlight": "market",
-		"listingsCount": "{n} annunci",
 		"newListing": "Nuovo annuncio",
 		"contactSeller": "Contatta venditore",
 		"deleteConfirm": "Eliminare questo annuncio?",
@@ -834,6 +831,7 @@
 			"deleted": "Eliminato"
 		},
 		"filters": {
+			"title": "Filtri",
 			"searchPlaceholder": "Cerca annunci...",
 			"allCategories": "Tutte le categorie",
 			"allConditions": "Nuovo o usato",
