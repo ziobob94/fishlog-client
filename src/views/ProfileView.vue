@@ -495,7 +495,12 @@ async function doDeleteAccount() {
 .notification-row { @apply flex items-center justify-between gap-3; }
 
 .category-grid  { @apply grid grid-cols-2 gap-2 mt-1; }
-.category-check { @apply flex items-center gap-2 text-sm; }
+.category-check {
+  @apply flex items-center gap-2 text-sm text-foam;
+  text-transform: none;
+  letter-spacing: 0;
+}
+.category-check input { width: auto; }
 
 .switch { @apply relative inline-block; width: 40px; height: 22px; flex-shrink: 0; }
 .switch input { @apply absolute opacity-0 w-0 h-0; }

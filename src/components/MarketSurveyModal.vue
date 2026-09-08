@@ -88,7 +88,12 @@ function save() { submit(false) }
 .dialog         { @apply max-w-sm w-full; }
 
 .category-grid  { @apply grid grid-cols-2 gap-2 mt-1; }
-.category-check { @apply flex items-center gap-2 text-sm; }
+.category-check {
+  @apply flex items-center gap-2 text-sm text-foam;
+  text-transform: none;
+  letter-spacing: 0;
+}
+.category-check input { width: auto; }
 
 .error-msg { @apply bg-danger/10 border border-danger rounded-sm text-danger text-xs px-2.5 py-1.5; }
 
