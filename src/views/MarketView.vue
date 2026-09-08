@@ -8,9 +8,6 @@
         <Filter :size="14" /> {{ t('market.filters.title') }}
         <span v-if="activeFilterCount" class="filter-count-badge">{{ activeFilterCount }}</span>
       </button>
-      <RouterLink to="/market/new" class="btn btn-primary btn-sm ml-auto">
-        <Plus :size="16" /> {{ t('market.newListing') }}
-      </RouterLink>
     </div>
 
     <ListingFilters v-if="showFilters" v-model="filters" :categories="store.categories" @reset="resetFilters" />
@@ -54,9 +51,8 @@
 
 <script setup>
 import { ref, computed, watch, onMounted } from 'vue'
-import { RouterLink } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { Plus, Package, ExternalLink, Filter } from 'lucide-vue-next'
+import { Package, ExternalLink, Filter } from 'lucide-vue-next'
 import { useMarketStore } from '../stores/market.js'
 import { usePagination } from '../composables/usePagination.js'
 import { useDebouncedFn } from '../composables/useDebouncedFn.js'

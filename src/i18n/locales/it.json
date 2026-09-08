@@ -755,8 +755,6 @@
 			"reset": "Reimposta filtri"
 		},
 		"feed": {
-			"newPost": "Nuovo post",
-			"hideForm": "Chiudi",
 			"empty": {
 				"title": "Nessun post",
 				"text": "Non ci sono ancora post da mostrare"

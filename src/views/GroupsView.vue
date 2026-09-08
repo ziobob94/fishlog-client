@@ -1,9 +1,5 @@
 <template>
   <div>
-    <div class="page-header">
-      <button class="btn btn-primary btn-sm ml-auto" @click="showCreate = true">{{ t('groups.newGroup') }}</button>
-    </div>
-
     <div v-if="store.loading" class="state-center"><div class="spinner"></div></div>
 
     <div v-else-if="!store.groups.length" class="state-center">
@@ -100,7 +96,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
 import { Users, X, Pencil, Trash2 } from 'lucide-vue-next'
@@ -124,15 +120,15 @@ const errors      = ref({})
 
 const groupForm = ref({ name: '', description: '' })
 
-onMounted(() => {
-  store.fetchGroups()
+onMounted(() => store.fetchGroups())
 
-  // Arrivo dal menu "Crea nuovo" della topbar: apre subito il modal.
-  if (route.query.compose) {
-    showCreate.value = true
-    router.replace({ query: { ...route.query, compose: undefined } })
-  }
-})
+// Il tasto + della topbar, quando si è già su questa pagina, apre il modal
+// tramite un cambio di query invece che con un evento diretto.
+watch(() => route.query.compose, (value) => {
+  if (!value) return
+  showCreate.value = true
+  router.replace({ query: { ...route.query, compose: undefined } })
+}, { immediate: true })
 
 function isOwnerOrAdmin(g) {
   return g.owner?._id === authStore.user?._id || authStore.user?.role === 'admin'
@@ -207,7 +203,6 @@ async function removeMember(g, m) {
 </script>
 
 <style scoped>
-.page-header  { @apply flex items-center mb-4; }
 .groups-grid  { @apply grid gap-4; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); }
 .group-card   { @apply flex flex-col gap-3; }
 .group-header { @apply flex items-start justify-between; }

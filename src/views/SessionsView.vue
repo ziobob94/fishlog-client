@@ -1,11 +1,5 @@
 <template>
   <div>
-    <div class="sessions-toolbar">
-      <RouterLink :to="newSessionTarget" class="btn btn-primary btn-sm ml-auto">
-        {{ store.ongoing ? t('nav.ongoingSession') : t('home.newSession') }}
-      </RouterLink>
-    </div>
-
     <section v-if="store.ongoing" class="ongoing-section">
       <h2 class="ongoing-heading">
         <span class="pulse-dot"></span> {{ t('home.ongoingTitle') }}
@@ -101,9 +95,6 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.sessions-toolbar {
-  @apply flex items-center mb-4;
-}
 .sessions-grid {
   @apply grid gap-4;
   grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));

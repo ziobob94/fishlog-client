@@ -1,11 +1,5 @@
 <template>
   <div>
-    <div class="listings-toolbar">
-      <RouterLink to="/market/new" class="btn btn-primary btn-sm ml-auto">
-        <Plus :size="16" /> {{ t('market.newListing') }}
-      </RouterLink>
-    </div>
-
     <div v-if="!store.mine.length" class="state-center">
       <p class="text-muted">{{ t('market.mine.empty') }}</p>
     </div>
@@ -18,9 +12,7 @@
 
 <script setup>
 import { onMounted } from 'vue'
-import { RouterLink } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { Plus } from 'lucide-vue-next'
 import { useMarketStore } from '../stores/market.js'
 import ListingCard from '../components/market/ListingCard.vue'
 
@@ -31,7 +23,6 @@ onMounted(() => store.fetchMine())
 </script>
 
 <style scoped>
-.listings-toolbar { @apply flex items-center mb-4; }
 .listings-grid {
   @apply grid gap-4;
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));

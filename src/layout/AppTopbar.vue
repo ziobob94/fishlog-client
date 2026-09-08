@@ -54,8 +54,8 @@
       <div class="relative" ref="createWrapper">
         <button
           class="relative flex items-center justify-center w-9 h-9 rounded-lg text-ink bg-ocean hover:bg-ocean/90 transition-colors border-none cursor-pointer"
-          :title="t('createMenu.title')"
-          @click="toggleCreateMenu"
+          :title="plusTitle"
+          @click="onPlusClick"
         >
           <Plus :size="18" />
           <span v-if="sessions.ongoing && !onOngoingEditPage" class="absolute -top-0.5 -right-0.5 flex h-2.5 w-2.5">
@@ -64,7 +64,7 @@
           </span>
         </button>
 
-        <div v-if="createMenuOpen" class="create-menu card">
+        <div v-if="!pageAction && createMenuOpen" class="create-menu card">
           <RouterLink
             v-if="sessions.ongoing && !onOngoingEditPage"
             :to="{ path: `/session/${sessions.ongoing._id}/edit`, hash: '#section-catches' }"
@@ -109,8 +109,8 @@
 </template>
 
 <script setup>
-import { computed, onMounted, onBeforeUnmount, ref } from 'vue'
-import { RouterLink, useRoute } from 'vue-router'
+import { computed, onMounted, onBeforeUnmount, ref, watch } from 'vue'
+import { RouterLink, useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { Fish, WifiOff, RefreshCw, AlertTriangle, Hourglass, Plus, Bell, X, Newspaper, ShoppingBag, MessagesSquare, Users } from 'lucide-vue-next'
 import { useOfflineStore } from '../stores/offline.js'
@@ -122,6 +122,7 @@ defineEmits(['toggle-sidebar'])
 
 const { t, locale } = useI18n()
 const route = useRoute()
+const router = useRouter()
 const offline = useOfflineStore()
 const sessions = useSessionStore()
 const auth = useAuthStore()
@@ -171,6 +172,48 @@ function formatTime(date) {
 const onOngoingEditPage = computed(() =>
   sessions.ongoing && route.path === `/session/${sessions.ongoing._id}/edit`
 )
+
+// Alcune pagine hanno una loro "azione principale" (nuova pescata, nuovo
+// post, nuovo annuncio, nuovo gruppo): lì il tasto + la esegue subito
+// invece di aprire il menu generico, così non serve più un pulsante
+// dedicato ripetuto nella pagina stessa.
+const pageAction = computed(() => {
+  switch (route.name) {
+    case 'sessions':
+      return () => router.push(sessions.ongoing
+        ? { path: `/session/${sessions.ongoing._id}/edit`, hash: '#section-catches' }
+        : '/new')
+    case 'feed':
+      return () => router.push({ path: '/feed', query: { compose: '1' } })
+    case 'groups':
+      return () => router.push({ path: '/groups', query: { compose: '1' } })
+    case 'market':
+    case 'market-mine':
+      return () => router.push('/market/new')
+    default:
+      return null
+  }
+})
+
+const plusTitle = computed(() => {
+  switch (route.name) {
+    case 'sessions': return sessions.ongoing ? t('nav.ongoingSession') : t('home.newSession')
+    case 'feed': return t('createMenu.newPost')
+    case 'groups': return t('groups.newGroup')
+    case 'market':
+    case 'market-mine': return t('market.newListing')
+    default: return t('createMenu.title')
+  }
+})
+
+function onPlusClick() {
+  if (pageAction.value) { pageAction.value(); return }
+  toggleCreateMenu()
+}
+
+// Un'azione mappata o una navigazione altrove non deve lasciare il menu
+// aperto sopra la pagina successiva.
+watch(() => route.fullPath, () => { createMenuOpen.value = false; notifPanelOpen.value = false })
 
 onMounted(() => {
   if (auth.isLoggedIn) sessions.fetchOngoing()

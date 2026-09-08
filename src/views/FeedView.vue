@@ -17,13 +17,8 @@
         <button
           type="button" class="icon-btn" :class="{ active: showFilters }"
           :title="t('posts.filters.title')" :aria-pressed="showFilters"
-          @click="showFilters = !showFilters; showForm = false"
+          @click="showFilters = !showFilters"
         ><Filter :size="17" /></button>
-        <button
-          type="button" class="icon-btn" :class="{ active: showForm }"
-          :title="showForm ? t('posts.feed.hideForm') : t('posts.feed.newPost')" :aria-pressed="showForm"
-          @click="showForm = !showForm; showFilters = false"
-        ><Plus :size="18" /></button>
       </div>
     </div>
 
@@ -163,7 +158,7 @@
   import { onMounted, reactive, ref, watch } from 'vue'
   import { useI18n } from 'vue-i18n'
   import { useRoute, useRouter } from 'vue-router'
-  import { Newspaper, CalendarDays, MapPin, Map as MapIcon, X, Plus, Filter } from 'lucide-vue-next'
+  import { Newspaper, CalendarDays, MapPin, Map as MapIcon, X, Filter } from 'lucide-vue-next'
   import { usePostStore } from '../stores/posts.js'
   import { useAuthStore } from '../stores/auth.js'
   import { useUserStore } from '../stores/users.js'
@@ -310,13 +305,15 @@
   onMounted(() => {
     reload()
     store.markSeen('feed')
-
-    // Arrivo dal menu "Crea nuovo" della topbar: apre subito il form.
-    if (route.query.compose) {
-      showForm.value = true
-      router.replace({ query: { ...route.query, compose: undefined } })
-    }
   })
+
+  // Il tasto + della topbar, quando si è già su questa pagina, apre il form
+  // tramite un cambio di query invece che con un evento diretto.
+  watch(() => route.query.compose, (value) => {
+    if (!value) return
+    showForm.value = true
+    router.replace({ query: { ...route.query, compose: undefined } })
+  }, { immediate: true })
 
   function onCreated() { showForm.value = false; reload() }
   async function onDelete(post) { await store.deletePost(post._id) }
