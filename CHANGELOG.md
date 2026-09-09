@@ -1,3 +1,10 @@
+# [1.18.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.17.2...client-v1.18.0) (2026-09-09)
+
+
+### Features
+
+* bottom nav mobile con le sezioni principali, nascosta in chat ([8b58890](https://github.com/ziobob94/fishlog-client/commit/8b58890d2a4e4b88472b67e91c019bfb34585b39))
+
 ## [1.17.2](https://github.com/ziobob94/fishlog-client/compare/client-v1.17.1...client-v1.17.2) (2026-09-09)
 
 
