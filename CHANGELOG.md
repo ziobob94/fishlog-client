@@ -1,3 +1,10 @@
+## [1.21.3](https://github.com/ziobob94/fishlog-client/compare/client-v1.21.2...client-v1.21.3) (2026-09-09)
+
+
+### Bug Fixes
+
+* rimossa l'icona ridondante "nuovo gruppo" dalla lista chat ([0791127](https://github.com/ziobob94/fishlog-client/commit/0791127a0a482ffab8814e26339b9fa9d27896a9))
+
 ## [1.21.2](https://github.com/ziobob94/fishlog-client/compare/client-v1.21.1...client-v1.21.2) (2026-09-09)
 
 
