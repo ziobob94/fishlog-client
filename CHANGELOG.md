@@ -1,3 +1,10 @@
+# [1.20.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.19.0...client-v1.20.0) (2026-09-09)
+
+
+### Features
+
+* preferiti nella lista chat e divisori tra le righe ([f9f435d](https://github.com/ziobob94/fishlog-client/commit/f9f435d91fc841b446222418db6d9050667cd8f6))
+
 # [1.19.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.18.0...client-v1.19.0) (2026-09-09)
 
 
