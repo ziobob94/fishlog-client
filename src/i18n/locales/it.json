@@ -51,7 +51,8 @@
 		"newPost": "Nuovo post",
 		"newListing": "Nuovo annuncio",
 		"newMessage": "Nuovo messaggio",
-		"newGroup": "Nuovo gruppo"
+		"newGroup": "Nuovo gruppo pesca",
+		"newChatGroup": "Nuovo gruppo chat"
 	},
 	"admin": {
 		"tabs": { "users": "Utenti", "sessions": "Sessioni", "shops": "Negozi", "config": "Configurazioni" },
@@ -215,8 +216,10 @@
 			"all": "Tutte",
 			"unread": "Da leggere",
 			"favorites": "Preferiti",
+			"groups": "Gruppi",
 			"noneUnread": "Nessuna conversazione da leggere",
-			"noneFavorites": "Nessuna conversazione tra i preferiti"
+			"noneFavorites": "Nessuna conversazione tra i preferiti",
+			"noneGroups": "Nessun gruppo, creane uno dal pulsante \"+\""
 		},
 		"favorite": "Aggiungi ai preferiti",
 		"unfavorite": "Rimuovi dai preferiti",
@@ -241,8 +244,34 @@
 			"micDenied": "Permesso microfono negato",
 			"micUnsupported": "Registrazione vocale non supportata su questo dispositivo",
 			"voiceEmpty": "Registrazione troppo breve, riprova"
-		}
-	},
+			},
+			"group": {
+				"back": "Indietro",
+				"newTitle": "Nuovo gruppo chat",
+				"nameLabel": "Nome del gruppo",
+				"namePlaceholder": "Es. Uscite al lago",
+				"membersLabel": "Aggiungi almeno due amici",
+				"noFriends": "Non hai ancora amici da aggiungere: fatti prima qualche amicizia",
+				"create": "Crea gruppo",
+				"creating": "Creazione...",
+				"nameRequired": "Il nome del gruppo \u00e8 obbligatorio",
+				"minMembers": "Servono almeno due amici da aggiungere",
+				"membersCount": "{n} membri",
+				"owner": "Admin",
+				"you": "Tu",
+				"manageMembers": "Gestisci membri",
+				"addMembers": "Aggiungi amici",
+				"add": "Aggiungi",
+				"removeMember": "Rimuovi dal gruppo",
+				"confirmRemoveMember": "Rimuovere questo membro dal gruppo?",
+				"leave": "Esci dal gruppo",
+				"confirmLeave": "Uscire da questo gruppo?",
+				"rename": "Rinomina",
+				"renamePlaceholder": "Nome del gruppo",
+				"save": "Salva",
+				"notFound": "Gruppo non trovato o non ne fai pi\u00f9 parte"
+			}
+		},
 	"friends": {
 		"search": {
 			"label": "Cerca persone",

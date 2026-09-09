@@ -33,6 +33,36 @@ export const useChatStore = defineStore('chat', () => {
     return data._id
   }
 
+  async function fetchConversation(conversationId) {
+    const { data } = await api.get(`/chat/${conversationId}`)
+    return data
+  }
+
+  async function createGroup({ name, participantIds }) {
+    try {
+      const { data } = await api.post('/chat/groups', { name, participantIds })
+      return data
+    } catch (e) {
+      error.value = e.response?.data?.error || 'Errore creazione gruppo'
+      return null
+    }
+  }
+
+  async function renameGroup(conversationId, name) {
+    const { data } = await api.patch(`/chat/groups/${conversationId}`, { name })
+    return data.name
+  }
+
+  async function addGroupMembers(conversationId, userIds) {
+    const { data } = await api.post(`/chat/groups/${conversationId}/members`, { userIds })
+    return data.participants
+  }
+
+  async function removeGroupMember(conversationId, userId) {
+    const { data } = await api.delete(`/chat/groups/${conversationId}/members/${userId}`)
+    return data
+  }
+
   async function fetchMessages(conversationId) {
     loading.value = true; error.value = null
     try {
@@ -43,9 +73,9 @@ export const useChatStore = defineStore('chat', () => {
     } finally { loading.value = false }
   }
 
-  async function sendMessage(userId, body) {
+  async function sendMessage(conversationId, body) {
     try {
-      const { data } = await api.post(`/chat/with/${userId}/messages`, { body })
+      const { data } = await api.post(`/chat/${conversationId}/messages`, { body })
       messages.value = [...messages.value, data]
       return data
     } catch (e) {
@@ -54,11 +84,11 @@ export const useChatStore = defineStore('chat', () => {
     }
   }
 
-  async function sendMedia(userId, file) {
+  async function sendMedia(conversationId, file) {
     try {
       const form = new FormData()
       form.append('file', file)
-      const { data } = await api.post(`/chat/with/${userId}/messages/media`, form, {
+      const { data } = await api.post(`/chat/${conversationId}/messages/media`, form, {
         headers: { 'Content-Type': 'multipart/form-data' }
       })
       messages.value = [...messages.value, data]
@@ -69,9 +99,9 @@ export const useChatStore = defineStore('chat', () => {
     }
   }
 
-  async function sendLocation(userId, { lat, lng, name }) {
+  async function sendLocation(conversationId, { lat, lng, name }) {
     try {
-      const { data } = await api.post(`/chat/with/${userId}/messages/location`, { lat, lng, name })
+      const { data } = await api.post(`/chat/${conversationId}/messages/location`, { lat, lng, name })
       messages.value = [...messages.value, data]
       return data
     } catch (e) {
@@ -135,7 +165,9 @@ export const useChatStore = defineStore('chat', () => {
 
   return {
     conversations, messages, unreadCount, loading, error,
-    fetchConversations, fetchUnreadCount, openConversationWith, fetchMessages, sendMessage, sendMedia, sendLocation,
+    fetchConversations, fetchUnreadCount, openConversationWith, fetchConversation,
+    createGroup, renameGroup, addGroupMembers, removeGroupMember,
+    fetchMessages, sendMessage, sendMedia, sendLocation,
     markRead, toggleFavorite, editMessage, deleteMessage, applyUpdated, applyDeleted, setUnreadCount
   }
 })

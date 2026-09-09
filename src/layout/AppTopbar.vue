@@ -85,6 +85,9 @@
           <RouterLink to="/chat" class="create-menu-item" @click="createMenuOpen = false">
             <MessagesSquare :size="16" /> {{ t('createMenu.newMessage') }}
           </RouterLink>
+          <RouterLink to="/chat/group/new" class="create-menu-item" @click="createMenuOpen = false">
+            <UsersRound :size="16" /> {{ t('createMenu.newChatGroup') }}
+          </RouterLink>
           <RouterLink :to="{ path: '/groups', query: { compose: '1' } }" class="create-menu-item" @click="createMenuOpen = false">
             <Users :size="16" /> {{ t('createMenu.newGroup') }}
           </RouterLink>
@@ -112,7 +115,7 @@
 import { computed, onMounted, onBeforeUnmount, ref, watch } from 'vue'
 import { RouterLink, useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { Fish, WifiOff, RefreshCw, AlertTriangle, Hourglass, Plus, Bell, X, Newspaper, ShoppingBag, MessagesSquare, Users } from 'lucide-vue-next'
+import { Fish, WifiOff, RefreshCw, AlertTriangle, Hourglass, Plus, Bell, X, Newspaper, ShoppingBag, MessagesSquare, Users, UsersRound } from 'lucide-vue-next'
 import { useOfflineStore } from '../stores/offline.js'
 import { useSessionStore } from '../stores/sessions.js'
 import { useAuthStore } from '../stores/auth.js'
@@ -159,7 +162,10 @@ function onNotificationClick(n) {
 }
 
 function notificationLink(n) {
-  if (n.type === 'chat_message') return `/chat/${n.actor?._id || ''}`
+  if (n.type === 'chat_message') {
+    if (n.data?.conversationType === 'group') return `/chat/group/${n.data.conversationId}`
+    return `/chat/${n.actor?._id || ''}`
+  }
   return '/friends'
 }
 
