@@ -65,6 +65,11 @@
   --text-muted: rgb(var(--color-muted));
   --danger: rgb(var(--color-danger));
   --success: rgb(var(--color-success));
+
+  /* Altezza della bottom nav mobile (AppBottomNav.vue, sotto i 768px):
+     unico riferimento condiviso da chi deve lasciarle spazio sopra
+     (ToastContainer, LocalStorageNotice, padding di App.vue). */
+  --bottom-nav-h: 3.75rem;
 }
 
 @layer base {

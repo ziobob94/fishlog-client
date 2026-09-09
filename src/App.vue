@@ -30,13 +30,14 @@
       <AppTopbar @toggle-sidebar="toggleSidebar" />
       <main
         class="flex-1 w-full max-w-[1100px] mx-auto px-6 min-w-0"
-        :class="isFullHeight ? 'flex flex-col min-h-0 overflow-hidden' : 'py-8'"
+        :class="[isFullHeight ? 'flex flex-col min-h-0 overflow-hidden' : 'py-8', showBottomNav ? 'pb-[calc(var(--bottom-nav-h)+1rem)] md:pb-8' : '']"
       >
         <RouterView />
       </main>
       <LegalFooter v-if="!isFullHeight" />
     </div>
 
+    <AppBottomNav v-if="showBottomNav" />
     <ToastContainer />
     <LocalStorageNotice />
     <MarketSurveyModal />
@@ -48,6 +49,7 @@ import { ref, computed, onMounted, watch } from 'vue'
 import { RouterView, useRoute } from 'vue-router'
 import AppSidebar from './layout/AppSidebar.vue'
 import AppTopbar  from './layout/AppTopbar.vue'
+import AppBottomNav from './layout/AppBottomNav.vue'
 import ToastContainer from './components/ToastContainer.vue'
 import LegalFooter from './components/LegalFooter.vue'
 import LocalStorageNotice from './components/LocalStorageNotice.vue'
@@ -62,6 +64,7 @@ import { connectWebSocket, disconnectWebSocket } from './services/ws.js'
 const route = useRoute()
 const isPublicRoute = computed(() => !!route.meta.public)
 const isFullHeight  = computed(() => !!route.meta.fullHeight)
+const showBottomNav = computed(() => !route.meta.hideBottomNav)
 
 const sidebarOpen   = ref(false)
 const sidebarLocked = ref(localStorage.getItem('sidebar_locked') === 'true')
