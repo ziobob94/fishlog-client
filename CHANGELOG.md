@@ -1,3 +1,10 @@
+## [1.21.1](https://github.com/ziobob94/fishlog-client/compare/client-v1.21.0...client-v1.21.1) (2026-09-09)
+
+
+### Bug Fixes
+
+* allineamento messaggi, separatori di giornata, bolle più compatte ([0075437](https://github.com/ziobob94/fishlog-client/commit/0075437053a5cdd03f3bacf848e27f2aa5fe8954))
+
 # [1.21.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.20.0...client-v1.21.0) (2026-09-09)
 
 
