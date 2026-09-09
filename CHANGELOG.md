@@ -1,3 +1,10 @@
+## [1.21.2](https://github.com/ziobob94/fishlog-client/compare/client-v1.21.1...client-v1.21.2) (2026-09-09)
+
+
+### Bug Fixes
+
+* filtri e paginazione dei risultati eBay nel market ([256f842](https://github.com/ziobob94/fishlog-client/commit/256f8422d1cd4b11983eae5b2da27111f798393c))
+
 ## [1.21.1](https://github.com/ziobob94/fishlog-client/compare/client-v1.21.0...client-v1.21.1) (2026-09-09)
 
 
