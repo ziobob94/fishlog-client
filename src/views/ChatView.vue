@@ -10,9 +10,6 @@
             :placeholder="t('chat.search.placeholder')" @input="onSearch"
           />
         </div>
-        <RouterLink to="/chat/group/new" class="icon-btn shrink-0" :title="t('chat.group.newTitle')">
-          <UsersRound :size="18" />
-        </RouterLink>
         <RouterLink to="/friends" class="icon-btn shrink-0" :title="t('chat.friendsLink')">
           <Users :size="18" />
         </RouterLink>
