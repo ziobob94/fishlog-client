@@ -204,16 +204,12 @@
 		}
 	},
 	"chat": {
-		"empty": "Nessuna conversazione: scrivi a un amico qui sopra per iniziare",
+		"empty": "Nessuna conversazione: cerca un amico qui sopra per iniziare",
 		"friendsLink": "Vai ai tuoi amici",
-		"newChat": {
-			"label": "Nuova chat",
-			"noFriends": "Nessun amico disponibile: aggiungine uno per iniziare una chat"
-		},
-		"addFriend": {
-			"label": "Aggiungi un amico",
-			"placeholder": "Nome o email...",
-			"noResults": "Nessun utente trovato"
+		"search": {
+			"placeholder": "Cerca conversazioni o persone...",
+			"noResults": "Nessun utente trovato",
+			"openChat": "Apri chat"
 		},
 		"messagePlaceholder": "Scrivi un messaggio...",
 		"send": "Invia",
