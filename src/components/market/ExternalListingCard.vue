@@ -9,7 +9,7 @@
         class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
       <div v-else class="flex items-center justify-center h-full text-muted"><Package :size="40" /></div>
       <span class="badge badge-sand absolute bottom-2 left-2 icon-inline">
-        <ExternalLink :size="12" /> eBay
+        <ExternalLink :size="12" /> {{ sourceLabel }}
       </span>
     </div>
     <div class="p-4">
@@ -21,9 +21,17 @@
 </template>
 
 <script setup>
+import { computed } from 'vue'
 import { Package, ExternalLink, MapPin } from 'lucide-vue-next'
 
-defineProps({ listing: { type: Object, required: true } })
+// Ogni fonte esterna (searchEbay, e in futuro altre) valorizza già
+// listing.source: la card resta la stessa, basta mappare qui il nome da
+// mostrare invece di aggiungerne una nuova per ogni nuova piattaforma.
+const SOURCE_LABELS = { ebay: 'eBay', subito: 'Subito', vinted: 'Vinted' }
+
+const props = defineProps({ listing: { type: Object, required: true } })
+
+const sourceLabel = computed(() => SOURCE_LABELS[props.listing.source] || props.listing.source || 'Esterno')
 
 function formatPrice(price, currency) {
   return new Intl.NumberFormat('it-IT', { style: 'currency', currency: currency || 'EUR' }).format(price)
