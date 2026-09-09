@@ -12,52 +12,44 @@
 
     <ListingFilters v-if="showFilters" v-model="filters" :categories="store.categories" @reset="resetFilters" />
 
-    <div v-if="infiniteLoading" class="state-center">
+    <div v-if="showSpinner" class="state-center">
       <div class="spinner"></div>
     </div>
 
-    <div v-else-if="!store.listings.length" class="state-center">
-      <div style="font-size:3.5rem; display:flex; justify-content:center"><Package :size="56" /></div>
-      <h3>{{ t('market.empty.title') }}</h3>
-      <p class="text-muted">{{ t('market.empty.text') }}</p>
+    <div v-else-if="!allItems.length" class="market-empty">
+      <Package :size="20" />
+      <p>{{ t('market.empty.text') }}</p>
     </div>
 
+    <!-- Un'unica vetrina: annunci fishlog (privati e negozi) e risultati eBay
+         mescolati nella stessa griglia, ognuno etichettato dalla sua card
+         (badge "Negozio" o "eBay") invece che separati in sezioni diverse. -->
     <div v-else class="listings-grid">
-      <ListingCard v-for="l in store.listings" :key="l._id" :listing="l" />
+      <template v-for="item in allItems" :key="item.key">
+        <ListingCard v-if="item.source === 'internal'" :listing="item.listing" />
+        <ExternalListingCard v-else :listing="item.listing" />
+      </template>
     </div>
 
     <InfiniteSentinel :active="hasMore" :loading="loadingMore" @trigger="loadMore" />
 
-    <!-- Fallback: pochi/nessun annuncio interno → propone risultati simili da eBay -->
-    <section v-if="!infiniteLoading && store.pagination.total < 4" class="external-section">
-      <hr class="external-hr" />
-      <h3 class="external-heading icon-inline"><ExternalLink :size="16" /> {{ t('market.external.title') }}</h3>
-      <p class="text-muted text-sm mb-3">{{ t('market.external.hint') }}</p>
-
-      <div v-if="store.externalLoading" class="state-center"><div class="spinner"></div></div>
-
-      <p v-else-if="!store.externalConfigured" class="text-muted text-sm">
+    <!-- Diagnostica eBay, solo per admin: non è mai un motivo per mostrare
+         meno annunci agli utenti normali, quindi non compare per loro. -->
+    <template v-if="auth.user?.role === 'admin'">
+      <p v-if="showExternalNotConfiguredHint" class="external-admin-hint text-sm mt-3">
         {{ t('market.external.notConfigured') }}
       </p>
-
-      <div v-else-if="store.external.length" class="listings-grid">
-        <ExternalListingCard v-for="(l, i) in store.external" :key="i" :listing="l" />
-      </div>
-
-      <p v-else class="text-muted text-sm">{{ t('market.external.empty') }}</p>
-
-      <!-- Dettaglio errore reale (token/API eBay), visibile solo agli admin -->
-      <p v-if="store.externalError && auth.user?.role === 'admin'" class="external-admin-error text-sm mt-2">
+      <p v-if="store.externalError" class="external-admin-hint external-admin-error text-sm mt-2">
         {{ t('market.external.adminError', { error: store.externalError }) }}
       </p>
-    </section>
+    </template>
   </div>
 </template>
 
 <script setup>
 import { ref, computed, watch, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { Package, ExternalLink, Filter } from 'lucide-vue-next'
+import { Package, Filter } from 'lucide-vue-next'
 import { useMarketStore } from '../stores/market.js'
 import { useAuthStore } from '../stores/auth.js'
 import { useInfiniteScroll } from '../composables/useInfiniteScroll.js'
@@ -75,6 +67,25 @@ const filters = ref({ search: '', category: '', condition: '', sellerType: '', l
 const zip = ref('')
 const showFilters = ref(false)
 const activeFilterCount = computed(() => Object.values(filters.value).filter(v => v).length)
+
+// Il fallback eBay scatta solo quando il market interno è scarso (< 4
+// annunci per questa ricerca): oltre quella soglia i risultati esterni,
+// anche se già in cache da una ricerca precedente, non vanno mostrati.
+const externalActive = computed(() => store.pagination.total < 4)
+
+const allItems = computed(() => {
+  const internal = store.listings.map(l => ({ key: `i-${l._id}`, source: 'internal', listing: l }))
+  if (!externalActive.value) return internal
+  const external = store.external.map((l, i) => ({ key: `e-${i}`, source: 'external', listing: l }))
+  return [...internal, ...external]
+})
+
+// Mentre il fallback eBay è ancora in corso e non abbiamo ancora nulla da
+// mostrare, resta lo spinner: evita di far comparire per un istante "nessun
+// annuncio" salvo poi sostituirlo con la griglia appena eBay risponde.
+const externalPending = computed(() => externalActive.value && store.externalLoading)
+const showSpinner = computed(() => infiniteLoading.value || (!allItems.value.length && externalPending.value))
+const showExternalNotConfiguredHint = computed(() => externalActive.value && !store.externalLoading && !store.externalConfigured)
 
 const pagesRef = computed(() => store.pagination.pages)
 const { loading: infiniteLoading, loadingMore, hasMore, reset, loadMore } = useInfiniteScroll(
@@ -147,9 +158,11 @@ onMounted(() => {
   @apply grid gap-4;
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
 }
-.external-section { @apply mt-8; }
-.external-hr { @apply border-border mb-6; }
-.external-heading { @apply font-bold text-sm uppercase tracking-wide mb-1 text-sand; }
+
+.market-empty {
+  @apply flex items-center justify-center gap-2 text-muted text-sm py-8;
+}
+
+.external-admin-hint { @apply text-muted; }
 .external-admin-error { @apply text-danger; }
-.icon-inline { display: inline-flex; align-items: center; gap: .4rem; }
 </style>
