@@ -46,13 +46,17 @@
       <template v-else>
         <div v-if="chatStore.conversations.length" class="tabs" role="tablist">
           <button
-            type="button" role="tab" :aria-selected="!unreadOnly"
-            class="tab-pill" :class="{ active: !unreadOnly }" @click="unreadOnly = false"
+            type="button" role="tab" :aria-selected="filterMode === 'all'"
+            class="tab-pill" :class="{ active: filterMode === 'all' }" @click="filterMode = 'all'"
           >{{ t('chat.filters.all') }}</button>
           <button
-            type="button" role="tab" :aria-selected="unreadOnly"
-            class="tab-pill" :class="{ active: unreadOnly }" @click="unreadOnly = true"
+            type="button" role="tab" :aria-selected="filterMode === 'unread'"
+            class="tab-pill" :class="{ active: filterMode === 'unread' }" @click="filterMode = 'unread'"
           >{{ t('chat.filters.unread') }}<span v-if="unreadConversationsCount"> {{ unreadConversationsCount }}</span></button>
+          <button
+            type="button" role="tab" :aria-selected="filterMode === 'favorites'"
+            class="tab-pill" :class="{ active: filterMode === 'favorites' }" @click="filterMode = 'favorites'"
+          >{{ t('chat.filters.favorites') }}<span v-if="favoriteConversationsCount"> {{ favoriteConversationsCount }}</span></button>
         </div>
 
         <div v-if="chatStore.loading" class="state-center"><div class="spinner"></div></div>
@@ -63,26 +67,37 @@
         </div>
 
         <div v-else-if="!visibleConversations.length" class="state-center">
-          <p class="text-muted">{{ t('chat.filters.noneUnread') }}</p>
+          <p class="text-muted">{{ t(filterMode === 'favorites' ? 'chat.filters.noneFavorites' : 'chat.filters.noneUnread') }}</p>
         </div>
 
         <div v-else class="conversations-list">
-          <button v-for="c in visibleConversations" :key="c._id" class="conversation-row" @click="goToThread(c.user._id)">
+          <div
+            v-for="c in visibleConversations" :key="c._id" class="conversation-row"
+            role="button" tabindex="0"
+            @click="goToThread(c.user._id)" @keydown.enter="goToThread(c.user._id)"
+          >
             <img v-if="c.user?.avatar" :src="c.user.avatar" class="conversation-avatar" />
             <span v-else class="conversation-avatar-placeholder">{{ initials(c.user) }}</span>
-            <div class="conversation-info">
-              <span class="conversation-name" :class="{ unread: c.unreadCount }">{{ c.user?.displayName || c.user?.email }}</span>
-              <span class="conversation-preview" :class="{ unread: c.unreadCount }">
-                <CheckCheck v-if="messageTick(c) === 'read'" :size="14" class="tick tick-read shrink-0" />
-                <Check v-else-if="messageTick(c) === 'sent'" :size="14" class="tick shrink-0" />
-                <span class="conversation-preview-text">{{ previewText(c.lastMessage) }}</span>
-              </span>
+            <div class="conversation-body">
+              <div class="conversation-info">
+                <span class="conversation-name" :class="{ unread: c.unreadCount }">{{ c.user?.displayName || c.user?.email }}</span>
+                <span class="conversation-preview" :class="{ unread: c.unreadCount }">
+                  <CheckCheck v-if="messageTick(c) === 'read'" :size="14" class="tick tick-read shrink-0" />
+                  <Check v-else-if="messageTick(c) === 'sent'" :size="14" class="tick shrink-0" />
+                  <span class="conversation-preview-text">{{ previewText(c.lastMessage) }}</span>
+                </span>
+              </div>
+              <div class="conversation-meta">
+                <button
+                  type="button" class="conversation-favorite" :class="{ active: c.favorite }"
+                  :title="t(c.favorite ? 'chat.unfavorite' : 'chat.favorite')"
+                  @click.stop="toggleFavorite(c)"
+                ><Star :size="15" :fill="c.favorite ? 'currentColor' : 'none'" /></button>
+                <span class="conversation-time">{{ formatRelativeTime(c.lastMessageAt) }}</span>
+                <span v-if="c.unreadCount" class="badge badge-ocean conversation-badge">{{ c.unreadCount }}</span>
+              </div>
             </div>
-            <div class="conversation-meta">
-              <span class="conversation-time">{{ formatRelativeTime(c.lastMessageAt) }}</span>
-              <span v-if="c.unreadCount" class="badge badge-ocean conversation-badge">{{ c.unreadCount }}</span>
-            </div>
-          </button>
+          </div>
         </div>
       </template>
     </template>
@@ -210,7 +225,7 @@
   import { ref, reactive, computed, watch, onMounted, onBeforeUnmount, nextTick } from 'vue'
   import { useRoute, useRouter, RouterLink } from 'vue-router'
   import { useI18n } from 'vue-i18n'
-  import { MessagesSquare, AlertTriangle, Users, Search, Paperclip, Mic, MapPin, FileText, Check, CheckCheck, Pencil, Trash2, Ban, X } from 'lucide-vue-next'
+  import { MessagesSquare, AlertTriangle, Users, Search, Star, Paperclip, Mic, MapPin, FileText, Check, CheckCheck, Pencil, Trash2, Ban, X } from 'lucide-vue-next'
   import { useChatStore } from '../stores/chat.js'
   import { useFriendStore } from '../stores/friends.js'
   import { useUserStore } from '../stores/users.js'
@@ -368,12 +383,25 @@
     }
   }
 
-  // filtro "Da leggere" sopra la lista conversazioni
-  const unreadOnly = ref(false)
+  // filtri "Tutte / Da leggere / Preferiti" sopra la lista conversazioni
+  const filterMode = ref('all')
   const unreadConversationsCount = computed(() => chatStore.conversations.filter(c => c.unreadCount).length)
-  const visibleConversations = computed(() =>
-    unreadOnly.value ? chatStore.conversations.filter(c => c.unreadCount) : chatStore.conversations
-  )
+  const favoriteConversationsCount = computed(() => chatStore.conversations.filter(c => c.favorite).length)
+  const visibleConversations = computed(() => {
+    if (filterMode.value === 'unread') return chatStore.conversations.filter(c => c.unreadCount)
+    if (filterMode.value === 'favorites') return chatStore.conversations.filter(c => c.favorite)
+    return chatStore.conversations
+  })
+
+  async function toggleFavorite(c) {
+    const next = !c.favorite
+    c.favorite = next // ottimistico: la stella risponde subito al tocco
+    try {
+      await chatStore.toggleFavorite(c._id, next)
+    } catch {
+      c.favorite = !next
+    }
+  }
 
   // ricerca amici per inviare richiesta direttamente dal pannello chat
   const query = ref('')
@@ -554,11 +582,23 @@
   .member-name { @apply truncate flex-1 min-w-0; }
 
   .conversations-list {
-    @apply flex flex-col gap-1;
+    @apply flex flex-col;
   }
 
   .conversation-row {
-    @apply flex items-center gap-3 bg-transparent border-none text-left w-full px-2 py-2.5 rounded-sm cursor-pointer hover:bg-surface-2 transition-colors;
+    @apply flex items-center gap-3 px-2 rounded-sm cursor-pointer hover:bg-surface-2 transition-colors;
+  }
+  .conversation-row:focus-visible {
+    @apply outline-none ring-2 ring-ocean;
+  }
+
+  /* Il divisore parte dopo l'avatar (come nelle app di messaggistica più
+     comuni): sta sul contenuto, non sulla riga intera, e sparisce sull'ultima. */
+  .conversation-body {
+    @apply flex items-center gap-3 flex-1 min-w-0 border-b border-border py-2.5;
+  }
+  .conversation-row:last-child .conversation-body {
+    @apply border-b-0;
   }
 
   .conversation-info {
@@ -586,6 +626,13 @@
     @apply flex flex-col items-end gap-1 shrink-0 self-stretch;
   }
 
+  .conversation-favorite {
+    @apply flex items-center justify-center w-5 h-5 text-muted bg-transparent border-none cursor-pointer p-0 hover:text-sand transition-colors;
+  }
+  .conversation-favorite.active {
+    @apply text-sand;
+  }
+
   .conversation-time {
     @apply text-[0.7rem] text-muted;
   }
@@ -595,11 +642,11 @@
   }
 
   .conversation-avatar {
-    @apply w-14 h-14 rounded-full object-cover shrink-0;
+    @apply w-14 h-14 rounded-full object-cover shrink-0 my-2.5;
   }
 
   .conversation-avatar-placeholder {
-    @apply w-14 h-14 rounded-full border border-ocean text-ocean flex items-center justify-center text-base font-bold shrink-0;
+    @apply w-14 h-14 rounded-full border border-ocean text-ocean flex items-center justify-center text-base font-bold shrink-0 my-2.5;
     background: var(--ocean-glow);
   }
 
