@@ -45,6 +45,11 @@
       </div>
 
       <p v-else class="text-muted text-sm">{{ t('market.external.empty') }}</p>
+
+      <!-- Dettaglio errore reale (token/API eBay), visibile solo agli admin -->
+      <p v-if="store.externalError && auth.user?.role === 'admin'" class="external-admin-error text-sm mt-2">
+        {{ t('market.external.adminError', { error: store.externalError }) }}
+      </p>
     </section>
   </div>
 </template>
@@ -54,6 +59,7 @@ import { ref, computed, watch, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { Package, ExternalLink, Filter } from 'lucide-vue-next'
 import { useMarketStore } from '../stores/market.js'
+import { useAuthStore } from '../stores/auth.js'
 import { useInfiniteScroll } from '../composables/useInfiniteScroll.js'
 import { useDebouncedFn } from '../composables/useDebouncedFn.js'
 import ListingCard         from '../components/market/ListingCard.vue'
@@ -63,6 +69,7 @@ import InfiniteSentinel    from '../components/InfiniteSentinel.vue'
 
 const { t } = useI18n()
 const store = useMarketStore()
+const auth  = useAuthStore()
 
 const filters = ref({ search: '', category: '', condition: '', sellerType: '', location: '', priceMin: '', priceMax: '' })
 const zip = ref('')
@@ -143,5 +150,6 @@ onMounted(() => {
 .external-section { @apply mt-8; }
 .external-hr { @apply border-border mb-6; }
 .external-heading { @apply font-bold text-sm uppercase tracking-wide mb-1 text-sand; }
+.external-admin-error { @apply text-danger; }
 .icon-inline { display: inline-flex; align-items: center; gap: .4rem; }
 </style>
