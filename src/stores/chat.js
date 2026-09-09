@@ -84,6 +84,13 @@ export const useChatStore = defineStore('chat', () => {
     try { await api.post(`/chat/${conversationId}/read`) } catch (e) { /* non critico */ }
   }
 
+  async function toggleFavorite(conversationId, favorite) {
+    const { data } = await api.patch(`/chat/${conversationId}/favorite`, { favorite })
+    const c = conversations.value.find(c => c._id === conversationId)
+    if (c) c.favorite = data.favorite
+    return data.favorite
+  }
+
   async function editMessage(messageId, body) {
     try {
       const { data } = await api.patch(`/chat/messages/${messageId}`, { body })
@@ -129,6 +136,6 @@ export const useChatStore = defineStore('chat', () => {
   return {
     conversations, messages, unreadCount, loading, error,
     fetchConversations, fetchUnreadCount, openConversationWith, fetchMessages, sendMessage, sendMedia, sendLocation,
-    markRead, editMessage, deleteMessage, applyUpdated, applyDeleted, setUnreadCount
+    markRead, toggleFavorite, editMessage, deleteMessage, applyUpdated, applyDeleted, setUnreadCount
   }
 })

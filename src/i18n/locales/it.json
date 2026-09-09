@@ -214,8 +214,12 @@
 		"filters": {
 			"all": "Tutte",
 			"unread": "Da leggere",
-			"noneUnread": "Nessuna conversazione da leggere"
+			"favorites": "Preferiti",
+			"noneUnread": "Nessuna conversazione da leggere",
+			"noneFavorites": "Nessuna conversazione tra i preferiti"
 		},
+		"favorite": "Aggiungi ai preferiti",
+		"unfavorite": "Rimuovi dai preferiti",
 		"yesterday": "Ieri",
 		"messagePlaceholder": "Scrivi un messaggio...",
 		"send": "Invia",
