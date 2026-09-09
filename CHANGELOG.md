@@ -1,3 +1,10 @@
+# [1.21.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.20.0...client-v1.21.0) (2026-09-09)
+
+
+### Features
+
+* chat di gruppo (client) ([ed3da46](https://github.com/ziobob94/fishlog-client/commit/ed3da46c93000a73516ee17d669407d101ae6abb))
+
 # [1.20.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.19.0...client-v1.20.0) (2026-09-09)
 
 
