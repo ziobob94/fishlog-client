@@ -1,3 +1,10 @@
+## [1.17.2](https://github.com/ziobob94/fishlog-client/compare/client-v1.17.1...client-v1.17.2) (2026-09-09)
+
+
+### Bug Fixes
+
+* mostra agli admin il dettaglio errore della ricerca eBay del market ([3eb4c89](https://github.com/ziobob94/fishlog-client/commit/3eb4c89032b8fd9210e486dc4a67226aa37eb524))
+
 ## [1.17.1](https://github.com/ziobob94/fishlog-client/compare/client-v1.17.0...client-v1.17.1) (2026-09-08)
 
 
