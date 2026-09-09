@@ -3,12 +3,15 @@
     <!-- Lista conversazioni -->
     <template v-if="!route.params.userId">
       <div class="page-header">
-        <input
-          v-model="query" type="text" class="chat-search"
-          :placeholder="t('chat.search.placeholder')" @input="onSearch"
-        />
-        <RouterLink to="/friends" class="btn btn-ghost btn-sm shrink-0">
-          <Users :size="16" /> {{ t('chat.friendsLink') }}
+        <div class="chat-search-wrap">
+          <Search :size="16" class="chat-search-icon" />
+          <input
+            v-model="query" type="text" class="chat-search"
+            :placeholder="t('chat.search.placeholder')" @input="onSearch"
+          />
+        </div>
+        <RouterLink to="/friends" class="icon-btn shrink-0" :title="t('chat.friendsLink')">
+          <Users :size="18" />
         </RouterLink>
       </div>
 
@@ -41,6 +44,17 @@
       </div>
 
       <template v-else>
+        <div v-if="chatStore.conversations.length" class="tabs" role="tablist">
+          <button
+            type="button" role="tab" :aria-selected="!unreadOnly"
+            class="tab-pill" :class="{ active: !unreadOnly }" @click="unreadOnly = false"
+          >{{ t('chat.filters.all') }}</button>
+          <button
+            type="button" role="tab" :aria-selected="unreadOnly"
+            class="tab-pill" :class="{ active: unreadOnly }" @click="unreadOnly = true"
+          >{{ t('chat.filters.unread') }}<span v-if="unreadConversationsCount"> {{ unreadConversationsCount }}</span></button>
+        </div>
+
         <div v-if="chatStore.loading" class="state-center"><div class="spinner"></div></div>
 
         <div v-else-if="!chatStore.conversations.length" class="state-center">
@@ -48,15 +62,26 @@
           <p class="text-muted mt-1">{{ t('chat.empty') }}</p>
         </div>
 
+        <div v-else-if="!visibleConversations.length" class="state-center">
+          <p class="text-muted">{{ t('chat.filters.noneUnread') }}</p>
+        </div>
+
         <div v-else class="conversations-list">
-          <button v-for="c in chatStore.conversations" :key="c._id" class="conversation-row" @click="goToThread(c.user._id)">
-            <img v-if="c.user?.avatar" :src="c.user.avatar" class="mini-avatar" />
-            <span v-else class="mini-placeholder">{{ initials(c.user) }}</span>
+          <button v-for="c in visibleConversations" :key="c._id" class="conversation-row" @click="goToThread(c.user._id)">
+            <img v-if="c.user?.avatar" :src="c.user.avatar" class="conversation-avatar" />
+            <span v-else class="conversation-avatar-placeholder">{{ initials(c.user) }}</span>
             <div class="conversation-info">
-              <span class="conversation-name">{{ c.user?.displayName || c.user?.email }}</span>
-              <span class="conversation-preview">{{ previewText(c.lastMessage) }}</span>
+              <span class="conversation-name" :class="{ unread: c.unreadCount }">{{ c.user?.displayName || c.user?.email }}</span>
+              <span class="conversation-preview" :class="{ unread: c.unreadCount }">
+                <CheckCheck v-if="messageTick(c) === 'read'" :size="14" class="tick tick-read shrink-0" />
+                <Check v-else-if="messageTick(c) === 'sent'" :size="14" class="tick shrink-0" />
+                <span class="conversation-preview-text">{{ previewText(c.lastMessage) }}</span>
+              </span>
             </div>
-            <span v-if="c.unreadCount" class="badge badge-ocean">{{ c.unreadCount }}</span>
+            <div class="conversation-meta">
+              <span class="conversation-time">{{ formatRelativeTime(c.lastMessageAt) }}</span>
+              <span v-if="c.unreadCount" class="badge badge-ocean conversation-badge">{{ c.unreadCount }}</span>
+            </div>
           </button>
         </div>
       </template>
@@ -185,7 +210,7 @@
   import { ref, reactive, computed, watch, onMounted, onBeforeUnmount, nextTick } from 'vue'
   import { useRoute, useRouter, RouterLink } from 'vue-router'
   import { useI18n } from 'vue-i18n'
-  import { MessagesSquare, AlertTriangle, Users, Paperclip, Mic, MapPin, FileText, Check, CheckCheck, Pencil, Trash2, Ban, X } from 'lucide-vue-next'
+  import { MessagesSquare, AlertTriangle, Users, Search, Paperclip, Mic, MapPin, FileText, Check, CheckCheck, Pencil, Trash2, Ban, X } from 'lucide-vue-next'
   import { useChatStore } from '../stores/chat.js'
   import { useFriendStore } from '../stores/friends.js'
   import { useUserStore } from '../stores/users.js'
@@ -294,6 +319,30 @@
     return new Date(date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
   }
 
+  // Oggi → ora, ieri → "Ieri", ultima settimana → giorno, altrimenti data:
+  // stesse convenzioni delle app di chat più comuni per la lista conversazioni.
+  function formatRelativeTime(date) {
+    if (!date) return ''
+    const d = new Date(date)
+    const startOfDay = (x) => new Date(x.getFullYear(), x.getMonth(), x.getDate())
+    const diffDays = Math.round((startOfDay(new Date()) - startOfDay(d)) / 86400000)
+
+    if (diffDays === 0) return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    if (diffDays === 1) return t('chat.yesterday')
+    if (diffDays < 7) return d.toLocaleDateString('it-IT', { weekday: 'short' })
+    return d.toLocaleDateString('it-IT', { day: '2-digit', month: '2-digit' })
+  }
+
+  // Spunta di stato solo sull'ultimo messaggio della conversazione, e solo
+  // se l'ho mandato io: "letto" (doppia, blu) o "inviato" (singola).
+  function messageTick(c) {
+    const msg = c.lastMessage
+    if (!msg || msg.deleted) return null
+    const senderId = msg.sender?._id || msg.sender
+    if (String(senderId) !== String(auth.user?._id)) return null
+    return msg.readAt ? 'read' : 'sent'
+  }
+
   function formatSize(bytes) {
     if (!bytes) return ''
     const units = ['B', 'KB', 'MB', 'GB']
@@ -308,6 +357,7 @@
 
   function previewText(lastMessage) {
     if (!lastMessage) return ''
+    if (lastMessage.deleted) return t('chat.deletedMessage')
     switch (lastMessage.type) {
       case 'image': return '📷 Foto'
       case 'video': return '🎥 Video'
@@ -317,6 +367,13 @@
       default: return lastMessage.body
     }
   }
+
+  // filtro "Da leggere" sopra la lista conversazioni
+  const unreadOnly = ref(false)
+  const unreadConversationsCount = computed(() => chatStore.conversations.filter(c => c.unreadCount).length)
+  const visibleConversations = computed(() =>
+    unreadOnly.value ? chatStore.conversations.filter(c => c.unreadCount) : chatStore.conversations
+  )
 
   // ricerca amici per inviare richiesta direttamente dal pannello chat
   const query = ref('')
@@ -453,9 +510,26 @@
     @apply bg-danger/10 border border-danger rounded-sm text-danger px-4 py-3 mb-4 inline-flex items-center gap-2;
   }
 
-  .chat-search {
-    @apply flex-1;
+  .chat-search-wrap {
+    @apply relative flex-1;
   }
+
+  .chat-search-icon {
+    @apply absolute left-3 top-1/2 -translate-y-1/2 text-muted pointer-events-none;
+  }
+
+  .chat-search {
+    @apply w-full rounded-full bg-surface-2 border-none pl-9 pr-4 py-2 text-sm;
+  }
+
+  .tabs {
+    @apply flex gap-1 p-1 mb-3 bg-surface-2 rounded-full;
+  }
+  .tab-pill {
+    @apply inline-flex items-center gap-1 text-xs font-semibold text-muted bg-transparent border-none rounded-full cursor-pointer px-3 py-1.5 transition-colors;
+  }
+  .tab-pill:hover { @apply text-foam; }
+  .tab-pill.active { @apply text-ink bg-ocean; }
 
   .search-results {
     @apply flex flex-col gap-1;
@@ -492,11 +566,41 @@
   }
 
   .conversation-name {
-    @apply text-sm font-semibold text-foam truncate;
+    @apply text-sm font-medium text-foam truncate;
+  }
+  .conversation-name.unread {
+    @apply font-bold;
   }
 
   .conversation-preview {
-    @apply text-xs text-muted truncate;
+    @apply flex items-center gap-1 text-xs text-muted min-w-0;
+  }
+  .conversation-preview.unread {
+    @apply text-foam font-medium;
+  }
+  .conversation-preview-text {
+    @apply truncate min-w-0;
+  }
+
+  .conversation-meta {
+    @apply flex flex-col items-end gap-1 shrink-0 self-stretch;
+  }
+
+  .conversation-time {
+    @apply text-[0.7rem] text-muted;
+  }
+
+  .conversation-badge {
+    @apply mt-auto;
+  }
+
+  .conversation-avatar {
+    @apply w-14 h-14 rounded-full object-cover shrink-0;
+  }
+
+  .conversation-avatar-placeholder {
+    @apply w-14 h-14 rounded-full border border-ocean text-ocean flex items-center justify-center text-base font-bold shrink-0;
+    background: var(--ocean-glow);
   }
 
   .mini-avatar {
