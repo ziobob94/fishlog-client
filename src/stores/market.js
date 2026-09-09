@@ -15,6 +15,10 @@ export const useMarketStore = defineStore('market', () => {
   const externalLoading   = ref(false)
   const externalError     = ref('')
 
+  const shops           = ref([])
+  const shopsLoading     = ref(false)
+  const shopsPagination = ref({ page: 1, limit: 20, total: 0, pages: 0 })
+
   async function fetchListings(params = {}, { append = false } = {}) {
     loading.value = true
     try {
@@ -41,6 +45,18 @@ export const useMarketStore = defineStore('market', () => {
   async function fetchShop(userId) {
     const { data } = await api.get(`/listings/shop/${userId}`)
     return data
+  }
+
+  async function fetchShops(params = {}, { append = false } = {}) {
+    shopsLoading.value = true
+    try {
+      const { data } = await api.get('/listings/shops', { params })
+      shops.value = append ? [...shops.value, ...data.data] : data.data
+      shopsPagination.value = data.pagination
+      return shopsPagination.value.pages
+    } finally {
+      shopsLoading.value = false
+    }
   }
 
   async function fetchExternal(params = {}) {
@@ -93,7 +109,8 @@ export const useMarketStore = defineStore('market', () => {
   return {
     listings, mine, current, categories, loading, pagination,
     external, externalConfigured, externalLoading, externalError,
-    fetchListings, fetchMine, fetchListing, fetchShop, fetchCategories, fetchExternal,
+    shops, shopsLoading, shopsPagination,
+    fetchListings, fetchMine, fetchListing, fetchShop, fetchShops, fetchCategories, fetchExternal,
     createListing, updateListing, deleteListing, uploadMedia, deleteMedia
   }
 })

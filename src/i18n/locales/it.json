@@ -778,11 +778,22 @@
 		"newListing": "Nuovo annuncio",
 		"contactSeller": "Contatta venditore",
 		"deleteConfirm": "Eliminare questo annuncio?",
+		"tabs": {
+			"listings": "Annunci",
+			"shops": "Negozi"
+		},
 		"empty": {
 			"text": "Nessun annuncio: prova a modificare i filtri, oppure pubblica il primo"
 		},
 		"mine": {
 			"empty": "Non hai ancora pubblicato nessun annuncio"
+		},
+		"shops": {
+			"searchPlaceholder": "Cerca negozio...",
+			"empty": "Nessun negozio trovato",
+			"emptyListings": "Questo negozio non ha ancora annunci attivi",
+			"notFound": "Negozio non trovato",
+			"listingsCount": "{n} annunci"
 		},
 		"external": {
 			"notConfigured": "Integrazione eBay non ancora attiva su questo server",

@@ -1,7 +1,19 @@
 <template>
   <div>
     <div class="market-toolbar">
+      <div class="tabs" role="tablist">
+        <button
+          type="button" role="tab" :aria-selected="tab === 'listings'"
+          class="tab-pill" :class="{ active: tab === 'listings' }" @click="tab = 'listings'"
+        ><Package :size="14" /> {{ t('market.tabs.listings') }}</button>
+        <button
+          type="button" role="tab" :aria-selected="tab === 'shops'"
+          class="tab-pill" :class="{ active: tab === 'shops' }" @click="tab = 'shops'"
+        ><Store :size="14" /> {{ t('market.tabs.shops') }}</button>
+      </div>
+
       <button
+        v-if="tab === 'listings'"
         type="button" class="btn btn-ghost btn-sm" :class="{ 'btn-toggle-active': showFilters }"
         :aria-pressed="showFilters" @click="showFilters = !showFilters"
       >
@@ -10,38 +22,64 @@
       </button>
     </div>
 
-    <ListingFilters v-if="showFilters" v-model="filters" :categories="store.categories" @reset="resetFilters" />
+    <template v-if="tab === 'listings'">
+      <ListingFilters v-if="showFilters" v-model="filters" :categories="store.categories" @reset="resetFilters" />
 
-    <div v-if="showSpinner" class="state-center">
-      <div class="spinner"></div>
-    </div>
+      <div v-if="showSpinner" class="state-center">
+        <div class="spinner"></div>
+      </div>
 
-    <div v-else-if="!allItems.length" class="market-empty">
-      <Package :size="20" />
-      <p>{{ t('market.empty.text') }}</p>
-    </div>
+      <div v-else-if="!allItems.length" class="market-empty">
+        <Package :size="20" />
+        <p>{{ t('market.empty.text') }}</p>
+      </div>
 
-    <!-- Un'unica vetrina: annunci fishlog (privati e negozi) e risultati eBay
-         mescolati nella stessa griglia, ognuno etichettato dalla sua card
-         (badge "Negozio" o "eBay") invece che separati in sezioni diverse. -->
-    <div v-else class="listings-grid">
-      <template v-for="item in allItems" :key="item.key">
-        <ListingCard v-if="item.source === 'internal'" :listing="item.listing" />
-        <ExternalListingCard v-else :listing="item.listing" />
+      <!-- Un'unica vetrina: annunci fishlog (privati e negozi) e risultati eBay
+           mescolati nella stessa griglia, ognuno etichettato dalla sua card
+           (badge "Negozio" o "eBay") invece che separati in sezioni diverse. -->
+      <div v-else class="listings-grid">
+        <template v-for="item in allItems" :key="item.key">
+          <ListingCard v-if="item.source === 'internal'" :listing="item.listing" />
+          <ExternalListingCard v-else :listing="item.listing" />
+        </template>
+      </div>
+
+      <InfiniteSentinel :active="hasMore" :loading="loadingMore" @trigger="loadMore" />
+
+      <!-- Diagnostica eBay, solo per admin: non è mai un motivo per mostrare
+           meno annunci agli utenti normali, quindi non compare per loro. -->
+      <template v-if="auth.user?.role === 'admin'">
+        <p v-if="showExternalNotConfiguredHint" class="external-admin-hint text-sm mt-3">
+          {{ t('market.external.notConfigured') }}
+        </p>
+        <p v-if="store.externalError" class="external-admin-hint external-admin-error text-sm mt-2">
+          {{ t('market.external.adminError', { error: store.externalError }) }}
+        </p>
       </template>
-    </div>
+    </template>
 
-    <InfiniteSentinel :active="hasMore" :loading="loadingMore" @trigger="loadMore" />
+    <!-- Tab Negozi: elenco delle vetrine verificate, separato dagli annunci
+         perché qui si sfoglia per venditore invece che per articolo. -->
+    <template v-else>
+      <input
+        v-model="shopSearch" type="search" :placeholder="t('market.shops.searchPlaceholder')"
+        class="shop-search mb-4"
+      />
 
-    <!-- Diagnostica eBay, solo per admin: non è mai un motivo per mostrare
-         meno annunci agli utenti normali, quindi non compare per loro. -->
-    <template v-if="auth.user?.role === 'admin'">
-      <p v-if="showExternalNotConfiguredHint" class="external-admin-hint text-sm mt-3">
-        {{ t('market.external.notConfigured') }}
-      </p>
-      <p v-if="store.externalError" class="external-admin-hint external-admin-error text-sm mt-2">
-        {{ t('market.external.adminError', { error: store.externalError }) }}
-      </p>
+      <div v-if="shopsInfiniteLoading" class="state-center">
+        <div class="spinner"></div>
+      </div>
+
+      <div v-else-if="!store.shops.length" class="market-empty">
+        <Store :size="20" />
+        <p>{{ t('market.shops.empty') }}</p>
+      </div>
+
+      <div v-else class="shops-grid">
+        <ShopCard v-for="s in store.shops" :key="s._id" :shop="s" />
+      </div>
+
+      <InfiniteSentinel :active="shopsHasMore" :loading="shopsLoadingMore" @trigger="shopsLoadMore" />
     </template>
   </div>
 </template>
@@ -49,7 +87,7 @@
 <script setup>
 import { ref, computed, watch, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { Package, Filter } from 'lucide-vue-next'
+import { Package, Filter, Store } from 'lucide-vue-next'
 import { useMarketStore } from '../stores/market.js'
 import { useAuthStore } from '../stores/auth.js'
 import { useInfiniteScroll } from '../composables/useInfiniteScroll.js'
@@ -57,11 +95,14 @@ import { useDebouncedFn } from '../composables/useDebouncedFn.js'
 import ListingCard         from '../components/market/ListingCard.vue'
 import ListingFilters      from '../components/market/ListingFilters.vue'
 import ExternalListingCard from '../components/market/ExternalListingCard.vue'
+import ShopCard            from '../components/market/ShopCard.vue'
 import InfiniteSentinel    from '../components/InfiniteSentinel.vue'
 
 const { t } = useI18n()
 const store = useMarketStore()
 const auth  = useAuthStore()
+
+const tab = ref('listings')
 
 const filters = ref({ search: '', category: '', condition: '', sellerType: '', location: '', priceMin: '', priceMax: '' })
 const zip = ref('')
@@ -118,6 +159,23 @@ function resetFilters() {
   reset()
 }
 
+// ── tab Negozi ──
+const shopSearch = ref('')
+const shopsPagesRef = computed(() => store.shopsPagination.pages)
+const { loading: shopsInfiniteLoading, loadingMore: shopsLoadingMore, hasMore: shopsHasMore, reset: shopsReset, loadMore: shopsLoadMore } = useInfiniteScroll(
+  (page, { append }) => store.fetchShops({ page, search: shopSearch.value || undefined }, { append }),
+  shopsPagesRef
+)
+
+const debouncedShopsReset = useDebouncedFn(() => shopsReset(), 320)
+watch(shopSearch, debouncedShopsReset)
+
+// Caricati solo alla prima apertura del tab, non al mount della pagina:
+// la maggior parte delle visite al market resta sugli annunci.
+watch(tab, (value) => {
+  if (value === 'shops' && !store.shops.length) shopsReset()
+})
+
 // Codice postale via geolocalizzazione, solo per stimare meglio le spese di
 // consegna nei risultati eBay: se l'utente nega il permesso, niente male,
 // la ricerca esterna funziona comunque senza (solo meno "localizzata").
@@ -144,7 +202,16 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.market-toolbar { @apply flex items-center gap-2 mb-4; }
+.market-toolbar { @apply flex items-center justify-between gap-2 mb-4 flex-wrap; }
+
+.tabs {
+  @apply flex gap-1 p-1 bg-surface-2 rounded-full;
+}
+.tab-pill {
+  @apply inline-flex items-center gap-1.5 text-xs font-semibold text-muted bg-transparent border-none rounded-full cursor-pointer px-3 py-1.5 transition-colors;
+}
+.tab-pill:hover { @apply text-foam; }
+.tab-pill.active { @apply text-ink bg-ocean; }
 
 .btn-toggle-active {
   @apply text-ocean bg-ocean/10;
@@ -154,10 +221,12 @@ onMounted(() => {
   @apply inline-flex items-center justify-center min-w-[1.1rem] h-[1.1rem] rounded-full bg-ocean text-white text-[0.65rem] font-bold px-1;
 }
 
-.listings-grid {
+.listings-grid, .shops-grid {
   @apply grid gap-4;
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
 }
+
+.shop-search { @apply max-w-xs; }
 
 .market-empty {
   @apply flex items-center justify-center gap-2 text-muted text-sm py-8;
