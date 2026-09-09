@@ -3,68 +3,63 @@
     <!-- Lista conversazioni -->
     <template v-if="!route.params.userId">
       <div class="page-header">
-        <RouterLink to="/friends" class="btn btn-ghost btn-sm ml-auto">
+        <input
+          v-model="query" type="text" class="chat-search"
+          :placeholder="t('chat.search.placeholder')" @input="onSearch"
+        />
+        <RouterLink to="/friends" class="btn btn-ghost btn-sm shrink-0">
           <Users :size="16" /> {{ t('chat.friendsLink') }}
         </RouterLink>
       </div>
 
-      <!-- Aggiungi un amico: ricerca utenti e invio richiesta -->
-      <div class="card search-card">
-        <label>{{ t('chat.addFriend.label') }}</label>
-        <input v-model="query" type="text" :placeholder="t('chat.addFriend.placeholder')" @input="onSearch" />
-        <ul v-if="query.trim().length >= 2" class="search-results">
-          <li v-for="u in userStore.results" :key="u._id" class="search-result-row">
+      <!-- Ricerca attiva: stessa lista sia per amici già in chat (aprono il
+           thread) sia per persone nuove (richiesta di amicizia). Sostituisce
+           la lista conversazioni finché non si svuota la ricerca. -->
+      <div v-if="query.trim().length >= 2" class="search-results">
+        <template v-for="u in userStore.results" :key="u._id">
+          <button v-if="statusFor(u._id) === 'friends'" type="button" class="search-result-row search-result-clickable" @click="goToThread(u._id)">
+            <img v-if="u.avatar" :src="u.avatar" class="mini-avatar" />
+            <span v-else class="mini-placeholder">{{ initials(u) }}</span>
+            <span class="member-name">{{ u.displayName || u.email }}</span>
+            <span class="badge badge-ocean ml-auto">{{ t('chat.search.openChat') }}</span>
+          </button>
+
+          <div v-else class="search-result-row">
             <RouterLink :to="`/users/${u._id}`" class="member-info">
               <img v-if="u.avatar" :src="u.avatar" class="mini-avatar" />
               <span v-else class="mini-placeholder">{{ initials(u) }}</span>
               <span class="member-name">{{ u.displayName || u.email }}</span>
             </RouterLink>
             <button
-              class="btn btn-secondary btn-sm"
-              :disabled="requestStatus[u._id] === 'sending'"
-              v-if="!statusFor(u._id)"
-              @click="sendRequest(u)"
+              v-if="!statusFor(u._id)" class="btn btn-secondary btn-sm"
+              :disabled="requestStatus[u._id] === 'sending'" @click="sendRequest(u)"
             >{{ t('friends.actions.add') }}</button>
             <span v-else class="badge badge-ocean">{{ t(`friends.status.${statusFor(u._id)}`) }}</span>
-          </li>
-          <li v-if="!userStore.loading && !userStore.results.length" class="no-results">{{ t('chat.addFriend.noResults') }}</li>
-        </ul>
+          </div>
+        </template>
+        <p v-if="!userStore.loading && !userStore.results.length" class="no-results">{{ t('chat.search.noResults') }}</p>
       </div>
 
-      <!-- Nuova chat: amici senza conversazione ancora aperta -->
-      <div v-if="startableFriends.length" class="card new-chat-card">
-        <label>{{ t('chat.newChat.label') }}</label>
-        <div class="friend-picker">
-          <button v-for="f in startableFriends" :key="f._id" class="friend-chip" @click="goToThread(f._id)">
-            <img v-if="f.avatar" :src="f.avatar" class="mini-avatar" />
-            <span v-else class="mini-placeholder">{{ initials(f) }}</span>
-            {{ f.displayName || f.email }}
+      <template v-else>
+        <div v-if="chatStore.loading" class="state-center"><div class="spinner"></div></div>
+
+        <div v-else-if="!chatStore.conversations.length" class="state-center">
+          <div style="font-size:3rem; display:flex; justify-content:center"><MessagesSquare :size="48" /></div>
+          <p class="text-muted mt-1">{{ t('chat.empty') }}</p>
+        </div>
+
+        <div v-else class="conversations-list">
+          <button v-for="c in chatStore.conversations" :key="c._id" class="conversation-row" @click="goToThread(c.user._id)">
+            <img v-if="c.user?.avatar" :src="c.user.avatar" class="mini-avatar" />
+            <span v-else class="mini-placeholder">{{ initials(c.user) }}</span>
+            <div class="conversation-info">
+              <span class="conversation-name">{{ c.user?.displayName || c.user?.email }}</span>
+              <span class="conversation-preview">{{ previewText(c.lastMessage) }}</span>
+            </div>
+            <span v-if="c.unreadCount" class="badge badge-ocean">{{ c.unreadCount }}</span>
           </button>
         </div>
-      </div>
-      <div v-else-if="!friendStore.friends.length" class="card new-chat-card">
-        <label>{{ t('chat.newChat.label') }}</label>
-        <p class="text-muted mt-1">{{ t('chat.newChat.noFriends') }}</p>
-      </div>
-
-      <div v-if="chatStore.loading" class="state-center"><div class="spinner"></div></div>
-
-      <div v-else-if="!chatStore.conversations.length" class="state-center">
-        <div style="font-size:3rem; display:flex; justify-content:center"><MessagesSquare :size="48" /></div>
-        <p class="text-muted mt-1">{{ t('chat.empty') }}</p>
-      </div>
-
-      <div v-else class="conversations-list">
-        <button v-for="c in chatStore.conversations" :key="c._id" class="conversation-row" @click="goToThread(c.user._id)">
-          <img v-if="c.user?.avatar" :src="c.user.avatar" class="mini-avatar" />
-          <span v-else class="mini-placeholder">{{ initials(c.user) }}</span>
-          <div class="conversation-info">
-            <span class="conversation-name">{{ c.user?.displayName || c.user?.email }}</span>
-            <span class="conversation-preview">{{ previewText(c.lastMessage) }}</span>
-          </div>
-          <span v-if="c.unreadCount" class="badge badge-ocean">{{ c.unreadCount }}</span>
-        </button>
-      </div>
+      </template>
     </template>
 
     <!-- Thread con un amico -->
@@ -357,13 +352,6 @@
 
   const friend = computed(() => friendStore.friends.find(f => f._id === route.params.userId))
 
-  // Amici con cui non è ancora stata scambiata nessuna conversazione: solo
-  // quelli compaiono nel "nuova chat", gli altri sono già nella lista sotto.
-  const startableFriends = computed(() => {
-    const withThread = new Set(chatStore.conversations.map(c => c.user._id))
-    return friendStore.friends.filter(f => !withThread.has(f._id))
-  })
-
   function initials(u) {
     const name = u?.displayName || u?.email || '?'
     return name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2)
@@ -465,18 +453,22 @@
     @apply bg-danger/10 border border-danger rounded-sm text-danger px-4 py-3 mb-4 inline-flex items-center gap-2;
   }
 
-  .search-card {
-    @apply mb-4 relative;
+  .chat-search {
+    @apply flex-1;
   }
 
   .search-results {
-    @apply flex flex-col gap-1 mt-2 max-h-64 overflow-y-auto;
+    @apply flex flex-col gap-1;
   }
 
   .search-result-row {
-    @apply flex items-center justify-between gap-2 py-1.5;
+    @apply flex items-center gap-2 px-2 py-2.5 rounded-sm;
   }
   .search-result-row .btn, .search-result-row .badge { @apply shrink-0 whitespace-nowrap; }
+
+  .search-result-clickable {
+    @apply bg-transparent border-none text-left w-full cursor-pointer hover:bg-surface-2 transition-colors;
+  }
 
   .no-results {
     @apply text-muted text-sm py-2;
@@ -485,20 +477,7 @@
   .member-info {
     @apply flex items-center gap-2 text-sm text-foam no-underline min-w-0 flex-1;
   }
-  .member-info .member-name { @apply truncate; }
-
-  .new-chat-card {
-    @apply mb-4;
-  }
-
-  .friend-picker {
-    @apply flex flex-wrap gap-2 mt-2;
-  }
-
-  .friend-chip {
-    @apply flex items-center gap-2 bg-surface-2 border border-border rounded-full text-sm text-foam px-3 py-1.5 cursor-pointer hover:border-ocean transition-colors max-w-full;
-  }
-  .friend-chip span:last-child { @apply truncate; }
+  .member-name { @apply truncate flex-1 min-w-0; }
 
   .conversations-list {
     @apply flex flex-col gap-1;
