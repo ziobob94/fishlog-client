@@ -789,7 +789,8 @@
 			"title": "Annunci simili da eBay",
 			"hint": "Pochi annunci disponibili su fishlog per questa ricerca: ecco alcuni risultati simili trovati su eBay",
 			"notConfigured": "Integrazione eBay non ancora attiva su questo server",
-			"empty": "Nessun risultato trovato su eBay"
+			"empty": "Nessun risultato trovato su eBay",
+			"adminError": "Solo per admin: la ricerca eBay ha dato errore ({error})"
 		},
 		"categories": {
 			"canne": "Canne",
