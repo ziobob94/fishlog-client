@@ -128,8 +128,15 @@ const externalPending = computed(() => externalActive.value && store.externalLoa
 const showSpinner = computed(() => infiniteLoading.value || (!allItems.value.length && externalPending.value))
 const showExternalNotConfiguredHint = computed(() => externalActive.value && !store.externalLoading && !store.externalConfigured)
 
-const pagesRef = computed(() => store.pagination.pages)
-const { loading: infiniteLoading, loadingMore, hasMore, reset, loadMore } = useInfiniteScroll(
+// Finché eBay potrebbe avere altre pagine, il totale pagine "visto"
+// dall'infinite scroll resta oltre la pagina corrente anche se il market
+// interno è già esaurito, così lo scroll continua a chiedere altri
+// risultati eBay invece di fermarsi al primo blocco da 12.
+const pagesRef = computed(() => {
+  if (!externalActive.value || !store.externalHasMore) return store.pagination.pages
+  return Math.max(store.pagination.pages, page.value + 1)
+})
+const { page, loading: infiniteLoading, loadingMore, hasMore, reset, loadMore } = useInfiniteScroll(
   async (page, { append }) => {
     await store.fetchListings({
       page,
@@ -141,10 +148,18 @@ const { loading: infiniteLoading, loadingMore, hasMore, reset, loadMore } = useI
       priceMin:   filters.value.priceMin   || undefined,
       priceMax:   filters.value.priceMax   || undefined
     }, { append })
-    // I risultati eBay sono un fallback per lo stesso set di filtri: vanno
-    // ricaricati solo al reset (nuova ricerca), non ad ogni pagina in più.
-    if (!append && store.pagination.total < 4) {
-      store.fetchExternal({ search: filters.value.search || undefined, zip: zip.value || undefined })
+    // I risultati eBay sono un fallback per lo stesso set di filtri, con la
+    // propria paginazione (stessi filtri applicati, pagina per pagina).
+    if (externalActive.value) {
+      await store.fetchExternal({
+        page,
+        search:    filters.value.search    || undefined,
+        category:  filters.value.category  || undefined,
+        condition: filters.value.condition || undefined,
+        priceMin:  filters.value.priceMin  || undefined,
+        priceMax:  filters.value.priceMax  || undefined,
+        zip:       zip.value               || undefined
+      }, { append })
     }
   },
   pagesRef
@@ -188,7 +203,16 @@ function detectZip() {
       const data = await res.json()
       if (data.address?.postcode) {
         zip.value = data.address.postcode
-        if (store.pagination.total < 4) store.fetchExternal({ search: filters.value.search || undefined, zip: zip.value })
+        if (externalActive.value) {
+          store.fetchExternal({
+            search:    filters.value.search    || undefined,
+            category:  filters.value.category  || undefined,
+            condition: filters.value.condition || undefined,
+            priceMin:  filters.value.priceMin  || undefined,
+            priceMax:  filters.value.priceMax  || undefined,
+            zip: zip.value
+          })
+        }
       }
     } catch { /* nessun blocco: la ricerca esterna funziona anche senza zip */ }
   }, () => {}, { timeout: 5000 })
