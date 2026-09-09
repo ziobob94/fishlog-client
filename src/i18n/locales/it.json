@@ -211,6 +211,12 @@
 			"noResults": "Nessun utente trovato",
 			"openChat": "Apri chat"
 		},
+		"filters": {
+			"all": "Tutte",
+			"unread": "Da leggere",
+			"noneUnread": "Nessuna conversazione da leggere"
+		},
+		"yesterday": "Ieri",
 		"messagePlaceholder": "Scrivi un messaggio...",
 		"send": "Invia",
 		"edit": "Modifica",
