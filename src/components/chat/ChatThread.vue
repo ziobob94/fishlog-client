@@ -4,63 +4,66 @@
   <div v-else class="thread">
     <div ref="scrollEl" class="messages-list">
       <div v-if="chatStore.loading && !chatStore.messages.length" class="state-center"><div class="spinner"></div></div>
-      <div
-        v-for="m in chatStore.messages"
-        :key="m._id"
-        class="message-row"
-        :class="{ mine: m.sender?._id === auth.user?._id }"
-      >
-        <div class="message-bubble" :class="{ deleted: m.deleted }">
-          <span v-if="showSender(m)" class="message-sender">{{ m.sender?.displayName || m.sender?.email }}</span>
 
-          <span v-if="m.deleted" class="message-text message-deleted-text">
-            <Ban :size="14" /> {{ t('chat.deletedMessage') }}
-          </span>
+      <template v-for="(m, i) in chatStore.messages" :key="m._id">
+        <div v-if="showDateSeparator(m, i)" class="date-separator"><span>{{ formatDateSeparator(m.createdAt) }}</span></div>
 
-          <template v-else>
-            <span v-if="!m.type || m.type === 'text'" class="message-text">{{ m.body }}</span>
+        <div
+          class="message-row"
+          :class="{ mine: m.sender?._id === auth.user?._id }"
+        >
+          <div class="message-bubble" :class="{ deleted: m.deleted }">
+            <span v-if="showSender(m)" class="message-sender">{{ m.sender?.displayName || m.sender?.email }}</span>
 
-            <a v-else-if="m.type === 'image'" :href="m.media?.url" target="_blank" rel="noopener">
-              <img :src="m.media?.url" class="message-media-image" />
-            </a>
+            <span v-if="m.deleted" class="message-text message-deleted-text">
+              <Ban :size="14" /> {{ t('chat.deletedMessage') }}
+            </span>
 
-            <video v-else-if="m.type === 'video'" :src="m.media?.url" controls class="message-media-video"></video>
+            <template v-else>
+              <span v-if="!m.type || m.type === 'text'" class="message-text">{{ m.body }}</span>
 
-            <audio v-else-if="m.type === 'audio'" :src="m.media?.url" controls class="message-audio"></audio>
+              <a v-else-if="m.type === 'image'" :href="m.media?.url" target="_blank" rel="noopener">
+                <img :src="m.media?.url" class="message-media-image" />
+              </a>
 
-            <a v-else-if="m.type === 'file'" :href="m.media?.url" target="_blank" rel="noopener" class="message-file">
-              <FileText :size="20" />
-              <span class="message-file-info">
-                <span class="message-file-name">{{ m.media?.originalName }}</span>
-                <span class="message-file-size">{{ formatSize(m.media?.size) }}</span>
-              </span>
-            </a>
+              <video v-else-if="m.type === 'video'" :src="m.media?.url" controls class="message-media-video"></video>
 
-            <a v-else-if="m.type === 'location'" :href="mapsLink(m.location)" target="_blank" rel="noopener" class="message-location">
-              <MapDisplay class="message-location-map" :lat="m.location.lat" :lng="m.location.lng" />
-              <span class="message-location-link"><MapPin :size="14" /> {{ t('chat.attach.openMaps') }}</span>
-            </a>
-          </template>
+              <audio v-else-if="m.type === 'audio'" :src="m.media?.url" controls class="message-audio"></audio>
 
-          <span class="message-meta">
-            <span v-if="m.editedAt && !m.deleted" class="message-edited">{{ t('chat.edited') }}</span>
-            {{ formatTime(m.createdAt) }}
-            <template v-if="m.sender?._id === auth.user?._id">
-              <Check v-if="!m.readBy?.length" :size="14" class="tick" />
-              <CheckCheck v-else :size="14" class="tick tick-read" />
+              <a v-else-if="m.type === 'file'" :href="m.media?.url" target="_blank" rel="noopener" class="message-file">
+                <FileText :size="20" />
+                <span class="message-file-info">
+                  <span class="message-file-name">{{ m.media?.originalName }}</span>
+                  <span class="message-file-size">{{ formatSize(m.media?.size) }}</span>
+                </span>
+              </a>
+
+              <a v-else-if="m.type === 'location'" :href="mapsLink(m.location)" target="_blank" rel="noopener" class="message-location">
+                <MapDisplay class="message-location-map" :lat="m.location.lat" :lng="m.location.lng" />
+                <span class="message-location-link"><MapPin :size="14" /> {{ t('chat.attach.openMaps') }}</span>
+              </a>
             </template>
-          </span>
-        </div>
 
-        <div v-if="!m.deleted && m.sender?._id === auth.user?._id" class="message-actions">
-          <button v-if="m.type === 'text'" class="message-action-btn" :title="t('chat.edit')" @click="startEdit(m)">
-            <Pencil :size="13" />
-          </button>
-          <button class="message-action-btn" :title="t('chat.delete')" @click="removeMessage(m._id)">
-            <Trash2 :size="13" />
-          </button>
+            <span class="message-meta">
+              <span v-if="m.editedAt && !m.deleted" class="message-edited">{{ t('chat.edited') }}</span>
+              {{ formatTime(m.createdAt) }}
+              <template v-if="m.sender?._id === auth.user?._id">
+                <Check v-if="!m.readBy?.length" :size="14" class="tick" />
+                <CheckCheck v-else :size="14" class="tick tick-read" />
+              </template>
+            </span>
+          </div>
+
+          <div v-if="!m.deleted && m.sender?._id === auth.user?._id" class="message-actions">
+            <button v-if="m.type === 'text'" class="message-action-btn" :title="t('chat.edit')" @click="startEdit(m)">
+              <Pencil :size="13" />
+            </button>
+            <button class="message-action-btn" :title="t('chat.delete')" @click="removeMessage(m._id)">
+              <Trash2 :size="13" />
+            </button>
+          </div>
         </div>
-      </div>
+      </template>
     </div>
 
     <div v-if="editingId" class="editing-banner">
@@ -222,6 +225,30 @@
     return new Date(date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
   }
 
+  function isSameDay(a, b) {
+    const d1 = new Date(a)
+    const d2 = new Date(b)
+    return d1.getFullYear() === d2.getFullYear() && d1.getMonth() === d2.getMonth() && d1.getDate() === d2.getDate()
+  }
+
+  // Separatore di giornata prima del primo messaggio e ad ogni cambio di
+  // giorno, come nelle app di messaggistica più comuni.
+  function showDateSeparator(m, i) {
+    if (i === 0) return true
+    return !isSameDay(m.createdAt, chatStore.messages[i - 1].createdAt)
+  }
+
+  function formatDateSeparator(date) {
+    const d = new Date(date)
+    const startOfDay = (x) => new Date(x.getFullYear(), x.getMonth(), x.getDate())
+    const diffDays = Math.round((startOfDay(new Date()) - startOfDay(d)) / 86400000)
+
+    if (diffDays === 0) return t('chat.today')
+    if (diffDays === 1) return t('chat.yesterday')
+    if (diffDays < 7) return d.toLocaleDateString('it-IT', { weekday: 'long' })
+    return d.toLocaleDateString('it-IT', { day: '2-digit', month: 'long', year: d.getFullYear() !== new Date().getFullYear() ? 'numeric' : undefined })
+  }
+
   function formatSize(bytes) {
     if (!bytes) return ''
     const units = ['B', 'KB', 'MB', 'GB']
@@ -302,19 +329,31 @@
   }
 
   .messages-list {
-    @apply flex-1 min-h-0 overflow-y-auto flex flex-col gap-2 pr-1;
+    @apply flex-1 min-h-0 overflow-y-auto flex flex-col gap-1.5 pr-1;
+  }
+
+  .date-separator {
+    @apply flex justify-center my-2;
+  }
+
+  .date-separator span {
+    @apply text-[0.7rem] font-medium text-muted bg-surface-2 rounded-full px-2.5 py-1;
   }
 
   .message-row {
     @apply flex items-end gap-1;
   }
 
+  /* row-reverse sposta i pulsanti azione a sinistra della bolla: da solo
+     lascerebbe comunque il gruppo a sinistra dello schermo (il main-start
+     di un row-reverse è a destra), quindi va allineato con justify-start,
+     non flex-end, per finire davvero sul lato destro. */
   .message-row.mine {
-    @apply justify-end flex-row-reverse;
+    @apply justify-start flex-row-reverse;
   }
 
   .message-bubble {
-    @apply max-w-[75%] min-w-[4.5rem] flex flex-col gap-1 bg-surface-2 border border-border rounded-lg px-3 py-2 text-sm text-foam;
+    @apply max-w-[68%] min-w-[2.5rem] flex flex-col gap-0.5 bg-surface-2 border border-border rounded-lg px-2.5 py-1.5 text-sm text-foam;
   }
 
   .message-row.mine .message-bubble {
