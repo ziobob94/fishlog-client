@@ -30,8 +30,8 @@ export default createRouter({
     { path: '/market/new', name: 'market-new', component: () => import('../views/NewListingView.vue') },
     { path: '/market/:id', name: 'market-listing', component: () => import('../views/ListingView.vue') },
     { path: '/market/:id/edit', name: 'market-listing-edit', component: () => import('../views/EditListingView.vue') },
-    { path: '/chat',   name: 'chat',   component: () => import('../views/ChatView.vue') },
-    { path: '/chat/:userId', name: 'chat-thread', component: () => import('../views/ChatView.vue'), meta: { fullHeight: true } },
+    { path: '/chat',   name: 'chat',   component: () => import('../views/ChatView.vue'), meta: { hideBottomNav: true } },
+    { path: '/chat/:userId', name: 'chat-thread', component: () => import('../views/ChatView.vue'), meta: { fullHeight: true, hideBottomNav: true } },
     { path: '/profile', name: 'profile', component: () => import('../views/ProfileView.vue') },
     { path: '/stats',   name: 'stats',   component: () => import('../views/StatsView.vue') },
   ]

@@ -39,4 +39,10 @@ function dismiss() {
          bg-surface border-t border-border px-4 py-3 text-xs text-muted shadow-[0_-4px_24px_rgba(0,0,0,0.25)];
 }
 .storage-notice a { @apply text-ocean hover:underline; }
+
+/* Sotto i 768px c'è anche la bottom nav mobile fissa in fondo allo
+   schermo (AppBottomNav.vue): l'avviso va sopra di lei, non sovrapposto. */
+@media (max-width: 767px) {
+  .storage-notice { bottom: calc(var(--bottom-nav-h) + env(safe-area-inset-bottom)); }
+}
 </style>

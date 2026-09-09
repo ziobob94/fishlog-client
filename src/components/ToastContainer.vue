@@ -38,6 +38,15 @@ const ICONS = {
   z-index: 2000;
 }
 
+/* Sotto i 768px (stessa soglia della bottom nav mobile, vedi
+   AppBottomNav.vue) i toast partirebbero da sotto la barra fissa: li
+   alziamo di conseguenza, includendo l'eventuale safe-area del device. */
+@media (max-width: 767px) {
+  .toast-stack {
+    bottom: calc(var(--bottom-nav-h) + 0.75rem + env(safe-area-inset-bottom));
+  }
+}
+
 .toast {
   align-items: center;
   background: var(--surface, #0a1929);
