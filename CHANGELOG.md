@@ -1,3 +1,10 @@
+# [1.19.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.18.0...client-v1.19.0) (2026-09-09)
+
+
+### Features
+
+* tab "Negozi" nel market e vetrina pubblica di un negozio ([84582c4](https://github.com/ziobob94/fishlog-client/commit/84582c49b238be1da60e5347bd396258a425f1a8))
+
 # [1.18.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.17.2...client-v1.18.0) (2026-09-09)
 
 
