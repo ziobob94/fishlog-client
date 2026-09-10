@@ -1,3 +1,10 @@
+## [1.22.1](https://github.com/ziobob94/fishlog-client/compare/client-v1.22.0...client-v1.22.1) (2026-09-10)
+
+
+### Bug Fixes
+
+* switch delle tab del market a larghezza piena e segmenti uguali ([2559a0b](https://github.com/ziobob94/fishlog-client/commit/2559a0bb42f7f54f5728a6316feabfecb640537f))
+
 # [1.22.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.21.3...client-v1.22.0) (2026-09-10)
 
 
