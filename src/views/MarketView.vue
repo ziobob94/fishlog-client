@@ -3,6 +3,10 @@
     <div class="market-toolbar">
       <div class="tabs" role="tablist">
         <button
+          type="button" role="tab" :aria-selected="tab === 'ebay'"
+          class="tab-pill" :class="{ active: tab === 'ebay' }" @click="tab = 'ebay'"
+        ><Globe :size="14" /> {{ t('market.tabs.ebay') }}</button>
+        <button
           type="button" role="tab" :aria-selected="tab === 'listings'"
           class="tab-pill" :class="{ active: tab === 'listings' }" @click="tab = 'listings'"
         ><Package :size="14" /> {{ t('market.tabs.listings') }}</button>
@@ -10,10 +14,6 @@
           type="button" role="tab" :aria-selected="tab === 'shops'"
           class="tab-pill" :class="{ active: tab === 'shops' }" @click="tab = 'shops'"
         ><Store :size="14" /> {{ t('market.tabs.shops') }}</button>
-        <button
-          type="button" role="tab" :aria-selected="tab === 'ebay'"
-          class="tab-pill" :class="{ active: tab === 'ebay' }" @click="tab = 'ebay'"
-        ><Globe :size="14" /> {{ t('market.tabs.ebay') }}</button>
       </div>
 
       <button
@@ -121,7 +121,7 @@ const { t } = useI18n()
 const store = useMarketStore()
 const auth  = useAuthStore()
 
-const tab = ref('listings')
+const tab = ref('ebay')
 const showFilters = ref(false)
 const zip = ref('')
 
@@ -187,10 +187,10 @@ function resetEbayFilters() {
 }
 
 // Caricati solo alla prima apertura della tab, non al mount della pagina:
-// la maggior parte delle visite al market resta sugli annunci.
+// la tab di apertura è eBay (vedi onMounted), le altre due solo se aperte.
 watch(tab, (value) => {
   if (value === 'shops' && !store.shops.length) shopsReset()
-  if (value === 'ebay' && !store.external.length) ebayReset()
+  if (value === 'listings' && !store.listings.length) listingsReset()
 })
 
 // Codice postale via geolocalizzazione, solo per stimare meglio le spese di
@@ -215,7 +215,7 @@ function detectZip() {
 
 onMounted(() => {
   store.fetchCategories()
-  listingsReset()
+  ebayReset()
   detectZip()
 })
 </script>
