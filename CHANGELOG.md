@@ -1,3 +1,10 @@
+# [1.23.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.22.2...client-v1.23.0) (2026-09-10)
+
+
+### Features
+
+* tab eBay per prima nel market (provvisorio) ([a17f97e](https://github.com/ziobob94/fishlog-client/commit/a17f97e7fba21a28166b9b351a7c8c757f5b071a))
+
 ## [1.22.2](https://github.com/ziobob94/fishlog-client/compare/client-v1.22.1...client-v1.22.2) (2026-09-10)
 
 
