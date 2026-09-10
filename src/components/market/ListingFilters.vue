@@ -16,12 +16,13 @@
       <option value="nuovo">{{ t('market.condition.nuovo') }}</option>
       <option value="usato">{{ t('market.condition.usato') }}</option>
     </select>
-    <select :value="modelValue.sellerType" class="flex-1 min-w-[120px] max-w-[150px]" @change="update('sellerType', $event.target.value)">
+    <select v-if="showSellerType" :value="modelValue.sellerType" class="flex-1 min-w-[120px] max-w-[150px]" @change="update('sellerType', $event.target.value)">
       <option value="">{{ t('market.filters.allSellers') }}</option>
       <option value="privato">{{ t('market.sellerType.privato') }}</option>
       <option value="negozio">{{ t('market.sellerType.negozio') }}</option>
     </select>
     <input
+      v-if="showLocation"
       :value="modelValue.location"
       type="text"
       :placeholder="t('market.filters.locationPlaceholder')"
@@ -57,7 +58,9 @@ import { X } from 'lucide-vue-next'
 const { t } = useI18n()
 const props = defineProps({
   modelValue: { type: Object, required: true },
-  categories: { type: Array, default: () => [] }
+  categories: { type: Array, default: () => [] },
+  showSellerType: { type: Boolean, default: true },
+  showLocation: { type: Boolean, default: true }
 })
 const emit = defineEmits(['update:modelValue', 'reset'])
 
