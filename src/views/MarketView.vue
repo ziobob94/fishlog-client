@@ -10,10 +10,14 @@
           type="button" role="tab" :aria-selected="tab === 'shops'"
           class="tab-pill" :class="{ active: tab === 'shops' }" @click="tab = 'shops'"
         ><Store :size="14" /> {{ t('market.tabs.shops') }}</button>
+        <button
+          type="button" role="tab" :aria-selected="tab === 'ebay'"
+          class="tab-pill" :class="{ active: tab === 'ebay' }" @click="tab = 'ebay'"
+        ><Globe :size="14" /> {{ t('market.tabs.ebay') }}</button>
       </div>
 
       <button
-        v-if="tab === 'listings'"
+        v-if="tab === 'listings' || tab === 'ebay'"
         type="button" class="btn btn-ghost btn-sm" :class="{ 'btn-toggle-active': showFilters }"
         :aria-pressed="showFilters" @click="showFilters = !showFilters"
       >
@@ -22,45 +26,30 @@
       </button>
     </div>
 
+    <!-- Tab Annunci: solo venditori privati, le vetrine dei negozi hanno una
+         tab propria per non mescolare due modi diversi di sfogliare. -->
     <template v-if="tab === 'listings'">
-      <ListingFilters v-if="showFilters" v-model="filters" :categories="store.categories" @reset="resetFilters" />
+      <ListingFilters v-if="showFilters" v-model="filters" :categories="store.categories" :show-seller-type="false" @reset="resetFilters" />
 
-      <div v-if="showSpinner" class="state-center">
+      <div v-if="listingsInfiniteLoading" class="state-center">
         <div class="spinner"></div>
       </div>
 
-      <div v-else-if="!allItems.length" class="market-empty">
+      <div v-else-if="!store.listings.length" class="market-empty">
         <Package :size="20" />
         <p>{{ t('market.empty.text') }}</p>
       </div>
 
-      <!-- Un'unica vetrina: annunci fishlog (privati e negozi) e risultati eBay
-           mescolati nella stessa griglia, ognuno etichettato dalla sua card
-           (badge "Negozio" o "eBay") invece che separati in sezioni diverse. -->
       <div v-else class="listings-grid">
-        <template v-for="item in allItems" :key="item.key">
-          <ListingCard v-if="item.source === 'internal'" :listing="item.listing" />
-          <ExternalListingCard v-else :listing="item.listing" />
-        </template>
+        <ListingCard v-for="l in store.listings" :key="l._id" :listing="l" />
       </div>
 
-      <InfiniteSentinel :active="hasMore" :loading="loadingMore" @trigger="loadMore" />
-
-      <!-- Diagnostica eBay, solo per admin: non è mai un motivo per mostrare
-           meno annunci agli utenti normali, quindi non compare per loro. -->
-      <template v-if="auth.user?.role === 'admin'">
-        <p v-if="showExternalNotConfiguredHint" class="external-admin-hint text-sm mt-3">
-          {{ t('market.external.notConfigured') }}
-        </p>
-        <p v-if="store.externalError" class="external-admin-hint external-admin-error text-sm mt-2">
-          {{ t('market.external.adminError', { error: store.externalError }) }}
-        </p>
-      </template>
+      <InfiniteSentinel :active="listingsHasMore" :loading="listingsLoadingMore" @trigger="listingsLoadMore" />
     </template>
 
     <!-- Tab Negozi: elenco delle vetrine verificate, separato dagli annunci
          perché qui si sfoglia per venditore invece che per articolo. -->
-    <template v-else>
+    <template v-else-if="tab === 'shops'">
       <input
         v-model="shopSearch" type="search" :placeholder="t('market.shops.searchPlaceholder')"
         class="shop-search mb-4"
@@ -81,13 +70,43 @@
 
       <InfiniteSentinel :active="shopsHasMore" :loading="shopsLoadingMore" @trigger="shopsLoadMore" />
     </template>
+
+    <!-- Tab eBay: annunci dal marketplace eBay IT, con paginazione e filtri
+         propri (l'architettura è pronta per aggiungere altre fonti esterne
+         in futuro, per ora solo eBay). -->
+    <template v-else>
+      <ListingFilters
+        v-if="showFilters" v-model="ebayFilters" :categories="store.categories"
+        :show-seller-type="false" :show-location="false" @reset="resetEbayFilters"
+      />
+
+      <div v-if="ebayInfiniteLoading" class="state-center">
+        <div class="spinner"></div>
+      </div>
+
+      <div v-else-if="!store.external.length" class="market-empty">
+        <Globe :size="20" />
+        <p>{{ store.externalConfigured ? t('market.external.empty') : t('market.external.notConfigured') }}</p>
+      </div>
+
+      <div v-else class="listings-grid">
+        <ExternalListingCard v-for="(l, i) in store.external" :key="`e-${i}`" :listing="l" />
+      </div>
+
+      <InfiniteSentinel :active="ebayHasMore" :loading="ebayLoadingMore" @trigger="ebayLoadMore" />
+
+      <!-- Diagnostica eBay, solo per admin. -->
+      <p v-if="auth.user?.role === 'admin' && store.externalError" class="external-admin-hint external-admin-error text-sm mt-2">
+        {{ t('market.external.adminError', { error: store.externalError }) }}
+      </p>
+    </template>
   </div>
 </template>
 
 <script setup>
 import { ref, computed, watch, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { Package, Filter, Store } from 'lucide-vue-next'
+import { Package, Filter, Store, Globe } from 'lucide-vue-next'
 import { useMarketStore } from '../stores/market.js'
 import { useAuthStore } from '../stores/auth.js'
 import { useInfiniteScroll } from '../composables/useInfiniteScroll.js'
@@ -103,97 +122,82 @@ const store = useMarketStore()
 const auth  = useAuthStore()
 
 const tab = ref('listings')
-
-const filters = ref({ search: '', category: '', condition: '', sellerType: '', location: '', priceMin: '', priceMax: '' })
-const zip = ref('')
 const showFilters = ref(false)
-const activeFilterCount = computed(() => Object.values(filters.value).filter(v => v).length)
+const zip = ref('')
 
-// Il fallback eBay scatta solo quando il market interno è scarso (< 4
-// annunci per questa ricerca): oltre quella soglia i risultati esterni,
-// anche se già in cache da una ricerca precedente, non vanno mostrati.
-const externalActive = computed(() => store.pagination.total < 4)
-
-const allItems = computed(() => {
-  const internal = store.listings.map(l => ({ key: `i-${l._id}`, source: 'internal', listing: l }))
-  if (!externalActive.value) return internal
-  const external = store.external.map((l, i) => ({ key: `e-${i}`, source: 'external', listing: l }))
-  return [...internal, ...external]
+const activeFilterCount = computed(() => {
+  const source = tab.value === 'ebay' ? ebayFilters.value : filters.value
+  return Object.values(source).filter(v => v).length
 })
 
-// Mentre il fallback eBay è ancora in corso e non abbiamo ancora nulla da
-// mostrare, resta lo spinner: evita di far comparire per un istante "nessun
-// annuncio" salvo poi sostituirlo con la griglia appena eBay risponde.
-const externalPending = computed(() => externalActive.value && store.externalLoading)
-const showSpinner = computed(() => infiniteLoading.value || (!allItems.value.length && externalPending.value))
-const showExternalNotConfiguredHint = computed(() => externalActive.value && !store.externalLoading && !store.externalConfigured)
-
-// Finché eBay potrebbe avere altre pagine, il totale pagine "visto"
-// dall'infinite scroll resta oltre la pagina corrente anche se il market
-// interno è già esaurito, così lo scroll continua a chiedere altri
-// risultati eBay invece di fermarsi al primo blocco da 12.
-const pagesRef = computed(() => {
-  if (!externalActive.value || !store.externalHasMore) return store.pagination.pages
-  return Math.max(store.pagination.pages, page.value + 1)
-})
-const { page, loading: infiniteLoading, loadingMore, hasMore, reset, loadMore } = useInfiniteScroll(
-  async (page, { append }) => {
-    await store.fetchListings({
-      page,
-      search:     filters.value.search     || undefined,
-      category:   filters.value.category   || undefined,
-      condition:  filters.value.condition  || undefined,
-      sellerType: filters.value.sellerType || undefined,
-      location:   filters.value.location   || undefined,
-      priceMin:   filters.value.priceMin   || undefined,
-      priceMax:   filters.value.priceMax   || undefined
-    }, { append })
-    // I risultati eBay sono un fallback per lo stesso set di filtri, con la
-    // propria paginazione (stessi filtri applicati, pagina per pagina).
-    if (externalActive.value) {
-      await store.fetchExternal({
-        page,
-        search:    filters.value.search    || undefined,
-        category:  filters.value.category  || undefined,
-        condition: filters.value.condition || undefined,
-        priceMin:  filters.value.priceMin  || undefined,
-        priceMax:  filters.value.priceMax  || undefined,
-        zip:       zip.value               || undefined
-      }, { append })
-    }
-  },
-  pagesRef
+// ── tab Annunci (venditori privati) ──
+const filters = ref({ search: '', category: '', condition: '', location: '', priceMin: '', priceMax: '' })
+const {
+  loading: listingsInfiniteLoading, loadingMore: listingsLoadingMore,
+  hasMore: listingsHasMore, reset: listingsReset, loadMore: listingsLoadMore
+} = useInfiniteScroll(
+  (page, { append }) => store.fetchListings({
+    page,
+    search:    filters.value.search    || undefined,
+    category:  filters.value.category  || undefined,
+    condition: filters.value.condition || undefined,
+    location:  filters.value.location  || undefined,
+    priceMin:  filters.value.priceMin  || undefined,
+    priceMax:  filters.value.priceMax  || undefined
+  }, { append }),
+  computed(() => store.pagination.pages)
 )
-
-const debouncedReset = useDebouncedFn(() => reset(), 320)
-
-watch(filters, debouncedReset, { deep: true })
+const debouncedListingsReset = useDebouncedFn(() => listingsReset(), 320)
+watch(filters, debouncedListingsReset, { deep: true })
 
 function resetFilters() {
-  filters.value = { search: '', category: '', condition: '', sellerType: '', location: '', priceMin: '', priceMax: '' }
-  reset()
+  filters.value = { search: '', category: '', condition: '', location: '', priceMin: '', priceMax: '' }
+  listingsReset()
 }
 
 // ── tab Negozi ──
 const shopSearch = ref('')
-const shopsPagesRef = computed(() => store.shopsPagination.pages)
 const { loading: shopsInfiniteLoading, loadingMore: shopsLoadingMore, hasMore: shopsHasMore, reset: shopsReset, loadMore: shopsLoadMore } = useInfiniteScroll(
   (page, { append }) => store.fetchShops({ page, search: shopSearch.value || undefined }, { append }),
-  shopsPagesRef
+  computed(() => store.shopsPagination.pages)
 )
-
 const debouncedShopsReset = useDebouncedFn(() => shopsReset(), 320)
 watch(shopSearch, debouncedShopsReset)
 
-// Caricati solo alla prima apertura del tab, non al mount della pagina:
+// ── tab eBay ──
+const ebayFilters = ref({ search: '', category: '', condition: '', priceMin: '', priceMax: '' })
+const { loading: ebayInfiniteLoading, loadingMore: ebayLoadingMore, hasMore: ebayHasMore, reset: ebayReset, loadMore: ebayLoadMore } = useInfiniteScroll(
+  (page, { append }) => store.fetchExternal({
+    page,
+    search:    ebayFilters.value.search    || undefined,
+    category:  ebayFilters.value.category  || undefined,
+    condition: ebayFilters.value.condition || undefined,
+    priceMin:  ebayFilters.value.priceMin  || undefined,
+    priceMax:  ebayFilters.value.priceMax  || undefined,
+    zip:       zip.value                   || undefined
+  }, { append }),
+  computed(() => store.externalPagination.pages)
+)
+const debouncedEbayReset = useDebouncedFn(() => ebayReset(), 320)
+watch(ebayFilters, debouncedEbayReset, { deep: true })
+
+function resetEbayFilters() {
+  ebayFilters.value = { search: '', category: '', condition: '', priceMin: '', priceMax: '' }
+  ebayReset()
+}
+
+// Caricati solo alla prima apertura della tab, non al mount della pagina:
 // la maggior parte delle visite al market resta sugli annunci.
 watch(tab, (value) => {
   if (value === 'shops' && !store.shops.length) shopsReset()
+  if (value === 'ebay' && !store.external.length) ebayReset()
 })
 
 // Codice postale via geolocalizzazione, solo per stimare meglio le spese di
 // consegna nei risultati eBay: se l'utente nega il permesso, niente male,
-// la ricerca esterna funziona comunque senza (solo meno "localizzata").
+// la ricerca esterna funziona comunque senza (solo meno "localizzata"). Se
+// la tab eBay non è ancora stata aperta userà comunque lo zip alla prima
+// apertura, quindi qui basta aggiornare i risultati già caricati.
 function detectZip() {
   if (!navigator.geolocation) return
   navigator.geolocation.getCurrentPosition(async (pos) => {
@@ -203,16 +207,7 @@ function detectZip() {
       const data = await res.json()
       if (data.address?.postcode) {
         zip.value = data.address.postcode
-        if (externalActive.value) {
-          store.fetchExternal({
-            search:    filters.value.search    || undefined,
-            category:  filters.value.category  || undefined,
-            condition: filters.value.condition || undefined,
-            priceMin:  filters.value.priceMin  || undefined,
-            priceMax:  filters.value.priceMax  || undefined,
-            zip: zip.value
-          })
-        }
+        if (store.external.length) ebayReset()
       }
     } catch { /* nessun blocco: la ricerca esterna funziona anche senza zip */ }
   }, () => {}, { timeout: 5000 })
@@ -220,7 +215,7 @@ function detectZip() {
 
 onMounted(() => {
   store.fetchCategories()
-  reset()
+  listingsReset()
   detectZip()
 })
 </script>

@@ -10,11 +10,11 @@ export const useMarketStore = defineStore('market', () => {
   const loading     = ref(false)
   const pagination  = ref({ page: 1, limit: 20, total: 0, pages: 0 })
 
-  const external          = ref([])
+  const external           = ref([])
   const externalConfigured = ref(true)
-  const externalLoading   = ref(false)
-  const externalError     = ref('')
-  const externalHasMore   = ref(false)
+  const externalLoading    = ref(false)
+  const externalError      = ref('')
+  const externalPagination = ref({ page: 1, limit: 12, total: 0, pages: 0 })
 
   const shops           = ref([])
   const shopsLoading     = ref(false)
@@ -68,7 +68,11 @@ export const useMarketStore = defineStore('market', () => {
       external.value = append ? [...external.value, ...data.data] : data.data
       externalConfigured.value = data.configured
       externalError.value = data.error || ''
-      externalHasMore.value = !!data.hasMore
+
+      const limit = Number(params.limit) || 12
+      const total = data.total ?? external.value.length
+      externalPagination.value = { page: Number(params.page) || 1, limit, total, pages: Math.ceil(total / limit) }
+      return externalPagination.value.pages
     } finally {
       externalLoading.value = false
     }
@@ -110,7 +114,7 @@ export const useMarketStore = defineStore('market', () => {
 
   return {
     listings, mine, current, categories, loading, pagination,
-    external, externalConfigured, externalLoading, externalError, externalHasMore,
+    external, externalConfigured, externalLoading, externalError, externalPagination,
     shops, shopsLoading, shopsPagination,
     fetchListings, fetchMine, fetchListing, fetchShop, fetchShops, fetchCategories, fetchExternal,
     createListing, updateListing, deleteListing, uploadMedia, deleteMedia

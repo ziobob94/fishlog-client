@@ -816,7 +816,8 @@
 		"deleteConfirm": "Eliminare questo annuncio?",
 		"tabs": {
 			"listings": "Annunci",
-			"shops": "Negozi"
+			"shops": "Negozi",
+			"ebay": "eBay"
 		},
 		"empty": {
 			"text": "Nessun annuncio: prova a modificare i filtri, oppure pubblica il primo"
@@ -833,7 +834,8 @@
 		},
 		"external": {
 			"notConfigured": "Integrazione eBay non ancora attiva su questo server",
-			"adminError": "Solo per admin: la ricerca eBay ha dato errore ({error})"
+			"adminError": "Solo per admin: la ricerca eBay ha dato errore ({error})",
+			"empty": "Nessun risultato eBay per questi filtri"
 		},
 		"categories": {
 			"canne": "Canne",
