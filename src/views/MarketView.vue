@@ -224,10 +224,10 @@ onMounted(() => {
 .market-toolbar { @apply flex items-center justify-between gap-2 mb-4 flex-wrap; }
 
 .tabs {
-  @apply flex gap-1 p-1 bg-surface-2 rounded-full;
+  @apply flex gap-1 p-1 bg-surface-2 rounded-full w-full sm:w-auto;
 }
 .tab-pill {
-  @apply inline-flex items-center gap-1.5 text-xs font-semibold text-muted bg-transparent border-none rounded-full cursor-pointer px-3 py-1.5 transition-colors;
+  @apply flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 text-xs font-semibold text-muted bg-transparent border-none rounded-full cursor-pointer px-3 py-1.5 transition-colors whitespace-nowrap;
 }
 .tab-pill:hover { @apply text-foam; }
 .tab-pill.active { @apply text-ink bg-ocean; }
