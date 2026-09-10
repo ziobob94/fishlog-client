@@ -1,3 +1,10 @@
+## [1.22.2](https://github.com/ziobob94/fishlog-client/compare/client-v1.22.1...client-v1.22.2) (2026-09-10)
+
+
+### Bug Fixes
+
+* badge eBay poco leggibile sopra le foto chiare ([8ea8049](https://github.com/ziobob94/fishlog-client/commit/8ea80496c72ffce23861ce98dcf1cd9fe076466d))
+
 ## [1.22.1](https://github.com/ziobob94/fishlog-client/compare/client-v1.22.0...client-v1.22.1) (2026-09-10)
 
 
