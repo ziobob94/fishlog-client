@@ -1,3 +1,10 @@
+# [1.22.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.21.3...client-v1.22.0) (2026-09-10)
+
+
+### Features
+
+* market in 3 tab distinte (Annunci / Negozi / eBay) ([3409174](https://github.com/ziobob94/fishlog-client/commit/3409174622513a2de64e85131e7b3906de02e838))
+
 ## [1.21.3](https://github.com/ziobob94/fishlog-client/compare/client-v1.21.2...client-v1.21.3) (2026-09-09)
 
 
