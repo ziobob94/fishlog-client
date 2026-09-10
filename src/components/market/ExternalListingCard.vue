@@ -8,7 +8,7 @@
       <img v-if="listing.image" :src="listing.image" loading="lazy"
         class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
       <div v-else class="flex items-center justify-center h-full text-muted"><Package :size="40" /></div>
-      <span class="badge badge-sand absolute bottom-2 left-2 icon-inline">
+      <span class="badge source-badge absolute bottom-2 left-2 icon-inline">
         <ExternalLink :size="12" /> {{ sourceLabel }}
       </span>
     </div>
@@ -40,4 +40,12 @@ function formatPrice(price, currency) {
 
 <style scoped>
 .icon-inline { display: inline-flex; align-items: center; gap: .4rem; }
+
+/* Il badge sorgente (link esterno) sta sopra una foto qualunque, spesso
+   chiara: il riempimento tenue di .badge-sand ci si perde. Sfondo scuro
+   pieno invece del tint trasparente, leggibile su qualsiasi immagine. */
+.source-badge {
+  background: rgb(0 0 0 / 0.72);
+  @apply border border-white/10 text-sand backdrop-blur-sm;
+}
 </style>
