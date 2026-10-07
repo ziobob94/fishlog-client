@@ -1,3 +1,10 @@
+# [1.29.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.28.0...client-v1.29.0) (2026-10-07)
+
+
+### Features
+
+* **home:** hero condizioni live e hub raggruppato ([7e5e29a](https://github.com/ziobob94/fishlog-client/commit/7e5e29a062b37bbe295907ca8514c118dd026d15))
+
 # [1.28.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.27.0...client-v1.28.0) (2026-10-07)
 
 
