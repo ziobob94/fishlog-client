@@ -1,6 +1,6 @@
 <template>
   <div v-if="isPublicRoute" class="flex flex-col min-h-dvh">
-    <main class="flex-1 w-full max-w-[1100px] mx-auto px-6 py-8">
+    <main class="flex-1 w-full max-w-[1100px] mx-auto px-4 sm:px-6 py-6 sm:py-8">
       <RouterView />
     </main>
     <LegalFooter />
@@ -29,7 +29,7 @@
     >
       <AppTopbar @toggle-sidebar="toggleSidebar" />
       <main
-        class="flex-1 w-full max-w-[1100px] mx-auto px-6 min-w-0"
+        class="flex-1 w-full max-w-[1100px] mx-auto px-4 sm:px-6 min-w-0"
         :class="[isFullHeight ? 'flex flex-col min-h-0 overflow-hidden' : 'py-8', showBottomNav ? 'pb-[calc(var(--bottom-nav-h)+1rem)] md:pb-8' : '']"
       >
         <RouterView />

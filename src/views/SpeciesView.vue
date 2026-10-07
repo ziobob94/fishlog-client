@@ -17,15 +17,17 @@
     </div>
 
     <template v-else>
-      <div class="species-header card">
-        <div class="species-image-wrap">
-          <img v-if="species.imageUrl" :src="species.imageUrl" class="species-image" />
-          <div v-else class="species-image species-image-placeholder"><Fish :size="36" /></div>
-        </div>
-        <div class="min-w-0">
-          <h2 class="truncate">{{ displayName }}</h2>
+      <div class="species-hero">
+        <img v-if="species.imageUrl" :src="species.imageUrl" class="species-image" :alt="displayName" />
+        <div v-else class="species-image species-image-placeholder"><Fish :size="48" /></div>
+        <div class="species-hero-body">
+          <h1 class="species-title">{{ displayName }}</h1>
           <p class="scientific-name">{{ species.scientificName }}</p>
-          <p v-if="species.catchCount" class="text-muted text-sm mt-1 icon-inline"><Fish :size="13" /> {{ t('species.catchCount', { n: species.catchCount }) }}</p>
+          <div v-if="seasonNow || minSizeCm || species.catchCount" class="species-badges">
+            <span v-if="seasonNow" class="badge badge-success">{{ t('species.badges.seasonNow') }}</span>
+            <span v-if="minSizeCm" class="badge badge-sand icon-inline"><Ruler :size="12" /> {{ t('species.badges.minSize', { n: minSizeCm }) }}</span>
+            <span v-if="species.catchCount" class="badge badge-ocean icon-inline"><Fish :size="12" /> {{ t('species.catchCount', { n: species.catchCount }) }}</span>
+          </div>
         </div>
       </div>
 
@@ -91,7 +93,7 @@
               <div v-for="(count, i) in species.monthlyCatches" :key="i" class="calendar-col">
                 <span class="calendar-count">{{ count || '' }}</span>
                 <div class="calendar-bar" :class="{ 'calendar-bar-peak': count === maxMonthCount && count > 0 }" :style="{ height: barHeight(count) + '%' }" :title="`${t(`species.months.${i + 1}`)}: ${count}`"></div>
-                <span class="calendar-month">{{ t(`species.months.${i + 1}`) }}</span>
+                <span class="calendar-month" :class="{ 'calendar-month-now': i === currentMonth }">{{ t(`species.months.${i + 1}`) }}</span>
               </div>
             </div>
             <p v-else class="text-muted text-sm">{{ t('species.calendar.empty') }}</p>
@@ -172,6 +174,15 @@ const displayName = computed(() => species.value?.commonNameIt || species.value?
 const hasGearData = computed(() => !!(species.value?.topBaits?.length || species.value?.topRigs?.length || species.value?.lineMainLb || species.value?.topTechniques?.length))
 const maxMonthCount = computed(() => Math.max(...(species.value?.monthlyCatches || [0])))
 
+const currentMonth = new Date().getMonth()
+// "Stagione ora": il mese corrente è tra quelli con più catture registrate.
+const seasonNow = computed(() => {
+  const m = species.value?.monthlyCatches
+  const max = Math.max(...(m || [0]))
+  return !!m && max > 0 && m[currentMonth] >= max * 0.5
+})
+const minSizeCm = computed(() => regulations.value.find(r => r.minSizeCm)?.minSizeCm || null)
+
 function barHeight(count) {
   const max = Math.max(...(species.value?.monthlyCatches || [1]), 1)
   return Math.max((count / max) * 100, count > 0 ? 8 : 0)
@@ -221,24 +232,28 @@ watch([technique, waterType], () => { if (route.params.name) load(route.params.n
   @apply flex flex-col items-center gap-1 py-10;
 }
 
-.species-header {
-  @apply flex items-center gap-4;
-}
-
-.species-image-wrap {
-  @apply shrink-0 rounded-full p-0.5;
-  background: linear-gradient(135deg, var(--ocean), var(--sand) 150%);
+.species-hero {
+  @apply rounded-lg overflow-hidden border border-border/60 bg-surface;
 }
 
 .species-image {
-  @apply w-20 h-20 rounded-full object-cover block border-2;
-  border-color: var(--surface);
+  @apply w-full object-cover block;
+  aspect-ratio: 16 / 9;
 }
 
 .species-image-placeholder {
-  @apply flex items-center justify-center border-2 text-ocean;
-  border-color: var(--surface);
+  @apply flex items-center justify-center text-ocean;
   background: var(--ocean-glow);
+}
+
+.species-hero-body { @apply p-4; }
+.species-title { @apply text-2xl; }
+.species-badges { @apply flex flex-wrap gap-1.5 mt-3; }
+
+@media (min-width: 768px) {
+  .species-hero { @apply flex items-stretch; }
+  .species-image { @apply w-64 shrink-0; aspect-ratio: auto; }
+  .species-hero-body { @apply flex-1 self-center p-5; }
 }
 
 .scientific-name {
@@ -250,6 +265,10 @@ watch([technique, waterType], () => { if (route.params.name) load(route.params.n
 }
 
 h3 {
+  @apply text-foam text-base;
+}
+
+h3 > svg {
   @apply text-ocean;
 }
 
@@ -261,11 +280,11 @@ h3 {
   @apply border-danger/60;
 }
 
-.legal-card h3 {
+.legal-card h3 > svg {
   @apply text-sand;
 }
 
-.legal-card-danger h3 {
+.legal-card-danger h3 > svg {
   @apply text-danger;
 }
 
@@ -310,16 +329,20 @@ h3 {
 }
 
 .gear-filters .form-group {
-  @apply flex-1 min-w-[160px];
+  @apply flex-1 min-w-[140px];
+}
+
+.chip {
+  @apply min-h-[32px];
 }
 
 .calendar-bars {
-  @apply flex items-end gap-1.5;
+  @apply flex items-end gap-1;
   height: 7rem;
 }
 
 .calendar-col {
-  @apply flex-1 flex flex-col items-center justify-end gap-1 h-full;
+  @apply flex-1 min-w-0 flex flex-col items-center justify-end gap-1 h-full;
 }
 
 .calendar-count {
@@ -336,7 +359,11 @@ h3 {
 }
 
 .calendar-month {
-  @apply text-[0.65rem] text-muted;
+  @apply text-[0.6rem] text-muted;
+}
+
+.calendar-month-now {
+  @apply text-ocean font-bold;
 }
 
 .chip-list {

@@ -1100,6 +1100,7 @@
 			"source": "Fonte",
 			"disclaimer": "Il testo vincolante è sempre il provvedimento ufficiale citato, non questo riassunto."
 		},
+		"badges": { "seasonNow": "Stagione ora", "minSize": "Minima {n} cm" },
 		"catchCount": "{n} catture registrate",
 		"scientificName": "Nome scientifico",
 		"months": {
