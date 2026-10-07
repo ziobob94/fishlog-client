@@ -4,7 +4,7 @@
            transition-all duration-200 hover:border-ocean hover:-translate-y-0.5
            hover:shadow-[0_4px_24px_rgba(14,165,233,0.1)]"
   >
-    <div class="relative aspect-video bg-surface-2 overflow-hidden">
+    <div class="relative aspect-[4/3] bg-surface-2 overflow-hidden">
       <img v-if="listing.image" :src="listing.image" loading="lazy"
         class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
       <div v-else class="flex items-center justify-center h-full text-muted"><Package :size="40" /></div>
@@ -12,10 +12,10 @@
         <ExternalLink :size="12" /> {{ sourceLabel }}
       </span>
     </div>
-    <div class="p-4">
-      <h3 class="font-bold text-sm mb-1 truncate text-foam">{{ listing.title }}</h3>
-      <p v-if="listing.price != null" class="font-mono text-ocean font-bold mb-2">{{ formatPrice(listing.price, listing.currency) }}</p>
-      <p v-if="listing.location" class="text-muted text-xs icon-inline"><MapPin :size="14" /> {{ listing.location }}</p>
+    <div class="p-3 sm:p-4">
+      <p v-if="listing.price != null" class="font-mono text-ocean font-bold text-base sm:text-lg leading-tight">{{ formatPrice(listing.price, listing.currency) }}</p>
+      <h3 class="font-semibold text-sm mt-0.5 mb-1 line-clamp-2 text-foam">{{ listing.title }}</h3>
+      <p v-if="listing.location" class="text-muted text-xs icon-inline min-w-0"><MapPin :size="12" class="shrink-0" /> <span class="truncate">{{ listing.location }}</span></p>
     </div>
   </a>
 </template>

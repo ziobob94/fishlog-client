@@ -240,12 +240,17 @@ onMounted(() => {
   @apply inline-flex items-center justify-center min-w-[1.1rem] h-[1.1rem] rounded-full bg-ocean text-white text-[0.65rem] font-bold px-1;
 }
 
-.listings-grid, .shops-grid {
-  @apply grid gap-4;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+.listings-grid {
+  @apply grid gap-3;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.shops-grid { @apply grid gap-3; grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 640px) {
+  .listings-grid { @apply gap-4; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
+  .shops-grid { @apply gap-4; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
 }
 
-.shop-search { @apply max-w-xs; }
+.shop-search { @apply sm:max-w-xs; }
 
 .market-empty {
   @apply flex items-center justify-center gap-2 text-muted text-sm py-8;
