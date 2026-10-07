@@ -1,3 +1,10 @@
+# [1.27.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.26.0...client-v1.27.0) (2026-10-07)
+
+
+### Features
+
+* widget "Oggi dove sei" in home (condizioni live) ([ff2de03](https://github.com/ziobob94/fishlog-client/commit/ff2de039e984d2077597a87212480b0b93886896))
+
 # [1.26.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.25.0...client-v1.26.0) (2026-10-07)
 
 
