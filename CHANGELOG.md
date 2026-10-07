@@ -1,3 +1,10 @@
+# [1.28.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.27.0...client-v1.28.0) (2026-10-07)
+
+
+### Features
+
+* classifica leggera su contenuto pubblico ([ace3753](https://github.com/ziobob94/fishlog-client/commit/ace37530ef99aec073b4b315eb27bedb0267c083))
+
 # [1.27.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.26.0...client-v1.27.0) (2026-10-07)
 
 
