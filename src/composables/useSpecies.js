@@ -24,5 +24,18 @@ export function useSpecies() {
     return data
   }
 
-  return { fetchSuggestions, searchSpecies, reportMissingSpecies }
+  // Scheda specie pubblica: dati del catalogo + calendario/esche/tecniche
+  // calcolati dalle catture reali. Ritorna null se la specie non è ancora
+  // in catalogo (il chiamante mostra lo stato "non trovata" + segnalazione).
+  async function fetchSpeciesByName(name) {
+    try {
+      const { data } = await api.get(`/species/name/${encodeURIComponent(name)}`)
+      return data
+    } catch (e) {
+      if (e.response?.status === 404) return null
+      throw e
+    }
+  }
+
+  return { fetchSuggestions, searchSpecies, reportMissingSpecies, fetchSpeciesByName }
 }

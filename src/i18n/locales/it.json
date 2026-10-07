@@ -31,6 +31,7 @@
 		"myListings": "I miei annunci",
 		"chat": "Chat",
 		"stats": "Statistiche",
+		"species": "Specie",
 		"forum": "Forum",
 		"culture": "Cultura",
 		"profile": "Profilo",
@@ -979,5 +980,32 @@
 		"totalSessions": "Uscite totali",
 		"totalCatches": "Catture totali",
 		"avgRating": "Voto medio"
+	},
+	"species": {
+		"searchTitle": "Specie",
+		"searchPlaceholder": "Cerca una specie...",
+		"searchHint": "Cerca per nome comune o nome scientifico",
+		"noResults": "Nessuna specie trovata",
+		"notFound": {
+			"title": "Specie non ancora in catalogo",
+			"text": "Non abbiamo ancora una scheda per questa specie.",
+			"report": "Segnala questa specie"
+		},
+		"reported": "Segnalazione inviata, grazie!",
+		"calendar": {
+			"title": "Mesi più produttivi",
+			"subtitle": "Calcolato dalle catture registrate dalla community",
+			"empty": "Non ci sono ancora abbastanza catture registrate per questa specie"
+		},
+		"gear": {
+			"baitsTitle": "Esche più usate",
+			"techniquesTitle": "Tecniche più usate"
+		},
+		"catchCount": "{n} catture registrate",
+		"scientificName": "Nome scientifico",
+		"months": {
+			"1": "Gen", "2": "Feb", "3": "Mar", "4": "Apr", "5": "Mag", "6": "Giu",
+			"7": "Lug", "8": "Ago", "9": "Set", "10": "Ott", "11": "Nov", "12": "Dic"
+		}
 	}
 }
