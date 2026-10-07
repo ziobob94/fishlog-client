@@ -103,7 +103,7 @@
             <div class="item-cards">
               <div v-for="c in session.catches" :key="c._id" class="item-card card catch-card">
                 <div class="item-card-header">
-                  <strong class="text-ocean">{{ c.species }}</strong>
+                  <RouterLink v-if="c.species" :to="`/species/${encodeURIComponent(c.species)}`" class="text-ocean species-link">{{ c.species }}</RouterLink>
                   <span v-if="c.released" class="badge badge-success">{{ t('session.view.released') }}</span>
                 </div>
                 <div class="info-grid sm">
@@ -275,6 +275,7 @@ async function doDelete() {
 .item-card      { @apply p-4; }
 .item-card-header { @apply flex flex-wrap items-center gap-2 mb-2; }
 .catch-card     { @apply border-ocean/25; }
+.species-link   { @apply font-bold no-underline hover:underline; }
 
 .side-card  { @apply p-3; }
 .side-label { @apply text-muted text-[0.7rem] font-bold uppercase tracking-wide mb-0.5; }

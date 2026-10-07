@@ -33,6 +33,9 @@
       <RouterLink to="/stats" class="nav-item" @click="$emit('close')">
         <span class="w-5 text-center flex justify-center"><BarChart3 :size="16" /></span> {{ t('nav.stats') }}
       </RouterLink>
+      <RouterLink to="/species" class="nav-item" @click="$emit('close')">
+        <span class="w-5 text-center flex justify-center"><Fish :size="16" /></span> {{ t('nav.species') }}
+      </RouterLink>
 
       <div class="nav-section-label">{{ t('nav.sections.community') }}</div>
       <RouterLink to="/feed" class="nav-item" @click="$emit('close')">
