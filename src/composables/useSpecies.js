@@ -24,12 +24,18 @@ export function useSpecies() {
     return data
   }
 
-  // Scheda specie pubblica: dati del catalogo + calendario/esche/tecniche
-  // calcolati dalle catture reali. Ritorna null se la specie non è ancora
-  // in catalogo (il chiamante mostra lo stato "non trovata" + segnalazione).
-  async function fetchSpeciesByName(name) {
+  // Scheda specie pubblica: dati del catalogo + calendario/ricetta
+  // attrezzatura calcolati dalle catture reali. technique/waterType sono
+  // filtri opzionali (il "suggeritore attrezzatura" è la stessa scheda,
+  // ristretta a uno scenario più specifico). Ritorna null se la specie non
+  // è ancora in catalogo (il chiamante mostra lo stato "non trovata" +
+  // segnalazione).
+  async function fetchSpeciesByName(name, { technique, waterType } = {}) {
     try {
-      const { data } = await api.get(`/species/name/${encodeURIComponent(name)}`)
+      const params = {}
+      if (technique) params.technique = technique
+      if (waterType) params.waterType = waterType
+      const { data } = await api.get(`/species/name/${encodeURIComponent(name)}`, { params })
       return data
     } catch (e) {
       if (e.response?.status === 404) return null
