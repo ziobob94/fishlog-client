@@ -353,6 +353,12 @@
 		"newSession": "Nuova uscita",
 		"ongoingTitle": "In corso",
 		"historyTitle": "Storico",
+		"liveConditions": {
+			"title": "Oggi dove sei",
+			"subtitle": "Condizioni attuali in base alla tua posizione",
+			"loading": "Rilevamento condizioni...",
+			"enable": "Attiva la posizione per vedere le condizioni di oggi"
+		},
 		"empty": {
 			"title": "Nessuna uscita trovata",
 			"text": "Registra la tua prima sessione",
