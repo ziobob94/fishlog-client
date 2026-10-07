@@ -1,15 +1,15 @@
 <template>
-  <div class="card flex flex-wrap items-center gap-2.5 p-3 mb-5">
+  <div class="card grid grid-cols-2 sm:flex sm:flex-wrap items-center gap-2.5 p-3 mb-5">
     <input
       :value="modelValue.search"
       type="search"
       :placeholder="t('sessionFilters.searchPlaceholder')"
-      class="flex-1 min-w-[140px] max-w-xs"
+      class="col-span-2 sm:col-span-1 sm:flex-1 sm:min-w-[140px] sm:max-w-xs"
       @input="update('search', $event.target.value)"
     />
     <select
       :value="modelValue.technique"
-      class="flex-1 min-w-[140px] max-w-[180px]"
+      class="col-span-2 sm:col-span-1 sm:flex-1 sm:min-w-[140px] sm:max-w-[180px]"
       @change="update('technique', $event.target.value)"
     >
       <option value="">{{ t('sessionFilters.allTechniques') }}</option>
@@ -18,17 +18,17 @@
     <input
       :value="modelValue.dateFrom"
       type="date"
-      class="flex-1 min-w-[130px] max-w-[160px]"
+      class="sm:flex-1 sm:min-w-[130px] sm:max-w-[160px]"
       @change="update('dateFrom', $event.target.value)"
     />
-    <span class="text-muted text-xs">→</span>
+    <span class="hidden sm:inline text-muted text-xs">→</span>
     <input
       :value="modelValue.dateTo"
       type="date"
-      class="flex-1 min-w-[130px] max-w-[160px]"
+      class="sm:flex-1 sm:min-w-[130px] sm:max-w-[160px]"
       @change="update('dateTo', $event.target.value)"
     />
-    <button v-if="hasFilters" class="btn btn-ghost btn-sm shrink-0" style="display:inline-flex;align-items:center;gap:.4rem" @click="$emit('reset')">
+    <button v-if="hasFilters" class="btn btn-ghost btn-sm shrink-0 col-span-2 sm:col-span-1" style="display:inline-flex;align-items:center;gap:.4rem" @click="$emit('reset')">
       <X :size="14" /> {{ t('sessionFilters.reset') }}
     </button>
   </div>

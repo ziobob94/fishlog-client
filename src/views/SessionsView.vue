@@ -92,7 +92,7 @@ onMounted(() => {
 
 <style scoped>
 .sessions-grid {
-  @apply grid gap-4;
+  @apply grid gap-3 sm:gap-4;
   grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
 }
 .ongoing-section {
