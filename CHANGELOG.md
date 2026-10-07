@@ -1,3 +1,10 @@
+# [1.25.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.24.0...client-v1.25.0) (2026-10-07)
+
+
+### Features
+
+* suggeritore attrezzatura dai dati reali (filtri su scheda specie) ([bf6ef9d](https://github.com/ziobob94/fishlog-client/commit/bf6ef9d71c153a606218ce3e8aa3f86057616827))
+
 # [1.24.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.23.0...client-v1.24.0) (2026-10-07)
 
 
