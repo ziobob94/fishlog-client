@@ -340,19 +340,15 @@
   }
 
   .tabs {
-    @apply flex gap-1 p-1 bg-surface-2 rounded-full;
+    @apply flex flex-1 sm:flex-initial gap-1 p-1 bg-surface-2 rounded-full;
   }
 
   .posts-list {
-    @apply flex flex-col gap-4;
-  }
-
-  .posts-list > :last-child :deep(.post-card) {
-    @apply border-b-0 pb-0;
+    @apply flex flex-col gap-3 sm:gap-4;
   }
 
   .tab-pill {
-    @apply inline-flex items-center gap-1.5 text-xs font-semibold text-muted bg-transparent border-none rounded-full cursor-pointer px-3 py-1.5 transition-colors;
+    @apply flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 text-xs font-semibold text-muted bg-transparent border-none rounded-full cursor-pointer px-3 py-1.5 transition-colors;
   }
 
   .tab-pill:hover {
@@ -380,7 +376,7 @@
   }
 
   .post-form-wrap {
-    @apply mt-3;
+    @apply mt-3 bg-surface border border-border/60 rounded-lg p-3.5;
   }
 
   .section-separator {

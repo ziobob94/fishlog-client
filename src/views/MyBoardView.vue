@@ -1,6 +1,8 @@
 <template>
   <div>
-    <PostForm :create-fn="store.createPost" @created="onCreated" />
+    <div class="bg-surface border border-border/60 rounded-lg p-3.5">
+      <PostForm :create-fn="store.createPost" @created="onCreated" />
+    </div>
 
     <div v-if="infiniteLoading" class="state-center mt-4"><div class="spinner"></div></div>
 
@@ -65,6 +67,5 @@ async function onAttend(post, status, guests) { await store.setAttendance(post._
 </script>
 
 <style scoped>
-.posts-list  { @apply flex flex-col gap-4; }
-.posts-list > :last-child :deep(.post-card) { @apply border-b-0 pb-0; }
+.posts-list  { @apply flex flex-col gap-3 sm:gap-4; }
 </style>

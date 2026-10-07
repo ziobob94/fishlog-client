@@ -269,7 +269,7 @@
 
 <style scoped>
   .post-card {
-    @apply flex flex-col gap-2 border-b border-border/60 pb-4;
+    @apply flex flex-col gap-2.5 bg-surface border border-border/60 rounded-lg p-3.5 sm:p-4;
   }
 
   .post-header {
@@ -281,19 +281,19 @@
   }
 
   .post-title {
-    @apply font-semibold;
+    @apply font-bold text-base leading-snug;
   }
 
   .post-body {
-    @apply text-sm whitespace-pre-wrap;
+    @apply text-sm leading-relaxed whitespace-pre-wrap break-words;
   }
 
   .mini-avatar {
-    @apply w-7 h-7 rounded-full object-cover;
+    @apply w-9 h-9 rounded-full object-cover shrink-0;
   }
 
   .mini-placeholder {
-    @apply w-7 h-7 rounded-full border border-ocean text-ocean flex items-center justify-center text-[0.65rem] font-bold shrink-0;
+    @apply w-9 h-9 rounded-full border border-ocean text-ocean flex items-center justify-center text-xs font-bold shrink-0;
     background: var(--ocean-glow);
   }
 
@@ -327,12 +327,12 @@
   }
 
   .media-grid {
-    @apply grid gap-1.5;
-    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    @apply grid gap-1.5 -mx-3.5 sm:mx-0;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
   }
 
   .media-thumb {
-    @apply w-full aspect-square object-cover rounded-sm cursor-pointer;
+    @apply w-full aspect-[4/3] object-cover sm:rounded-sm cursor-pointer;
   }
 
   .lightbox {
@@ -357,11 +357,11 @@
   }
 
   .attendance-buttons {
-    @apply flex items-stretch gap-3;
+    @apply flex items-stretch gap-2;
   }
 
   .attendance-buttons .btn {
-    @apply flex-1;
+    @apply flex-1 px-2 text-xs;
   }
 
   .guests-input {
@@ -456,7 +456,11 @@
   }
 
   .engagement-row {
-    @apply flex items-center gap-2 border-t border-border pt-2;
+    @apply flex items-center gap-2 border-t border-border/60 pt-2.5;
+  }
+
+  .engagement-row .btn {
+    @apply min-h-[36px] px-3;
   }
 
   .like-btn.liked {
