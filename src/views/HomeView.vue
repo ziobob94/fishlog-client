@@ -1,16 +1,39 @@
 <template>
   <div class="home">
-    <!-- Hero "Oggi dove sei": risponde a "conviene uscire oggi?" prima di tutto.
-         Valori grandi e leggibili a colpo d'occhio, con avviso onesto sul fatto
-         che i dati sono indicativi. Se la posizione non è disponibile, invita
-         ad attivarla invece di sparire. -->
-    <section class="live-hero">
-      <div class="live-hero-head">
-        <div>
-          <p class="eyebrow icon-inline"><Waves :size="14" /> {{ t('home.liveConditions.title') }}</p>
-          <p class="text-muted text-xs">{{ t('home.liveConditions.subtitle') }}</p>
-        </div>
-        <RouterLink to="/new" class="btn btn-primary btn-sm">{{ t('home.newSession') }}</RouterLink>
+    <!-- Hero: una promessa chiara e due azioni, prima di tutto il resto. -->
+    <section class="hero">
+      <p class="eyebrow">{{ t('home.hero.eyebrow') }}</p>
+      <h1>{{ t('home.hero.title') }}</h1>
+      <p class="hero-sub">{{ t('home.hero.subtitle') }}</p>
+      <div class="hero-actions">
+        <RouterLink to="/new" class="btn btn-primary">{{ t('home.newSession') }}</RouterLink>
+        <RouterLink to="/species" class="btn btn-secondary">{{ t('home.hero.searchSpecies') }}</RouterLink>
+      </div>
+    </section>
+
+    <!-- Selettore zona: la barra "Oggi in mare" sotto segue la zona scelta. -->
+    <section class="zones" :aria-label="t('home.zones.title')">
+      <h2 class="section-label">{{ t('home.zones.title') }}</h2>
+      <div class="zone-list">
+        <button
+          v-for="z in zones"
+          :key="z.key"
+          type="button"
+          class="zone-chip"
+          :class="{ 'zone-chip-active': selectedZone === z.key }"
+          @click="selectZone(z.key)"
+        >
+          <component :is="z.key === 'here' ? MapPin : Waves" :size="15" />
+          {{ t(`home.zones.items.${z.key}`) }}
+        </button>
+      </div>
+    </section>
+
+    <!-- Barra "Oggi in mare": condizioni live della zona scelta. -->
+    <section class="sea-bar">
+      <div class="sea-bar-head">
+        <span class="eyebrow icon-inline"><Waves :size="14" /> {{ t('home.sea.title') }}</span>
+        <span v-if="updatedAt" class="text-muted text-xs">{{ t('home.sea.updated', { time: updatedAt }) }}</span>
       </div>
 
       <div v-if="conditions" class="live-tiles">
@@ -24,15 +47,26 @@
         <div class="spinner"></div> {{ t('home.liveConditions.loading') }}
       </div>
       <div v-else class="live-empty">
-        <p class="text-muted text-sm">{{ t('home.liveConditions.enable') }}</p>
-        <button class="btn btn-secondary btn-sm" @click="loadLiveConditions">{{ t('home.liveConditions.enableCta') }}</button>
+        <p class="text-muted text-sm">{{ selectedZone === 'here' ? t('home.liveConditions.enable') : t('home.sea.unavailable') }}</p>
+        <button v-if="selectedZone === 'here'" class="btn btn-secondary btn-sm" @click="loadZone('here')">{{ t('home.liveConditions.enableCta') }}</button>
       </div>
 
       <p class="live-disclaimer">{{ t('home.liveConditions.disclaimer') }}</p>
     </section>
 
+    <!-- Sezioni narrative: ognuna spiega un valore e porta all'azione. -->
+    <section class="story-grid">
+      <article v-for="s in stories" :key="s.key" class="story">
+        <div class="story-icon"><component :is="s.icon" :size="22" /></div>
+        <h2>{{ t(`home.stories.${s.key}.title`) }}</h2>
+        <p class="text-muted">{{ t(`home.stories.${s.key}.text`) }}</p>
+        <RouterLink :to="s.to" class="story-cta">{{ t(`home.stories.${s.key}.cta`) }} <ArrowRight :size="14" /></RouterLink>
+      </article>
+    </section>
+
+    <!-- Accessi rapidi alle funzioni dell'app. -->
     <section v-for="group in groups" :key="group.key" class="hub-group">
-      <h2 class="hub-group-title">{{ t(`home.hub.groups.${group.key}`) }}</h2>
+      <h2 class="section-label">{{ t(`home.hub.groups.${group.key}`) }}</h2>
       <div class="hub-grid">
         <component
           :is="section.to ? 'RouterLink' : 'div'"
@@ -61,7 +95,8 @@ import { useI18n } from 'vue-i18n'
 import {
   Fish, Users, Newspaper, Pin, ShoppingBag, MessageSquare,
   BookOpen, MessagesSquare, UserCircle, UserPlus, BarChart3,
-  Waves, Thermometer, Wind, Gauge, Droplet, Trophy
+  Waves, Thermometer, Wind, Gauge, Droplet, Trophy, MapPin,
+  ShieldCheck, CalendarDays, ArrowRight
 } from 'lucide-vue-next'
 import { useFriendStore } from '../stores/friends.js'
 import { useLiveConditions } from '../composables/useLiveConditions.js'
@@ -72,18 +107,50 @@ const { fetchLiveConditions } = useLiveConditions()
 
 const conditions = ref(null)
 const loadingConditions = ref(false)
+const updatedAt = ref('')
+const selectedZone = ref('here')
 
-function loadLiveConditions() {
-  if (!navigator.geolocation) return
+// Punti in mare aperto rappresentativi di ogni zona, per le condizioni.
+const zones = [
+  { key: 'here' },
+  { key: 'adriatic', lat: 43.6, lng: 14.0 },
+  { key: 'tyrrhenian', lat: 40.0, lng: 12.3 },
+  { key: 'ligurian', lat: 43.7, lng: 8.6 },
+  { key: 'ionian', lat: 38.3, lng: 17.3 },
+  { key: 'sicily', lat: 37.2, lng: 12.2 }
+]
+
+function nowLabel() {
+  return new Date().toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' })
+}
+
+async function loadCoords(lat, lng) {
+  conditions.value = await fetchLiveConditions(lat, lng)
+  updatedAt.value = conditions.value ? nowLabel() : ''
+  loadingConditions.value = false
+}
+
+function loadZone(key) {
+  conditions.value = null
+  updatedAt.value = ''
+  if (key === 'here') {
+    if (!navigator.geolocation) return
+    loadingConditions.value = true
+    navigator.geolocation.getCurrentPosition(
+      (pos) => loadCoords(pos.coords.latitude, pos.coords.longitude),
+      () => { loadingConditions.value = false },
+      { timeout: 8000 }
+    )
+    return
+  }
+  const z = zones.find(x => x.key === key)
   loadingConditions.value = true
-  navigator.geolocation.getCurrentPosition(
-    async (pos) => {
-      conditions.value = await fetchLiveConditions(pos.coords.latitude, pos.coords.longitude)
-      loadingConditions.value = false
-    },
-    () => { loadingConditions.value = false },
-    { timeout: 8000 }
-  )
+  loadCoords(z.lat, z.lng)
+}
+
+function selectZone(key) {
+  selectedZone.value = key
+  loadZone(key)
 }
 
 // Badge numerico per box con contatori "da leggere/gestire" (gruppi: in sospeso).
@@ -91,6 +158,12 @@ function badgeCount(key) {
   if (key === 'friends') return friends.pendingCount
   return 0
 }
+
+const stories = [
+  { key: 'rules',     to: '/species',  icon: ShieldCheck },
+  { key: 'species',   to: '/species',  icon: CalendarDays },
+  { key: 'community', to: '/feed',     icon: Users }
+]
 
 const groups = [
   { key: 'diary', sections: [
@@ -128,50 +201,67 @@ const tiles = computed(() => {
   ].filter(Boolean)
 })
 
-onMounted(() => { loadLiveConditions() })
+onMounted(() => { loadZone('here') })
 </script>
 
 <style scoped>
 .icon-inline { @apply inline-flex items-center gap-1.5; }
-
 .eyebrow { @apply text-xs font-bold uppercase tracking-widest text-ocean; }
+.section-label { @apply text-xs font-bold uppercase tracking-widest text-muted mb-2; font-size: 0.72rem; }
 
-.live-hero {
-  @apply rounded-lg border border-border/60 p-4 mb-6;
-  background: linear-gradient(135deg, var(--ocean-glow), transparent 70%), rgb(var(--color-surface));
+.hero {
+  @apply rounded-lg border border-border/60 px-5 py-8 mb-5 text-center;
+  background: linear-gradient(160deg, var(--ocean-glow), transparent 75%), rgb(var(--color-surface));
 }
-.live-hero-head { @apply flex items-start justify-between gap-3 mb-3; }
+.hero h1 { @apply mt-1; }
+.hero-sub { @apply text-muted text-sm max-w-xl mx-auto mt-2; }
+.hero-actions { @apply flex flex-wrap justify-center gap-2 mt-4; }
+
+.zones { @apply mb-4; }
+.zone-list { @apply flex flex-wrap gap-2; }
+.zone-chip {
+  @apply inline-flex items-center gap-1.5 rounded-full border border-border bg-surface px-3 py-1.5
+         text-sm font-semibold text-foam cursor-pointer transition-all duration-200;
+}
+.zone-chip:hover { @apply border-ocean; }
+.zone-chip-active { @apply bg-ocean border-ocean text-white; }
+
+.sea-bar { @apply rounded-lg border border-border/60 bg-surface p-4 mb-6; }
+.sea-bar-head { @apply flex flex-wrap items-center justify-between gap-1 mb-3; }
 
 .live-tiles { @apply grid gap-2; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); }
-.live-tile {
-  @apply flex flex-col gap-0.5 rounded-sm bg-ink/40 border border-border/50 px-3 py-2;
-}
+.live-tile { @apply flex flex-col gap-0.5 rounded-sm bg-surface-2 border border-border/50 px-3 py-2; }
 .live-tile-icon { @apply text-ocean; }
 .live-tile-value { @apply text-xl font-extrabold text-foam leading-none mt-1; }
 .live-tile-value small { @apply text-xs font-semibold text-muted; }
 .live-tile-label { @apply text-[0.68rem] font-semibold uppercase tracking-wide text-muted; }
-
 .live-empty { @apply flex flex-wrap items-center justify-between gap-2 py-2; }
 .live-disclaimer { @apply text-[0.7rem] text-muted mt-3; }
 
+.story-grid { @apply grid gap-4 mb-8; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+.story { @apply flex flex-col items-start gap-2 rounded-lg border border-border/60 bg-surface p-5; }
+.story-icon {
+  @apply flex items-center justify-center w-11 h-11 rounded-full text-ocean;
+  background: var(--ocean-glow);
+}
+.story h2 { @apply text-lg; }
+.story p { @apply text-sm flex-1; }
+.story-cta { @apply inline-flex items-center gap-1 text-sm font-semibold text-ocean; }
+
 .hub-group { @apply mb-6; }
-.hub-group-title { @apply text-xs font-bold uppercase tracking-widest text-muted mb-2; font-size: 0.72rem; }
-
 .hub-grid { @apply grid gap-3; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); }
-
 .hub-card {
   @apply flex items-start gap-3 relative no-underline text-inherit transition-all duration-200
          bg-surface border border-border/60 rounded-lg p-3.5;
 }
 a.hub-card:hover { @apply border-ocean; transform: translateY(-2px); }
 .hub-card-disabled { @apply opacity-60; }
-
 .hub-icon {
   @apply flex items-center justify-center shrink-0 w-10 h-10 rounded-sm text-ocean;
   background: var(--ocean-glow);
 }
 .hub-body h3 { @apply font-semibold text-base; }
 .hub-body p  { @apply text-xs mt-0.5; }
-
-.hub-card .badge { @apply absolute top-3 right-3; }
+.hub-card .badge-danger { @apply absolute top-3 right-3; }
+.hub-card .badge-sand { @apply ml-auto shrink-0 self-start; }
 </style>

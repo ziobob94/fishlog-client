@@ -18,6 +18,13 @@
 		"showPassword": "Mostra password",
 		"hidePassword": "Nascondi password"
 	},
+	"footer": {
+		"tagline": "Il diario e la community per chi pesca.",
+		"explore": "Esplora",
+		"community": "Community",
+		"legal": "Informazioni",
+		"note": "Le condizioni e le indicazioni sono indicative e non garantiscono la cattura. Per le norme fa fede la pubblicazione ufficiale."
+	},
 	"nav": {
 		"home": "Home",
 		"sessions": "Uscite",
@@ -354,6 +361,26 @@
 		"newSession": "Nuova uscita",
 		"ongoingTitle": "In corso",
 		"historyTitle": "Storico",
+		"hero": {
+			"eyebrow": "Pesca sportiva in Italia",
+			"title": "Guarda il mare prima di uscire",
+			"subtitle": "Condizioni in tempo reale, schede specie con normativa e fonti citate, e il tuo diario di pesca, tutto in un posto.",
+			"searchSpecies": "Cerca una specie"
+		},
+		"zones": {
+			"title": "Scegli la zona",
+			"items": { "here": "La mia posizione", "adriatic": "Adriatico", "tyrrhenian": "Tirreno", "ligurian": "Mar Ligure", "ionian": "Ionio", "sicily": "Canale di Sicilia" }
+		},
+		"sea": {
+			"title": "Oggi in mare",
+			"updated": "Aggiornato alle {time}",
+			"unavailable": "Dati non disponibili per questa zona in questo momento."
+		},
+		"stories": {
+			"rules": { "title": "Normativa con la fonte", "text": "Taglie minime, quantità e fermi biologici con il provvedimento citato accanto. Il testo vincolante resta la pubblicazione ufficiale.", "cta": "Vedi le specie" },
+			"species": { "title": "Specie e stagioni", "text": "Per ogni specie il calendario delle catture, le esche e le montature più usate dalla community.", "cta": "Esplora le specie" },
+			"community": { "title": "La community", "text": "Racconta le tue uscite, confrontati con gli altri pescatori e scala la classifica.", "cta": "Vai alla bacheca" }
+		},
 		"liveConditions": {
 			"title": "Oggi dove sei",
 			"subtitle": "Condizioni attuali in base alla tua posizione",
