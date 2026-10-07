@@ -8,6 +8,7 @@
         <span v-if="pendingShops.length" class="badge badge-sand ml-1">{{ pendingShops.length }}</span>
       </button>
       <button class="btn" :class="tab === 'config' ? 'btn-primary' : 'btn-ghost'" @click="tab = 'config'">{{ t('admin.tabs.config') }}</button>
+      <button class="btn" :class="tab === 'regulations' ? 'btn-primary' : 'btn-ghost'" @click="tab = 'regulations'">{{ t('admin.tabs.regulations') }}</button>
     </div>
 
     <!-- UTENTI -->
@@ -161,6 +162,112 @@
       </template>
     </div>
 
+    <!-- NORMATIVA -->
+    <div v-if="tab === 'regulations'">
+      <p class="text-muted text-sm mb-3">{{ t('admin.regulations.intro') }}</p>
+
+      <section class="card mb-3">
+        <h3>{{ regulationForm._id ? t('admin.regulations.editTitle') : t('admin.regulations.newTitle') }}</h3>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>{{ t('admin.regulations.fields.scope') }}</label>
+            <select v-model="regulationForm.scope">
+              <option value="species">{{ t('admin.regulations.scope.species') }}</option>
+              <option value="general">{{ t('admin.regulations.scope.general') }}</option>
+            </select>
+          </div>
+          <div v-if="regulationForm.scope === 'species'" class="form-group">
+            <label>{{ t('admin.regulations.fields.speciesName') }}</label>
+            <input v-model="regulationForm.speciesName" type="text" :placeholder="t('admin.regulations.fields.speciesNamePlaceholder')" />
+          </div>
+          <div class="form-group">
+            <label>{{ t('admin.regulations.fields.region') }}</label>
+            <input v-model="regulationForm.region" type="text" :placeholder="t('admin.regulations.fields.regionPlaceholder')" />
+          </div>
+          <div class="form-group full">
+            <label>{{ t('admin.regulations.fields.title') }}</label>
+            <input v-model="regulationForm.title" type="text" :placeholder="t('admin.regulations.fields.titlePlaceholder')" />
+          </div>
+          <div class="form-group">
+            <label>{{ t('admin.regulations.fields.minSizeCm') }}</label>
+            <input v-model.number="regulationForm.minSizeCm" type="number" min="0" />
+          </div>
+          <div class="form-group">
+            <label>{{ t('admin.regulations.fields.maxCatchPerDay') }}</label>
+            <input v-model.number="regulationForm.maxCatchPerDay" type="number" min="0" />
+          </div>
+          <div class="form-group">
+            <label>{{ t('admin.regulations.fields.closedSeason') }}</label>
+            <input v-model="regulationForm.closedSeason" type="text" :placeholder="t('admin.regulations.fields.closedSeasonPlaceholder')" />
+          </div>
+          <div class="form-group">
+            <label style="flex-direction:row;align-items:center;gap:.5rem;text-transform:none;letter-spacing:0">
+              <input type="checkbox" v-model="regulationForm.protected" />
+              {{ t('admin.regulations.fields.protected') }}
+            </label>
+          </div>
+          <div class="form-group full">
+            <label>{{ t('admin.regulations.fields.notes') }}</label>
+            <textarea v-model="regulationForm.notes" rows="2"></textarea>
+          </div>
+          <div class="form-group">
+            <label>{{ t('admin.regulations.fields.sourceTitle') }}</label>
+            <input v-model="regulationForm.sourceTitle" type="text" :placeholder="t('admin.regulations.fields.sourceTitlePlaceholder')" />
+          </div>
+          <div class="form-group">
+            <label>{{ t('admin.regulations.fields.sourceUrl') }}</label>
+            <input v-model="regulationForm.sourceUrl" type="url" placeholder="https://..." />
+          </div>
+        </div>
+        <div class="flex gap-2 mt-2">
+          <button class="btn btn-primary" :disabled="savingRegulation" @click="saveRegulation">
+            {{ regulationForm._id ? t('common.save') : t('admin.regulations.add') }}
+          </button>
+          <button v-if="regulationForm._id" class="btn btn-ghost" @click="resetRegulationForm">{{ t('common.cancel') }}</button>
+        </div>
+      </section>
+
+      <input
+        v-model="regulationSearch" type="search" :placeholder="t('admin.regulations.searchPlaceholder')"
+        style="max-width:280px" class="mb-3" @input="debouncedSearchRegulations"
+      />
+
+      <div v-if="loadingRegulations" class="state-center"><div class="spinner"></div></div>
+      <div v-else-if="!regulations.length" class="state-center"><p class="text-muted">{{ t('admin.regulations.empty') }}</p></div>
+      <div v-else class="table-scroll">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>{{ t('admin.regulations.table.scope') }}</th>
+              <th>{{ t('admin.regulations.table.target') }}</th>
+              <th>{{ t('admin.regulations.table.region') }}</th>
+              <th>{{ t('admin.regulations.table.title') }}</th>
+              <th>{{ t('admin.regulations.table.source') }}</th>
+              <th>{{ t('admin.regulations.table.actions') }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="r in regulations" :key="r._id">
+              <td><span class="badge" :class="r.scope === 'species' ? 'badge-ocean' : 'badge-sand'">{{ t(`admin.regulations.scope.${r.scope}`) }}</span></td>
+              <td class="text-muted" style="font-size:.82rem">{{ r.scope === 'species' ? r.speciesName : '—' }}</td>
+              <td class="text-muted" style="font-size:.82rem">{{ r.region }}</td>
+              <td style="font-size:.85rem">{{ r.title }}</td>
+              <td class="text-muted" style="font-size:.8rem;max-width:200px">
+                <a v-if="r.sourceUrl" :href="r.sourceUrl" target="_blank" rel="noopener">{{ r.sourceTitle }}</a>
+                <span v-else>{{ r.sourceTitle }}</span>
+              </td>
+              <td>
+                <div class="flex gap-1.5">
+                  <button class="btn btn-ghost btn-sm" @click="editRegulation(r)">{{ t('common.edit') }}</button>
+                  <button class="btn btn-danger btn-sm" @click="deleteRegulation(r)">{{ t('common.delete') }}</button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
     <!-- Confirm delete dialog -->
     <Teleport to="body">
       <div v-if="deleteTarget" class="dialog-overlay" @click.self="deleteTarget = null">
@@ -302,7 +409,54 @@ async function saveConfig() {
   }
 }
 
-onMounted(() => { pagination.load(); fetchSessions(); fetchPendingShops(); fetchConfig() })
+// Normativa (taglie minime, fermi biologici, specie protette) — curata a
+// mano da un admin, mai generata: un dato legale sbagliato ha conseguenze
+// reali, quindi ogni voce porta sempre la fonte ufficiale.
+const regulations         = ref([])
+const regulationSearch    = ref('')
+const loadingRegulations  = ref(false)
+const savingRegulation    = ref(false)
+
+function emptyRegulationForm() {
+  return { scope: 'species', speciesName: '', region: '', title: '', minSizeCm: null, maxCatchPerDay: null, closedSeason: '', protected: false, notes: '', sourceTitle: '', sourceUrl: '' }
+}
+const regulationForm = reactive(emptyRegulationForm())
+
+async function fetchRegulations() {
+  loadingRegulations.value = true
+  try {
+    const { data } = await api.get('/regulations/admin', { params: { search: regulationSearch.value || undefined } })
+    regulations.value = data.data
+  } finally { loadingRegulations.value = false }
+}
+const debouncedSearchRegulations = useDebouncedFn(() => fetchRegulations(), 320)
+
+function resetRegulationForm() { Object.assign(regulationForm, emptyRegulationForm()) }
+function editRegulation(r) { Object.assign(regulationForm, r) }
+
+async function saveRegulation() {
+  savingRegulation.value = true
+  try {
+    const { _id, createdAt, updatedAt, __v, ...payload } = regulationForm
+    if (_id) await api.patch(`/regulations/admin/${_id}`, payload)
+    else await api.post('/regulations/admin', payload)
+    resetRegulationForm()
+    await fetchRegulations()
+    toast(t('admin.regulations.saved'), { type: 'success' })
+  } catch {
+    toast(t('admin.regulations.saveError'), { type: 'danger' })
+  } finally {
+    savingRegulation.value = false
+  }
+}
+
+async function deleteRegulation(r) {
+  if (!window.confirm(t('admin.regulations.confirmDelete'))) return
+  await api.delete(`/regulations/admin/${r._id}`)
+  regulations.value = regulations.value.filter(x => x._id !== r._id)
+}
+
+onMounted(() => { pagination.load(); fetchSessions(); fetchPendingShops(); fetchConfig(); fetchRegulations() })
 </script>
 
 <style scoped>

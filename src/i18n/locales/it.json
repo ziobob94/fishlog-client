@@ -56,7 +56,7 @@
 		"newChatGroup": "Nuovo gruppo chat"
 	},
 	"admin": {
-		"tabs": { "users": "Utenti", "sessions": "Sessioni", "shops": "Negozi", "config": "Configurazioni" },
+		"tabs": { "users": "Utenti", "sessions": "Sessioni", "shops": "Negozi", "config": "Configurazioni", "regulations": "Normativa" },
 		"users": {
 			"searchPlaceholder": "Cerca utente...",
 			"table": {
@@ -105,6 +105,44 @@
 			"secretSetHint": "Impostato — lascia vuoto per non modificarlo",
 			"secretPlaceholder": "Non impostato",
 			"save": "Salva configurazione"
+		},
+		"regulations": {
+			"intro": "Dati legali mostrati agli utenti sulla scheda specie: inserisci solo da provvedimenti ufficiali, sempre con la fonte citata.",
+			"newTitle": "Nuova norma",
+			"editTitle": "Modifica norma",
+			"add": "Aggiungi",
+			"searchPlaceholder": "Cerca per specie, regione o titolo...",
+			"empty": "Nessuna norma inserita",
+			"saved": "Norma salvata",
+			"saveError": "Errore nel salvataggio della norma",
+			"confirmDelete": "Eliminare questa norma?",
+			"scope": { "species": "Specie", "general": "Generale" },
+			"fields": {
+				"scope": "Tipo",
+				"speciesName": "Specie",
+				"speciesNamePlaceholder": "Es. Spigola",
+				"region": "Regione / area",
+				"regionPlaceholder": "Es. Italia, Mar Mediterraneo, AMP Portofino...",
+				"title": "Titolo",
+				"titlePlaceholder": "Es. Taglia minima Reg. CE 1967/2006",
+				"minSizeCm": "Taglia minima (cm)",
+				"maxCatchPerDay": "Numero massimo catture/giorno",
+				"closedSeason": "Fermo biologico",
+				"closedSeasonPlaceholder": "Es. 1 maggio - 31 luglio",
+				"protected": "Specie protetta (vietata la pesca)",
+				"notes": "Note",
+				"sourceTitle": "Fonte (nome provvedimento)",
+				"sourceTitlePlaceholder": "Es. D.M. 9 luglio 2013",
+				"sourceUrl": "Link alla fonte ufficiale"
+			},
+			"table": {
+				"scope": "Tipo",
+				"target": "Specie",
+				"region": "Regione",
+				"title": "Titolo",
+				"source": "Fonte",
+				"actions": "Azioni"
+			}
 		}
 	},
 	"auth": {
@@ -1009,6 +1047,15 @@
 			"techniqueLabel": "Tecnica",
 			"waterTypeLabel": "Tipo di acqua",
 			"any": "Qualsiasi"
+		},
+		"legal": {
+			"title": "Stato legale",
+			"protectedBanner": "Specie protetta: la pesca non è consentita. Nessuna informazione di pesca viene mostrata per questa specie.",
+			"minSize": "Taglia minima",
+			"maxCatch": "Massimo {n} catture al giorno",
+			"closedSeason": "Fermo biologico",
+			"source": "Fonte",
+			"disclaimer": "Il testo vincolante è sempre il provvedimento ufficiale citato, non questo riassunto."
 		},
 		"catchCount": "{n} catture registrate",
 		"scientificName": "Nome scientifico",
