@@ -18,13 +18,6 @@
 		"showPassword": "Mostra password",
 		"hidePassword": "Nascondi password"
 	},
-	"footer": {
-		"tagline": "Il diario e la community per chi pesca.",
-		"explore": "Esplora",
-		"community": "Community",
-		"legal": "Informazioni",
-		"note": "Le condizioni e le indicazioni sono indicative e non garantiscono la cattura. Per le norme fa fede la pubblicazione ufficiale."
-	},
 	"nav": {
 		"home": "Home",
 		"sessions": "Uscite",
@@ -377,10 +370,11 @@
 			"unavailable": "Dati non disponibili per questa zona in questo momento."
 		},
 		"stories": {
-			"rules": { "title": "Normativa con la fonte", "text": "Taglie minime, quantità e fermi biologici con il provvedimento citato accanto. Il testo vincolante resta la pubblicazione ufficiale.", "cta": "Vedi le specie" },
-			"species": { "title": "Specie e stagioni", "text": "Per ogni specie il calendario delle catture, le esche e le montature più usate dalla community.", "cta": "Esplora le specie" },
-			"community": { "title": "La community", "text": "Racconta le tue uscite, confrontati con gli altri pescatori e scala la classifica.", "cta": "Vai alla bacheca" }
+			"community": { "title": "Community", "text": "Racconta le tue uscite, confrontati con gli altri pescatori e scala la classifica.", "cta": "Vai alla community" },
+			"market": { "title": "Market", "text": "Compra e vendi attrezzatura nuova e usata tra appassionati.", "cta": "Apri il market" },
+			"species": { "title": "Specie e stagioni", "text": "Calendario delle catture, esche, attrezzatura e normativa con la fonte citata, per ogni specie.", "cta": "Esplora le specie" }
 		},
+		"quick": { "title": "Accessi rapidi", "sessions": "Uscite", "stats": "Statistiche", "leaderboard": "Classifica", "friends": "Amici", "profile": "Profilo" },
 		"liveConditions": {
 			"title": "Oggi dove sei",
 			"subtitle": "Condizioni attuali in base alla tua posizione",

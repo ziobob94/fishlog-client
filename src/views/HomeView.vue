@@ -64,28 +64,13 @@
       </article>
     </section>
 
-    <!-- Accessi rapidi alle funzioni dell'app. -->
-    <section v-for="group in groups" :key="group.key" class="hub-group">
-      <h2 class="section-label">{{ t(`home.hub.groups.${group.key}`) }}</h2>
-      <div class="hub-grid">
-        <component
-          :is="section.to ? 'RouterLink' : 'div'"
-          v-for="section in group.sections"
-          :key="section.key"
-          :to="section.to"
-          class="hub-card"
-          :class="{ 'hub-card-disabled': !section.to }"
-        >
-          <div class="hub-icon"><component :is="section.icon" :size="22" /></div>
-          <div class="hub-body">
-            <h3>{{ t(`home.hub.sections.${section.key}.title`) }}</h3>
-            <p class="text-muted">{{ t(`home.hub.sections.${section.key}.text`) }}</p>
-          </div>
-          <span v-if="!section.to" class="badge badge-sand">{{ t('home.hub.comingSoon') }}</span>
-          <span v-else-if="badgeCount(section.key)" class="badge badge-danger">{{ badgeCount(section.key) }}</span>
-        </component>
-      </div>
-    </section>
+    <!-- Accessi secondari, in piccolo: il resto è nel menu. -->
+    <nav class="quick-links" :aria-label="t('home.quick.title')">
+      <RouterLink v-for="q in quickLinks" :key="q.to" :to="q.to" class="quick-link">
+        <component :is="q.icon" :size="14" /> {{ t(`home.quick.${q.key}`) }}
+        <span v-if="badgeCount(q.key)" class="badge badge-danger">{{ badgeCount(q.key) }}</span>
+      </RouterLink>
+    </nav>
   </div>
 </template>
 
@@ -93,10 +78,9 @@
 import { ref, computed, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import {
-  Fish, Users, Newspaper, Pin, ShoppingBag, MessageSquare,
-  BookOpen, MessagesSquare, UserCircle, UserPlus, BarChart3,
+  Fish, Users, ShoppingBag, UserCircle, UserPlus, BarChart3,
   Waves, Thermometer, Wind, Gauge, Droplet, Trophy, MapPin,
-  ShieldCheck, CalendarDays, ArrowRight
+  CalendarDays, ArrowRight
 } from 'lucide-vue-next'
 import { useFriendStore } from '../stores/friends.js'
 import { useLiveConditions } from '../composables/useLiveConditions.js'
@@ -160,31 +144,17 @@ function badgeCount(key) {
 }
 
 const stories = [
-  { key: 'rules',     to: '/species',  icon: ShieldCheck },
-  { key: 'species',   to: '/species',  icon: CalendarDays },
-  { key: 'community', to: '/feed',     icon: Users }
+  { key: 'community', to: '/feed',    icon: Users },
+  { key: 'market',    to: '/market',  icon: ShoppingBag },
+  { key: 'species',   to: '/species', icon: CalendarDays }
 ]
 
-const groups = [
-  { key: 'diary', sections: [
-    { key: 'sessions',    to: '/sessions', icon: Fish },
-    { key: 'stats',       to: '/stats',    icon: BarChart3 },
-    { key: 'species',     to: '/species',  icon: Fish },
-    { key: 'leaderboard', to: '/classifica', icon: Trophy }
-  ] },
-  { key: 'community', sections: [
-    { key: 'feed',    to: '/feed',    icon: Newspaper },
-    { key: 'board',   to: '/board',   icon: Pin },
-    { key: 'groups',  to: '/groups',  icon: Users },
-    { key: 'friends', to: '/friends', icon: UserPlus },
-    { key: 'chat',    to: '/chat',    icon: MessagesSquare },
-    { key: 'forum',   to: null,       icon: MessageSquare }
-  ] },
-  { key: 'more', sections: [
-    { key: 'marketplace', to: '/market',  icon: ShoppingBag },
-    { key: 'culture',     to: null,       icon: BookOpen },
-    { key: 'profile',     to: '/profile', icon: UserCircle }
-  ] }
+const quickLinks = [
+  { key: 'sessions',    to: '/sessions',   icon: Fish },
+  { key: 'stats',       to: '/stats',      icon: BarChart3 },
+  { key: 'leaderboard', to: '/classifica', icon: Trophy },
+  { key: 'friends',     to: '/friends',    icon: UserPlus },
+  { key: 'profile',     to: '/profile',    icon: UserCircle }
 ]
 
 // Solo i valori disponibili: fuori mare onda e temperatura acqua mancano e
@@ -248,20 +218,10 @@ onMounted(() => { loadZone('here') })
 .story p { @apply text-sm flex-1; }
 .story-cta { @apply inline-flex items-center gap-1 text-sm font-semibold text-ocean; }
 
-.hub-group { @apply mb-6; }
-.hub-grid { @apply grid gap-3; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); }
-.hub-card {
-  @apply flex items-start gap-3 relative no-underline text-inherit transition-all duration-200
-         bg-surface border border-border/60 rounded-lg p-3.5;
+.quick-links { @apply flex flex-wrap gap-2; }
+.quick-link {
+  @apply inline-flex items-center gap-1.5 rounded-full border border-border/60 bg-surface px-3 py-1.5
+         text-xs font-semibold text-muted no-underline transition-colors duration-200;
 }
-a.hub-card:hover { @apply border-ocean; transform: translateY(-2px); }
-.hub-card-disabled { @apply opacity-60; }
-.hub-icon {
-  @apply flex items-center justify-center shrink-0 w-10 h-10 rounded-sm text-ocean;
-  background: var(--ocean-glow);
-}
-.hub-body h3 { @apply font-semibold text-base; }
-.hub-body p  { @apply text-xs mt-0.5; }
-.hub-card .badge-danger { @apply absolute top-3 right-3; }
-.hub-card .badge-sand { @apply ml-auto shrink-0 self-start; }
+.quick-link:hover { @apply border-ocean text-foam; }
 </style>
