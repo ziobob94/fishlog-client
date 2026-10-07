@@ -1,3 +1,10 @@
+# [1.24.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.23.0...client-v1.24.0) (2026-10-07)
+
+
+### Features
+
+* scheda specie pubblica con calendario ed esche dai dati reali ([c8769ca](https://github.com/ziobob94/fishlog-client/commit/c8769ca9d7572beb03d7b9720920c4e8d535af7a))
+
 # [1.23.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.22.2...client-v1.23.0) (2026-09-10)
 
 
