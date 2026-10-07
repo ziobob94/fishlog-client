@@ -999,7 +999,16 @@
 		},
 		"gear": {
 			"baitsTitle": "Esche più usate",
-			"techniquesTitle": "Tecniche più usate"
+			"rigsTitle": "Montatura più usata",
+			"lineTitle": "Lenza consigliata",
+			"lineRange": "{avg} lb in media (da {min} a {max} lb)",
+			"techniquesTitle": "Tecniche più usate",
+			"empty": "Non ci sono ancora abbastanza catture registrate per questo scenario"
+		},
+		"filters": {
+			"techniqueLabel": "Tecnica",
+			"waterTypeLabel": "Tipo di acqua",
+			"any": "Qualsiasi"
 		},
 		"catchCount": "{n} catture registrate",
 		"scientificName": "Nome scientifico",
