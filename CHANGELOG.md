@@ -1,3 +1,10 @@
+# [1.30.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.29.0...client-v1.30.0) (2026-10-07)
+
+
+### Features
+
+* **home:** home con zone, Oggi in mare, sezioni con CTA e footer ricco ([10f8a8a](https://github.com/ziobob94/fishlog-client/commit/10f8a8a379475e309764710861a97c1c517e691c))
+
 # [1.29.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.28.0...client-v1.29.0) (2026-10-07)
 
 
