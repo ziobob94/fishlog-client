@@ -32,6 +32,7 @@
 		"chat": "Chat",
 		"stats": "Statistiche",
 		"species": "Specie",
+		"leaderboard": "Classifica",
 		"forum": "Forum",
 		"culture": "Cultura",
 		"profile": "Profilo",
@@ -1024,6 +1025,15 @@
 		"totalSessions": "Uscite totali",
 		"totalCatches": "Catture totali",
 		"avgRating": "Voto medio"
+	},
+	"leaderboard": {
+		"title": "Classifica",
+		"periods": { "week": "Settimana", "month": "Mese", "all": "Sempre" },
+		"formula": "+10 per uscita pubblica, +3 per cattura registrata, +5 se l'uscita ha foto o video. Conta solo quello che è già visibile a tutti.",
+		"empty": "Nessuna uscita pubblica in questo periodo",
+		"sessionsCount": "{n} uscite",
+		"catchesCount": "{n} catture",
+		"you": "Tu"
 	},
 	"species": {
 		"searchTitle": "Specie",

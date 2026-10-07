@@ -230,9 +230,17 @@ export const useSessionStore = defineStore('sessions', () => {
     }
   }
 
+  // Classifica su contenuto pubblico (uscite non private/di gruppo): stato
+  // non condiviso nello store, ogni vista la richiede per il period che le
+  // serve.
+  async function fetchLeaderboard(period = 'all') {
+    const { data } = await api.get('/sessions/leaderboard', { params: { period } })
+    return data.data || []
+  }
+
   return {
     sessions, current, ongoing, loading, error, pagination, total,
     fetchSessions, fetchSession, fetchOngoing, createSession, updateSession,
-    deleteSession, uploadMedia, uploadCatchMedia, deleteMedia
+    deleteSession, uploadMedia, uploadCatchMedia, deleteMedia, fetchLeaderboard
   }
 })

@@ -39,6 +39,7 @@ export default createRouter({
     { path: '/stats',   name: 'stats',   component: () => import('../views/StatsView.vue') },
     { path: '/species', name: 'species-search', component: () => import('../views/SpeciesSearchView.vue') },
     { path: '/species/:name', name: 'species', component: () => import('../views/SpeciesView.vue') },
+    { path: '/classifica', name: 'leaderboard', component: () => import('../views/LeaderboardView.vue') },
   ]
 })
 

@@ -36,6 +36,9 @@
       <RouterLink to="/species" class="nav-item" @click="$emit('close')">
         <span class="w-5 text-center flex justify-center"><Fish :size="16" /></span> {{ t('nav.species') }}
       </RouterLink>
+      <RouterLink to="/classifica" class="nav-item" @click="$emit('close')">
+        <span class="w-5 text-center flex justify-center"><Trophy :size="16" /></span> {{ t('nav.leaderboard') }}
+      </RouterLink>
 
       <div class="nav-section-label">{{ t('nav.sections.community') }}</div>
       <RouterLink to="/feed" class="nav-item" @click="$emit('close')">
@@ -121,7 +124,7 @@
   import { computed, onMounted } from 'vue'
   import { RouterLink, useRouter } from 'vue-router'
   import { useI18n } from 'vue-i18n'
-  import { Fish, Home, Pin, MapPin, Users, UserPlus, Newspaper, MessagesSquare, Settings, BarChart3, UserCircle, Plus, Waves, ShoppingBag, Tag, MessageSquare, BookOpen } from 'lucide-vue-next'
+  import { Fish, Home, Pin, MapPin, Users, UserPlus, Newspaper, MessagesSquare, Settings, BarChart3, UserCircle, Plus, Waves, ShoppingBag, Tag, MessageSquare, BookOpen, Trophy } from 'lucide-vue-next'
   import { useAuthStore } from '../stores/auth.js'
   import { useSessionStore } from '../stores/sessions.js'
   import { usePostStore } from '../stores/posts.js'
