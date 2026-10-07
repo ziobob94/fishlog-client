@@ -358,7 +358,10 @@
 			"title": "Oggi dove sei",
 			"subtitle": "Condizioni attuali in base alla tua posizione",
 			"loading": "Rilevamento condizioni...",
-			"enable": "Attiva la posizione per vedere le condizioni di oggi"
+			"enable": "Attiva la posizione per vedere le condizioni di oggi",
+			"enableCta": "Attiva posizione",
+			"disclaimer": "Dati indicativi da Open-Meteo, non per la navigazione. Verifica sempre le condizioni reali prima di uscire.",
+			"labels": { "wind": "Vento", "wave": "Onda", "water": "Acqua", "air": "Aria", "pressure": "Pressione" }
 		},
 		"empty": {
 			"title": "Nessuna uscita trovata",
@@ -367,7 +370,10 @@
 		},
 		"hub": {
 			"comingSoon": "Prossimamente",
+			"groups": { "diary": "Il tuo diario", "community": "Community", "more": "Altro" },
 			"sections": {
+				"species": { "title": "Specie", "text": "Schede, calendario, attrezzatura e normativa" },
+				"leaderboard": { "title": "Classifica", "text": "I pescatori più attivi della community" },
 				"sessions": {
 					"title": "Uscite",
 					"text": "Registra e rivedi le tue sessioni di pesca"
