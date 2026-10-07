@@ -1,3 +1,10 @@
+# [1.31.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.30.0...client-v1.31.0) (2026-10-07)
+
+
+### Features
+
+* **home:** sezioni principali community, market, specie e footer compatto ([cd0df8b](https://github.com/ziobob94/fishlog-client/commit/cd0df8b095692187b03196ef36d1ed685b5903f1))
+
 # [1.30.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.29.0...client-v1.30.0) (2026-10-07)
 
 
