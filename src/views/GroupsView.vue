@@ -203,7 +203,7 @@ async function removeMember(g, m) {
 </script>
 
 <style scoped>
-.groups-grid  { @apply grid gap-4; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); }
+.groups-grid  { @apply grid gap-4; grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr)); }
 .group-card   { @apply flex flex-col gap-3; }
 .group-header { @apply flex items-start justify-between; }
 

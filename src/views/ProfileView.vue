@@ -510,7 +510,7 @@ async function doDeleteAccount() {
 </script>
 
 <style scoped>
-.profile-grid { @apply grid gap-4; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); }
+.profile-grid { @apply grid gap-4; grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr)); }
 
 .theme-toggle { @apply flex gap-2; }
 .theme-toggle .btn { @apply gap-1.5; }

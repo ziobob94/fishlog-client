@@ -346,10 +346,10 @@
   }
 
   .tabs {
-    @apply flex gap-1 p-1 mb-3 bg-surface-2 rounded-full;
+    @apply flex gap-1 p-1 mb-3 bg-surface-2 rounded-full w-full sm:w-auto;
   }
   .tab-pill {
-    @apply inline-flex items-center gap-1 text-xs font-semibold text-muted bg-transparent border-none rounded-full cursor-pointer px-3 py-1.5 transition-colors;
+    @apply flex-1 sm:flex-initial inline-flex items-center justify-center gap-1 text-xs font-semibold text-muted bg-transparent border-none rounded-full cursor-pointer px-3 py-1.5 transition-colors;
   }
   .tab-pill:hover { @apply text-foam; }
   .tab-pill.active { @apply text-ink bg-ocean; }
@@ -437,11 +437,11 @@
   }
 
   .conversation-avatar {
-    @apply w-14 h-14 rounded-full object-cover shrink-0 my-2.5;
+    @apply w-12 h-12 sm:w-14 sm:h-14 rounded-full object-cover shrink-0 my-2.5;
   }
 
   .conversation-avatar-placeholder {
-    @apply w-14 h-14 rounded-full border border-ocean text-ocean flex items-center justify-center text-base font-bold shrink-0 my-2.5;
+    @apply w-12 h-12 sm:w-14 sm:h-14 rounded-full border border-ocean text-ocean flex items-center justify-center text-base font-bold shrink-0 my-2.5;
     background: var(--ocean-glow);
   }
 
