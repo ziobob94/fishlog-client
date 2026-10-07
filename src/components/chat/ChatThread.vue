@@ -353,7 +353,7 @@
   }
 
   .message-bubble {
-    @apply max-w-[68%] min-w-[2.5rem] flex flex-col gap-0.5 bg-surface-2 border border-border rounded-lg px-2.5 py-1.5 text-sm text-foam;
+    @apply max-w-[84%] sm:max-w-[68%] min-w-[2.5rem] flex flex-col gap-0.5 bg-surface-2 border border-border rounded-2xl px-3 py-2 text-sm text-foam;
   }
 
   .message-row.mine .message-bubble {
