@@ -253,16 +253,17 @@ async function doDelete() {
   @apply bg-sand/10 border border-sand text-sand rounded-sm text-sm px-4 py-3 mb-5;
 }
 
-.detail-header       { @apply flex flex-wrap items-start justify-between gap-4 mb-6; }
+.detail-header       { @apply flex flex-wrap items-start justify-between gap-3 mb-4; }
 .detail-header-left  { @apply flex flex-col gap-3; }
 .detail-meta         { @apply flex flex-wrap items-center gap-2; }
-.detail-header-actions { @apply flex gap-2 flex-wrap; }
+.detail-header-actions { @apply flex gap-2 w-full sm:w-auto; }
+.detail-header-actions > * { @apply flex-1 sm:flex-initial justify-center; }
 
 .detail-grid  { @apply grid gap-5; grid-template-columns: 1fr 220px; }
 .detail-main  { @apply flex flex-col; }
 .detail-side  { @apply flex flex-col gap-3; }
 
-.detail-section { @apply border-b border-border mb-6 pb-6 last:border-b-0; }
+.detail-section { @apply bg-surface border border-border/60 rounded-lg p-4 mb-3 sm:mb-4; }
 .section-title  { @apply text-sm font-bold mb-3 text-foam; }
 .icon-inline    { display: inline-flex; align-items: center; gap: .4rem; }
 
