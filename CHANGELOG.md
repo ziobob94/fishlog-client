@@ -1,3 +1,10 @@
+# [1.26.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.25.0...client-v1.26.0) (2026-10-07)
+
+
+### Features
+
+* normativa con fonte citata + restyle scheda specie ([5519ea5](https://github.com/ziobob94/fishlog-client/commit/5519ea5b3a2882cb3fa3279a363f4c6cb8428c18))
+
 # [1.25.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.24.0...client-v1.25.0) (2026-10-07)
 
 
