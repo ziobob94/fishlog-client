@@ -1057,7 +1057,10 @@
 	"stats": {
 		"totalSessions": "Uscite totali",
 		"totalCatches": "Catture totali",
-		"avgRating": "Voto medio"
+		"avgRating": "Voto medio",
+		"byMonth": "Catture per mese",
+		"last12": "ultimi 12 mesi",
+		"topSpecies": "Specie più catturate"
 	},
 	"leaderboard": {
 		"title": "Classifica",
