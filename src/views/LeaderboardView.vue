@@ -130,7 +130,7 @@ watch(period, load, { immediate: true })
 }
 
 .you-badge {
-  @apply text-[0.65rem] font-bold uppercase tracking-wide bg-ocean text-white rounded-full px-1.5 py-0.5;
+  @apply text-[0.65rem] font-bold uppercase tracking-wide bg-ocean text-on-primary rounded-full px-1.5 py-0.5;
 }
 
 .leaderboard-meta {

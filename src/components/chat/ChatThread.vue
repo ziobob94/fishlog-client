@@ -357,7 +357,7 @@
   }
 
   .message-row.mine .message-bubble {
-    @apply bg-ocean border-ocean text-white;
+    @apply bg-ocean border-ocean text-on-primary;
   }
 
   .message-sender {

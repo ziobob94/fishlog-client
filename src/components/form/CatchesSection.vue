@@ -529,7 +529,7 @@ function confirmRemove() {
 
 .row-photo-actions { align-items: center; display: flex; gap: .5rem; position: relative; }
 .row-photo-count {
-  background: var(--ocean, #0ea5e9); border-radius: 999px; color: #fff;
+  background: var(--ocean, #0ea5e9); border-radius: 999px; color: rgb(var(--color-on-primary));
   font-size: .62rem; font-weight: 700; line-height: 1; padding: .15rem .35rem;
   position: absolute; right: -.4rem; top: -.4rem;
 }

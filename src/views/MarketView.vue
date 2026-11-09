@@ -237,7 +237,7 @@ onMounted(() => {
 }
 
 .filter-count-badge {
-  @apply inline-flex items-center justify-center min-w-[1.1rem] h-[1.1rem] rounded-full bg-ocean text-white text-[0.65rem] font-bold px-1;
+  @apply inline-flex items-center justify-center min-w-[1.1rem] h-[1.1rem] rounded-full bg-ocean text-on-primary text-[0.65rem] font-bold px-1;
 }
 
 .listings-grid {

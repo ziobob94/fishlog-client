@@ -11,9 +11,7 @@
 
     <SessionFilters v-model="filters" @reset="resetFilters" />
 
-    <h2 v-if="store.ongoing && historySessions.length" class="ongoing-heading text-muted mb-2">
-      {{ t('home.historyTitle') }}
-    </h2>
+    <TideDivider v-if="store.ongoing && historySessions.length">{{ t('home.historyTitle') }}</TideDivider>
 
     <div v-if="infiniteLoading" class="state-center">
       <div class="spinner"></div>
@@ -37,6 +35,7 @@
 </template>
 
 <script setup>
+import TideDivider from '../components/TideDivider.vue'
 import { ref, computed, watch, onMounted } from 'vue'
 import { RouterLink } from 'vue-router'
 import { useI18n } from 'vue-i18n'
