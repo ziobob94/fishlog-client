@@ -147,6 +147,7 @@
       <!-- Negozio / Market -->
       <section class="card">
         <h3>{{ t('profile.shop.title') }}</h3>
+        <RouterLink to="/market/sell" class="btn btn-secondary btn-sm mb-2">{{ t('seller.becomeSeller') }}</RouterLink>
         <div class="notification-row">
           <div>
             <strong>{{ t('profile.shop.enable') }}</strong>

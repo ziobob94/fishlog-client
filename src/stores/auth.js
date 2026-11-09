@@ -84,6 +84,13 @@ export const useAuthStore = defineStore('auth', () => {
     return data
   }
 
+  async function requestShopSite(requested) {
+    const { data } = await api.post('/auth/me/shop/site-request', { requested })
+    user.value = data
+    localStorage.setItem('fl_user', JSON.stringify(data))
+    return data
+  }
+
   async function updateShop(payload) {
     const { data } = await api.patch('/auth/me/shop', payload)
     persistUser(data)
@@ -115,7 +122,7 @@ export const useAuthStore = defineStore('auth', () => {
 
   return {
     token, user, isLoggedIn, setAuth, clearAuth, initAuth, login, register, fetchMe, logout,
-    updateProfile, updateNotificationPreferences, updateMarketPreferences, updateShop, uploadAvatar, changePassword, changeEmail, deleteAccount,
+    updateProfile, updateNotificationPreferences, updateMarketPreferences, updateShop, requestShopSite, uploadAvatar, changePassword, changeEmail, deleteAccount,
     forgotPassword, resetPassword
   }
 })
