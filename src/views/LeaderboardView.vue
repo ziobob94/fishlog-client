@@ -117,7 +117,7 @@ watch(period, load, { immediate: true })
 }
 
 .mini-placeholder {
-  @apply w-9 h-9 rounded-full border border-ocean text-ocean flex items-center justify-center text-xs font-bold shrink-0;
+  @apply w-9 h-9 rounded-full border border-ocean text-ocean-text flex items-center justify-center text-xs font-bold shrink-0;
   background: var(--ocean-glow);
 }
 
@@ -130,7 +130,7 @@ watch(period, load, { immediate: true })
 }
 
 .you-badge {
-  @apply text-[0.65rem] font-bold uppercase tracking-wide bg-ocean text-white rounded-full px-1.5 py-0.5;
+  @apply text-[0.65rem] font-bold uppercase tracking-wide bg-ocean text-on-primary rounded-full px-1.5 py-0.5;
 }
 
 .leaderboard-meta {
@@ -138,6 +138,6 @@ watch(period, load, { immediate: true })
 }
 
 .leaderboard-score {
-  @apply text-lg font-extrabold text-ocean shrink-0;
+  @apply text-lg font-extrabold text-ocean-text shrink-0;
 }
 </style>

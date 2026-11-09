@@ -2,6 +2,7 @@
   <div class="home">
     <!-- Hero: una promessa chiara e due azioni, prima di tutto il resto. -->
     <section class="hero">
+      <IsobathBg />
       <p class="eyebrow">{{ t('home.hero.eyebrow') }}</p>
       <h1>{{ t('home.hero.title') }}</h1>
       <p class="hero-sub">{{ t('home.hero.subtitle') }}</p>
@@ -10,6 +11,8 @@
         <RouterLink to="/species" class="btn btn-secondary">{{ t('home.hero.searchSpecies') }}</RouterLink>
       </div>
     </section>
+
+    <GlobeCard />
 
     <!-- Selettore zona: la barra "Oggi in mare" sotto segue la zona scelta. -->
     <section class="zones" :aria-label="t('home.zones.title')">
@@ -82,6 +85,8 @@ import {
   Waves, Thermometer, Wind, Gauge, Droplet, Trophy, MapPin,
   CalendarDays, ArrowRight
 } from 'lucide-vue-next'
+import GlobeCard from '../components/GlobeCard.vue'
+import IsobathBg from '../components/IsobathBg.vue'
 import { useFriendStore } from '../stores/friends.js'
 import { useLiveConditions } from '../composables/useLiveConditions.js'
 
@@ -176,51 +181,51 @@ onMounted(() => { loadZone('here') })
 
 <style scoped>
 .icon-inline { @apply inline-flex items-center gap-1.5; }
-.eyebrow { @apply text-xs font-bold uppercase tracking-widest text-ocean; }
+.eyebrow { @apply text-xs font-bold uppercase text-sand-text; letter-spacing: 0.14em; }
 .section-label { @apply text-xs font-bold uppercase tracking-widest text-muted mb-2; font-size: 0.72rem; }
 
 .hero {
-  @apply rounded-lg border border-border/60 px-5 py-8 mb-5 text-center;
-  background: linear-gradient(160deg, var(--ocean-glow), transparent 75%), rgb(var(--color-surface));
+  @apply relative overflow-hidden rounded-xl border border-border/60 px-5 py-8 mb-5 text-left bg-sea-deep;
 }
 .hero h1 { @apply mt-1; }
-.hero-sub { @apply text-muted text-sm max-w-xl mx-auto mt-2; }
-.hero-actions { @apply flex flex-wrap justify-center gap-2 mt-4; }
+.hero > *:not(svg) { @apply relative; }
+.hero-sub { @apply text-muted text-sm max-w-xl mt-2; }
+.hero-actions { @apply flex flex-wrap gap-2 mt-4; }
 
 .zones { @apply mb-4; }
 .zone-list { @apply flex flex-wrap gap-2; }
 .zone-chip {
-  @apply inline-flex items-center gap-1.5 rounded-full border border-border bg-surface px-3 py-1.5
+  @apply inline-flex items-center gap-1.5 rounded-full border border-border bg-surface px-4 min-h-[44px]
          text-sm font-semibold text-foam cursor-pointer transition-all duration-200;
 }
 .zone-chip:hover { @apply border-ocean; }
-.zone-chip-active { @apply bg-ocean border-ocean text-white; }
+.zone-chip-active { @apply bg-ocean border-ocean text-on-primary; }
 
-.sea-bar { @apply rounded-lg border border-border/60 bg-surface p-4 mb-6; }
+.sea-bar { @apply rounded-signature border border-border/60 bg-surface p-4 mb-6; }
 .sea-bar-head { @apply flex flex-wrap items-center justify-between gap-1 mb-3; }
 
 .live-tiles { @apply grid gap-2; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); }
 .live-tile { @apply flex flex-col gap-0.5 rounded-sm bg-surface-2 border border-border/50 px-3 py-2; }
-.live-tile-icon { @apply text-ocean; }
-.live-tile-value { @apply text-xl font-extrabold text-foam leading-none mt-1; }
+.live-tile-icon { @apply text-ocean-text; }
+.live-tile-value { @apply font-mono text-3xl font-medium text-foam leading-none mt-1; }
 .live-tile-value small { @apply text-xs font-semibold text-muted; }
-.live-tile-label { @apply text-[0.68rem] font-semibold uppercase tracking-wide text-muted; }
+.live-tile-label { @apply text-xs font-semibold uppercase text-muted; letter-spacing: 0.14em; }
 .live-empty { @apply flex flex-wrap items-center justify-between gap-2 py-2; }
 .live-disclaimer { @apply text-[0.7rem] text-muted mt-3; }
 
 .story-grid { @apply grid gap-4 mb-8; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
-.story { @apply flex flex-col items-start gap-2 rounded-lg border border-border/60 bg-surface p-5; }
+.story { @apply flex flex-col items-start gap-2 rounded-signature border border-border/60 bg-surface p-5; }
 .story-icon {
-  @apply flex items-center justify-center w-11 h-11 rounded-full text-ocean;
+  @apply flex items-center justify-center w-11 h-11 rounded-full text-ocean-text;
   background: var(--ocean-glow);
 }
 .story h2 { @apply text-lg; }
 .story p { @apply text-sm flex-1; }
-.story-cta { @apply inline-flex items-center gap-1 text-sm font-semibold text-ocean; }
+.story-cta { @apply inline-flex items-center gap-1 text-sm font-semibold text-ocean-text; }
 
 .quick-links { @apply flex flex-wrap gap-2; }
 .quick-link {
-  @apply inline-flex items-center gap-1.5 rounded-full border border-border/60 bg-surface px-3 py-1.5
+  @apply inline-flex items-center gap-1.5 rounded-full border border-border/60 bg-surface px-4 min-h-[44px]
          text-xs font-semibold text-muted no-underline transition-colors duration-200;
 }
 .quick-link:hover { @apply border-ocean text-foam; }

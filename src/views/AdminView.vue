@@ -362,7 +362,9 @@ async function approveShop(u) {
 }
 
 async function rejectShop(u) {
-  await api.post(`/admin/shops/${u._id}/reject`)
+  const reason = window.prompt(t('admin.shops.rejectReason'))
+  if (reason === null) return
+  await api.post(`/admin/shops/${u._id}/reject`, { reason })
   pendingShops.value = pendingShops.value.filter(x => x._id !== u._id)
 }
 

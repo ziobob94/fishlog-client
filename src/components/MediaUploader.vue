@@ -14,7 +14,7 @@
       <div class="flex flex-col items-center gap-1.5 text-center px-4">
         <Paperclip :size="28" class="text-muted" />
         <p class="text-sm text-foam">
-          {{ t('mediaUploader.dropHint') }} <span class="text-ocean">{{ t('mediaUploader.dropHintClick') }}</span>
+          {{ t('mediaUploader.dropHint') }} <span class="text-ocean-text">{{ t('mediaUploader.dropHintClick') }}</span>
         </p>
         <span class="text-xs text-muted">{{ t('mediaUploader.formatsHint') }}</span>
       </div>

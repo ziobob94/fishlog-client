@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<title>FishLog Registrazione</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+body{margin:0;font-family:'Manrope',system-ui,sans-serif;background:#111c2c;color:#f1f5f9}
+.i{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+button,input{font-family:inherit}
+button{cursor:pointer}
+a{color:inherit;text-decoration:none}
+.lab{display:block;margin:0 0 6px;font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#9db0c8}
+.inp{width:100%;box-sizing:border-box;height:52px;border-radius:14px;border:1px solid #33486a;background:#1a293d;color:#f1f5f9;font-size:16px;padding:0 16px;outline:none}
+.inp:focus{border-color:#0ea5e9}
+.hint{margin:6px 0 0;font-size:12px;color:#9db0c8}
+</style>
+</helmet>
+<div style="width:390px;height:1000px;box-sizing:border-box;background:#111c2c;display:flex;flex-direction:column;padding:12px 20px 24px;gap:20px;overflow:hidden">
+
+  <a href="Login.dc.html" aria-label="Torna all'accesso" style="width:44px;height:44px;margin-left:-8px;display:flex;align-items:center;justify-content:center"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></a>
+
+  <div style="display:flex;flex-direction:column;gap:6px">
+    <h1 style="margin:0;font-size:34px;line-height:1.05;letter-spacing:-.035em;font-weight:800">Crea il tuo account</h1>
+    <p style="margin:0;font-size:16px;color:#9db0c8">Registra le uscite, entra nella community.</p>
+  </div>
+
+  <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px">
+    <button style="min-height:52px;border-radius:16px;border:1px solid #46617f;background:#1a293d;color:#f1f5f9;font-weight:700;font-size:15px">Google</button>
+    <button style="min-height:52px;border-radius:16px;border:1px solid #46617f;background:#1a293d;color:#f1f5f9;font-weight:700;font-size:15px">Facebook</button>
+  </div>
+
+  <div style="display:flex;align-items:center;gap:12px;color:#9db0c8;font-size:13px"><span style="flex:1;height:1px;background:#33486a"></span>oppure con email<span style="flex:1;height:1px;background:#33486a"></span></div>
+
+  <form style="display:flex;flex-direction:column;gap:16px">
+    <div><label class="lab" for="un">Nome utente</label><input id="un" class="inp" placeholder="mauro_surf" autocomplete="username"><p class="hint">Lo vedranno gli altri nella community.</p></div>
+    <div><label class="lab" for="em">Email</label><input id="em" class="inp" type="email" placeholder="tu@email.com" autocomplete="email"></div>
+    <div><label class="lab" for="pw">Password</label>
+      <div style="position:relative"><input id="pw" class="inp" type="password" placeholder="Almeno 8 caratteri" autocomplete="new-password" style="padding-right:56px">
+      <button type="button" aria-label="Mostra password" style="position:absolute;right:4px;top:4px;width:44px;height:44px;border:0;background:transparent;color:#9db0c8;display:flex;align-items:center;justify-content:center"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg></button></div>
+    </div>
+    <label style="display:flex;align-items:flex-start;gap:12px;min-height:44px;font-size:14px;line-height:1.45;color:#cbd5e1;cursor:pointer">
+      <input type="checkbox" style="width:24px;height:24px;margin:0;accent-color:#0ea5e9;flex:none">
+      <span>Ho letto e accetto i <a href="Registrazione.dc.html" style="color:#7dd3fc;font-weight:700">Termini</a> e la <a href="Registrazione.dc.html" style="color:#7dd3fc;font-weight:700">Privacy</a>.</span>
+    </label>
+    <a href="Main.dc.html" style="min-height:54px;border-radius:16px;background:#0ea5e9;color:#0b1623;font-weight:800;font-size:16px;display:flex;align-items:center;justify-content:center">Crea account</a>
+  </form>
+
+  <p style="margin:auto 0 0;text-align:center;font-size:15px;color:#9db0c8">Hai già un account? <a href="Login.dc.html" style="color:#7dd3fc;font-weight:800">Accedi</a></p>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":1000}}'>
+class Component extends DCLogic {
+renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

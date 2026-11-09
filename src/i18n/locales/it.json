@@ -16,9 +16,13 @@
 		"none": "—",
 		"fieldInfo": "Informazioni sul campo",
 		"showPassword": "Mostra password",
-		"hidePassword": "Nascondi password"
+		"hidePassword": "Nascondi password",
+		"close": "Chiudi"
 	},
 	"nav": {
+		"mainNavigation": "Navigazione principale",
+		"menu": "Apri il menu",
+		"community": "Community",
 		"home": "Home",
 		"sessions": "Uscite",
 		"newSession": "Nuova uscita",
@@ -94,6 +98,7 @@
 			"empty": "Nessuna richiesta di negozio in attesa",
 			"approve": "Approva",
 			"reject": "Rifiuta",
+			"rejectReason": "Motivo del rifiuto (lo vedrà il venditore)",
 			"table": {
 				"name": "Negozio",
 				"owner": "Proprietario",
@@ -567,6 +572,7 @@
 	},
 	"sessionFilters": {
 		"searchPlaceholder": "Cerca luogo, note...",
+		"all": "Tutte",
 		"allTechniques": "Tutte le tecniche",
 		"reset": "Reset"
 	},
@@ -1055,7 +1061,10 @@
 	"stats": {
 		"totalSessions": "Uscite totali",
 		"totalCatches": "Catture totali",
-		"avgRating": "Voto medio"
+		"avgRating": "Voto medio",
+		"byMonth": "Catture per mese",
+		"last12": "ultimi 12 mesi",
+		"topSpecies": "Specie più catturate"
 	},
 	"leaderboard": {
 		"title": "Classifica",
@@ -1111,5 +1120,90 @@
 			"1": "Gen", "2": "Feb", "3": "Mar", "4": "Apr", "5": "Mag", "6": "Giu",
 			"7": "Lug", "8": "Ago", "9": "Set", "10": "Ott", "11": "Nov", "12": "Dic"
 		}
+	},
+	"seller": {
+		"title": "Diventa venditore",
+		"verified": "Verificato",
+		"backToMarket": "Torna al market",
+		"intro": {
+			"title": "Prima la verifica",
+			"text": "Per tutelare chi compra, i venditori vengono controllati dal team prima di pubblicare annunci.",
+			"step1": "Invii i tuoi dati",
+			"step2": "Il team li controlla",
+			"step3": "Se approvato, configuri il profilo e pubblichi"
+		},
+		"who": "Chi sei",
+		"type": {
+			"privato": { "name": "Privato", "hint": "Vendo la mia attrezzatura" },
+			"negozio": { "name": "Negozio", "hint": "Attività con P.IVA" }
+		},
+		"business": "Dati dell'attività",
+		"legalName": "Ragione sociale",
+		"fullName": "Nome e cognome",
+		"vat": "Partita IVA",
+		"vatPlaceholder": "11 cifre",
+		"city": "Città",
+		"phone": "Telefono",
+		"documentNote": "Il team può chiederti un documento (per esempio la visura camerale) via email: non viene mostrato agli altri utenti.",
+		"confirm": "Confermo che i dati sono veritieri e accetto le condizioni per i venditori.",
+		"submit": "Invia richiesta",
+		"resubmit": "Modifica e reinvia",
+		"pending": {
+			"title": "Richiesta in revisione",
+			"text": "Il team sta controllando i tuoi dati. Ti avvisiamo appena c'è una risposta.",
+			"noPublish": "Finché la richiesta non è approvata non puoi pubblicare annunci come venditore verificato."
+		},
+		"rejected": {
+			"title": "Richiesta non approvata",
+			"reason": "Motivo:",
+			"hint": "Correggi i dati qui sotto e reinvia la richiesta."
+		},
+		"shop": {
+			"title": "Il tuo negozio",
+			"intro": "La verifica è completata. Completa la scheda che vedranno i compratori.",
+			"name": "Nome del negozio",
+			"nameHint": "È il nome che vedono i compratori negli annunci.",
+			"description": "Descrizione",
+			"legalTitle": "Ragione sociale e P.IVA (verificate)",
+			"legalHint": "Per cambiarle serve una nuova verifica.",
+			"website": "Sito web (se ce l'hai)",
+			"delivery": "Come consegni",
+			"deliveryOptions": { "ritiro": "Ritiro in negozio", "spedizione": "Spedizione" },
+			"contact": "Contatto per i compratori",
+			"saveAndPublish": "Salva e pubblica un annuncio",
+			"saveAndBack": "Salva e torna al market"
+		},
+		"site": {
+			"title": "Vuoi un sito per il tuo negozio?",
+			"text": "Possiamo realizzarlo noi, con i tuoi prodotti e il tuo logo. Se ti interessa, lasciaci un contatto e ti scriviamo senza impegno.",
+			"yes": "Sì, contattatemi",
+			"no": "No, grazie",
+			"thanks": "Grazie, ti scriviamo presto."
+		},
+		"gate": {
+			"title": "Prima la verifica",
+			"text": "Per pubblicare annunci devi essere un venditore verificato dal team. Invia i tuoi dati: ti avvisiamo appena c'è una risposta."
+		},
+		"becomeSeller": "Diventa venditore verificato"
+	},
+	"globe": {
+		"title": "Mappamondo delle tue pescate",
+		"eyebrow": "Le tue pescate",
+		"count": "Nessun luogo sul mappamondo | 1 luogo sul mappamondo | {n} luoghi sul mappamondo",
+		"you": "Tu sei qui",
+		"catchesLegend": "Pescate",
+		"dragHint": "Trascina per ruotare",
+		"zoomIn": "Ingrandisci",
+		"zoomOut": "Riduci",
+		"myPosition": "Vai alla mia posizione",
+		"showCatches": "Mostra le mie pescate",
+		"sessionsHere": "Uscite in questo luogo",
+		"catches": "nessuna cattura | 1 cattura | {n} catture",
+		"aria": "Mappamondo senza uscite registrate | Mappamondo con 1 uscita registrata | Mappamondo con {n} uscite registrate",
+		"clusterLabel": "{n} uscite vicine",
+		"listToggle": "Mostra l'elenco delle uscite",
+		"empty": "Appena registri un'uscita con la posizione, la vedrai qui.",
+		"geoDenied": "Non posso usare la tua posizione: consenti l'accesso alla posizione nelle impostazioni del browser.",
+		"geoUnavailable": "Questo dispositivo non fornisce la posizione."
 	}
 }

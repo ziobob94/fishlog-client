@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<title>FishLog Stile distintivo</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+body{margin:0;font-family:'Manrope',system-ui,sans-serif;background:#111c2c;color:#f1f5f9}
+.lab{margin:0;font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#9db0c8}
+.card{background:#1a293d;border:1px solid #33486a;border-radius:24px;padding:24px;display:flex;flex-direction:column;gap:14px;box-sizing:border-box}
+.mono{font-family:'JetBrains Mono',monospace}
+.iso{fill:none;stroke:#7dd3fc;stroke-width:1.5;stroke-linejoin:round}
+.num{width:28px;height:28px;border-radius:50%;background:#f59e0b;color:#1a1204;font-weight:800;font-size:14px;display:flex;align-items:center;justify-content:center;flex:none}
+h2.t{margin:0;font-size:22px;letter-spacing:-.02em;font-weight:800}
+.p{margin:0;font-size:15px;line-height:1.55;color:#cbd5e1}
+@media (prefers-reduced-motion:no-preference){
+  .bob{animation:bob 2.6s ease-in-out infinite}
+  @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(6px)}}
+}
+</style>
+</helmet>
+<div style="width:1200px;height:1640px;box-sizing:border-box;background:#111c2c;padding:56px;display:flex;flex-direction:column;gap:32px;overflow:hidden">
+
+  <header style="display:flex;flex-direction:column;gap:8px">
+    <p class="lab" style="color:#f59e0b">Identità</p>
+    <h1 style="margin:0;font-size:44px;line-height:1.05;letter-spacing:-.035em;font-weight:800">Il linguaggio visivo: la carta nautica</h1>
+    <p style="margin:0;font-size:17px;line-height:1.55;color:#9db0c8;max-width:74ch">Il pescatore legge il mare su una carta: linee di profondità, coordinate, misure. FishLog usa quel vocabolario per riconoscersi a colpo d'occhio. Sei elementi che tornano in ogni schermata.</p>
+  </header>
+
+  <section style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px">
+
+    <!-- 1 Isobate -->
+    <div class="card">
+      <div style="display:flex;align-items:center;gap:12px"><span class="num">1</span><h2 class="t">Isobate</h2></div>
+      <div style="position:relative;height:200px;border-radius:24px 24px 24px 8px;background:#10304d;overflow:hidden;border:1px solid #33486a">
+        <svg width="100%" height="100%" viewBox="0 0 400 240" preserveAspectRatio="xMaxYMid slice" style="position:absolute;inset:0" aria-hidden="true">
+          <path class="iso" opacity=".12" d="M250-10c80 0 160 45 170 120s-40 140-120 150-170-20-190-100S170-10 250-10Z"/>
+          <path class="iso" opacity=".18" d="M255 14c60 0 125 38 132 96s-30 110-95 124-135-12-152-80S198 14 255 14Z"/>
+          <path class="iso" opacity=".26" d="M260 40c40 0 80 30 85 70s-20 80-70 90-100-10-110-55 55-105 95-105Z"/>
+          <path class="iso" opacity=".36" d="M262 66c28 0 55 22 58 50s-14 56-48 62-70-8-76-38 38-74 66-74Z"/>
+          <path class="iso" opacity=".5" d="M262 92c16 0 32 13 33 30s-9 33-28 36-42-5-45-23 24-43 40-43Z"/>
+        </svg>
+        <div style="position:absolute;left:20px;bottom:18px;display:flex;flex-direction:column;gap:2px"><span class="mono" style="font-size:12px;color:#7dd3fc">−12 m</span><span style="font-size:20px;font-weight:800;letter-spacing:-.02em">Guarda il mare</span></div>
+      </div>
+      <p class="p">Curve di livello sullo sfondo di intestazioni, vuoti e login. Sempre in alto a destra, tratto sottile, opacità crescente verso il centro. L'angolo in basso a sinistra è meno arrotondato (8 px): è la firma delle card principali.</p>
+    </div>
+
+    <!-- 2 Linea di marea -->
+    <div class="card">
+      <div style="display:flex;align-items:center;gap:12px"><span class="num">2</span><h2 class="t">Linea di marea</h2></div>
+      <div style="display:flex;flex-direction:column;gap:22px;justify-content:center;flex:1;background:#111c2c;border-radius:20px;padding:22px">
+        <div style="display:flex;align-items:center;gap:12px">
+          <span style="font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#9db0c8">Oggi in mare</span>
+          <svg height="12" style="flex:1" width="100%" aria-hidden="true"><defs><pattern id="w1" width="24" height="12" patternUnits="userSpaceOnUse"><path d="M0 6c3 0 3-4 6-4s3 4 6 4 3 4 6 4 3-4 6-4" fill="none" stroke="#33486a" stroke-width="2" stroke-linecap="round"/></pattern></defs><rect width="100%" height="12" fill="url(#w1)"/></svg>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px">
+          <span style="font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#fbbf24">Storico</span>
+          <svg height="12" style="flex:1" width="100%" aria-hidden="true"><defs><pattern id="w2" width="24" height="12" patternUnits="userSpaceOnUse"><path d="M0 6c3 0 3-4 6-4s3 4 6 4 3 4 6 4 3-4 6-4" fill="none" stroke="#f59e0b" stroke-opacity=".5" stroke-width="2" stroke-linecap="round"/></pattern></defs><rect width="100%" height="12" fill="url(#w2)"/></svg>
+        </div>
+        <svg height="12" width="100%" aria-hidden="true"><defs><pattern id="w3" width="24" height="12" patternUnits="userSpaceOnUse"><path d="M0 6c3 0 3-4 6-4s3 4 6 4 3 4 6 4 3-4 6-4" fill="none" stroke="#33486a" stroke-width="2" stroke-linecap="round"/></pattern></defs><rect width="100%" height="12" fill="url(#w3)"/></svg>
+      </div>
+      <p class="p">Al posto della riga dritta: separa le sezioni con un'onda a tratto 2 px. Sabbia per l'uscita in corso, grigio-blu per il resto.</p>
+    </div>
+
+    <!-- 3 Metro -->
+    <div class="card">
+      <div style="display:flex;align-items:center;gap:12px"><span class="num">3</span><h2 class="t">Cornice a metro</h2></div>
+      <div style="position:relative;height:200px;border-radius:24px 24px 24px 8px;overflow:hidden;background:linear-gradient(160deg,#1f3a56,#10304d);display:flex;align-items:center;justify-content:center;color:#4d7ba3">
+        <svg width="72" height="72" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 12.4c0-3.7 3.7-6.4 8.3-6.4s7.2 2.6 7.2 6.4-3 6.4-7.2 6.4-8.3-2.7-8.3-6.4ZM17.5 12.4l3.4-3.7a.8.8 0 0 1 1.3.5v6.4a.8.8 0 0 1-1.3.5l-3.4-3.7ZM7.2 11h.01"/></svg>
+        <div style="position:absolute;left:0;right:0;bottom:0;height:34px;background:linear-gradient(0deg,rgba(11,22,35,.75),rgba(11,22,35,0))"></div>
+        <div style="position:absolute;left:12px;right:12px;bottom:10px;height:12px;background:repeating-linear-gradient(90deg,rgba(241,245,249,.85) 0 2px,transparent 2px 10px)"></div>
+        <div style="position:absolute;left:12px;right:12px;bottom:10px;height:20px;background:repeating-linear-gradient(90deg,#fbbf24 0 2px,transparent 2px 50px)"></div>
+        <span class="mono" style="position:absolute;right:14px;top:14px;background:#0b1623;color:#fbbf24;font-size:15px;border-radius:999px;padding:6px 12px">52 cm</span>
+      </div>
+      <p class="p">Le foto delle catture hanno il righello lungo il bordo inferiore e la misura in una pillola mono. Ogni 5 tacche una più lunga, in sabbia.</p>
+    </div>
+
+    <!-- 4 Coordinate e timbro -->
+    <div class="card">
+      <div style="display:flex;align-items:center;gap:12px"><span class="num">4</span><h2 class="t">Coordinate e timbro</h2></div>
+      <div style="display:flex;align-items:center;gap:24px;flex:1;background:#111c2c;border-radius:20px;padding:22px;flex-wrap:wrap">
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <span class="mono" style="font-size:12px;color:#7dd3fc;border:1px solid #33486a;border-radius:999px;padding:5px 12px;align-self:flex-start">43.72°N · 13.22°E</span>
+          <span style="font-size:18px;font-weight:800;letter-spacing:-.02em">Molo di Senigallia</span>
+          <span style="font-size:13px;color:#9db0c8">02 nov 2026 · 4 catture</span>
+        </div>
+        <div style="width:104px;height:104px;border-radius:50%;border:2px dashed #fbbf24;color:#fbbf24;display:flex;flex-direction:column;align-items:center;justify-content:center;transform:rotate(-8deg);margin-left:auto">
+          <span style="font-size:11px;font-weight:800;letter-spacing:.16em">RECORD</span>
+          <span class="mono" style="font-size:24px">52</span>
+          <span style="font-size:11px;font-weight:700">cm · spigola</span>
+        </div>
+      </div>
+      <p class="p">Le uscite portano le coordinate in mono, come sulle carte. I traguardi (record, prima cattura, 10 uscite) arrivano come timbro tondo tratteggiato, leggermente inclinato.</p>
+    </div>
+
+    <!-- 5 Galleggiante -->
+    <div class="card">
+      <div style="display:flex;align-items:center;gap:12px"><span class="num">5</span><h2 class="t">Il galleggiante</h2></div>
+      <div style="display:flex;align-items:center;justify-content:center;flex:1;background:#10304d;border-radius:20px;padding:22px;gap:40px;overflow:hidden;position:relative">
+        <svg width="120" height="140" viewBox="0 0 120 140" aria-hidden="true">
+          <g class="bob">
+            <path d="M60 6v22" stroke="#f1f5f9" stroke-width="5" stroke-linecap="round" fill="none"/>
+            <path d="M60 28c-17 0-26 14-26 28 0 16 12 28 26 28s26-12 26-28c0-14-9-28-26-28Z" fill="#f1f5f9"/>
+            <path d="M36 52c3-14 13-24 24-24s21 10 24 24Z" fill="#f59e0b"/>
+            <path d="M60 84v20" stroke="#f1f5f9" stroke-width="3" stroke-linecap="round" fill="none" opacity=".6"/>
+          </g>
+          <path d="M6 96c8 0 8 7 18 7s10-7 18 7" fill="none" stroke="#7dd3fc" stroke-width="3" stroke-linecap="round" opacity="0"/>
+          <path d="M4 102c10 0 10 8 21 8s11-8 21 0 11 8 21 8 11-8 21 0 11 8 22 0" fill="none" stroke="#7dd3fc" stroke-width="3" stroke-linecap="round"/>
+          <path d="M4 118c10 0 10 8 21 8s11-8 21 0 11 8 21 8 11-8 21 0 11 8 22 0" fill="none" stroke="#7dd3fc" stroke-width="3" stroke-linecap="round" opacity=".4"/>
+        </svg>
+        <div style="display:flex;flex-direction:column;gap:6px;max-width:190px"><span style="font-size:18px;font-weight:800;letter-spacing:-.02em">Ancora nessuna uscita</span><span style="font-size:14px;color:#9db0c8;line-height:1.45">Il galleggiante dondola nei vuoti e mentre l'app carica.</span></div>
+      </div>
+      <p class="p">La mascotte non è un personaggio ma un oggetto: un galleggiante bianco e sabbia. Compare negli stati vuoti, nei caricamenti e al tira-per-aggiornare. Con «riduci movimento» resta fermo.</p>
+    </div>
+
+    <!-- 6 Voce -->
+    <div class="card">
+      <div style="display:flex;align-items:center;gap:12px"><span class="num">6</span><h2 class="t">Voce</h2></div>
+      <div style="display:flex;flex-direction:column;gap:10px;flex:1;justify-content:center">
+        <div style="display:flex;align-items:center;gap:12px;background:#111c2c;border-radius:16px;padding:12px 16px"><span style="font-size:12px;font-weight:700;color:#fbbf24;width:96px;flex:none;letter-spacing:.08em;text-transform:uppercase">Nuova cattura</span><span style="font-size:16px;font-weight:700">Abboccata! Spigola, 52 cm.</span></div>
+        <div style="display:flex;align-items:center;gap:12px;background:#111c2c;border-radius:16px;padding:12px 16px"><span style="font-size:12px;font-weight:700;color:#fbbf24;width:96px;flex:none;letter-spacing:.08em;text-transform:uppercase">Mare calmo</span><span style="font-size:16px;font-weight:700">Onda 0,4 m: giornata buona per il molo.</span></div>
+        <div style="display:flex;align-items:center;gap:12px;background:#111c2c;border-radius:16px;padding:12px 16px"><span style="font-size:12px;font-weight:700;color:#fbbf24;width:96px;flex:none;letter-spacing:.08em;text-transform:uppercase">Uscita finita</span><span style="font-size:16px;font-weight:700">Rientrato. Segna le catture nel diario.</span></div>
+        <div style="display:flex;align-items:center;gap:12px;background:#111c2c;border-radius:16px;padding:12px 16px"><span style="font-size:12px;font-weight:700;color:#fbbf24;width:96px;flex:none;letter-spacing:.08em;text-transform:uppercase">Errore</span><span style="font-size:16px;font-weight:700">Si è spezzato il filo. Riprova.</span></div>
+      </div>
+      <p class="p">Frasi brevi, di bordo, mai da gergo tecnico. Chiarezza prima del gioco di parole: nelle norme e nei dati legali il tono resta neutro.</p>
+    </div>
+  </section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1200,"height":1640}}'>
+class Component extends DCLogic {
+renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

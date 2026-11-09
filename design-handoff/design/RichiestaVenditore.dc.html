@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<title>FishLog Richiesta venditore</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+body{margin:0;font-family:'Manrope',system-ui,sans-serif;background:#111c2c;color:#f1f5f9}
+.i{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+button,input{font-family:inherit}
+button{cursor:pointer}
+a{color:inherit;text-decoration:none}
+.lab{display:block;margin:0 0 6px;font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#9db0c8}
+.inp{width:100%;box-sizing:border-box;height:52px;border-radius:14px;border:1px solid #33486a;background:#1a293d;color:#f1f5f9;font-size:16px;padding:0 16px;outline:none}
+.inp:focus{border-color:#0ea5e9}
+.hint{margin:6px 0 0;font-size:12px;color:#9db0c8}
+.sec{display:flex;flex-direction:column;gap:14px}
+</style>
+</helmet>
+<div style="width:390px;height:1320px;box-sizing:border-box;background:#111c2c;display:flex;flex-direction:column;overflow:hidden">
+
+  <header style="display:flex;align-items:center;gap:8px;padding:8px 16px 8px 8px;min-height:64px;box-sizing:border-box;border-bottom:1px solid #33486a">
+    <a href="MarketNegozi.dc.html" aria-label="Indietro" style="width:44px;height:44px;display:flex;align-items:center;justify-content:center"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></a>
+    <h1 style="margin:0;font-size:18px;font-weight:800;letter-spacing:-.02em">Diventa venditore</h1>
+  </header>
+
+  <main style="flex:1;overflow:hidden;padding:20px 16px;display:flex;flex-direction:column;gap:24px">
+
+    <!-- Come funziona -->
+    <section style="background:#1a293d;border:1px solid #33486a;border-radius:20px;padding:16px;display:flex;flex-direction:column;gap:14px">
+      <div style="display:flex;align-items:center;gap:10px">
+        <span style="width:40px;height:40px;border-radius:12px;background:rgba(14,165,233,.16);color:#7dd3fc;display:flex;align-items:center;justify-content:center"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M11.100 3.200 5.100 5.800A1.600 1.600 0 0 0 4 7.300V12c0 4.400 3 7.500 7.700 8.900a1 1 0 0 0 .6 0C17 19.500 20 16.400 20 12V7.300a1.600 1.600 0 0 0-1.100-1.500l-6-2.600a2 2 0 0 0-1.800 0Z"/><path d="m9 12 2 2 4-4"/></svg></span>
+        <h2 style="margin:0;font-size:17px;font-weight:800;letter-spacing:-.02em">Prima la verifica</h2>
+      </div>
+      <p style="margin:0;font-size:14px;line-height:1.5;color:#cbd5e1">Per tutelare chi compra, i venditori vengono controllati dal team prima di pubblicare annunci.</p>
+      <ol style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px;font-size:14px">
+        <li style="display:flex;gap:10px;align-items:center"><span style="width:24px;height:24px;border-radius:50%;background:#0ea5e9;color:#0b1623;font-weight:800;font-size:13px;display:flex;align-items:center;justify-content:center;flex:none">1</span>Invii i tuoi dati e un documento</li>
+        <li style="display:flex;gap:10px;align-items:center"><span style="width:24px;height:24px;border-radius:50%;background:#243650;color:#cbd5e1;font-weight:800;font-size:13px;display:flex;align-items:center;justify-content:center;flex:none">2</span>Il team li controlla</li>
+        <li style="display:flex;gap:10px;align-items:center"><span style="width:24px;height:24px;border-radius:50%;background:#243650;color:#cbd5e1;font-weight:800;font-size:13px;display:flex;align-items:center;justify-content:center;flex:none">3</span>Se approvato, configuri il profilo e pubblichi</li>
+      </ol>
+    </section>
+
+    <!-- Tipo -->
+    <section class="sec">
+      <span class="lab" style="margin:0">Chi sei</span>
+      <div role="radiogroup" aria-label="Tipo di venditore" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px">
+        <button role="radio" aria-checked="false" style="min-height:76px;border-radius:18px;padding:12px;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:2px;text-align:left;color:#f1f5f9;background:#1a293d;border:2px solid #33486a">
+          <span style="font-size:16px;font-weight:800">Privato</span><span style="font-size:12px;color:#9db0c8">Vendo la mia attrezzatura</span>
+        </button>
+        <button role="radio" aria-checked="true" style="min-height:76px;border-radius:18px;padding:12px;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:2px;text-align:left;color:#f1f5f9;background:rgba(14,165,233,.14);border:2px solid #0ea5e9">
+          <span style="font-size:16px;font-weight:800">Negozio</span><span style="font-size:12px;color:#9db0c8">Attività con P.IVA</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- Dati -->
+    <section class="sec">
+      <span class="lab" style="margin:0">Dati dell'attività</span>
+      <div><label class="lab" for="rs">Ragione sociale</label><input id="rs" class="inp" value="Pesca &amp; Mare di Marco S.r.l."></div>
+      <div><label class="lab" for="vat">Partita IVA</label><input id="vat" class="inp" placeholder="11 cifre" inputmode="numeric"></div>
+      <div style="display:grid;grid-template-columns:minmax(0,1fr) 96px;gap:10px">
+        <div><label class="lab" for="ct">Città</label><input id="ct" class="inp" value="Senigallia"></div>
+        <div><label class="lab" for="pv">Prov.</label><input id="pv" class="inp" value="AN" maxlength="2"></div>
+      </div>
+      <div><label class="lab" for="tel">Telefono</label><input id="tel" class="inp" type="tel" placeholder="+39 ..." inputmode="tel"></div>
+    </section>
+
+    <!-- Documento -->
+    <section class="sec">
+      <span class="lab" style="margin:0">Documento per la verifica</span>
+      <button style="min-height:76px;border-radius:18px;border:1px dashed #7dd3fc;background:rgba(14,165,233,.08);color:#7dd3fc;display:flex;align-items:center;justify-content:center;gap:10px;font-weight:700;font-size:15px"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V5M7.500 9.500 12 5l4.500 4.500M5 19h14"/></svg>Carica visura camerale</button>
+      <p class="hint" style="margin:0">PDF o foto. Lo vede solo il team e non viene mostrato agli altri utenti.</p>
+    </section>
+
+    <label style="display:flex;align-items:flex-start;gap:12px;min-height:44px;font-size:14px;line-height:1.45;color:#cbd5e1;cursor:pointer">
+      <input type="checkbox" style="width:24px;height:24px;margin:0;accent-color:#0ea5e9;flex:none">
+      <span>Confermo che i dati sono veritieri e accetto le condizioni per i venditori.</span>
+    </label>
+  </main>
+
+  <div style="padding:12px 16px 20px;background:#1a293d;border-top:1px solid #33486a">
+    <a href="StatoVerifica.dc.html" style="min-height:54px;border-radius:16px;background:#0ea5e9;color:#0b1623;font-weight:800;font-size:16px;display:flex;align-items:center;justify-content:center">Invia richiesta</a>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":1320}}'>
+class Component extends DCLogic {
+renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

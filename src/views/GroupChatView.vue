@@ -193,11 +193,11 @@
   }
 
   .icon-btn {
-    @apply flex items-center justify-center w-9 h-9 rounded-lg text-muted bg-transparent border-none cursor-pointer hover:bg-surface-2 hover:text-ocean transition-colors shrink-0;
+    @apply flex items-center justify-center w-11 h-11 rounded-lg text-muted bg-transparent border-none cursor-pointer hover:bg-surface-2 hover:text-ocean transition-colors shrink-0;
   }
 
   .conversation-avatar-placeholder {
-    @apply w-10 h-10 rounded-full border border-ocean text-ocean flex items-center justify-center text-sm font-bold shrink-0;
+    @apply w-10 h-10 rounded-full border border-ocean text-ocean-text flex items-center justify-center text-sm font-bold shrink-0;
     background: var(--ocean-glow);
   }
 
@@ -246,7 +246,7 @@
   }
 
   .mini-placeholder {
-    @apply w-9 h-9 rounded-full border border-ocean text-ocean flex items-center justify-center text-xs font-bold shrink-0;
+    @apply w-9 h-9 rounded-full border border-ocean text-ocean-text flex items-center justify-center text-xs font-bold shrink-0;
     background: var(--ocean-glow);
   }
 </style>

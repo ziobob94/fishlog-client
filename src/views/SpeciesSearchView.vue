@@ -88,7 +88,7 @@ function onInput() {
 }
 
 .species-thumb-placeholder {
-  @apply flex items-center justify-center border border-ocean text-ocean;
+  @apply flex items-center justify-center border border-ocean text-ocean-text;
   background: var(--ocean-glow);
 }
 

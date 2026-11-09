@@ -104,7 +104,7 @@
   }
 
   .mini-placeholder {
-    @apply w-9 h-9 rounded-full border border-ocean text-ocean flex items-center justify-center text-xs font-bold shrink-0;
+    @apply w-9 h-9 rounded-full border border-ocean text-ocean-text flex items-center justify-center text-xs font-bold shrink-0;
     background: var(--ocean-glow);
   }
 </style>

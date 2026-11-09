@@ -129,5 +129,5 @@ onMounted(() => {
 .legal-card p  { @apply text-sm leading-relaxed mb-3 text-muted; }
 .legal-card ul { @apply list-disc pl-5 text-sm leading-relaxed mb-3 text-muted; }
 .legal-card li { @apply mb-1.5; }
-.legal-card a  { @apply text-ocean hover:underline; }
+.legal-card a  { @apply text-ocean-text hover:underline; }
 </style>

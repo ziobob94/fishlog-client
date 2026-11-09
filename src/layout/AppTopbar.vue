@@ -2,21 +2,20 @@
   <header class="sticky top-0 z-[100] flex items-center gap-4 px-5 py-3 border-b border-border"
     style="background: rgb(var(--color-ink) / 0.92); backdrop-filter: blur(12px)">
     <button
-      class="flex flex-col gap-1.5 p-1 bg-transparent border-none cursor-pointer group"
+      class="flex flex-col justify-center gap-1.5 w-11 h-11 items-center bg-transparent border-none cursor-pointer group"
+      :aria-label="t('nav.menu')"
       @click="$emit('toggle-sidebar')"
     >
       <span class="block w-5 h-0.5 bg-foam rounded group-hover:bg-ocean transition-colors duration-200"></span>
       <span class="block w-5 h-0.5 bg-foam rounded group-hover:bg-ocean transition-colors duration-200"></span>
       <span class="block w-5 h-0.5 bg-foam rounded group-hover:bg-ocean transition-colors duration-200"></span>
     </button>
-    <RouterLink to="/" class="text-foam text-lg font-extrabold tracking-tight hover:text-ocean transition-colors" style="display:inline-flex;align-items:center;gap:.4rem">
-      <Fish :size="18" /> FishLog
-    </RouterLink>
+    <RouterLink to="/" class="inline-flex items-center" aria-label="FishLog"><FishLogo :size="30" /></RouterLink>
 
     <div class="ml-auto flex items-center gap-2">
       <div class="relative" ref="notifWrapper">
         <button
-          class="relative flex items-center justify-center w-9 h-9 rounded-lg text-foam bg-surface-2 hover:bg-surface-2/70 transition-colors border-none cursor-pointer"
+          class="relative flex items-center justify-center w-11 h-11 rounded-lg text-foam bg-surface-2 hover:bg-surface-2/70 transition-colors border-none cursor-pointer"
           :title="t('notifications.title')"
           @click="toggleNotifications"
         >
@@ -53,7 +52,7 @@
 
       <div class="relative" ref="createWrapper">
         <button
-          class="relative flex items-center justify-center w-9 h-9 rounded-lg text-ink bg-ocean hover:bg-ocean/90 transition-colors border-none cursor-pointer"
+          class="relative flex items-center justify-center w-11 h-11 rounded-lg text-ink bg-ocean hover:bg-ocean/90 transition-colors border-none cursor-pointer"
           :title="plusTitle"
           @click="onPlusClick"
         >
@@ -115,6 +114,7 @@
 import { computed, onMounted, onBeforeUnmount, ref, watch } from 'vue'
 import { RouterLink, useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
+import FishLogo from '../components/FishLogo.vue'
 import { Fish, WifiOff, RefreshCw, AlertTriangle, Hourglass, Plus, Bell, X, Newspaper, ShoppingBag, MessagesSquare, Users, UsersRound } from 'lucide-vue-next'
 import { useOfflineStore } from '../stores/offline.js'
 import { useSessionStore } from '../stores/sessions.js'
@@ -260,7 +260,7 @@ const statusTitle = computed(() => {
 }
 .notif-row.unread .notif-row-link { @apply font-medium; }
 .notif-remove {
-  @apply flex items-center justify-center w-7 h-7 mr-2 rounded text-muted bg-transparent border-none
+  @apply flex items-center justify-center w-11 h-11 mr-2 rounded text-muted bg-transparent border-none
          cursor-pointer hover:text-danger hover:bg-danger/10 transition-colors shrink-0;
 }
 

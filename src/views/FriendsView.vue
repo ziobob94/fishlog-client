@@ -189,7 +189,7 @@ async function removeFriend(f) {
 .member-info { @apply flex items-center gap-2 text-sm text-foam no-underline min-w-0 flex-1; }
 
 .icon-btn {
-  @apply flex items-center justify-center w-9 h-9 rounded-lg text-muted bg-transparent border-none
+  @apply flex items-center justify-center w-11 h-11 rounded-lg text-muted bg-transparent border-none
          cursor-pointer hover:bg-surface-2 hover:text-danger transition-colors shrink-0;
 }
 .member-text { @apply flex flex-col leading-tight min-w-0; }
@@ -199,7 +199,7 @@ async function removeFriend(f) {
 
 .mini-avatar { @apply w-7 h-7 rounded-full object-cover; }
 .mini-placeholder {
-  @apply w-7 h-7 rounded-full border border-ocean text-ocean flex items-center
+  @apply w-7 h-7 rounded-full border border-ocean text-ocean-text flex items-center
          justify-center text-[0.65rem] font-bold;
   background: var(--ocean-glow);
 }

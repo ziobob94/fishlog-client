@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<title>FishLog Notifiche</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+body{margin:0;font-family:'Manrope',system-ui,sans-serif;background:#111c2c;color:#f1f5f9}
+.i{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+button{font-family:inherit;cursor:pointer}
+a{color:inherit;text-decoration:none}
+.lab{margin:0;font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#9db0c8}
+</style>
+</helmet>
+<div style="width:390px;height:860px;box-sizing:border-box;background:#111c2c;display:flex;flex-direction:column;overflow:hidden">
+  <header style="display:flex;align-items:center;gap:8px;padding:12px 16px 12px 8px;min-height:64px;box-sizing:border-box">
+    <a href="Community.dc.html" aria-label="Indietro" style="width:44px;height:44px;display:flex;align-items:center;justify-content:center"><svg class="i" viewBox="0 0 24 24" style="width:22px;height:22px" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></a>
+    <h1 style="margin:0;font-size:26px;font-weight:800;letter-spacing:-.03em">Notifiche</h1>
+    <button style="margin-left:auto;min-height:44px;padding:0 4px;border:0;background:transparent;color:#7dd3fc;font-weight:700;font-size:14px">Segna tutte come lette</button>
+  </header>
+  <main style="flex:1;overflow:hidden;display:flex;flex-direction:column">
+    <h2 class="lab" style="padding:4px 16px 10px">Nuove</h2>
+    <sc-for list="{{items}}" as="n" hint-placeholder-count="5">
+    <div style="display:flex;gap:12px;padding:12px 16px;background:{{n.bg}};border-top:1px solid #243650">
+      <span style="position:relative;width:44px;height:44px;border-radius:50%;background:#243650;color:#7dd3fc;display:flex;align-items:center;justify-content:center;flex:none;font-weight:800;font-size:14px">{{n.ini}}
+        <span style="position:absolute;right:-4px;bottom:-4px;width:22px;height:22px;border-radius:50%;background:{{n.badgeBg}};color:#0b1623;border:2px solid #111c2c;display:flex;align-items:center;justify-content:center"><svg class="i" viewBox="0 0 24 24" style="width:12px;height:12px;stroke-width:2.4" aria-hidden="true"><path d="{{n.icon}}"/></svg></span>
+      </span>
+      <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:6px">
+        <p style="margin:0;font-size:15px;line-height:1.4"><strong style="font-weight:800">{{n.name}}</strong> <span style="color:#cbd5e1">{{n.text}}</span></p>
+        <span style="font-size:12px;color:#9db0c8">{{n.when}}</span>
+        <sc-if value="{{n.request}}" hint-placeholder-val="{{ false }}"><div style="display:flex;gap:8px"><button style="min-height:44px;padding:0 18px;border-radius:14px;border:0;background:#0ea5e9;color:#0b1623;font-weight:800;font-size:14px">Accetta</button><button style="min-height:44px;padding:0 18px;border-radius:14px;border:1px solid #46617f;background:transparent;color:#f1f5f9;font-weight:700;font-size:14px">Rifiuta</button></div></sc-if>
+      </div>
+      <sc-if value="{{n.unread}}" hint-placeholder-val="{{ true }}"><span aria-label="Non letta" style="width:10px;height:10px;border-radius:50%;background:#0ea5e9;margin-top:6px;flex:none"></span></sc-if>
+    </div>
+    </sc-for>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":860}}'>
+class Component extends DCLogic {
+renderVals() {
+  const heart = 'M12 20s-7.500-4.600-7.500-10A4.300 4.300 0 0 1 12 7.500 4.300 4.300 0 0 1 19.500 10c0 5.400-7.500 10-7.500 10Z';
+  const chat = 'M6 4h12a3 3 0 0 1 3 3v7a3 3 0 0 1-3 3h-6.5l-3.7 3.3a.6.6 0 0 1-1-.45V17H6a3 3 0 0 1-3-3V7a3 3 0 0 1 3-3Z';
+  const user = 'M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8ZM4 21c0-4 3.600-7 8-7s8 3 8 7';
+  const on = '#16253a', off = 'transparent';
+  return { items: [
+    { ini: 'PD', name: 'paolo_d', text: 'ti ha inviato una richiesta di amicizia', when: '5 min fa', icon: user, badgeBg: '#7dd3fc', request: true, unread: true, bg: on },
+    { ini: 'GR', name: 'giorgio.r', text: 'ha messo mi piace al tuo post', when: '20 min fa', icon: heart, badgeBg: '#fbbf24', request: false, unread: true, bg: on },
+    { ini: 'LB', name: 'luca_bolentino', text: 'ha commentato: "Bella! Che minnow era?"', when: '1 h fa', icon: chat, badgeBg: '#7dd3fc', request: false, unread: true, bg: on },
+    { ini: 'SF', name: 'sara_feeder', text: 'ti ha inviato un nuovo messaggio', when: '2 h fa', icon: chat, badgeBg: '#7dd3fc', request: false, unread: false, bg: off },
+    { ini: 'MS', name: 'marco.surf', text: 'ha accettato la tua richiesta di amicizia', when: 'Ieri', icon: user, badgeBg: '#86efac', request: false, unread: false, bg: off }
+  ] };
+}
+}
+</script>
+</body>
+</html>

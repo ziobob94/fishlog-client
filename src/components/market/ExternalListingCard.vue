@@ -13,7 +13,7 @@
       </span>
     </div>
     <div class="p-3 sm:p-4">
-      <p v-if="listing.price != null" class="font-mono text-ocean font-bold text-base sm:text-lg leading-tight">{{ formatPrice(listing.price, listing.currency) }}</p>
+      <p v-if="listing.price != null" class="font-mono text-ocean-text font-bold text-base sm:text-lg leading-tight">{{ formatPrice(listing.price, listing.currency) }}</p>
       <h3 class="font-semibold text-sm mt-0.5 mb-1 line-clamp-2 text-foam">{{ listing.title }}</h3>
       <p v-if="listing.location" class="text-muted text-xs icon-inline min-w-0"><MapPin :size="12" class="shrink-0" /> <span class="truncate">{{ listing.location }}</span></p>
     </div>

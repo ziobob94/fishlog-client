@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<title>FishLog Home mobile</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+body{margin:0;font-family:'Manrope',system-ui,sans-serif;background:#111c2c;color:#f1f5f9}
+.i{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+button{font-family:inherit}
+a{color:inherit;text-decoration:none}
+.chips::-webkit-scrollbar{display:none}
+</style>
+</helmet>
+<div style="width:390px;height:1500px;box-sizing:border-box;background:#111c2c;display:flex;flex-direction:column;overflow:hidden;position:relative">
+
+  <!-- Top bar -->
+  <header style="display:flex;align-items:center;gap:10px;padding:12px 16px;min-height:64px;box-sizing:border-box">
+    <div style="width:36px;height:36px;border-radius:11px;background:#0ea5e9;color:#0b1623;display:flex;align-items:center;justify-content:center">
+      <svg width="26" height="26" viewBox="0 0 64 64" aria-hidden="true"><g style="fill:none;stroke:#0b1623;stroke-width:4;stroke-linecap:round;stroke-linejoin:round" transform="translate(-2.4 0)"><path d="M8 33c0-10 10-17 22-17s19 7 19 17-8 17-19 17S8 43 8 33Z"/><path d="M47 33l10-10a2 2 0 0 1 3.4 1.4v17.2a2 2 0 0 1-3.4 1.4L47 33Z"/></g><circle cx="17" cy="28" r="3.6" fill="#0b1623"/><circle cx="18.2" cy="26.8" r="1.2" fill="#0ea5e9"/><path d="M11.5 37.5c2.5 3 6.5 3.5 9.5 1" style="fill:none;stroke:#0b1623;stroke-width:3;stroke-linecap:round"/></svg>
+    </div>
+    <span style="font-size:19px;font-weight:800;letter-spacing:-.02em">FishLog</span>
+    <div style="margin-left:auto;display:flex;gap:8px;align-items:center">
+      <button aria-label="Notifiche" style="position:relative;width:44px;height:44px;border-radius:14px;border:1px solid #33486a;background:#1a293d;color:#f1f5f9;display:flex;align-items:center;justify-content:center">
+        <svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9.5a6 6 0 0 1 12 0c0 3.6.8 5.1 1.7 6.1a1 1 0 0 1-.7 1.6H5a1 1 0 0 1-.7-1.6C5.2 14.6 6 13.1 6 9.5Z"/><path d="M10 20a2 2 0 0 0 4 0"/></svg>
+        <span style="position:absolute;top:9px;right:10px;width:9px;height:9px;border-radius:50%;background:#f59e0b;border:2px solid #1a293d"></span>
+      </button>
+      <button aria-label="Profilo" style="width:44px;height:44px;border-radius:50%;border:1px solid #0ea5e9;background:rgba(14,165,233,.16);color:#7dd3fc;font-weight:800;font-size:14px">MC</button>
+    </div>
+  </header>
+
+  <main style="flex:1;overflow:hidden;padding:4px 16px 0;display:flex;flex-direction:column;gap:20px">
+
+    <!-- Hero -->
+    <section style="position:relative;display:flex;flex-direction:column;gap:6px;margin:0 -16px;padding:12px 16px 20px;background:#10304d;border-radius:0 0 28px 8px;overflow:hidden">
+      <svg width="100%" height="100%" viewBox="0 0 400 240" preserveAspectRatio="xMaxYMid slice" style="position:absolute;inset:0;pointer-events:none" aria-hidden="true">
+        <g fill="none" stroke="#7dd3fc" stroke-width="1.5" stroke-linejoin="round">
+          <path opacity=".12" d="M250-10c80 0 160 45 170 120s-40 140-120 150-170-20-190-100S170-10 250-10Z"/>
+          <path opacity=".2" d="M255 14c60 0 125 38 132 96s-30 110-95 124-135-12-152-80S198 14 255 14Z"/>
+          <path opacity=".3" d="M260 40c40 0 80 30 85 70s-20 80-70 90-100-10-110-55 55-105 95-105Z"/>
+          <path opacity=".42" d="M262 66c28 0 55 22 58 50s-14 56-48 62-70-8-76-38 38-74 66-74Z"/>
+        </g>
+      </svg>
+      <span style="position:relative;font-family:'JetBrains Mono',monospace;font-size:11px;color:#7dd3fc">43.72°N · 13.22°E</span>
+      <p style="position:relative;margin:0;font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#fbbf24">Pesca sportiva in Italia</p>
+      <h1 style="position:relative;margin:0;font-size:30px;line-height:1.1;letter-spacing:-.03em;font-weight:800;text-wrap:balance">Guarda il mare prima di uscire</h1>
+    </section>
+
+    <!-- Mappamondo -->
+    <dc-import name="Globe" size="358" hint-size="358px,560px"></dc-import>
+
+    <!-- Oggi in mare -->
+    <section aria-label="Oggi in mare" style="display:flex;flex-direction:column;gap:12px">
+      <div class="chips" style="display:flex;gap:8px;overflow-x:auto;margin:0 -16px;padding:0 16px;scrollbar-width:none">
+        <button style="flex:none;min-height:44px;padding:0 16px;border-radius:22px;border:1px solid #0ea5e9;background:#0ea5e9;color:#0b1623;font-weight:700;font-size:14px;display:flex;align-items:center;gap:6px">
+          <svg class="i" viewBox="0 0 24 24" style="width:16px;height:16px" aria-hidden="true"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg>
+          La mia posizione</button>
+        <button style="flex:none;min-height:44px;padding:0 16px;border-radius:22px;border:1px solid #33486a;background:#1a293d;color:#cbd5e1;font-weight:600;font-size:14px">Adriatico</button>
+        <button style="flex:none;min-height:44px;padding:0 16px;border-radius:22px;border:1px solid #33486a;background:#1a293d;color:#cbd5e1;font-weight:600;font-size:14px">Tirreno</button>
+        <button style="flex:none;min-height:44px;padding:0 16px;border-radius:22px;border:1px solid #33486a;background:#1a293d;color:#cbd5e1;font-weight:600;font-size:14px">Mar Ligure</button>
+        <button style="flex:none;min-height:44px;padding:0 16px;border-radius:22px;border:1px solid #33486a;background:#1a293d;color:#cbd5e1;font-weight:600;font-size:14px">Ionio</button>
+      </div>
+
+      <div style="background:#1a293d;border:1px solid #33486a;border-radius:20px;padding:18px;display:flex;flex-direction:column;gap:16px">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <span style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;color:#7dd3fc;letter-spacing:.04em;text-transform:uppercase">
+            <svg class="i" viewBox="0 0 24 24" style="width:16px;height:16px" aria-hidden="true"><path d="M2 8c2.5 0 2.5 2 5 2s2.5-2 5-2 2.5 2 5 2 2.5-2 5-2"/><path d="M2 14c2.5 0 2.5 2 5 2s2.5-2 5-2 2.5 2 5 2 2.5-2 5-2"/></svg>
+            Oggi in mare</span>
+          <span style="font-size:12px;color:#9db0c8">Aggiornato alle 13:30</span>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px">
+          <div style="display:flex;flex-direction:column;gap:2px">
+            <span style="font-size:12px;color:#9db0c8;font-weight:600">Onda</span>
+            <span style="font-family:'JetBrains Mono',monospace;font-size:34px;font-weight:500;letter-spacing:-.04em;line-height:1.05">0,4<span style="font-size:15px;color:#9db0c8;letter-spacing:0"> m</span></span>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:2px">
+            <span style="font-size:12px;color:#9db0c8;font-weight:600">Vento</span>
+            <span style="font-family:'JetBrains Mono',monospace;font-size:34px;font-weight:500;letter-spacing:-.04em;line-height:1.05">12<span style="font-size:15px;color:#9db0c8;letter-spacing:0"> km/h</span></span>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;border-top:1px solid #33486a;padding-top:14px">
+          <div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:12px;color:#9db0c8">Acqua</span><span style="font-family:'JetBrains Mono',monospace;font-size:16px">17°C</span></div>
+          <div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:12px;color:#9db0c8">Aria</span><span style="font-family:'JetBrains Mono',monospace;font-size:16px">19°C</span></div>
+          <div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:12px;color:#9db0c8">Pressione</span><span style="font-family:'JetBrains Mono',monospace;font-size:16px">1016 hPa</span></div>
+        </div>
+        <p style="margin:0;font-size:12px;line-height:1.4;color:#9db0c8">Dati indicativi da Open-Meteo, non per la navigazione.</p>
+      </div>
+    </section>
+
+    <!-- Uscita in corso -->
+    <a href="Uscite.dc.html" style="display:flex;align-items:center;gap:14px;background:#2a2314;border:1px solid #f59e0b;border-radius:20px;padding:14px 16px;min-height:44px">
+      <span style="position:relative;width:12px;height:12px;border-radius:50%;background:#f59e0b;flex:none"></span>
+      <span style="display:flex;flex-direction:column;gap:2px;flex:1;min-width:0">
+        <span style="font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#fbbf24">Uscita in corso</span>
+        <span style="font-size:16px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Molo di Senigallia · 3 catture</span>
+      </span>
+      <span style="min-height:44px;padding:0 16px;border-radius:14px;background:#f59e0b;color:#1a1204;font-weight:800;font-size:14px;display:flex;align-items:center">Riprendi</span>
+    </a>
+
+    <!-- Scorciatoie -->
+    <section style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px">
+      <a href="Uscite.dc.html" style="background:#1a293d;border:1px solid #33486a;border-radius:18px;padding:14px;display:flex;flex-direction:column;gap:10px;min-height:44px">
+        <span style="color:#7dd3fc"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 12.4c0-3.7 3.7-6.4 8.3-6.4s7.2 2.6 7.2 6.4-3 6.4-7.2 6.4-8.3-2.7-8.3-6.4Z"/><path d="M17.5 12.4l3.4-3.7a.8.8 0 0 1 1.3.5v6.4a.8.8 0 0 1-1.3.5l-3.4-3.7ZM7.2 11h.01"/></svg></span>
+        <span style="font-size:15px;font-weight:700">Specie e stagioni</span>
+      </a>
+      <a href="Uscite.dc.html" style="background:#1a293d;border:1px solid #33486a;border-radius:18px;padding:14px;display:flex;flex-direction:column;gap:10px;min-height:44px">
+        <span style="color:#7dd3fc"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="10" width="4" height="10" rx="1.5"/><rect x="10" y="4" width="4" height="16" rx="1.5"/><rect x="16.5" y="13" width="4" height="7" rx="1.5"/></svg></span>
+        <span style="font-size:15px;font-weight:700">Le mie statistiche</span>
+      </a>
+    </section>
+  </main>
+
+  <!-- Bottom nav -->
+  <nav aria-label="Navigazione principale" style="display:grid;grid-template-columns:repeat(5,minmax(0,1fr));align-items:end;background:#1a293d;border-top:1px solid #33486a;padding:8px 8px 14px;min-height:68px;box-sizing:border-box;position:relative">
+    <a href="Main.dc.html" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:48px;color:#7dd3fc;font-size:11px;font-weight:700">
+      <svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11.2a2 2 0 0 1 .7-1.5l6-5.2a2 2 0 0 1 2.6 0l6 5.2a2 2 0 0 1 .7 1.5V18a3 3 0 0 1-3 3h-2.5a1 1 0 0 1-1-1v-3.5a1 1 0 0 0-1-1h-1a1 1 0 0 0-1 1V20a1 1 0 0 1-1 1H7a3 3 0 0 1-3-3v-6.8Z"/></svg>Home</a>
+    <a href="Uscite.dc.html" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:48px;color:#b4c3d6;font-size:11px;font-weight:600">
+      <svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 12.4c0-3.7 3.7-6.4 8.3-6.4s7.2 2.6 7.2 6.4-3 6.4-7.2 6.4-8.3-2.7-8.3-6.4Z"/><path d="M17.5 12.4l3.4-3.7a.8.8 0 0 1 1.3.5v6.4a.8.8 0 0 1-1.3.5l-3.4-3.7ZM7.2 11h.01"/></svg>Uscite</a>
+    <a href="Uscite.dc.html" aria-label="Nuova uscita" style="display:flex;justify-content:center;margin-top:-30px">
+      <span style="width:56px;height:56px;border-radius:50%;background:#0ea5e9;color:#0b1623;display:flex;align-items:center;justify-content:center;border:4px solid #111c2c;box-shadow:0 6px 18px rgba(14,165,233,.35)">
+        <svg class="i" viewBox="0 0 24 24" style="width:26px;height:26px;stroke-width:2.4" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></span>
+    </a>
+    <a href="Uscite.dc.html" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:48px;color:#b4c3d6;font-size:11px;font-weight:600">
+      <svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 4h12a3 3 0 0 1 3 3v7a3 3 0 0 1-3 3h-6.5l-3.7 3.3a.6.6 0 0 1-1-.45V17H6a3 3 0 0 1-3-3V7a3 3 0 0 1 3-3Z"/></svg>Community</a>
+    <a href="Uscite.dc.html" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:48px;color:#b4c3d6;font-size:11px;font-weight:600">
+      <svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M5.5 8h13a1 1 0 0 1 1 1.1l-1 9.2a2.5 2.5 0 0 1-2.5 2.2H8a2.5 2.5 0 0 1-2.5-2.2l-1-9.2A1 1 0 0 1 5.500 8Z"/><path d="M8.5 8V7a3.5 3.5 0 0 1 7 0v1"/></svg>Market</a>
+  </nav>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":1500}}'>
+class Component extends DCLogic {
+renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

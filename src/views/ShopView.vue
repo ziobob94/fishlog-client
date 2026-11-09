@@ -77,7 +77,7 @@ onMounted(load)
 
 .avatar { @apply w-16 h-16 rounded-full object-cover shrink-0; }
 .avatar-placeholder {
-  @apply w-16 h-16 shrink-0 rounded-full border border-ocean text-ocean flex items-center
+  @apply w-16 h-16 shrink-0 rounded-full border border-ocean text-ocean-text flex items-center
          justify-center text-lg font-bold;
   background: var(--ocean-glow);
 }

@@ -27,6 +27,7 @@ export default createRouter({
     { path: '/board', name: 'board', component: () => import('../views/MyBoardView.vue') },
     { path: '/market', name: 'market', component: () => import('../views/MarketView.vue') },
     { path: '/market/mine', name: 'market-mine', component: () => import('../views/MyListingsView.vue') },
+    { path: '/market/sell', name: 'market-sell', component: () => import('../views/SellerView.vue') },
     { path: '/market/new', name: 'market-new', component: () => import('../views/NewListingView.vue') },
     { path: '/market/shop/:userId', name: 'market-shop', component: () => import('../views/ShopView.vue') },
     { path: '/market/:id', name: 'market-listing', component: () => import('../views/ListingView.vue') },

@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<title>FishLog Scheda specie</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+body{margin:0;font-family:'Manrope',system-ui,sans-serif;background:#111c2c;color:#f1f5f9}
+.i{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+button{font-family:inherit;cursor:pointer}
+a{color:inherit;text-decoration:none}
+.lab{margin:0;font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#9db0c8}
+.card{background:#1a293d;border:1px solid #33486a;border-radius:20px;padding:16px;display:flex;flex-direction:column;gap:12px}
+.chip{flex:none;min-height:44px;padding:0 16px;border-radius:22px;border:1px solid #33486a;background:#111c2c;color:#cbd5e1;font-weight:600;font-size:14px}
+.chip.on{border-color:#0ea5e9;background:#0ea5e9;color:#0b1623;font-weight:700}
+.row{display:flex;align-items:center;gap:12px}
+</style>
+</helmet>
+<div style="width:390px;height:1560px;box-sizing:border-box;background:#111c2c;display:flex;flex-direction:column;overflow:hidden">
+
+  <header style="display:flex;align-items:center;gap:8px;padding:12px 16px 12px 8px;min-height:64px;box-sizing:border-box">
+    <a href="SpecieRicerca.dc.html" aria-label="Torna alla ricerca" style="width:44px;height:44px;display:flex;align-items:center;justify-content:center"><svg class="i" viewBox="0 0 24 24" style="width:22px;height:22px" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></a>
+    <span style="font-size:14px;color:#9db0c8">Specie</span>
+  </header>
+
+  <main style="flex:1;padding:0 16px 24px;display:flex;flex-direction:column;gap:24px;overflow:hidden">
+
+    <div style="height:180px;border-radius:24px;background:#1f3a56;color:#6f89a8;display:flex;align-items:center;justify-content:center"><svg class="i" viewBox="0 0 24 24" style="width:56px;height:56px" aria-hidden="true"><path d="M2.5 12.4c0-3.7 3.7-6.4 8.3-6.4s7.2 2.6 7.2 6.4-3 6.4-7.2 6.4-8.3-2.7-8.3-6.4Z"/><path d="M17.5 12.4l3.4-3.7a.8.8 0 0 1 1.3.5v6.4a.8.8 0 0 1-1.3.5l-3.4-3.7ZM7.2 11h.01"/></svg></div>
+
+    <header style="display:flex;flex-direction:column;gap:4px">
+      <h1 style="margin:0;font-size:34px;line-height:1.05;letter-spacing:-.035em;font-weight:800">Spigola</h1>
+      <span style="font-size:16px;font-style:italic;color:#9db0c8">Dicentrarchus labrax</span>
+    </header>
+
+    <!-- Stato legale -->
+    <section class="card">
+      <div class="row"><span style="width:40px;height:40px;border-radius:12px;background:rgba(74,222,128,.14);color:#86efac;display:flex;align-items:center;justify-content:center"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M11.100 3.200 5.100 5.800A1.600 1.600 0 0 0 4 7.300V12c0 4.400 3 7.500 7.700 8.900a1 1 0 0 0 .6 0C17 19.500 20 16.400 20 12V7.300a1.600 1.600 0 0 0-1.100-1.500l-6-2.600a2 2 0 0 0-1.800 0Z"/><path d="m9 12 2 2 4-4"/></svg></span><h2 style="margin:0;font-size:18px;font-weight:800;letter-spacing:-.02em">Stato legale</h2></div>
+      <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px">
+        <div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:12px;color:#9db0c8">Taglia minima</span><span style="font-size:16px;font-weight:700">[dato dalla normativa]</span></div>
+        <div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:12px;color:#9db0c8">Fermo pesca</span><span style="font-size:16px;font-weight:700">[dato dalla normativa]</span></div>
+      </div>
+      <a href="SpecieScheda.dc.html" style="min-height:44px;display:flex;align-items:center;gap:6px;font-size:14px;font-weight:700;color:#7dd3fc"><svg class="i" viewBox="0 0 24 24" style="width:16px;height:16px" aria-hidden="true"><path d="M10 14a4 4 0 0 0 5.700 0l3-3a4 4 0 0 0-5.700-5.700l-1 1M14 10a4 4 0 0 0-5.700 0l-3 3a4 4 0 0 0 5.700 5.700l1-1"/></svg>Fonte: [riferimento normativo citato]</a>
+    </section>
+
+    <!-- Filtri scenario -->
+    <section style="display:flex;flex-direction:column;gap:10px">
+      <h2 class="lab">Scenario</h2>
+      <div style="display:flex;gap:8px;overflow-x:auto;margin:0 -16px;padding:0 16px;scrollbar-width:none">
+        <button class="chip on">Qualsiasi tecnica</button><button class="chip">Spinning</button><button class="chip">Surfcasting</button><button class="chip">Bolentino</button>
+      </div>
+      <div style="display:flex;gap:8px;overflow-x:auto;margin:0 -16px;padding:0 16px;scrollbar-width:none">
+        <button class="chip on">Mare</button><button class="chip">Fiume</button><button class="chip">Lago</button>
+      </div>
+    </section>
+
+    <!-- Calendario -->
+    <section class="card">
+      <h2 class="lab">Mesi più produttivi</h2>
+      <div role="img" aria-label="Mesi più produttivi: picco da settembre a novembre" style="display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:5px;align-items:end;height:96px">
+        <sc-for list="{{months}}" as="m" hint-placeholder-count="12"><div style="height:{{m.h}}px;border-radius:5px 5px 2px 2px;background:{{m.c}}"></div></sc-for>
+      </div>
+      <div aria-hidden="true" style="display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:5px"><sc-for list="{{months}}" as="m" hint-placeholder-count="12"><span style="font-size:11px;color:#9db0c8;text-align:center">{{m.l}}</span></sc-for></div>
+      <span style="font-size:12px;color:#9db0c8">Calcolato dalle catture registrate dalla community</span>
+    </section>
+
+    <!-- Attrezzatura -->
+    <section class="card">
+      <h2 class="lab">Esche più usate</h2>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <span style="padding:6px 12px;border-radius:999px;background:rgba(14,165,233,.14);color:#7dd3fc;font-size:14px;font-weight:700">Minnow</span>
+        <span style="padding:6px 12px;border-radius:999px;background:rgba(14,165,233,.14);color:#7dd3fc;font-size:14px;font-weight:700">Americano</span>
+        <span style="padding:6px 12px;border-radius:999px;background:rgba(14,165,233,.14);color:#7dd3fc;font-size:14px;font-weight:700">Gambero</span>
+      </div>
+    </section>
+    <section class="card">
+      <h2 class="lab">Montatura più usata</h2>
+      <span style="font-size:16px;font-weight:700">Spinning leggero con terminale fluoro</span>
+    </section>
+    <section class="card">
+      <h2 class="lab">Lenza consigliata</h2>
+      <div class="row" style="align-items:baseline"><span style="font-family:'JetBrains Mono',monospace;font-size:30px;letter-spacing:-.03em">18<span style="font-size:14px;color:#9db0c8"> lb</span></span><span style="font-size:13px;color:#9db0c8">in media, da 12 a 30 lb</span></div>
+    </section>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":1560}}'>
+class Component extends DCLogic {
+renderVals() {
+  const v = [1, 1, 2, 3, 4, 5, 6, 7, 10, 12, 8, 3];
+  const l = ['G','F','M','A','M','G','L','A','S','O','N','D'];
+  return { months: v.map((n, i) => ({ h: Math.round(n / 12 * 96), l: l[i], c: n >= 10 ? '#f59e0b' : '#0ea5e9' })) };
+}
+}
+</script>
+</body>
+</html>

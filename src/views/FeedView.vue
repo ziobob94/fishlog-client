@@ -14,6 +14,10 @@
         ><CalendarDays :size="14" /> {{ t('posts.tabs.events') }}</button>
       </div>
       <div class="toolbar-actions">
+        <RouterLink to="/chat" class="icon-btn relative" :title="t('nav.chat')" :aria-label="t('nav.chat')">
+          <AppIcon name="invia" :size="17" />
+          <span v-if="chat.unreadCount" class="absolute top-1 right-1 w-2 h-2 rounded-full bg-danger"></span>
+        </RouterLink>
         <button
           type="button" class="icon-btn" :class="{ active: showFilters }"
           :title="t('posts.filters.title')" :aria-pressed="showFilters"
@@ -161,6 +165,8 @@
   import { useRoute, useRouter } from 'vue-router'
   import { Newspaper, CalendarDays, MapPin, Map as MapIcon, X, Filter } from 'lucide-vue-next'
   import { usePostStore } from '../stores/posts.js'
+  import { useChatStore } from '../stores/chat.js'
+  import AppIcon from '../components/AppIcon.vue'
   import { useAuthStore } from '../stores/auth.js'
   import { useUserStore } from '../stores/users.js'
   import { useInfiniteScroll } from '../composables/useInfiniteScroll.js'
@@ -173,6 +179,7 @@
   const route = useRoute()
   const router = useRouter()
   const store = usePostStore()
+  const chat = useChatStore()
   const auth = useAuthStore()
   const userStore = useUserStore()
 
@@ -348,7 +355,7 @@
   }
 
   .tab-pill {
-    @apply flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 text-xs font-semibold text-muted bg-transparent border-none rounded-full cursor-pointer px-3 py-1.5 transition-colors;
+    @apply flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 text-xs font-semibold text-muted bg-transparent border-none rounded-full cursor-pointer px-3 min-h-[44px] transition-colors;
   }
 
   .tab-pill:hover {
@@ -356,7 +363,7 @@
   }
 
   .tab-pill.active {
-    @apply text-ink bg-ocean;
+    @apply text-on-primary bg-ocean;
   }
 
   .toolbar-actions {
@@ -364,7 +371,7 @@
   }
 
   .icon-btn {
-    @apply flex items-center justify-center w-8 h-8 rounded-lg text-muted bg-transparent border-none cursor-pointer transition-colors;
+    @apply flex items-center justify-center w-11 h-11 rounded-lg text-muted bg-transparent border-none cursor-pointer transition-colors;
   }
 
   .icon-btn:hover {
@@ -372,7 +379,7 @@
   }
 
   .icon-btn.active {
-    @apply text-ocean bg-ocean/10;
+    @apply text-ocean-text bg-ocean/10;
   }
 
   .post-form-wrap {

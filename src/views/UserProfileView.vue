@@ -35,7 +35,7 @@
         </div>
       </div>
 
-      <div class="section-divider">{{ t('friends.profile.commonGroups') }}</div>
+      <TideDivider>{{ t('friends.profile.commonGroups') }}</TideDivider>
       <p v-if="!commonGroups.length" class="text-muted text-sm">{{ t('friends.profile.noCommonGroups') }}</p>
       <ul v-else class="common-groups">
         <li v-for="g in commonGroups" :key="g._id" class="badge badge-ocean">{{ g.name }}</li>
@@ -45,6 +45,7 @@
 </template>
 
 <script setup>
+import TideDivider from '../components/TideDivider.vue'
 import { ref, computed, onMounted } from 'vue'
 import { useRoute, RouterLink } from 'vue-router'
 import { useI18n } from 'vue-i18n'
@@ -128,7 +129,7 @@ async function onRemove() {
 
 .avatar { @apply w-16 h-16 rounded-full object-cover; }
 .avatar-placeholder {
-  @apply w-16 h-16 rounded-full border border-ocean text-ocean flex items-center
+  @apply w-16 h-16 rounded-full border border-ocean text-ocean-text flex items-center
          justify-center text-lg font-bold;
   background: var(--ocean-glow);
 }
@@ -137,7 +138,7 @@ async function onRemove() {
 .row-actions { @apply flex items-center gap-2; }
 
 .icon-btn {
-  @apply flex items-center justify-center w-9 h-9 rounded-lg text-muted bg-transparent border-none
+  @apply flex items-center justify-center w-11 h-11 rounded-lg text-muted bg-transparent border-none
          cursor-pointer hover:bg-surface-2 hover:text-danger transition-colors shrink-0;
 }
 

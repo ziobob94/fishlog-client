@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<title>FishLog Classifica</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+body{margin:0;font-family:'Manrope',system-ui,sans-serif;background:#111c2c;color:#f1f5f9}
+.i{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+button{font-family:inherit;cursor:pointer}
+a{color:inherit;text-decoration:none}
+.nv{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:48px;color:#b4c3d6;font-size:11px;font-weight:600}
+</style>
+</helmet>
+<div style="width:390px;height:960px;box-sizing:border-box;background:#111c2c;display:flex;flex-direction:column;overflow:hidden">
+
+  <header style="display:flex;align-items:center;gap:8px;padding:12px 16px 12px 8px;min-height:64px;box-sizing:border-box">
+    <a href="Main.dc.html" aria-label="Indietro" style="width:44px;height:44px;display:flex;align-items:center;justify-content:center"><svg class="i" viewBox="0 0 24 24" style="width:22px;height:22px" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></a>
+    <h1 style="margin:0;font-size:26px;font-weight:800;letter-spacing:-.03em">Classifica</h1>
+  </header>
+
+  <div role="tablist" style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));margin:0 16px;background:#1a293d;border:1px solid #33486a;border-radius:16px;padding:4px;gap:4px">
+    <button role="tab" aria-selected="true" style="min-height:44px;border-radius:12px;border:0;background:#0ea5e9;color:#0b1623;font-weight:800;font-size:14px">Settimana</button>
+    <button role="tab" aria-selected="false" style="min-height:44px;border-radius:12px;border:0;background:transparent;color:#cbd5e1;font-weight:600;font-size:14px">Mese</button>
+    <button role="tab" aria-selected="false" style="min-height:44px;border-radius:12px;border:0;background:transparent;color:#cbd5e1;font-weight:600;font-size:14px">Sempre</button>
+  </div>
+
+  <main style="flex:1;overflow:hidden;padding:16px;display:flex;flex-direction:column;gap:16px">
+
+    <!-- Podio -->
+    <section aria-label="Podio" style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;align-items:end">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:6px;background:#1a293d;border:1px solid #33486a;border-radius:18px;padding:14px 8px 12px;min-height:150px;justify-content:flex-end">
+        <span style="width:48px;height:48px;border-radius:50%;border:1px solid #7dd3fc;background:rgba(14,165,233,.16);color:#7dd3fc;font-weight:800;display:flex;align-items:center;justify-content:center">LB</span>
+        <span style="font-size:13px;font-weight:700;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">luca_bol…</span>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:20px;font-weight:700">94</span>
+        <span style="width:28px;height:28px;border-radius:50%;background:#cbd5e1;color:#0b1623;font-weight:800;font-size:14px;display:flex;align-items:center;justify-content:center">2</span>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:6px;background:#2a2314;border:1px solid #f59e0b;border-radius:18px;padding:16px 8px 12px;min-height:186px;justify-content:flex-end">
+        <span style="width:56px;height:56px;border-radius:50%;border:2px solid #f59e0b;background:rgba(245,158,11,.14);color:#fbbf24;font-weight:800;font-size:18px;display:flex;align-items:center;justify-content:center">GR</span>
+        <span style="font-size:14px;font-weight:800">giorgio.r</span>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:26px;font-weight:700;color:#fbbf24">128</span>
+        <span style="width:30px;height:30px;border-radius:50%;background:#f59e0b;color:#1a1204;font-weight:800;font-size:15px;display:flex;align-items:center;justify-content:center">1</span>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:6px;background:#1a293d;border:1px solid #33486a;border-radius:18px;padding:14px 8px 12px;min-height:130px;justify-content:flex-end">
+        <span style="width:48px;height:48px;border-radius:50%;border:1px solid #7dd3fc;background:rgba(14,165,233,.16);color:#7dd3fc;font-weight:800;display:flex;align-items:center;justify-content:center">SF</span>
+        <span style="font-size:13px;font-weight:700;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">sara_feeder</span>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:20px;font-weight:700">81</span>
+        <span style="width:28px;height:28px;border-radius:50%;background:#b8794a;color:#fff;font-weight:800;font-size:14px;display:flex;align-items:center;justify-content:center">3</span>
+      </div>
+    </section>
+
+    <!-- Lista -->
+    <ol style="list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px">
+      <sc-for list="{{rows}}" as="r" hint-placeholder-count="4">
+      <li style="display:flex;align-items:center;gap:12px;background:{{r.bg}};border:1px solid {{r.bd}};border-radius:16px;padding:10px 14px;min-height:60px;box-sizing:border-box">
+        <span style="width:24px;font-family:'JetBrains Mono',monospace;font-size:15px;color:#9db0c8">{{r.rank}}</span>
+        <span style="width:40px;height:40px;border-radius:50%;border:1px solid #7dd3fc;background:rgba(14,165,233,.16);color:#7dd3fc;font-weight:800;font-size:13px;display:flex;align-items:center;justify-content:center;flex:none">{{r.ini}}</span>
+        <span style="flex:1;min-width:0;display:flex;flex-direction:column;gap:1px"><span style="font-size:15px;font-weight:700">{{r.name}}</span><span style="font-size:12px;color:#9db0c8">{{r.meta}}</span></span>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:700">{{r.score}}</span>
+      </li>
+      </sc-for>
+    </ol>
+
+    <p style="margin:0;font-size:13px;line-height:1.5;color:#9db0c8;text-wrap:pretty">+10 per uscita pubblica, +3 per cattura registrata, +5 se l'uscita ha foto o video. Conta solo quello che è già visibile a tutti.</p>
+  </main>
+
+  <nav aria-label="Navigazione principale" style="display:grid;grid-template-columns:repeat(5,minmax(0,1fr));align-items:end;background:#1a293d;border-top:1px solid #33486a;padding:8px 8px 14px;min-height:68px;box-sizing:border-box">
+    <a href="Main.dc.html" class="nv"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11.2a2 2 0 0 1 .7-1.5l6-5.2a2 2 0 0 1 2.6 0l6 5.2a2 2 0 0 1 .7 1.5V18a3 3 0 0 1-3 3h-2.5a1 1 0 0 1-1-1v-3.5a1 1 0 0 0-1-1h-1a1 1 0 0 0-1 1V20a1 1 0 0 1-1 1H7a3 3 0 0 1-3-3v-6.8Z"/></svg>Home</a>
+    <a href="Uscite.dc.html" class="nv"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 12.4c0-3.7 3.7-6.4 8.3-6.4s7.2 2.6 7.2 6.4-3 6.4-7.2 6.4-8.3-2.7-8.3-6.4Z"/><path d="M17.5 12.4l3.4-3.7a.8.8 0 0 1 1.3.5v6.4a.8.8 0 0 1-1.3.5l-3.4-3.7ZM7.2 11h.01"/></svg>Uscite</a>
+    <a href="NuovaUscita.dc.html" aria-label="Nuova uscita" style="display:flex;justify-content:center;margin-top:-30px"><span style="width:56px;height:56px;border-radius:50%;background:#0ea5e9;color:#0b1623;display:flex;align-items:center;justify-content:center;border:4px solid #111c2c;box-shadow:0 6px 18px rgba(14,165,233,.35)"><svg class="i" viewBox="0 0 24 24" style="width:26px;height:26px;stroke-width:2.4" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></span></a>
+    <a href="Community.dc.html" class="nv"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 4h12a3 3 0 0 1 3 3v7a3 3 0 0 1-3 3h-6.5l-3.7 3.3a.6.6 0 0 1-1-.45V17H6a3 3 0 0 1-3-3V7a3 3 0 0 1 3-3Z"/></svg>Community</a>
+    <a href="MarketLista.dc.html" class="nv"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M5.5 8h13a1 1 0 0 1 1 1.1l-1 9.2a2.5 2.5 0 0 1-2.5 2.2H8a2.5 2.5 0 0 1-2.5-2.2l-1-9.2A1 1 0 0 1 5.500 8Z"/><path d="M8.5 8V7a3.5 3.5 0 0 1 7 0v1"/></svg>Market</a>
+  </nav>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":960}}'>
+class Component extends DCLogic {
+renderVals() {
+  const base = { bg: '#1a293d', bd: '#33486a' };
+  return { rows: [
+    { ...base, rank: '4', ini: 'MS', name: 'marco.surf', meta: '5 uscite · 11 catture', score: 74 },
+    { ...base, rank: '5', ini: 'AN', name: 'anna_n', meta: '4 uscite · 9 catture', score: 62 },
+    { bg: 'rgba(14,165,233,.12)', bd: '#0ea5e9', rank: '6', ini: 'MC', name: 'Mauro (tu)', meta: '3 uscite · 7 catture', score: 51 },
+    { ...base, rank: '7', ini: 'PD', name: 'paolo_d', meta: '2 uscite · 5 catture', score: 35 }
+  ] };
+}
+}
+</script>
+</body>
+</html>

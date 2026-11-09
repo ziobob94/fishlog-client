@@ -1,6 +1,6 @@
 <template>
   <RouterLink :to="`/market/${listing._id}`"
-    class="group block bg-surface border border-border rounded-lg overflow-hidden
+    class="group block bg-surface border border-border rounded-signature overflow-hidden
            transition-all duration-200 hover:border-ocean hover:-translate-y-0.5
            hover:shadow-[0_4px_24px_rgba(14,165,233,0.1)]"
   >
@@ -26,7 +26,7 @@
     </div>
 
     <div class="p-3 sm:p-4">
-      <p class="font-mono text-ocean font-bold text-base sm:text-lg leading-tight">{{ formatPrice(listing.price, listing.currency) }}</p>
+      <p class="font-mono text-ocean-text font-bold text-base sm:text-lg leading-tight">{{ formatPrice(listing.price, listing.currency) }}</p>
       <h3 class="font-semibold text-sm mt-0.5 mb-2 line-clamp-2 text-foam">{{ listing.title }}</h3>
       <div class="flex flex-wrap gap-1 items-center">
         <span class="chip icon-inline"><Tag :size="12" /> {{ t(`market.categories.${listing.category}`) }}</span>

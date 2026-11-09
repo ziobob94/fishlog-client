@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<title>FishLog Accesso</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+body{margin:0;font-family:'Manrope',system-ui,sans-serif;background:#111c2c;color:#f1f5f9}
+.i{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+button,input{font-family:inherit}
+button{cursor:pointer}
+a{color:inherit;text-decoration:none}
+.lab{display:block;margin:0 0 6px;font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#9db0c8}
+</style>
+</helmet>
+<div style="width:390px;height:844px;box-sizing:border-box;position:relative;background:#111c2c;display:flex;flex-direction:column;padding:32px 20px 24px;gap:24px;overflow:hidden">
+  <div style="position:absolute;left:0;top:0;width:100%;height:206px;pointer-events:none;overflow:hidden;border-radius:0 0 28px 8px;background:#10304d"><svg width="100%" height="100%" viewBox="0 0 400 240" preserveAspectRatio="xMaxYMid slice" style="position:absolute;inset:0;pointer-events:none" aria-hidden="true"><g fill="none" stroke="#7dd3fc" stroke-width="1.5" stroke-linejoin="round"><path opacity=".12" d="M250-10c80 0 160 45 170 120s-40 140-120 150-170-20-190-100S170-10 250-10Z"/><path opacity=".2" d="M255 14c60 0 125 38 132 96s-30 110-95 124-135-12-152-80S198 14 255 14Z"/><path opacity=".3" d="M260 40c40 0 80 30 85 70s-20 80-70 90-100-10-110-55 55-105 95-105Z"/><path opacity=".42" d="M262 66c28 0 55 22 58 50s-14 56-48 62-70-8-76-38 38-74 66-74Z"/></g></svg><svg width="76" height="88" viewBox="0 0 120 140" style="position:absolute;right:28px;top:40px" aria-hidden="true"><path d="M60 6v22" stroke="#f1f5f9" stroke-width="5" stroke-linecap="round" fill="none"/><path d="M60 28c-17 0-26 14-26 28 0 16 12 28 26 28s26-12 26-28c0-14-9-28-26-28Z" fill="#f1f5f9"/><path d="M36 52c3-14 13-24 24-24s21 10 24 24Z" fill="#f59e0b"/><path d="M4 102c10 0 10 8 21 8s11-8 21 0 11 8 21 8 11-8 21 0 11 8 22 0" fill="none" stroke="#7dd3fc" stroke-width="3" stroke-linecap="round"/></svg></div>
+
+  <div style="position:relative;display:flex;flex-direction:column;gap:16px;margin-top:12px;margin-bottom:32px">
+    <div style="display:flex;align-items:center;gap:14px"><div style="width:56px;height:56px;border-radius:17px;background:#0ea5e9;color:#0b1623;display:flex;align-items:center;justify-content:center"><svg width="38" height="38" viewBox="0 0 64 64" aria-hidden="true"><g style="fill:none;stroke:#0b1623;stroke-width:4;stroke-linecap:round;stroke-linejoin:round" transform="translate(-2.4 0)"><path d="M8 33c0-10 10-17 22-17s19 7 19 17-8 17-19 17S8 43 8 33Z"/><path d="M47 33l10-10a2 2 0 0 1 3.4 1.4v17.2a2 2 0 0 1-3.4 1.4L47 33Z"/></g><circle cx="17" cy="28" r="3.6" fill="#0b1623"/><circle cx="18.2" cy="26.8" r="1.2" fill="#0ea5e9"/><path d="M11.5 37.5c2.5 3 6.5 3.5 9.5 1" style="fill:none;stroke:#0b1623;stroke-width:3;stroke-linecap:round"/></svg></div><span style="font-size:34px;font-weight:800;letter-spacing:-.04em;line-height:1">Fish<span style="color:#fbbf24">Log</span></span></div>
+    <div style="display:flex;flex-direction:column;gap:6px">
+      <h1 style="margin:0;font-size:34px;line-height:1.05;letter-spacing:-.035em;font-weight:800">Bentornato</h1>
+      <p style="margin:0;font-size:16px;color:#b4c3d6">Accedi per ritrovare le tue uscite.</p>
+    </div>
+  </div>
+
+  <div style="display:flex;flex-direction:column;gap:10px">
+    <button style="min-height:52px;border-radius:16px;border:1px solid #46617f;background:#1a293d;color:#f1f5f9;font-weight:700;font-size:15px">Continua con Google</button>
+    <button style="min-height:52px;border-radius:16px;border:1px solid #46617f;background:#1a293d;color:#f1f5f9;font-weight:700;font-size:15px">Continua con Facebook</button>
+  </div>
+
+  <div style="display:flex;align-items:center;gap:12px;color:#9db0c8;font-size:13px"><span style="flex:1;height:1px;background:#33486a"></span>oppure con email<span style="flex:1;height:1px;background:#33486a"></span></div>
+
+  <form style="display:flex;flex-direction:column;gap:16px">
+    <div><label class="lab" for="em">Email</label><input id="em" type="email" placeholder="tu@email.com" style="width:100%;box-sizing:border-box;height:52px;border-radius:14px;border:1px solid #33486a;background:#1a293d;color:#f1f5f9;font-size:16px;padding:0 16px;outline:none"></div>
+    <div><label class="lab" for="pw">Password</label>
+      <div style="position:relative"><input id="pw" type="password" placeholder="••••••••" style="width:100%;box-sizing:border-box;height:52px;border-radius:14px;border:1px solid #33486a;background:#1a293d;color:#f1f5f9;font-size:16px;padding:0 56px 0 16px;outline:none">
+      <button type="button" aria-label="Mostra password" style="position:absolute;right:4px;top:4px;width:44px;height:44px;border:0;background:transparent;color:#9db0c8;display:flex;align-items:center;justify-content:center"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg></button></div>
+    </div>
+    <a href="Login.dc.html" style="align-self:flex-end;min-height:44px;display:flex;align-items:center;font-size:14px;font-weight:700;color:#7dd3fc">Password dimenticata?</a>
+    <button type="submit" style="min-height:54px;border-radius:16px;border:0;background:#0ea5e9;color:#0b1623;font-weight:800;font-size:16px;margin-top:-8px">Accedi</button>
+  </form>
+
+  <p style="margin:auto 0 0;text-align:center;font-size:15px;color:#9db0c8">Non hai un account? <a href="Registrazione.dc.html" style="color:#7dd3fc;font-weight:800">Registrati</a></p>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

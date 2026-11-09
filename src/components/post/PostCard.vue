@@ -269,7 +269,7 @@
 
 <style scoped>
   .post-card {
-    @apply flex flex-col gap-2.5 bg-surface border border-border/60 rounded-lg p-3.5 sm:p-4;
+    @apply flex flex-col gap-2.5 bg-surface border border-border/60 rounded-signature p-3.5 sm:p-4;
   }
 
   .post-header {
@@ -293,7 +293,7 @@
   }
 
   .mini-placeholder {
-    @apply w-9 h-9 rounded-full border border-ocean text-ocean flex items-center justify-center text-xs font-bold shrink-0;
+    @apply w-9 h-9 rounded-full border border-ocean text-ocean-text flex items-center justify-center text-xs font-bold shrink-0;
     background: var(--ocean-glow);
   }
 
@@ -315,7 +315,7 @@
   }
 
   .user-modal-close {
-    @apply absolute top-2 right-2 w-7 h-7 rounded-full bg-transparent border-none text-muted cursor-pointer flex items-center justify-center hover:text-foam;
+    @apply absolute top-2 right-2 w-11 h-11 rounded-full bg-transparent border-none text-muted cursor-pointer flex items-center justify-center hover:text-foam;
   }
 
   .user-modal-avatar {
@@ -394,7 +394,7 @@
   }
 
   .accordion-toggle:hover {
-    @apply text-ocean;
+    @apply text-ocean-text;
   }
 
   .accordion-toggle span:first-child {

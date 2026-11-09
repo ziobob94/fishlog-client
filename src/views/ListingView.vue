@@ -17,7 +17,7 @@
           {{ t(`market.condition.${listing.condition}`) }}
         </span>
       </div>
-      <p class="font-mono text-2xl text-ocean font-bold mt-2">{{ formatPrice(listing.price, listing.currency) }}</p>
+      <p class="font-mono text-2xl text-ocean-text font-bold mt-2">{{ formatPrice(listing.price, listing.currency) }}</p>
 
       <div class="flex flex-wrap gap-1.5 mt-2">
         <span class="chip icon-inline"><Tag :size="14" /> {{ t(`market.categories.${listing.category}`) }}</span>
@@ -31,7 +31,7 @@
         <span v-if="listing.sellerType === 'negozio'" class="badge icon-inline" :class="isVerifiedShop ? 'badge-ocean' : 'badge-sand'">
           <Store :size="12" /> {{ isVerifiedShop ? t('market.sellerType.negozio') : t('market.sellerType.unverified') }}
         </span>
-        <RouterLink :to="`/users/${listing.seller._id}`" class="text-ocean hover:underline">
+        <RouterLink :to="`/users/${listing.seller._id}`" class="text-ocean-text hover:underline">
           {{ listing.seller.displayName || listing.seller.email }}
         </RouterLink>
       </div>

@@ -357,11 +357,11 @@
   }
 
   .message-row.mine .message-bubble {
-    @apply bg-ocean border-ocean text-white;
+    @apply bg-ocean border-ocean text-on-primary;
   }
 
   .message-sender {
-    @apply text-xs font-semibold text-ocean;
+    @apply text-xs font-semibold text-ocean-text;
   }
 
   .message-text {
@@ -405,7 +405,7 @@
   }
 
   .message-action-btn {
-    @apply flex items-center justify-center w-6 h-6 rounded text-muted bg-transparent border-none cursor-pointer hover:bg-surface-2 hover:text-ocean transition-colors;
+    @apply flex items-center justify-center w-11 h-11 rounded text-muted bg-transparent border-none cursor-pointer hover:bg-surface-2 hover:text-ocean transition-colors;
   }
 
   .message-media-image {
@@ -450,7 +450,7 @@
   }
 
   .editing-banner {
-    @apply flex items-center gap-2 text-xs text-ocean bg-ocean/10 border-l-2 border-ocean px-3 py-1.5 rounded-sm;
+    @apply flex items-center gap-2 text-xs text-ocean-text bg-ocean/10 border-l-2 border-ocean px-3 py-1.5 rounded-sm;
   }
 
   .editing-banner .icon-btn-sm {
@@ -466,7 +466,7 @@
   }
 
   .icon-btn {
-    @apply flex items-center justify-center w-9 h-9 rounded-lg text-muted bg-transparent border-none cursor-pointer hover:bg-surface-2 hover:text-ocean transition-colors shrink-0;
+    @apply flex items-center justify-center w-11 h-11 rounded-lg text-muted bg-transparent border-none cursor-pointer hover:bg-surface-2 hover:text-ocean transition-colors shrink-0;
   }
 
   .icon-btn-sm {

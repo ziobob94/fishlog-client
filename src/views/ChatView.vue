@@ -349,10 +349,10 @@
     @apply flex gap-1 p-1 mb-3 bg-surface-2 rounded-full w-full sm:w-auto;
   }
   .tab-pill {
-    @apply flex-1 sm:flex-initial inline-flex items-center justify-center gap-1 text-xs font-semibold text-muted bg-transparent border-none rounded-full cursor-pointer px-3 py-1.5 transition-colors;
+    @apply flex-1 sm:flex-initial inline-flex items-center justify-center gap-1 text-xs font-semibold text-muted bg-transparent border-none rounded-full cursor-pointer px-3 min-h-[44px] transition-colors;
   }
   .tab-pill:hover { @apply text-foam; }
-  .tab-pill.active { @apply text-ink bg-ocean; }
+  .tab-pill.active { @apply text-on-primary bg-ocean; }
 
   .search-results {
     @apply flex flex-col gap-1;
@@ -422,10 +422,10 @@
   }
 
   .conversation-favorite {
-    @apply flex items-center justify-center w-5 h-5 text-muted bg-transparent border-none cursor-pointer p-0 hover:text-sand transition-colors;
+    @apply flex items-center justify-center w-11 h-11 -mt-3 -mr-3 text-muted bg-transparent border-none cursor-pointer p-0 hover:text-sand-text transition-colors;
   }
   .conversation-favorite.active {
-    @apply text-sand;
+    @apply text-sand-text;
   }
 
   .conversation-time {
@@ -433,7 +433,7 @@
   }
 
   .conversation-badge {
-    @apply mt-auto;
+    @apply mt-auto bg-ocean text-on-primary border-ocean rounded-full;
   }
 
   .conversation-avatar {
@@ -441,12 +441,12 @@
   }
 
   .conversation-avatar-placeholder {
-    @apply w-12 h-12 sm:w-14 sm:h-14 rounded-full border border-ocean text-ocean flex items-center justify-center text-base font-bold shrink-0 my-2.5;
+    @apply w-12 h-12 sm:w-14 sm:h-14 rounded-full border border-ocean text-ocean-text flex items-center justify-center text-base font-bold shrink-0 my-2.5;
     background: var(--ocean-glow);
   }
 
   .group-avatar {
-    @apply text-sand border-sand;
+    @apply text-sand-text border-sand;
     background: rgb(var(--color-sand) / 0.15);
   }
 
@@ -455,12 +455,12 @@
   }
 
   .mini-placeholder {
-    @apply w-9 h-9 rounded-full border border-ocean text-ocean flex items-center justify-center text-xs font-bold shrink-0;
+    @apply w-9 h-9 rounded-full border border-ocean text-ocean-text flex items-center justify-center text-xs font-bold shrink-0;
     background: var(--ocean-glow);
   }
 
   .icon-btn {
-    @apply flex items-center justify-center w-9 h-9 rounded-lg text-muted bg-transparent border-none cursor-pointer hover:bg-surface-2 hover:text-ocean transition-colors shrink-0;
+    @apply flex items-center justify-center w-11 h-11 rounded-lg text-muted bg-transparent border-none cursor-pointer hover:bg-surface-2 hover:text-ocean transition-colors shrink-0;
   }
 
   .chat-fullheight {

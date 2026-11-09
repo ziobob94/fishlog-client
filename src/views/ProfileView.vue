@@ -147,6 +147,7 @@
       <!-- Negozio / Market -->
       <section class="card">
         <h3>{{ t('profile.shop.title') }}</h3>
+        <RouterLink to="/market/sell" class="btn btn-secondary btn-sm mb-2">{{ t('seller.becomeSeller') }}</RouterLink>
         <div class="notification-row">
           <div>
             <strong>{{ t('profile.shop.enable') }}</strong>
@@ -518,7 +519,7 @@ async function doDeleteAccount() {
 .avatar-row { @apply flex items-center gap-4; }
 .avatar { @apply w-16 h-16 rounded-full object-cover; }
 .avatar-placeholder {
-  @apply w-16 h-16 rounded-full border border-ocean text-ocean flex items-center
+  @apply w-16 h-16 rounded-full border border-ocean text-ocean-text flex items-center
          justify-center text-lg font-bold;
   background: var(--ocean-glow);
 }
