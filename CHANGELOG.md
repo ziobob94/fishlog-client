@@ -1,3 +1,19 @@
+# [1.33.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.32.0...client-v1.33.0) (2026-11-09)
+
+
+### Features
+
+* **design:** filtri uscite a chip, sezioni numerate del form, chat e specie rifiniti ([9800568](https://github.com/ziobob94/fishlog-client/commit/9800568b3f7afa73f83dca3b10382829cf7e65e8))
+* **design:** fondamenta, guscio e componenti distintivi del restyling ([c349449](https://github.com/ziobob94/fishlog-client/commit/c349449e39fd4858112acd7e0ae401e09d46b4dc))
+* **design:** restyling Accesso e Registrazione con isobate e galleggiante ([4e4517c](https://github.com/ziobob94/fishlog-client/commit/4e4517c3d5fdb33dc14aaaf44c6f00d83dd879d2))
+* **design:** restyling dettaglio uscita, card community/market, colori testo accessibili ([81de015](https://github.com/ziobob94/fishlog-client/commit/81de0154fed860d8699fc169616ac036df9948ae))
+* **design:** restyling Home, Uscite e card uscita; testo scuro sui riempimenti ocean ([df12a2d](https://github.com/ziobob94/fishlog-client/commit/df12a2d25188a4dc52390b2e4fb70427c0071f93))
+* **design:** statistiche con grafico per mese e specie più catturate ([514de68](https://github.com/ziobob94/fishlog-client/commit/514de688826b0f88d8ce556d27b02768eb738f44))
+* **design:** tab e icone a 44 px, focus visibile, reduced-motion, tab Market riordinate ([d965041](https://github.com/ziobob94/fishlog-client/commit/d9650418342874ad2f4b993695ed48dd37aeca6c))
+* **home:** mappamondo con le tue pescate (d3-geo + world-atlas), logo che segue il tema ([79582d4](https://github.com/ziobob94/fishlog-client/commit/79582d47b509fe0f2bca2332f734701ffae52c9c))
+* **market:** percorso venditore (richiesta, stato verifica, configura negozio) ([9854b1f](https://github.com/ziobob94/fishlog-client/commit/9854b1f5245a8fd178d485b4f0c4d225144b981d))
+* **market:** senza verifica «Vendi» porta al percorso venditore ([4dcfd7b](https://github.com/ziobob94/fishlog-client/commit/4dcfd7b164cc67dced410583b626bc19b928a32b))
+
 # [1.32.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.31.0...client-v1.32.0) (2026-11-09)
 
 
