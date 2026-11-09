@@ -106,22 +106,12 @@
       <section class="card">
         <h3>{{ t('profile.appearance.title') }}</h3>
         <p class="text-muted text-sm mb-3">{{ t('profile.appearance.hint') }}</p>
-        <div class="theme-toggle">
-          <button
-            type="button"
-            class="btn btn-sm"
-            :class="theme.mode === 'light' ? 'btn-primary' : 'btn-ghost'"
-            @click="theme.setMode('light')"
-          >
-            <Sun :size="15" /> {{ t('profile.appearance.light') }}
-          </button>
-          <button
-            type="button"
-            class="btn btn-sm"
-            :class="theme.mode === 'dark' ? 'btn-primary' : 'btn-ghost'"
-            @click="theme.setMode('dark')"
-          >
+        <div class="theme-toggle" role="radiogroup" :aria-label="t('profile.appearance.title')">
+          <button type="button" role="radio" :aria-checked="theme.mode === 'dark'" class="theme-opt" :class="{ active: theme.mode === 'dark' }" @click="theme.setMode('dark')">
             <Moon :size="15" /> {{ t('profile.appearance.dark') }}
+          </button>
+          <button type="button" role="radio" :aria-checked="theme.mode === 'light'" class="theme-opt" :class="{ active: theme.mode === 'light' }" @click="theme.setMode('light')">
+            <Sun :size="15" /> {{ t('profile.appearance.light') }}
           </button>
         </div>
       </section>
@@ -513,8 +503,9 @@ async function doDeleteAccount() {
 <style scoped>
 .profile-grid { @apply grid gap-4; grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr)); }
 
-.theme-toggle { @apply flex gap-2; }
-.theme-toggle .btn { @apply gap-1.5; }
+.theme-toggle { @apply flex gap-1 p-1 bg-surface-2 border border-border rounded-xl; }
+.theme-opt { @apply flex-1 inline-flex items-center justify-center gap-1.5 min-h-[44px] rounded-lg bg-transparent border-none text-sm font-semibold text-foam cursor-pointer; }
+.theme-opt.active { @apply bg-ocean text-on-primary; }
 
 .avatar-row { @apply flex items-center gap-4; }
 .avatar { @apply w-16 h-16 rounded-full object-cover; }
@@ -525,7 +516,7 @@ async function doDeleteAccount() {
 }
 .hidden { display: none; }
 
-.credential-block h4 { @apply text-sm font-semibold text-muted uppercase tracking-wide mb-2; }
+.credential-block h4 { @apply text-xs font-semibold text-muted uppercase mb-2; letter-spacing: 0.14em; }
 .coming-soon { @apply flex items-center gap-2 text-muted text-sm; }
 
 .error-msg   { @apply bg-danger/10 border border-danger rounded-sm text-danger text-xs px-2.5 py-1.5; }
