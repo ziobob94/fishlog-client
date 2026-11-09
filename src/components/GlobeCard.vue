@@ -243,7 +243,7 @@ onBeforeUnmount(() => cancelAnimationFrame(anim))
 .globe-card { @apply bg-surface border border-border/60 p-4 mb-6; }
 .globe-eyebrow { @apply text-xs font-bold uppercase text-ocean-text; letter-spacing: 0.14em; }
 .globe-title { @apply text-xl mt-1 mb-3; }
-.globe-stage { @apply relative rounded-xl overflow-hidden bg-ink; }
+.globe-stage { @apply relative rounded-xl overflow-hidden bg-ink mx-auto; max-width: 480px; }
 .globe-svg { @apply block w-full h-auto select-none; max-height: 420px; touch-action: pan-y; cursor: grab; }
 .globe-svg:active { cursor: grabbing; }
 .globe-tag { font-size: 11px; font-weight: 700; fill: rgb(var(--color-on-primary)); }
