@@ -1,3 +1,10 @@
+# [1.32.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.31.0...client-v1.32.0) (2026-11-09)
+
+
+### Features
+
+* tasto Installa app (PWA manifest, service worker, prompt Android e istruzioni iOS) ([#10](https://github.com/ziobob94/fishlog-client/issues/10)) ([0175d0a](https://github.com/ziobob94/fishlog-client/commit/0175d0af9b0c27182aec18d7d4b46f2f56447155))
+
 # [1.31.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.30.0...client-v1.31.0) (2026-10-07)
 
 
