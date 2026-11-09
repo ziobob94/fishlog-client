@@ -69,6 +69,9 @@
 </template>
 
 <script setup>
+import IsobathBg from '../components/IsobathBg.vue'
+import Bobber from '../components/Bobber.vue'
+import FishLogo from '../components/FishLogo.vue'
 import { ref } from 'vue'
 import { useRouter, RouterLink } from 'vue-router'
 import { useI18n } from 'vue-i18n'
@@ -107,6 +110,8 @@ async function handleRegister() {
 <style scoped>
 .auth-page  { @apply flex items-center justify-center min-h-[80vh]; }
 .auth-card  { @apply max-w-sm w-full p-8; }
+.auth-hero { @apply relative -mx-8 -mt-8 mb-4 px-8 pt-8 pb-6 bg-sea-deep flex flex-col gap-3 items-start; }
+.auth-bobber { @apply absolute top-6 right-6; }
 .auth-logo  { @apply text-2xl font-extrabold mb-1; }
 .oauth-buttons { @apply flex flex-col gap-4 mt-4; }
 .btn-oauth  {
