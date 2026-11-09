@@ -355,7 +355,7 @@
   }
 
   .tab-pill {
-    @apply flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 text-xs font-semibold text-muted bg-transparent border-none rounded-full cursor-pointer px-3 py-1.5 transition-colors;
+    @apply flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 text-xs font-semibold text-muted bg-transparent border-none rounded-full cursor-pointer px-3 min-h-[44px] transition-colors;
   }
 
   .tab-pill:hover {
@@ -363,7 +363,7 @@
   }
 
   .tab-pill.active {
-    @apply text-ink bg-ocean;
+    @apply text-on-primary bg-ocean;
   }
 
   .toolbar-actions {

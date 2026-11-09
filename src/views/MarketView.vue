@@ -3,10 +3,6 @@
     <div class="market-toolbar">
       <div class="tabs" role="tablist">
         <button
-          type="button" role="tab" :aria-selected="tab === 'ebay'"
-          class="tab-pill" :class="{ active: tab === 'ebay' }" @click="tab = 'ebay'"
-        ><Globe :size="14" /> {{ t('market.tabs.ebay') }}</button>
-        <button
           type="button" role="tab" :aria-selected="tab === 'listings'"
           class="tab-pill" :class="{ active: tab === 'listings' }" @click="tab = 'listings'"
         ><Package :size="14" /> {{ t('market.tabs.listings') }}</button>
@@ -14,6 +10,10 @@
           type="button" role="tab" :aria-selected="tab === 'shops'"
           class="tab-pill" :class="{ active: tab === 'shops' }" @click="tab = 'shops'"
         ><Store :size="14" /> {{ t('market.tabs.shops') }}</button>
+        <button
+          type="button" role="tab" :aria-selected="tab === 'ebay'"
+          class="tab-pill" :class="{ active: tab === 'ebay' }" @click="tab = 'ebay'"
+        ><Globe :size="14" /> {{ t('market.tabs.ebay') }}</button>
       </div>
 
       <button
@@ -121,7 +121,7 @@ const { t } = useI18n()
 const store = useMarketStore()
 const auth  = useAuthStore()
 
-const tab = ref('ebay')
+const tab = ref('listings')
 const showFilters = ref(false)
 const zip = ref('')
 
@@ -227,10 +227,10 @@ onMounted(() => {
   @apply flex gap-1 p-1 bg-surface-2 rounded-full w-full sm:w-auto;
 }
 .tab-pill {
-  @apply flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 text-xs font-semibold text-muted bg-transparent border-none rounded-full cursor-pointer px-3 py-1.5 transition-colors whitespace-nowrap;
+  @apply flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 text-xs font-semibold text-muted bg-transparent border-none rounded-full cursor-pointer px-3 min-h-[44px] transition-colors whitespace-nowrap;
 }
 .tab-pill:hover { @apply text-foam; }
-.tab-pill.active { @apply text-ink bg-ocean; }
+.tab-pill.active { @apply text-on-primary bg-ocean; }
 
 .btn-toggle-active {
   @apply text-ocean-text bg-ocean/10;

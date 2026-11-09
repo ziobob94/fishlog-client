@@ -138,7 +138,7 @@ async function onRemove() {
 .row-actions { @apply flex items-center gap-2; }
 
 .icon-btn {
-  @apply flex items-center justify-center w-9 h-9 rounded-lg text-muted bg-transparent border-none
+  @apply flex items-center justify-center w-11 h-11 rounded-lg text-muted bg-transparent border-none
          cursor-pointer hover:bg-surface-2 hover:text-danger transition-colors shrink-0;
 }
 

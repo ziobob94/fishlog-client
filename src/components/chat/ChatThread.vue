@@ -405,7 +405,7 @@
   }
 
   .message-action-btn {
-    @apply flex items-center justify-center w-6 h-6 rounded text-muted bg-transparent border-none cursor-pointer hover:bg-surface-2 hover:text-ocean transition-colors;
+    @apply flex items-center justify-center w-11 h-11 rounded text-muted bg-transparent border-none cursor-pointer hover:bg-surface-2 hover:text-ocean transition-colors;
   }
 
   .message-media-image {
@@ -466,7 +466,7 @@
   }
 
   .icon-btn {
-    @apply flex items-center justify-center w-9 h-9 rounded-lg text-muted bg-transparent border-none cursor-pointer hover:bg-surface-2 hover:text-ocean transition-colors shrink-0;
+    @apply flex items-center justify-center w-11 h-11 rounded-lg text-muted bg-transparent border-none cursor-pointer hover:bg-surface-2 hover:text-ocean transition-colors shrink-0;
   }
 
   .icon-btn-sm {

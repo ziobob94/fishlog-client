@@ -315,7 +315,7 @@
   }
 
   .user-modal-close {
-    @apply absolute top-2 right-2 w-7 h-7 rounded-full bg-transparent border-none text-muted cursor-pointer flex items-center justify-center hover:text-foam;
+    @apply absolute top-2 right-2 w-11 h-11 rounded-full bg-transparent border-none text-muted cursor-pointer flex items-center justify-center hover:text-foam;
   }
 
   .user-modal-avatar {
