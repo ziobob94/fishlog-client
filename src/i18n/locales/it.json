@@ -1180,6 +1180,10 @@
 			"no": "No, grazie",
 			"thanks": "Grazie, ti scriviamo presto."
 		},
+		"gate": {
+			"title": "Prima la verifica",
+			"text": "Per pubblicare annunci devi essere un venditore verificato dal team. Invia i tuoi dati: ti avvisiamo appena c'è una risposta."
+		},
 		"becomeSeller": "Diventa venditore verificato"
 	},
 	"globe": {
