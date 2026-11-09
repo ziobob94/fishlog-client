@@ -19,15 +19,18 @@
 
 <script setup>
 import { computed } from 'vue'
+import { useThemeStore } from '../stores/theme.js'
 
 // variant: 'dark' (fondo scuro, predefinito) | 'light' (fondo chiaro)
 const props = defineProps({
   size:     { type: Number, default: 40 },
-  variant:  { type: String, default: 'dark' },
+  variant:  { type: String, default: '' },
   markOnly: { type: Boolean, default: false },
 })
 
-const light = computed(() => props.variant === 'light')
+const theme = useThemeStore()
+// Senza variante esplicita segue il tema dell'app
+const light = computed(() => (props.variant || theme.mode) === 'light')
 const bg   = computed(() => (light.value ? '#0369a1' : '#0ea5e9'))
 const fg   = computed(() => (light.value ? '#ffffff' : '#0b1623'))
 const fish = computed(() => (light.value ? '#0b1623' : '#f1f5f9'))

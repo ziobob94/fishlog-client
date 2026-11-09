@@ -16,7 +16,8 @@
 		"none": "—",
 		"fieldInfo": "Informazioni sul campo",
 		"showPassword": "Mostra password",
-		"hidePassword": "Nascondi password"
+		"hidePassword": "Nascondi password",
+		"close": "Chiudi"
 	},
 	"nav": {
 		"mainNavigation": "Navigazione principale",
@@ -1117,5 +1118,25 @@
 			"1": "Gen", "2": "Feb", "3": "Mar", "4": "Apr", "5": "Mag", "6": "Giu",
 			"7": "Lug", "8": "Ago", "9": "Set", "10": "Ott", "11": "Nov", "12": "Dic"
 		}
+	},
+	"globe": {
+		"title": "Mappamondo delle tue pescate",
+		"eyebrow": "Le tue pescate",
+		"count": "Nessun luogo sul mappamondo | 1 luogo sul mappamondo | {n} luoghi sul mappamondo",
+		"you": "Tu sei qui",
+		"catchesLegend": "Pescate",
+		"dragHint": "Trascina per ruotare",
+		"zoomIn": "Ingrandisci",
+		"zoomOut": "Riduci",
+		"myPosition": "Vai alla mia posizione",
+		"showCatches": "Mostra le mie pescate",
+		"sessionsHere": "Uscite in questo luogo",
+		"catches": "nessuna cattura | 1 cattura | {n} catture",
+		"aria": "Mappamondo senza uscite registrate | Mappamondo con 1 uscita registrata | Mappamondo con {n} uscite registrate",
+		"clusterLabel": "{n} uscite vicine",
+		"listToggle": "Mostra l'elenco delle uscite",
+		"empty": "Appena registri un'uscita con la posizione, la vedrai qui.",
+		"geoDenied": "Non posso usare la tua posizione: consenti l'accesso alla posizione nelle impostazioni del browser.",
+		"geoUnavailable": "Questo dispositivo non fornisce la posizione."
 	}
 }

@@ -12,6 +12,8 @@
       </div>
     </section>
 
+    <GlobeCard />
+
     <!-- Selettore zona: la barra "Oggi in mare" sotto segue la zona scelta. -->
     <section class="zones" :aria-label="t('home.zones.title')">
       <h2 class="section-label">{{ t('home.zones.title') }}</h2>
@@ -83,6 +85,7 @@ import {
   Waves, Thermometer, Wind, Gauge, Droplet, Trophy, MapPin,
   CalendarDays, ArrowRight
 } from 'lucide-vue-next'
+import GlobeCard from '../components/GlobeCard.vue'
 import IsobathBg from '../components/IsobathBg.vue'
 import { useFriendStore } from '../stores/friends.js'
 import { useLiveConditions } from '../composables/useLiveConditions.js'

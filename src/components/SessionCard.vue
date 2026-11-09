@@ -65,7 +65,7 @@ import RulerFrame from './RulerFrame.vue'
 
 // Coordinate in stile carta nautica, solo se l'uscita le ha
 const coords = computed(() => {
-  const { lat, lng } = props.session.location || {}
+  const { lat, lng } = props.session.location?.coords || {}
   if (typeof lat !== 'number' || typeof lng !== 'number') return ''
   return `${Math.abs(lat).toFixed(2)}°${lat >= 0 ? 'N' : 'S'} · ${Math.abs(lng).toFixed(2)}°${lng >= 0 ? 'E' : 'O'}`
 })
