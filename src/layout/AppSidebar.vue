@@ -90,6 +90,18 @@
       </RouterLink>
     </nav>
 
+    <!-- Installa app -->
+    <div v-if="canInstall" class="px-3 pb-2">
+      <button class="btn btn-ghost btn-sm w-full flex items-center justify-center gap-2" @click="onInstall">
+        <Download :size="16" /> {{ t('nav.install') }}
+      </button>
+      <div v-if="showIosHelp" class="mt-2 p-3 rounded-sm bg-surface-2 text-xs text-muted">
+        <p class="font-bold text-foam mb-1">{{ t('nav.installIosTitle') }}</p>
+        <p>{{ t('nav.installIosSteps') }}</p>
+        <button class="btn btn-ghost btn-sm w-full mt-2" @click="showIosHelp = false">{{ t('nav.installClose') }}</button>
+      </div>
+    </div>
+
     <!-- Footer -->
     <div class="border-t border-border p-4 flex flex-col gap-3">
       <template v-if="auth.isLoggedIn">
@@ -121,10 +133,11 @@
 </template>
 
 <script setup>
-  import { computed, onMounted } from 'vue'
+  import { computed, onMounted, ref } from 'vue'
+  import { useInstallPrompt } from '../composables/useInstallPrompt.js'
   import { RouterLink, useRouter } from 'vue-router'
   import { useI18n } from 'vue-i18n'
-  import { Fish, Home, Pin, MapPin, Users, UserPlus, Newspaper, MessagesSquare, Settings, BarChart3, UserCircle, Plus, Waves, ShoppingBag, Tag, MessageSquare, BookOpen, Trophy } from 'lucide-vue-next'
+  import { Fish, Home, Pin, MapPin, Users, UserPlus, Newspaper, MessagesSquare, Settings, BarChart3, UserCircle, Plus, Waves, ShoppingBag, Tag, MessageSquare, BookOpen, Trophy, Download } from 'lucide-vue-next'
   import { useAuthStore } from '../stores/auth.js'
   import { useSessionStore } from '../stores/sessions.js'
   import { usePostStore } from '../stores/posts.js'
@@ -144,6 +157,13 @@
   const posts = usePostStore()
   const chat = useChatStore()
   const friends = useFriendStore()
+
+  const { canInstall, isIos, install } = useInstallPrompt()
+  const showIosHelp = ref(false)
+  async function onInstall() {
+    if (isIos.value) showIosHelp.value = true
+    else await install()
+  }
 
   onMounted(() => { if (auth.isLoggedIn) sessions.fetchOngoing() })
 

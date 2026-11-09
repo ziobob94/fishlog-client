@@ -38,6 +38,10 @@
 		"profile": "Profilo",
 		"admin": "Admin",
 		"logout": "Esci",
+		"install": "Installa app",
+		"installIosTitle": "Aggiungi FishLog alla Home",
+		"installIosSteps": "Tocca il pulsante Condividi in Safari, poi scegli «Aggiungi alla schermata Home».",
+		"installClose": "Ho capito",
 		"lock": "Blocca",
 		"unlock": "Sblocca",
 		"sections": {
