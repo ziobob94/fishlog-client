@@ -699,35 +699,65 @@
     padding-bottom: 4.5rem;
   }
 
+  .session-form { counter-reset: sec; }
+
+  /* Ogni sezione è una card numerata («carta nautica») */
+  .accordion-section {
+    counter-increment: sec;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: .25rem 1rem .75rem;
+  }
+
   .accordion-section+.accordion-section {
-    margin-top: .5rem;
+    margin-top: .75rem;
   }
 
   .accordion-header {
     background: none;
     border: none;
-    border-radius: 6px;
+    border-radius: 12px;
     cursor: pointer;
-    margin: 0 -.5rem;
-    padding: .6rem .5rem;
+    margin: 0;
+    min-height: 44px;
+    padding: .5rem 0;
     transition: background var(--t);
-    width: calc(100% + 1rem);
+    width: 100%;
+    justify-content: flex-start;
+    text-align: left;
   }
 
   .accordion-header:hover {
-    background: var(--surface-2, #0d2035);
+    background: transparent;
   }
 
   .accordion-header.section-divider {
-    font-size: .95rem;
-    color: var(--foam, #cde);
+    font-size: 1rem;
+    letter-spacing: 0;
+    text-transform: none;
+    color: var(--foam);
   }
 
-  .accordion-header.section-divider::before,
-  .accordion-header.section-divider::after {
-    background: var(--ocean, #0ea5e9);
-    opacity: .35;
+  .accordion-header.section-divider::before {
+    content: counter(sec);
+    flex: none;
+    width: 28px;
+    height: 28px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: var(--surface-2);
+    color: var(--foam);
+    font-size: .8rem;
   }
+
+  .accordion-header.section-divider::after {
+    display: none;
+  }
+
+  .accordion-header .chevron { margin-left: auto; }
 
   .accordion-header + * {
     margin-top: .5rem;
@@ -745,7 +775,7 @@
   }
 
   .accordion-header.incomplete {
-    box-shadow: inset 3px 0 0 var(--danger, #f05050);
+    box-shadow: none;
   }
 
   .required-badge {

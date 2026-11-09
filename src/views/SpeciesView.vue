@@ -233,7 +233,7 @@ watch([technique, waterType], () => { if (route.params.name) load(route.params.n
 }
 
 .species-hero {
-  @apply rounded-lg overflow-hidden border border-border/60 bg-surface;
+  @apply rounded-signature overflow-hidden border border-border/60 bg-surface;
 }
 
 .species-image {

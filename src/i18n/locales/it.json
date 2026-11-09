@@ -572,6 +572,7 @@
 	},
 	"sessionFilters": {
 		"searchPlaceholder": "Cerca luogo, note...",
+		"all": "Tutte",
 		"allTechniques": "Tutte le tecniche",
 		"reset": "Reset"
 	},
