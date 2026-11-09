@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<title>FishLog Icone</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+body{margin:0;font-family:'Manrope',system-ui,sans-serif;background:#111c2c;color:#f1f5f9}
+.lab{margin:0;font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#9db0c8}
+.i{width:28px;height:28px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:10px}
+.tile{background:#1a293d;border:1px solid #33486a;border-radius:18px;min-height:96px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;color:#7dd3fc;padding:10px 6px;box-sizing:border-box}
+.tile span{font-size:12px;font-weight:600;color:#cbd5e1;text-align:center}
+</style>
+</helmet>
+<div style="width:1200px;height:1230px;box-sizing:border-box;background:#111c2c;padding:56px;display:flex;flex-direction:column;gap:32px;overflow:hidden">
+
+  <header style="display:flex;flex-direction:column;gap:8px">
+    <p class="lab" style="color:#f59e0b">Identità</p>
+    <h1 style="margin:0;font-size:44px;line-height:1.05;letter-spacing:-.035em;font-weight:800">Icone</h1>
+    <p style="margin:0;font-size:17px;line-height:1.55;color:#9db0c8;max-width:70ch">Griglia 24 px, tratto 2 px, estremità e angoli arrotondati, nessuna punta. Colore del tratto: oceano chiaro #7dd3fc; sabbia #fbbf24 per gli stati e gli avvisi.</p>
+  </header>
+
+  <section style="display:flex;align-items:center;gap:28px;background:#1a293d;border:1px solid #33486a;border-radius:22px;padding:20px 24px">
+    <div style="display:flex;align-items:center;gap:20px;color:#7dd3fc">
+      <svg class="i" viewBox="0 0 24 24" style="width:20px;height:20px" aria-hidden="true"><path d="M2.5 12.4c0-3.7 3.7-6.4 8.3-6.4s7.2 2.6 7.2 6.4-3 6.4-7.2 6.4-8.3-2.7-8.3-6.4ZM17.5 12.4l3.4-3.7a.8.8 0 0 1 1.3.5v6.4a.8.8 0 0 1-1.3.5l-3.4-3.7ZM7.2 11h.01"/></svg>
+      <svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 12.4c0-3.7 3.7-6.4 8.3-6.4s7.2 2.6 7.2 6.4-3 6.4-7.2 6.4-8.3-2.7-8.3-6.4ZM17.5 12.4l3.4-3.7a.8.8 0 0 1 1.3.5v6.4a.8.8 0 0 1-1.3.5l-3.4-3.7ZM7.2 11h.01"/></svg>
+      <svg class="i" viewBox="0 0 24 24" style="width:40px;height:40px" aria-hidden="true"><path d="M2.5 12.4c0-3.7 3.7-6.4 8.3-6.4s7.2 2.6 7.2 6.4-3 6.4-7.2 6.4-8.3-2.7-8.3-6.4ZM17.5 12.4l3.4-3.7a.8.8 0 0 1 1.3.5v6.4a.8.8 0 0 1-1.3.5l-3.4-3.7ZM7.2 11h.01"/></svg>
+      <svg class="i" viewBox="0 0 24 24" style="width:56px;height:56px" aria-hidden="true"><path d="M2.5 12.4c0-3.7 3.7-6.4 8.3-6.4s7.2 2.6 7.2 6.4-3 6.4-7.2 6.4-8.3-2.7-8.3-6.4ZM17.5 12.4l3.4-3.7a.8.8 0 0 1 1.3.5v6.4a.8.8 0 0 1-1.3.5l-3.4-3.7ZM7.2 11h.01"/></svg>
+    </div>
+    <span style="font-size:14px;line-height:1.5;color:#9db0c8">Dimensioni: 20 px nei menu e nei chip, 24 px in barra e liste, 32–56 px nei riquadri vuoti.</span>
+  </section>
+
+  <section style="display:flex;flex-direction:column;gap:12px">
+    <h2 class="lab">Navigazione</h2>
+    <div class="grid"><sc-for list="{{nav}}" as="ic" hint-placeholder-count="8"><div class="tile"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="{{ic.d}}"/></svg><span>{{ic.n}}</span></div></sc-for></div>
+  </section>
+  <section style="display:flex;flex-direction:column;gap:12px">
+    <h2 class="lab">Mare e pesca</h2>
+    <div class="grid"><sc-for list="{{sea}}" as="ic" hint-placeholder-count="8"><div class="tile"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="{{ic.d}}"/></svg><span>{{ic.n}}</span></div></sc-for></div>
+  </section>
+  <section style="display:flex;flex-direction:column;gap:12px">
+    <h2 class="lab">Community e market</h2>
+    <div class="grid"><sc-for list="{{social}}" as="ic" hint-placeholder-count="8"><div class="tile"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="{{ic.d}}"/></svg><span>{{ic.n}}</span></div></sc-for></div>
+  </section>
+  <section style="display:flex;flex-direction:column;gap:12px">
+    <h2 class="lab">Azioni</h2>
+    <div class="grid"><sc-for list="{{actions}}" as="ic" hint-placeholder-count="8"><div class="tile"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="{{ic.d}}"/></svg><span>{{ic.n}}</span></div></sc-for></div>
+  </section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1200,"height":1230}}'>
+class Component extends DCLogic {
+renderVals() {
+  const I = (n, d) => ({ n, d });
+  return {
+    nav: [
+      I('Home', 'M4 11.2a2 2 0 0 1 .7-1.5l6-5.2a2 2 0 0 1 2.6 0l6 5.2a2 2 0 0 1 .7 1.5V18a3 3 0 0 1-3 3h-2.5a1 1 0 0 1-1-1v-3.5a1 1 0 0 0-1-1h-1a1 1 0 0 0-1 1V20a1 1 0 0 1-1 1H7a3 3 0 0 1-3-3v-6.8Z'),
+      I('Uscite', 'M2.5 12.4c0-3.7 3.7-6.4 8.3-6.4s7.2 2.6 7.2 6.4-3 6.4-7.2 6.4-8.3-2.7-8.3-6.4ZM17.5 12.4l3.4-3.7a.8.8 0 0 1 1.3.5v6.4a.8.8 0 0 1-1.3.5l-3.4-3.7ZM7.2 11h.01'),
+      I('Nuova uscita', 'M12 5v14M5 12h14'),
+      I('Community', 'M6 4h12a3 3 0 0 1 3 3v7a3 3 0 0 1-3 3h-6.5l-3.7 3.3a.6.6 0 0 1-1-.45V17H6a3 3 0 0 1-3-3V7a3 3 0 0 1 3-3Z'),
+      I('Market', 'M5.5 8h13a1 1 0 0 1 1 1.1l-1 9.2a2.5 2.5 0 0 1-2.5 2.2H8a2.5 2.5 0 0 1-2.5-2.2l-1-9.2A1 1 0 0 1 5.5 8ZM8.5 8V7a3.5 3.5 0 0 1 7 0v1'),
+      I('Notifiche', 'M6 9.5a6 6 0 0 1 12 0c0 3.6.8 5.1 1.7 6.1a1 1 0 0 1-.7 1.6H5a1 1 0 0 1-.7-1.6C5.2 14.6 6 13.1 6 9.5ZM10 20a2 2 0 0 0 4 0'),
+      I('Cerca', 'M18 11a7 7 0 1 1-14 0 7 7 0 0 1 14 0ZM20 20l-3.5-3.5'),
+      I('Indietro', 'm15 18-6-6 6-6'),
+      I('Avanti', 'm9 6 6 6-6 6'),
+      I('Profilo', 'M16 8a4 4 0 1 1-8 0 4 4 0 0 1 8 0ZM4 20c0-4 3.6-6 8-6s8 2 8 6')
+    ],
+    sea: [
+      I('Onda', 'M2 8c2.5 0 2.5 2 5 2s2.5-2 5-2 2.5 2 5 2 2.5-2 5-2M2 14c2.5 0 2.5 2 5 2s2.5-2 5-2 2.5 2 5 2 2.5-2 5-2'),
+      I('Vento', 'M3 9h10a2.5 2.5 0 1 0-2.5-2.5M3 14h14a2.5 2.5 0 1 1-2.5 2.5'),
+      I('Temperatura', 'M14 14.8V5a2 2 0 1 0-4 0v9.8a4 4 0 1 0 4 0Z'),
+      I('Luogo', 'M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11ZM14.5 10a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0Z'),
+      I('Mappamondo', 'M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0ZM3 12h18M12 3c2.5 2.7 3.7 5.7 3.7 9S14.5 18.3 12 21c-2.5-2.7-3.7-5.7-3.7-9S9.5 5.7 12 3Z'),
+      I('Calendario', 'M6 5h12a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2ZM4 10h16M8 3v4M16 3v4'),
+      I('Orario', 'M12 7v5l3 2M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z'),
+      I('Statistiche', 'M5 10h2a1.5 1.5 0 0 1 1.5 1.5v7A1.5 1.5 0 0 1 7 20H5a1.5 1.5 0 0 1-1.5-1.5v-7A1.5 1.5 0 0 1 5 10ZM11 4h2a1.5 1.5 0 0 1 1.5 1.5v13A1.5 1.5 0 0 1 13 20h-2a1.5 1.5 0 0 1-1.5-1.5v-13A1.5 1.5 0 0 1 11 4ZM17 13h2a1.5 1.5 0 0 1 1.5 1.5v4A1.5 1.5 0 0 1 19 20h-2a1.5 1.5 0 0 1-1.5-1.5v-4A1.5 1.5 0 0 1 17 13Z'),
+      I('Classifica', 'M8 21h8M12 16.5V21M7.5 4h9a.5.5 0 0 1 .5.5V9a5 5 0 0 1-10 0V4.5a.5.5 0 0 1 .5-.5Z'),
+      I('Norme', 'M11.1 3.2 5.1 5.8A1.6 1.6 0 0 0 4 7.3V12c0 4.4 3 7.5 7.7 8.9a1 1 0 0 0 .6 0C17 19.5 20 16.4 20 12V7.3a1.6 1.6 0 0 0-1.1-1.5l-6-2.6a2 2 0 0 0-1.8 0Z'),
+      I('Verificato', 'M11.1 3.2 5.1 5.8A1.6 1.6 0 0 0 4 7.3V12c0 4.4 3 7.5 7.7 8.9a1 1 0 0 0 .6 0C17 19.5 20 16.4 20 12V7.3a1.6 1.6 0 0 0-1.1-1.5l-6-2.6a2 2 0 0 0-1.8 0ZM9 12l2 2 4-4'),
+      I('Preferiti', 'm12 3.5 2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.8l-5.2 2.8 1-5.8L3.5 9.7l5.9-.9L12 3.5Z')
+    ],
+    social: [
+      I('Mi piace', 'M12 20s-7.5-4.6-7.5-10.2A4.3 4.3 0 0 1 12 7.2a4.3 4.3 0 0 1 7.5 2.6C19.5 15.4 12 20 12 20Z'),
+      I('Invia', 'M21 3 10.5 13.5M21 3l-6.5 18-4-7.5L3 9.5 21 3Z'),
+      I('Foto', 'M4 8.5A2.5 2.5 0 0 1 6.5 6h1.2l1.1-1.6A1.5 1.5 0 0 1 10 3.8h4a1.5 1.5 0 0 1 1.2.6L16.3 6h1.2A2.5 2.5 0 0 1 20 8.5v8a2.5 2.5 0 0 1-2.5 2.5h-11A2.5 2.5 0 0 1 4 16.5ZM15.2 12.5a3.2 3.2 0 1 1-6.4 0 3.2 3.2 0 0 1 6.4 0Z'),
+      I('Amici', 'M12 8a3 3 0 1 1-6 0 3 3 0 0 1 6 0ZM3 20c0-3.3 2.7-6 6-6s6 2.7 6 6M17 11a3 3 0 1 0 0-6M21 20c0-2.5-1.5-4.6-4-5.5'),
+      I('Condividi', 'M12 15V4M8 7.5 12 4l4 3.5M6 12v6a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-6'),
+      I('Collegamento', 'M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1'),
+      I('Prezzo', 'M3.5 12.2V5.5a2 2 0 0 1 2-2h6.7a2 2 0 0 1 1.4.6l7.3 7.3a2 2 0 0 1 0 2.8l-6.7 6.7a2 2 0 0 1-2.8 0L4.1 13.6a2 2 0 0 1-.6-1.4ZM8.5 8.5h.01'),
+      I('Negozio', 'M4 9.5 5.5 4h13L20 9.5M4 9.5a2.5 2.5 0 0 0 5 0 2.5 2.5 0 0 0 5 0 2.5 2.5 0 0 0 5 0M5.5 12.5V20h13v-7.5'),
+      I('Filtri', 'M4 6h16M7 12h10M10 18h4'),
+      I('Mostra', 'M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12ZM15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z')
+    ],
+    actions: [
+      I('Conferma', 'm5 12 5 5 9-10'),
+      I('Chiudi', 'M6 6l12 12M18 6 6 18'),
+      I('Modifica', 'M4 20l1-4L16 5a2.1 2.1 0 0 1 3 3L8 19l-4 1Z'),
+      I('Elimina', 'M5 7h14M10 4h4M7 7l.8 12a1.5 1.5 0 0 0 1.5 1.4h5.4a1.5 1.5 0 0 0 1.5-1.4L17 7M10 11v5M14 11v5'),
+      I('Carica', 'M12 16V5M7.5 9.5 12 5l4.5 4.5M5 19h14'),
+      I('Impostazioni', 'M4 7h9M17 7h3M4 17h3M11 17h9M15 5v4M9 15v4'),
+      I('Esci', 'M14 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3M9 8l4 4-4 4M13 12H4')
+    ]
+  };
+}
+}
+</script>
+</body>
+</html>

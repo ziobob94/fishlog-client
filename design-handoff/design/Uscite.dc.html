@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<title>FishLog Uscite mobile</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+body{margin:0;font-family:'Manrope',system-ui,sans-serif;background:#111c2c;color:#f1f5f9}
+.i{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+button,input{font-family:inherit}
+a{color:inherit;text-decoration:none}
+.chips::-webkit-scrollbar{display:none}
+</style>
+</helmet>
+<div style="width:390px;height:1000px;box-sizing:border-box;background:#111c2c;display:flex;flex-direction:column;overflow:hidden">
+
+  <header style="display:flex;align-items:center;gap:10px;padding:12px 16px;min-height:64px;box-sizing:border-box">
+    <h1 style="margin:0;font-size:26px;font-weight:800;letter-spacing:-.03em">Uscite</h1>
+    <button aria-label="Notifiche" style="margin-left:auto;position:relative;width:44px;height:44px;border-radius:14px;border:1px solid #33486a;background:#1a293d;color:#f1f5f9;display:flex;align-items:center;justify-content:center">
+      <svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9.5a6 6 0 0 1 12 0c0 3.6.8 5.1 1.7 6.1a1 1 0 0 1-.7 1.6H5a1 1 0 0 1-.7-1.6C5.2 14.6 6 13.1 6 9.5Z"/><path d="M10 20a2 2 0 0 0 4 0"/></svg>
+    </button>
+  </header>
+
+  <main style="flex:1;overflow:hidden;padding:0 16px;display:flex;flex-direction:column;gap:16px">
+
+    <!-- Ricerca + filtri -->
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <label style="position:relative;display:block">
+        <span style="position:absolute;left:14px;top:50%;transform:translateY(-50%);color:#9db0c8;display:flex"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></span>
+        <input type="search" placeholder="Cerca luogo, esca, specie" aria-label="Cerca uscite" style="width:100%;box-sizing:border-box;height:48px;border-radius:14px;border:1px solid #33486a;background:#1a293d;color:#f1f5f9;font-size:15px;padding:0 14px 0 44px;outline:none">
+      </label>
+      <div class="chips" style="display:flex;gap:8px;overflow-x:auto;margin:0 -16px;padding:0 16px;scrollbar-width:none">
+        <button style="flex:none;min-height:44px;padding:0 16px;border-radius:22px;border:1px solid #0ea5e9;background:#0ea5e9;color:#0b1623;font-weight:700;font-size:14px">Tutte</button>
+        <button style="flex:none;min-height:44px;padding:0 16px;border-radius:22px;border:1px solid #33486a;background:#1a293d;color:#cbd5e1;font-weight:600;font-size:14px">Surfcasting</button>
+        <button style="flex:none;min-height:44px;padding:0 16px;border-radius:22px;border:1px solid #33486a;background:#1a293d;color:#cbd5e1;font-weight:600;font-size:14px">Spinning</button>
+        <button style="flex:none;min-height:44px;padding:0 16px;border-radius:22px;border:1px solid #33486a;background:#1a293d;color:#cbd5e1;font-weight:600;font-size:14px">Bolentino</button>
+        <button style="flex:none;min-height:44px;padding:0 16px;border-radius:22px;border:1px solid #33486a;background:#1a293d;color:#cbd5e1;font-weight:600;font-size:14px">Feeder</button>
+      </div>
+    </div>
+
+    <!-- In corso -->
+    <a href="Dettaglio.dc.html" style="display:flex;gap:14px;background:#2a2314;border:1px solid #f59e0b;border-radius:20px;padding:14px;align-items:center">
+      <span style="width:12px;height:12px;border-radius:50%;background:#f59e0b;flex:none"></span>
+      <span style="display:flex;flex-direction:column;gap:2px;flex:1;min-width:0">
+        <span style="font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#fbbf24">In corso · dalle 06:10</span>
+        <span style="font-size:16px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Molo di Senigallia</span>
+        <span style="font-size:13px;color:#d6c9a8">Spinning · 3 catture</span><span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#fbbf24">43.72°N · 13.22°E</span>
+      </span>
+      <span style="min-height:44px;padding:0 16px;border-radius:14px;background:#f59e0b;color:#1a1204;font-weight:800;font-size:14px;display:flex;align-items:center">Riprendi</span>
+    </a>
+
+    <div style="margin:4px 0 -4px;display:flex;align-items:center;gap:12px"><h2 style="margin:0;font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#9db0c8">Storico</h2><svg height="12" width="100%" style="flex:1;min-width:0" aria-hidden="true"><defs><pattern id="uw1" width="24" height="12" patternUnits="userSpaceOnUse"><path d="M0 6c3 0 3-4 6-4s3 4 6 4 3 4 6 4 3-4 6-4" fill="none" stroke="#33486a" stroke-opacity="1" stroke-width="2" stroke-linecap="round"/></pattern></defs><rect width="100%" height="12" fill="url(#uw1)"/></svg></div>
+
+    <!-- Lista -->
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <sc-for list="{{sessions}}" as="s" hint-placeholder-count="4">
+      <a href="Dettaglio.dc.html" style="display:flex;background:#1a293d;border:1px solid #33486a;border-radius:20px;overflow:hidden">
+        <div style="position:relative;width:96px;flex:none;background:linear-gradient(160deg,#1f3a56,#10304d);display:flex;align-items:center;justify-content:center;color:#4d7ba3">
+          <svg class="i" viewBox="0 0 24 24" style="width:34px;height:34px" aria-hidden="true"><path d="M2.5 12.4c0-3.7 3.7-6.4 8.3-6.4s7.2 2.6 7.2 6.4-3 6.4-7.2 6.4-8.3-2.7-8.3-6.4Z"/><path d="M17.5 12.4l3.4-3.7a.8.8 0 0 1 1.3.5v6.4a.8.8 0 0 1-1.3.5l-3.4-3.7ZM7.2 11h.01"/></svg><div style="position:absolute;left:10px;right:10px;bottom:8px;height:8px;background:repeating-linear-gradient(90deg,rgba(241,245,249,.8) 0 2px,transparent 2px 8px)"></div><div style="position:absolute;left:10px;right:10px;bottom:8px;height:14px;background:repeating-linear-gradient(90deg,#fbbf24 0 2px,transparent 2px 40px)"></div>
+        </div>
+        <div style="flex:1;min-width:0;padding:12px 14px;display:flex;flex-direction:column;gap:6px">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#9db0c8">{{s.date}}</span>
+            <span style="font-size:13px;color:#fbbf24;letter-spacing:.06em">{{s.stars}}</span>
+          </div>
+          <span style="font-size:16px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{s.title}}</span>
+          <span style="font-size:13px;color:#9db0c8">{{s.tech}} · {{s.place}}</span>
+          <div style="display:flex;gap:6px;flex-wrap:wrap">
+            <span style="display:flex;align-items:center;gap:4px;font-size:12px;font-weight:700;color:#7dd3fc;background:rgba(14,165,233,.14);border-radius:999px;padding:3px 10px">{{s.catches}} catture</span>
+            <span style="display:flex;align-items:center;gap:4px;font-size:12px;font-weight:600;color:#fbbf24;background:rgba(245,158,11,.12);border-radius:999px;padding:3px 10px">{{s.best}}</span>
+          </div>
+        </div>
+      </a>
+      </sc-for>
+    </div>
+  </main>
+
+  <nav aria-label="Navigazione principale" style="display:grid;grid-template-columns:repeat(5,minmax(0,1fr));align-items:end;background:#1a293d;border-top:1px solid #33486a;padding:8px 8px 14px;min-height:68px;box-sizing:border-box">
+    <a href="Main.dc.html" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:48px;color:#b4c3d6;font-size:11px;font-weight:600">
+      <svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11.2a2 2 0 0 1 .7-1.5l6-5.2a2 2 0 0 1 2.6 0l6 5.2a2 2 0 0 1 .7 1.5V18a3 3 0 0 1-3 3h-2.5a1 1 0 0 1-1-1v-3.5a1 1 0 0 0-1-1h-1a1 1 0 0 0-1 1V20a1 1 0 0 1-1 1H7a3 3 0 0 1-3-3v-6.8Z"/></svg>Home</a>
+    <a href="Uscite.dc.html" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:48px;color:#7dd3fc;font-size:11px;font-weight:700">
+      <svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 12.4c0-3.7 3.7-6.4 8.3-6.4s7.2 2.6 7.2 6.4-3 6.4-7.2 6.4-8.3-2.7-8.3-6.4Z"/><path d="M17.5 12.4l3.4-3.7a.8.8 0 0 1 1.3.5v6.4a.8.8 0 0 1-1.3.5l-3.4-3.7ZM7.2 11h.01"/></svg>Uscite</a>
+    <a href="Uscite.dc.html" aria-label="Nuova uscita" style="display:flex;justify-content:center;margin-top:-30px">
+      <span style="width:56px;height:56px;border-radius:50%;background:#0ea5e9;color:#0b1623;display:flex;align-items:center;justify-content:center;border:4px solid #111c2c;box-shadow:0 6px 18px rgba(14,165,233,.35)">
+        <svg class="i" viewBox="0 0 24 24" style="width:26px;height:26px;stroke-width:2.4" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></span>
+    </a>
+    <a href="Uscite.dc.html" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:48px;color:#b4c3d6;font-size:11px;font-weight:600">
+      <svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 4h12a3 3 0 0 1 3 3v7a3 3 0 0 1-3 3h-6.5l-3.7 3.3a.6.6 0 0 1-1-.45V17H6a3 3 0 0 1-3-3V7a3 3 0 0 1 3-3Z"/></svg>Community</a>
+    <a href="Uscite.dc.html" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:48px;color:#b4c3d6;font-size:11px;font-weight:600">
+      <svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M5.5 8h13a1 1 0 0 1 1 1.1l-1 9.2a2.5 2.5 0 0 1-2.5 2.2H8a2.5 2.5 0 0 1-2.5-2.2l-1-9.2A1 1 0 0 1 5.500 8Z"/><path d="M8.5 8V7a3.5 3.5 0 0 1 7 0v1"/></svg>Market</a>
+  </nav>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":1000}}'>
+class Component extends DCLogic {
+renderVals() {
+  return { sessions: [
+    { date: '02 nov 2026', stars: '★★★★', title: 'Alba al molo', tech: 'Spinning', place: 'Senigallia', catches: 4, best: 'Spigola 52 cm' },
+    { date: '26 ott 2026', stars: '★★★', title: 'Surfcasting serale', tech: 'Surfcasting', place: 'Marina di Ravenna', catches: 2, best: 'Orata 38 cm' },
+    { date: '12 ott 2026', stars: '★★★★★', title: 'Bolentino sul fondo', tech: 'Bolentino', place: 'Conero', catches: 9, best: 'Scorfano 31 cm' },
+    { date: '28 set 2026', stars: '★★', title: 'Feeder in laguna', tech: 'Feeder', place: 'Comacchio', catches: 1, best: 'Cefalo 27 cm' }
+  ] };
+}
+}
+</script>
+</body>
+</html>

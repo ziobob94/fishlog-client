@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<title>FishLog Mappamondo</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+body{margin:0;font-family:'Manrope',system-ui,sans-serif;background:#111c2c;color:#f1f5f9}
+.i{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+button{font-family:inherit;cursor:pointer}
+a{color:inherit;text-decoration:none}
+@media (prefers-reduced-motion:no-preference){
+  .pulse{animation:pulse 2s ease-out infinite}
+}
+@keyframes pulse{0%{transform:scale(.5);opacity:.9}100%{transform:scale(2.4);opacity:0}}
+</style>
+</helmet>
+<div style="width:{{w}}px;box-sizing:border-box;background:#1a293d;border:1px solid #33486a;border-radius:24px;padding:16px;display:flex;flex-direction:column;gap:12px">
+
+  <div style="display:flex;align-items:center;gap:10px">
+    <div style="display:flex;flex-direction:column;gap:2px;flex:1;min-width:0">
+      <span style="font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#7dd3fc">Le tue pescate</span>
+      <span style="font-size:18px;font-weight:800;letter-spacing:-.02em">8 luoghi sul mappamondo</span>
+    </div>
+  </div>
+
+  <!-- Globo -->
+  <div onPointerDown="{{down}}" onPointerMove="{{move}}" onPointerUp="{{up}}" onPointerCancel="{{up}}" onPointerLeave="{{up}}" style="position:relative;width:{{gw}}px;height:{{gh}}px;border-radius:20px;overflow:hidden;background:#0b1a2b;touch-action:none;cursor:grab;user-select:none">
+    <svg width="{{gw}}" height="{{gh}}" viewBox="0 0 {{gw}} {{gh}}" style="position:absolute;left:0;top:0" role="img" aria-label="Mappamondo con le posizioni delle tue pescate">
+      <circle cx="{{cx}}" cy="{{cy}}" r="{{R}}" fill="#10304d"/>
+      <path d="{{grat}}" fill="none" stroke="#7dd3fc" stroke-opacity=".14" stroke-width="1"/>
+      <path d="{{land}}" fill="#2b5073" stroke="#4d7ba3" stroke-width="1" stroke-linejoin="round"/>
+      <circle cx="{{cx}}" cy="{{cy}}" r="{{R}}" fill="none" stroke="#7dd3fc" stroke-opacity=".35" stroke-width="2"/>
+    </svg>
+
+    <!-- Tu sei qui -->
+    <sc-if value="{{me.show}}" hint-placeholder-val="{{ true }}">
+    <div style="position:absolute;left:{{me.left}}px;top:{{me.top}}px;width:44px;height:44px;pointer-events:none;display:flex;align-items:center;justify-content:center">
+      <span class="pulse" style="position:absolute;width:20px;height:20px;border-radius:50%;background:#38bdf8"></span>
+      <span style="position:relative;width:16px;height:16px;border-radius:50%;background:#0ea5e9;border:3px solid #fff"></span>
+      <span style="position:absolute;top:-6px;left:50%;transform:translateX(-50%);white-space:nowrap;font-size:11px;font-weight:800;color:#0b1623;background:#7dd3fc;border-radius:999px;padding:3px 8px">Tu sei qui</span>
+    </div>
+    </sc-if>
+
+    <!-- Segnaposto -->
+    <sc-for list="{{pins}}" as="p" hint-placeholder-count="5">
+    <button onClick="{{p.tap}}" aria-label="{{p.label}}" style="position:absolute;left:{{p.left}}px;top:{{p.top}}px;width:44px;height:44px;border:0;background:transparent;padding:0;display:flex;align-items:center;justify-content:center">
+      <span style="width:{{p.size}}px;height:{{p.size}}px;border-radius:50%;background:#f59e0b;color:#1a1204;border:3px solid {{p.ring}};box-sizing:border-box;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;box-shadow:0 2px 8px rgba(0,0,0,.45)">{{p.text}}</span>
+    </button>
+    </sc-for>
+
+    <!-- Controlli -->
+    <div style="position:absolute;right:8px;top:8px;display:flex;flex-direction:column;gap:6px">
+      <button onClick="{{zoomIn}}" aria-label="Ingrandisci" style="width:44px;height:44px;border-radius:14px;border:0;background:rgba(17,28,44,.85);color:#f1f5f9;display:flex;align-items:center;justify-content:center"><svg class="i" viewBox="0 0 24 24" style="stroke-width:2.4" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>
+      <button onClick="{{zoomOut}}" aria-label="Riduci" style="width:44px;height:44px;border-radius:14px;border:0;background:rgba(17,28,44,.85);color:#f1f5f9;display:flex;align-items:center;justify-content:center"><svg class="i" viewBox="0 0 24 24" style="stroke-width:2.4" aria-hidden="true"><path d="M5 12h14"/></svg></button>
+      <button onClick="{{goMe}}" aria-label="Vai alla mia posizione" style="width:44px;height:44px;border-radius:14px;border:0;background:rgba(17,28,44,.85);color:#7dd3fc;display:flex;align-items:center;justify-content:center"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg></button>
+      <button onClick="{{goSpots}}" aria-label="Mostra le mie pescate" style="width:44px;height:44px;border-radius:14px;border:0;background:rgba(17,28,44,.85);color:#fbbf24;display:flex;align-items:center;justify-content:center"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 12.4c0-3.7 3.7-6.4 8.3-6.4s7.2 2.6 7.2 6.4-3 6.4-7.2 6.4-8.3-2.7-8.3-6.4Z"/><path d="M17.5 12.4l3.4-3.7a.8.8 0 0 1 1.3.5v6.4a.8.8 0 0 1-1.3.5l-3.4-3.7ZM7.2 11h.01"/></svg></button>
+    </div>
+  </div>
+
+  <!-- Dettaglio selezione -->
+  <sc-if value="{{sel.show}}" hint-placeholder-val="{{ true }}">
+  <a href="Dettaglio.dc.html" style="display:flex;align-items:center;gap:12px;background:#111c2c;border:1px solid #f59e0b;border-radius:18px;padding:10px 12px 10px 14px;min-height:56px;box-sizing:border-box">
+    <span style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px">
+      <span style="font-size:15px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{sel.name}}</span>
+      <span style="font-size:13px;color:#9db0c8">{{sel.meta}}</span>
+    </span>
+    <svg class="i" viewBox="0 0 24 24" style="color:#fbbf24" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>
+  </a>
+  </sc-if>
+  <sc-if value="{{sel.hint}}" hint-placeholder-val="{{ false }}">
+  <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:13px;color:#9db0c8;min-height:44px">
+    <span style="display:flex;align-items:center;gap:8px"><span style="width:12px;height:12px;border-radius:50%;background:#0ea5e9;border:2px solid #fff;flex:none"></span>Tu</span>
+    <span style="display:flex;align-items:center;gap:8px"><span style="width:12px;height:12px;border-radius:50%;background:#f59e0b;flex:none"></span>Pescate</span>
+    <span>Trascina per ruotare</span>
+  </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"size":{"editor":"int","default":358,"min":280,"max":560,"unit":"px"},"$preview":{"width":358,"height":560}}'>
+class Component extends DCLogic {
+constructor(props) {
+  super(props);
+  this.state = { lon0: 12.5, lat0: 40, zoom: 1, sel: -1 };
+  this.drag = null;
+}
+
+get spots() {
+  return [
+    { name: 'Molo di Senigallia', lon: 13.22, lat: 43.72, date: '02 nov 2026', n: 4 },
+    { name: 'Marina di Ravenna', lon: 12.29, lat: 44.49, date: '26 ott 2026', n: 2 },
+    { name: 'Conero', lon: 13.62, lat: 43.55, date: '12 ott 2026', n: 9 },
+    { name: 'Comacchio', lon: 12.18, lat: 44.69, date: '28 set 2026', n: 1 },
+    { name: 'Cesenatico', lon: 12.40, lat: 44.20, date: '14 set 2026', n: 3 },
+    { name: 'Pesaro', lon: 12.91, lat: 43.91, date: '30 ago 2026', n: 5 },
+    { name: 'Alghero', lon: 8.31, lat: 40.56, date: '12 ago 2026', n: 6 },
+    { name: 'Isola d’Elba', lon: 10.40, lat: 42.78, date: '20 lug 2026', n: 3 }
+  ];
+}
+get me() { return { lon: 11.34, lat: 44.49 }; }
+
+get land() {
+  return [
+    // Eurasia (con Italia, Iberia, Balcani)
+    [[-5.6,36],[-9.5,37],[-8.9,38.7],[-9.5,42],[-8.9,43.4],[-1.8,43.4],[-1.2,46],[-4.7,48.4],[-1.6,48.7],[0.2,49.7],[1.6,50.9],[4,52],[5,53.2],[8.5,53.9],[9,54.9],[10.9,54.2],[14,54],[18.5,54.8],[21,55.5],[21,57],[24,57.5],[23.5,59],[28,59.8],[30,61],[30,66],[33,69],[45,68],[60,69],[70,73],[80,73],[100,77],[115,74],[130,71],[140,72],[160,70],[170,66],[163,60],[156,51],[142,52],[141,47],[135,43],[131,42.5],[129,35],[126,37.5],[122,40],[121,37],[122,31],[120,25],[110,21],[108,21],[106,10],[109,12],[105,9],[100,13],[99,8],[103,1.5],[98,8],[97,16],[94,18],[91,22],[87,21.5],[80,15],[80,10],[77.5,8],[73,15],[72.8,20],[70,21],[68.5,23.5],[66,25],[57,25.5],[56.5,27],[52,27.5],[48,30],[50,26],[51,24.5],[56.3,24.5],[59,22.5],[55,17],[52,16],[45,13],[43,14],[40,20],[35,28],[34.5,29.5],[35,32],[35.5,33.5],[36,36.5],[32,36.2],[30.5,36.5],[27.5,36.8],[26.5,38.5],[26.3,40],[24,40.7],[22.8,40.4],[23,39.4],[24,38.2],[23.2,36.5],[22,36.5],[21.2,37.5],[21.1,38.5],[20.7,39.5],[19.5,41.8],[18.5,42.4],[16.5,43.5],[14.5,44.8],[13.7,45.1],[13.75,45.65],[12.3,45.4],[12.5,44.9],[12.3,44.4],[12.6,44.05],[13.5,43.6],[14.2,42.45],[15,42],[16.2,41.9],[16.85,41.12],[17.95,40.65],[18.5,40.15],[18.35,39.8],[17.2,40.4],[16.7,39.9],[17.1,39.1],[16.5,38.5],[16,37.9],[15.65,38.1],[16,38.8],[15.8,39.8],[15.6,40],[14.8,40.6],[14.2,40.8],[13.6,41.2],[12.4,41.6],[11.9,42],[11.1,42.4],[10.5,42.95],[10.3,43.6],[9.8,44.1],[8.8,44.4],[7.5,43.8],[6,43.1],[4.8,43.4],[3.2,43.2],[3.1,42.4],[0.9,41],[-0.3,39.5],[-0.7,37.6],[-2.2,36.7]],
+    // Africa
+    [[-5.5,35.8],[-2,35.1],[1,36.5],[3,36.8],[8,37],[10,37.3],[11,35],[10.2,33.5],[11,33],[15,32.3],[19,30.3],[20,32.5],[23,32.8],[25,31.7],[29,30.9],[32,31.2],[34.2,31.3],[33,29],[34,28],[35.5,24],[37.5,19],[39,15.5],[43,12.5],[51,12],[51,10.5],[48,5],[42,-1],[40,-4],[39,-8],[40.5,-15],[35,-20],[33,-26],[30,-31],[27,-33.5],[20,-34.8],[18.3,-34],[16.5,-28],[14.5,-22],[11.8,-17],[13.5,-11],[12,-5],[9,-1],[9.5,3.5],[8.5,4.5],[5,5.5],[1.5,6],[-3,5],[-7.5,4.4],[-13,8.5],[-17,14.7],[-17,21],[-13,27.5],[-9.8,30],[-9.5,32.5],[-6.8,34],[-5.8,35.8]],
+    // Scandinavia
+    [[5,59],[6,62],[10,64],[13,67.5],[16,69],[20,70],[25,71],[28,71],[31,70],[28,69],[25,68],[23,66],[21,64],[18,62.5],[18.5,59.8],[16.5,56.8],[14.5,55.5],[12.8,56.2],[11.5,58.5],[10.5,59.5],[8,58]],
+    // Gran Bretagna e Irlanda
+    [[-5.5,50],[1.4,51.2],[1.7,52.7],[0,53.5],[-2,55.8],[-1.8,57.5],[-3.2,58.6],[-5.8,58.5],[-5.5,56],[-3,54.8],[-3.1,53.4],[-4.6,52],[-5.3,51.7],[-3.3,51.4]],
+    [[-10,51.8],[-6,52.2],[-6,54.5],[-8,55.2],[-10,54]],
+    // Sicilia, Sardegna, Corsica
+    [[12.4,37.9],[13.3,38.2],[14.3,38],[15.6,38.25],[15.3,37.3],[15.1,36.7],[14.4,36.8],[13.3,37.5],[12.5,37.7]],
+    [[8.2,40.9],[9.2,41.2],[9.7,40.9],[9.6,39.5],[9.4,39],[8.5,38.9],[8.4,39.9]],
+    [[8.6,42.4],[9.4,43],[9.5,42.2],[9.2,41.4],[8.7,41.6]],
+    // Giappone
+    [[130.5,31.5],[131,34],[135.5,34.6],[139.7,35],[141,38],[141.5,41.5],[140,40],[139.5,37],[136.5,36.5],[133,35.5]],
+    // Nord America
+    [[-168,66],[-162,70],[-150,71],[-140,69.5],[-125,70],[-110,68],[-95,69],[-85,69],[-82,66],[-90,63],[-93,59],[-87,56],[-82,53],[-79,56],[-78,62],[-70,61],[-65,60],[-60,55],[-56,52],[-60,47],[-66,44],[-70,42],[-74,40],[-76,37],[-76,35],[-81,31],[-80,26],[-82,26],[-83,30],[-88,30.3],[-90,29],[-94,29.5],[-97,27],[-97.5,22],[-95,18.5],[-91,18.7],[-90,21],[-87,21],[-88,16],[-84,15.5],[-83.5,11],[-81,9],[-77.5,8.5],[-80,7.5],[-83,8.5],[-86,11],[-88,13],[-92,14.5],[-96,16],[-101,17.5],[-105.5,20],[-106,23],[-109,26],[-112.5,29.5],[-115,30],[-117,32.5],[-120.5,34.5],[-122.5,37.5],[-124,40.5],[-124,46],[-125,48.5],[-128,51],[-130.5,54.5],[-134,58],[-140,59.5],[-147,61],[-152,59],[-158,56.5],[-164,54.8],[-160,58.5],[-165,61],[-166,64]],
+    // Groenlandia
+    [[-73,78],[-60,82],[-35,83.5],[-20,81],[-18,76],[-22,70],[-32,68],[-42,60],[-48,61],[-53,66],[-55,70],[-60,76]],
+    // Sud America
+    [[-77.5,8.5],[-72,12],[-67,10.5],[-62,10.5],[-60,8],[-52,5],[-50,0],[-45,-2.5],[-38,-4],[-35,-7],[-35,-9],[-38.5,-13],[-39,-17.5],[-41,-22],[-45,-23.5],[-48.5,-26],[-48.5,-28],[-52,-32],[-54,-34.5],[-57,-36],[-58,-38.5],[-62,-39],[-64.5,-41],[-65,-45],[-67.5,-46.5],[-66,-48],[-69,-51],[-68,-55],[-72,-54],[-74.5,-50],[-75,-46],[-73.5,-42],[-73.5,-37],[-71.5,-30],[-70.5,-23],[-70.5,-18],[-76,-14],[-79,-8],[-81,-5],[-80,-2],[-80.5,0],[-78.5,2],[-77.5,5]],
+    // Australia
+    [[114,-22],[122,-18],[130,-12],[137,-12],[141,-12.5],[143,-14.5],[146,-19],[150,-22],[153,-26],[153,-30],[150.5,-35.5],[146,-39],[141,-38],[137,-35.5],[135,-34.5],[131,-31.5],[124,-33.5],[118,-35],[115,-34],[115,-30],[113.5,-26]]
+  ];
+}
+
+renderVals() {
+  const S = Number(this.props.size) || 358;
+  const w = S, gw = S - 32, gh = Math.round(gw * 1.02);
+  const st = this.state;
+  const R = gw * 0.40 * st.zoom;
+  const cx = gw / 2, cy = gh / 2;
+  const p0 = st.lat0 * Math.PI / 180, l0 = st.lon0 * Math.PI / 180;
+  const proj = (lon, lat) => {
+    const l = lon * Math.PI / 180, f = lat * Math.PI / 180, dl = l - l0;
+    return {
+      x: cx + R * Math.cos(f) * Math.sin(dl),
+      y: cy - R * (Math.cos(p0) * Math.sin(f) - Math.sin(p0) * Math.cos(f) * Math.cos(dl)),
+      c: Math.sin(p0) * Math.sin(f) + Math.cos(p0) * Math.cos(f) * Math.cos(dl)
+    };
+  };
+  const f1 = (n) => n.toFixed(1);
+
+  // Terre
+  let land = '';
+  this.land.forEach((poly) => {
+    const pts = poly.map((q) => proj(q[0], q[1]));
+    if (pts.every((p) => p.c < 0)) return;
+    land += pts.map((p, i) => {
+      let x = p.x, y = p.y;
+      if (p.c < 0) {
+        const dx = x - cx, dy = y - cy, len = Math.hypot(dx, dy) || 1;
+        x = cx + dx / len * R; y = cy + dy / len * R;
+      }
+      return (i ? 'L' : 'M') + f1(x) + ' ' + f1(y);
+    }).join('') + 'Z';
+  });
+
+  // Reticolo
+  let grat = '';
+  const line = (pts) => {
+    let pen = false, d = '';
+    pts.forEach((q) => {
+      const p = proj(q[0], q[1]);
+      if (p.c > 0) { d += (pen ? 'L' : 'M') + f1(p.x) + ' ' + f1(p.y); pen = true; } else { pen = false; }
+    });
+    return d;
+  };
+  for (let lon = -180; lon < 180; lon += 30) {
+    const pts = []; for (let lat = -90; lat <= 90; lat += 5) pts.push([lon, lat]); grat += line(pts);
+  }
+  for (let lat = -60; lat <= 60; lat += 30) {
+    const pts = []; for (let lon = -180; lon <= 180; lon += 5) pts.push([lon, lat]); grat += line(pts);
+  }
+
+  // Segnaposto con raggruppamento
+  const clusters = [];
+  this.spots.forEach((s, idx) => {
+    const p = proj(s.lon, s.lat);
+    if (p.c < 0.08) return;
+    const c = clusters.find((k) => Math.hypot(k.x - p.x, k.y - p.y) < 26);
+    if (c) c.members.push(idx); else clusters.push({ x: p.x, y: p.y, members: [idx], lon: s.lon, lat: s.lat });
+  });
+  const zoomTo = (z, lon, lat) => this.setState({ zoom: z, lon0: lon, lat0: lat, sel: -1 });
+  const nextZoom = st.zoom < 2 ? 2.5 : 6;
+  const pins = clusters.map((k) => {
+    const single = k.members.length === 1;
+    const idx = k.members[0];
+    const isSel = single && st.sel === idx;
+    return {
+      left: k.x - 22, top: k.y - 22,
+      size: single ? 28 : 34,
+      ring: isSel ? '#ffffff' : '#111c2c',
+      text: single ? '' : String(k.members.length),
+      label: single ? ('Pescata: ' + this.spots[idx].name) : (k.members.length + ' luoghi, ingrandisci'),
+      tap: () => single ? this.setState({ sel: idx }) : zoomTo(nextZoom, k.lon, k.lat)
+    };
+  });
+
+  const mp = proj(this.me.lon, this.me.lat);
+  const me = { show: mp.c > 0.08, left: mp.x - 22, top: mp.y - 22 };
+
+  const s = st.sel >= 0 ? this.spots[st.sel] : null;
+  const sel = s
+    ? { show: true, hint: false, name: s.name, meta: s.date + ' · ' + s.n + (s.n === 1 ? ' cattura' : ' catture') }
+    : { show: false, hint: true, name: '', meta: '' };
+
+  const kdeg = () => 57.2958 / R;
+  return {
+    w, gw, gh, cx, cy, R, land, grat, pins, me, sel,
+    down: (e) => { this.drag = { x: e.clientX, y: e.clientY, lon: st.lon0, lat: st.lat0 }; },
+    move: (e) => {
+      if (!this.drag) return;
+      const k = kdeg();
+      this.setState({
+        lon0: this.drag.lon - (e.clientX - this.drag.x) * k,
+        lat0: Math.max(-80, Math.min(80, this.drag.lat + (e.clientY - this.drag.y) * k))
+      });
+    },
+    up: () => { this.drag = null; },
+    zoomIn: () => this.setState({ zoom: st.zoom < 2 ? 2.5 : 6 }),
+    zoomOut: () => this.setState({ zoom: st.zoom > 3 ? 2.5 : 1 }),
+    goMe: () => zoomTo(2.5, this.me.lon, this.me.lat),
+    goSpots: () => zoomTo(2.5, 12.4, 43.9)
+  };
+}
+}
+</script>
+</body>
+</html>

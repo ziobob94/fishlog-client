@@ -1,0 +1,42 @@
+/* Token del nuovo design FishLog. Sostituiscono i valori del tema scuro in src/assets/main.css.
+   Stesso formato del repo: triplette RGB usate da tailwind.config.js (rgb(var(--x) / <alpha-value>)). */
+:root {
+  --ocean-glow: rgba(14, 165, 233, 0.14);
+
+  /* Tema scuro (predefinito) — più profondo di prima */
+  --color-ink: 17 28 44;          /* #111c2c sfondo app */
+  --color-ink-light: 22 35 52;    /* #162334 */
+  --color-surface: 26 41 61;      /* #1a293d card */
+  --color-surface-2: 36 54 80;    /* #243650 input, chip, riquadri */
+  --color-border: 51 72 106;      /* #33486a */
+  --color-border-light: 70 97 127;/* #46617f bordi dei pulsanti secondari */
+  --color-ocean: 14 165 233;      /* #0ea5e9 riempimenti, pulsante primario */
+  --color-ocean-dark: 3 105 161;  /* #0369a1 */
+  --color-sand: 245 158 11;       /* #f59e0b */
+  --color-sand-light: 252 211 77;
+  --color-foam: 241 245 249;      /* testo */
+  --color-muted: 157 176 200;     /* #9db0c8 */
+  --color-danger: 239 68 68;
+  --color-success: 34 197 94;
+
+  /* NUOVI: varianti per il TESTO su fondo scuro (contrasto ≥ 4,5:1) */
+  --color-ocean-text: 125 211 252;  /* #7dd3fc link, etichette, icone attive */
+  --color-sand-text: 251 191 36;    /* #fbbf24 stelle, valori in evidenza */
+  --color-danger-text: 252 165 165; /* #fca5a5 */
+  --color-success-text: 134 239 172;/* #86efac */
+  --color-on-primary: 11 22 35;     /* #0b1623 TESTO sul pulsante primario (non più bianco) */
+  --color-sea-deep: 16 48 77;       /* #10304d fondi con isobate e mappamondo */
+
+  /* Firma: angolo meno arrotondato in basso a sinistra sulle card principali */
+  --radius-signature: 24px 24px 24px 8px;
+}
+
+/* Il tema chiaro resta quello attuale; aggiungere solo le varianti testo: */
+:root[data-theme='light'] {
+  --color-ocean-text: 3 105 161;
+  --color-sand-text: 180 83 9;      /* #b45309 */
+  --color-danger-text: 185 28 28;
+  --color-success-text: 21 128 61;
+  --color-on-primary: 255 255 255;
+  --color-sea-deep: 224 240 250;
+}
