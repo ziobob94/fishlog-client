@@ -105,7 +105,7 @@
   h1 { font-size: clamp(1.7rem, 4vw, 2.6rem); }
   h2 { font-size: clamp(1.2rem, 3vw, 1.7rem); }
 
-  a { @apply text-ocean no-underline transition-colors duration-200; }
+  a { @apply text-ocean-text no-underline transition-colors duration-200; }
   a:hover { @apply text-sand; }
 
   input, textarea, select {
@@ -134,7 +134,7 @@
   .btn-primary   { @apply bg-ocean text-on-primary hover:bg-ocean-dark hover:-translate-y-px; }
   .btn-secondary { @apply bg-surface-2 border border-border text-foam hover:border-ocean; }
   .btn-ghost     { @apply bg-transparent border border-border text-muted hover:border-border-light hover:text-foam; }
-  .btn-danger    { @apply bg-transparent border border-danger text-danger hover:bg-danger hover:text-white; }
+  .btn-danger    { @apply bg-transparent border border-danger text-danger-text hover:bg-danger hover:text-white; }
   .btn-sm        { @apply text-xs px-3 py-1.5 min-h-[44px]; }
   .btn:disabled  { @apply opacity-40 cursor-not-allowed translate-y-0; }
 
@@ -150,9 +150,9 @@
   .badge {
     @apply inline-block rounded px-1.5 py-0.5 text-[0.68rem] font-bold uppercase tracking-wide;
   }
-  .badge-ocean   { background: var(--ocean-glow); @apply border border-ocean text-ocean; }
-  .badge-sand    { @apply bg-amber-500/10 border border-sand text-sand; }
-  .badge-success { @apply bg-green-500/10 border border-success text-success; }
+  .badge-ocean   { background: var(--ocean-glow); @apply border border-ocean text-ocean-text; }
+  .badge-sand    { @apply bg-amber-500/10 border border-sand text-sand-text; }
+  .badge-success { @apply bg-green-500/10 border border-success text-success-text; }
   .badge-danger  { @apply bg-danger text-white border border-danger normal-case tracking-normal; }
 
   .form-grid {
@@ -171,7 +171,7 @@
     @apply flex-1 h-px bg-border;
   }
 
-  .stars { @apply text-sand tracking-wide; }
+  .stars { @apply text-sand-text tracking-wide; }
 
   .spinner {
     @apply inline-block rounded-full border-2 border-border border-t-ocean;

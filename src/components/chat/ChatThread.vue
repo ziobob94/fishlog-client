@@ -361,7 +361,7 @@
   }
 
   .message-sender {
-    @apply text-xs font-semibold text-ocean;
+    @apply text-xs font-semibold text-ocean-text;
   }
 
   .message-text {
@@ -450,7 +450,7 @@
   }
 
   .editing-banner {
-    @apply flex items-center gap-2 text-xs text-ocean bg-ocean/10 border-l-2 border-ocean px-3 py-1.5 rounded-sm;
+    @apply flex items-center gap-2 text-xs text-ocean-text bg-ocean/10 border-l-2 border-ocean px-3 py-1.5 rounded-sm;
   }
 
   .editing-banner .icon-btn-sm {

@@ -46,5 +46,5 @@ defineEmits(['update:modelValue'])
   cursor: pointer;
   padding: 0;
 }
-.toggle-btn:hover { @apply text-ocean; }
+.toggle-btn:hover { @apply text-ocean-text; }
 </style>

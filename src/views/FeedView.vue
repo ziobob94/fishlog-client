@@ -379,7 +379,7 @@
   }
 
   .icon-btn.active {
-    @apply text-ocean bg-ocean/10;
+    @apply text-ocean-text bg-ocean/10;
   }
 
   .post-form-wrap {

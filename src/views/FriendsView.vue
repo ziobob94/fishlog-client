@@ -199,7 +199,7 @@ async function removeFriend(f) {
 
 .mini-avatar { @apply w-7 h-7 rounded-full object-cover; }
 .mini-placeholder {
-  @apply w-7 h-7 rounded-full border border-ocean text-ocean flex items-center
+  @apply w-7 h-7 rounded-full border border-ocean text-ocean-text flex items-center
          justify-center text-[0.65rem] font-bold;
   background: var(--ocean-glow);
 }

@@ -518,7 +518,7 @@ async function doDeleteAccount() {
 .avatar-row { @apply flex items-center gap-4; }
 .avatar { @apply w-16 h-16 rounded-full object-cover; }
 .avatar-placeholder {
-  @apply w-16 h-16 rounded-full border border-ocean text-ocean flex items-center
+  @apply w-16 h-16 rounded-full border border-ocean text-ocean-text flex items-center
          justify-center text-lg font-bold;
   background: var(--ocean-glow);
 }

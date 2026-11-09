@@ -242,7 +242,7 @@ watch([technique, waterType], () => { if (route.params.name) load(route.params.n
 }
 
 .species-image-placeholder {
-  @apply flex items-center justify-center text-ocean;
+  @apply flex items-center justify-center text-ocean-text;
   background: var(--ocean-glow);
 }
 
@@ -269,7 +269,7 @@ h3 {
 }
 
 h3 > svg {
-  @apply text-ocean;
+  @apply text-ocean-text;
 }
 
 .legal-card {
@@ -317,7 +317,7 @@ h3 > svg {
 }
 
 .legal-rule-source a {
-  @apply text-ocean;
+  @apply text-ocean-text;
 }
 
 .legal-disclaimer {
@@ -363,7 +363,7 @@ h3 > svg {
 }
 
 .calendar-month-now {
-  @apply text-ocean font-bold;
+  @apply text-ocean-text font-bold;
 }
 
 .chip-list {
@@ -375,7 +375,7 @@ h3 > svg {
 }
 
 .chip-bait {
-  @apply border-ocean/30 text-ocean;
+  @apply border-ocean/30 text-ocean-text;
   background: var(--ocean-glow);
 }
 

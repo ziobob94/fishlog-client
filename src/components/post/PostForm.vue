@@ -51,7 +51,7 @@
       <input ref="fileInput" type="file" multiple accept="image/*,video/*" class="hidden" @change="onFileChange" />
       <Paperclip :size="16" class="text-muted" />
       <span class="text-sm text-foam">
-        {{ t('mediaUploader.dropHint') }} <span class="text-ocean">{{ t('mediaUploader.dropHintClick') }}</span>
+        {{ t('mediaUploader.dropHint') }} <span class="text-ocean-text">{{ t('mediaUploader.dropHintClick') }}</span>
       </span>
     </div>
 

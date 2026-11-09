@@ -1,6 +1,6 @@
 <template>
   <RouterLink :to="`/market/shop/${shop._id}`"
-    class="group block bg-surface border border-border rounded-lg p-4
+    class="group block bg-surface border border-border rounded-signature p-4
            transition-all duration-200 hover:border-ocean hover:-translate-y-0.5
            hover:shadow-[0_4px_24px_rgba(14,165,233,0.1)]"
   >
@@ -33,7 +33,7 @@ const initials = computed(() => {
 
 <style scoped>
 .avatar-placeholder {
-  @apply w-12 h-12 shrink-0 rounded-full border border-ocean text-ocean flex items-center
+  @apply w-12 h-12 shrink-0 rounded-full border border-ocean text-ocean-text flex items-center
          justify-center text-sm font-bold;
   background: var(--ocean-glow);
 }

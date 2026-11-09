@@ -233,7 +233,7 @@ onMounted(() => {
 .tab-pill.active { @apply text-ink bg-ocean; }
 
 .btn-toggle-active {
-  @apply text-ocean bg-ocean/10;
+  @apply text-ocean-text bg-ocean/10;
 }
 
 .filter-count-badge {

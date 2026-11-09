@@ -41,6 +41,6 @@ onMounted(async () => {
 <style scoped>
 .stats-grid  { @apply grid gap-3 sm:gap-4; grid-template-columns: repeat(auto-fill, minmax(min(100%, 150px), 1fr)); }
 .stat-card   { @apply flex flex-col items-center justify-center gap-1 py-8; }
-.stat-value  { @apply text-3xl font-extrabold text-ocean; }
+.stat-value  { @apply text-3xl font-extrabold text-ocean-text; }
 .stat-label  { @apply text-sm text-muted; }
 </style>

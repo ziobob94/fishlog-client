@@ -269,7 +269,7 @@
 
 <style scoped>
   .post-card {
-    @apply flex flex-col gap-2.5 bg-surface border border-border/60 rounded-lg p-3.5 sm:p-4;
+    @apply flex flex-col gap-2.5 bg-surface border border-border/60 rounded-signature p-3.5 sm:p-4;
   }
 
   .post-header {
@@ -293,7 +293,7 @@
   }
 
   .mini-placeholder {
-    @apply w-9 h-9 rounded-full border border-ocean text-ocean flex items-center justify-center text-xs font-bold shrink-0;
+    @apply w-9 h-9 rounded-full border border-ocean text-ocean-text flex items-center justify-center text-xs font-bold shrink-0;
     background: var(--ocean-glow);
   }
 
@@ -394,7 +394,7 @@
   }
 
   .accordion-toggle:hover {
-    @apply text-ocean;
+    @apply text-ocean-text;
   }
 
   .accordion-toggle span:first-child {

@@ -111,7 +111,7 @@
           />
           <span
             v-else
-            class="w-9 h-9 shrink-0 rounded-full border border-ocean text-ocean flex items-center justify-center text-xs font-bold"
+            class="w-9 h-9 shrink-0 rounded-full border border-ocean text-ocean-text flex items-center justify-center text-xs font-bold"
             style="background: var(--ocean-glow)"
           >{{ initials }}</span>
           <div class="flex flex-col gap-0.5 min-w-0">
@@ -195,7 +195,7 @@
 
   .nav-accent {
     background: var(--ocean-glow);
-    @apply border border-ocean/20 text-ocean hover:bg-ocean hover:text-on-primary;
+    @apply border border-ocean/20 text-ocean-text hover:bg-ocean hover:text-on-primary;
   }
 
   .nav-accent.router-link-active {

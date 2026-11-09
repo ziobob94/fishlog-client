@@ -213,7 +213,7 @@ onMounted(() => { loadZone('here') })
 .story-grid { @apply grid gap-4 mb-8; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
 .story { @apply flex flex-col items-start gap-2 rounded-signature border border-border/60 bg-surface p-5; }
 .story-icon {
-  @apply flex items-center justify-center w-11 h-11 rounded-full text-ocean;
+  @apply flex items-center justify-center w-11 h-11 rounded-full text-ocean-text;
   background: var(--ocean-glow);
 }
 .story h2 { @apply text-lg; }

@@ -197,7 +197,7 @@
   }
 
   .conversation-avatar-placeholder {
-    @apply w-10 h-10 rounded-full border border-ocean text-ocean flex items-center justify-center text-sm font-bold shrink-0;
+    @apply w-10 h-10 rounded-full border border-ocean text-ocean-text flex items-center justify-center text-sm font-bold shrink-0;
     background: var(--ocean-glow);
   }
 
@@ -246,7 +246,7 @@
   }
 
   .mini-placeholder {
-    @apply w-9 h-9 rounded-full border border-ocean text-ocean flex items-center justify-center text-xs font-bold shrink-0;
+    @apply w-9 h-9 rounded-full border border-ocean text-ocean-text flex items-center justify-center text-xs font-bold shrink-0;
     background: var(--ocean-glow);
   }
 </style>

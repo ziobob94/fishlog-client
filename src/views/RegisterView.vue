@@ -130,9 +130,9 @@ async function handleRegister() {
   @apply flex items-start gap-2 text-xs text-muted mb-3 cursor-pointer;
 }
 .terms-check input { @apply mt-0.5 shrink-0; }
-.terms-check a { @apply text-ocean hover:underline; }
+.terms-check a { @apply text-ocean-text hover:underline; }
 .oauth-terms-note { @apply text-[0.68rem] text-muted text-center mt-2; }
-.oauth-terms-note a { @apply text-ocean hover:underline; }
+.oauth-terms-note a { @apply text-ocean-text hover:underline; }
 .auth-switch { @apply text-muted text-sm text-center mt-5; }
 .coming-soon { @apply flex items-center gap-2 text-muted text-sm; }
 </style>
