@@ -117,7 +117,13 @@
             <tr v-for="u in pendingShops" :key="u._id">
               <td>{{ u.shop.name || t('common.none') }}</td>
               <td class="text-muted" style="font-size:.82rem">{{ u.displayName || u.email }}</td>
-              <td class="text-muted" style="font-size:.82rem;max-width:280px">{{ u.shop.description }}</td>
+              <td class="text-muted" style="font-size:.82rem;max-width:280px">
+                <div>{{ u.shop.description }}</div>
+                <div v-if="u.shop.legalName">{{ u.shop.sellerType }} · {{ u.shop.legalName }}<template v-if="u.shop.vatNumber"> · P.IVA {{ u.shop.vatNumber }}</template></div>
+                <div v-if="u.shop.city || u.shop.phone">{{ [u.shop.city, u.shop.phone].filter(Boolean).join(' · ') }}</div>
+                <button v-if="u.shop.document?.filename" type="button" class="btn btn-ghost btn-sm mt-1" @click="openShopDocument(u)">{{ t('admin.shops.document') }}</button>
+                <span v-else>{{ t('admin.shops.noDocument') }}</span>
+              </td>
               <td class="text-mono text-muted" style="font-size:.78rem">{{ fmtDate(u.shop.verificationRequestedAt) }}</td>
               <td>
                 <div class="flex gap-1.5">
@@ -359,6 +365,11 @@ async function fetchPendingShops() {
 async function approveShop(u) {
   await api.post(`/admin/shops/${u._id}/approve`)
   pendingShops.value = pendingShops.value.filter(x => x._id !== u._id)
+}
+
+async function openShopDocument(u) {
+  const res = await api.get(`/admin/shops/${u._id}/document`, { responseType: 'blob' })
+  window.open(URL.createObjectURL(res.data), '_blank', 'noopener')
 }
 
 async function rejectShop(u) {
