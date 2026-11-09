@@ -9,9 +9,7 @@
       <span class="block w-5 h-0.5 bg-foam rounded group-hover:bg-ocean transition-colors duration-200"></span>
       <span class="block w-5 h-0.5 bg-foam rounded group-hover:bg-ocean transition-colors duration-200"></span>
     </button>
-    <RouterLink to="/" class="text-foam text-lg font-extrabold tracking-tight hover:text-ocean transition-colors" style="display:inline-flex;align-items:center;gap:.4rem">
-      <Fish :size="18" /> FishLog
-    </RouterLink>
+    <RouterLink to="/" class="inline-flex items-center" aria-label="FishLog"><FishLogo :size="30" /></RouterLink>
 
     <div class="ml-auto flex items-center gap-2">
       <div class="relative" ref="notifWrapper">
@@ -115,6 +113,7 @@
 import { computed, onMounted, onBeforeUnmount, ref, watch } from 'vue'
 import { RouterLink, useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
+import FishLogo from '../components/FishLogo.vue'
 import { Fish, WifiOff, RefreshCw, AlertTriangle, Hourglass, Plus, Bell, X, Newspaper, ShoppingBag, MessagesSquare, Users, UsersRound } from 'lucide-vue-next'
 import { useOfflineStore } from '../stores/offline.js'
 import { useSessionStore } from '../stores/sessions.js'

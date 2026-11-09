@@ -7,10 +7,8 @@
     <div class="flex items-center justify-between px-5 py-4 border-b border-border">
       <RouterLink
         to="/"
-        class="flex items-center gap-2 text-foam text-lg font-extrabold tracking-tight hover:text-ocean"
-        @click="$emit('close')"
-      >
-        <Fish :size="20" /> <span>FishLog</span>
+        class="inline-flex items-center" aria-label="FishLog" @click="$emit('close')">
+        <FishLogo :size="32" />
       </RouterLink>
       <button
         class="p-1 bg-transparent border-none cursor-pointer text-base transition-opacity duration-200"
@@ -134,6 +132,7 @@
 
 <script setup>
   import { computed, onMounted, ref } from 'vue'
+  import FishLogo from '../components/FishLogo.vue'
   import { useInstallPrompt } from '../composables/useInstallPrompt.js'
   import { RouterLink, useRouter } from 'vue-router'
   import { useI18n } from 'vue-i18n'
@@ -190,17 +189,17 @@
   }
 
   .nav-item.router-link-active {
-    @apply text-ocean;
+    @apply text-ocean-text;
     background: var(--ocean-glow);
   }
 
   .nav-accent {
     background: var(--ocean-glow);
-    @apply border border-ocean/20 text-ocean hover:bg-ocean hover:text-white;
+    @apply border border-ocean/20 text-ocean hover:bg-ocean hover:text-on-primary;
   }
 
   .nav-accent.router-link-active {
-    @apply bg-ocean text-white;
+    @apply bg-ocean text-on-primary;
   }
 
   .nav-badge {

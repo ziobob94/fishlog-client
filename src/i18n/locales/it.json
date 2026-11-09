@@ -19,6 +19,8 @@
 		"hidePassword": "Nascondi password"
 	},
 	"nav": {
+		"mainNavigation": "Navigazione principale",
+		"community": "Community",
 		"home": "Home",
 		"sessions": "Uscite",
 		"newSession": "Nuova uscita",

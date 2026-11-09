@@ -8,20 +8,29 @@
   --ocean-glow: rgba(14, 165, 233, 0.14);
 
   /* Dark theme (default) */
-  --color-ink: 24 36 52;
-  --color-ink-light: 32 47 66;
-  --color-surface: 34 50 71;
-  --color-surface-2: 46 65 90;
-  --color-border: 66 88 116;
-  --color-border-light: 90 114 144;
+  --color-ink: 17 28 44;
+  --color-ink-light: 22 35 52;
+  --color-surface: 26 41 61;
+  --color-surface-2: 36 54 80;
+  --color-border: 51 72 106;
+  --color-border-light: 70 97 127;
   --color-ocean: 14 165 233;
   --color-ocean-dark: 3 105 161;
   --color-sand: 245 158 11;
   --color-sand-light: 252 211 77;
   --color-foam: 241 245 249;
-  --color-muted: 156 172 192;
+  --color-muted: 157 176 200;
   --color-danger: 239 68 68;
   --color-success: 34 197 94;
+
+  /* Varianti per il TESTO su fondo scuro (contrasto >= 4,5:1) */
+  --color-ocean-text: 125 211 252;
+  --color-sand-text: 251 191 36;
+  --color-danger-text: 252 165 165;
+  --color-success-text: 134 239 172;
+  --color-on-primary: 11 22 35;
+  --color-sea-deep: 16 48 77;
+  --radius-signature: 24px 24px 24px 8px;
 }
 
 :root[data-theme='light'] {
@@ -41,6 +50,13 @@
   --color-muted: 86 102 124;
   --color-danger: 220 38 38;
   --color-success: 22 163 74;
+
+  --color-ocean-text: 3 105 161;
+  --color-sand-text: 180 83 9;
+  --color-danger-text: 185 28 28;
+  --color-success-text: 21 128 61;
+  --color-on-primary: 255 255 255;
+  --color-sea-deep: 224 240 250;
 }
 
 /*
@@ -69,7 +85,7 @@
   /* Altezza della bottom nav mobile (AppBottomNav.vue, sotto i 768px):
      unico riferimento condiviso da chi deve lasciarle spazio sopra
      (ToastContainer, LocalStorageNotice, padding di App.vue). */
-  --bottom-nav-h: 3.75rem;
+  --bottom-nav-h: 4rem;
 }
 
 @layer base {
@@ -112,18 +128,23 @@
 @layer components {
   .btn {
     @apply inline-flex items-center justify-center gap-1.5 px-4 py-2
-           rounded-sm font-display text-sm font-semibold
+           rounded-sm font-display text-sm font-semibold min-h-[44px]
            border-0 cursor-pointer transition-all duration-200 whitespace-nowrap;
   }
-  .btn-primary   { @apply bg-ocean text-white hover:bg-ocean-dark hover:-translate-y-px; }
+  .btn-primary   { @apply bg-ocean text-on-primary hover:bg-ocean-dark hover:-translate-y-px; }
   .btn-secondary { @apply bg-surface-2 border border-border text-foam hover:border-ocean; }
   .btn-ghost     { @apply bg-transparent border border-border text-muted hover:border-border-light hover:text-foam; }
   .btn-danger    { @apply bg-transparent border border-danger text-danger hover:bg-danger hover:text-white; }
-  .btn-sm        { @apply text-xs px-3 py-1.5; }
+  .btn-sm        { @apply text-xs px-3 py-1.5 min-h-[44px]; }
   .btn:disabled  { @apply opacity-40 cursor-not-allowed translate-y-0; }
 
   .card {
     @apply bg-surface border border-border/60 rounded-lg p-4;
+  }
+  .rounded-signature { border-radius: var(--radius-signature); }
+  .card-signature {
+    @apply bg-surface border border-border/60 p-4;
+    border-radius: var(--radius-signature);
   }
 
   .badge {

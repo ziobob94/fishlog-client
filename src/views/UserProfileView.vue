@@ -35,7 +35,7 @@
         </div>
       </div>
 
-      <div class="section-divider">{{ t('friends.profile.commonGroups') }}</div>
+      <TideDivider>{{ t('friends.profile.commonGroups') }}</TideDivider>
       <p v-if="!commonGroups.length" class="text-muted text-sm">{{ t('friends.profile.noCommonGroups') }}</p>
       <ul v-else class="common-groups">
         <li v-for="g in commonGroups" :key="g._id" class="badge badge-ocean">{{ g.name }}</li>
@@ -45,6 +45,7 @@
 </template>
 
 <script setup>
+import TideDivider from '../components/TideDivider.vue'
 import { ref, computed, onMounted } from 'vue'
 import { useRoute, RouterLink } from 'vue-router'
 import { useI18n } from 'vue-i18n'

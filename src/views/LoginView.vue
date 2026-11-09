@@ -1,7 +1,7 @@
 <template>
   <div class="auth-page">
     <div class="auth-card card">
-      <div class="auth-logo" style="display:inline-flex;align-items:center;gap:.4rem"><Fish :size="22" /> FishLog</div>
+      <div class="auth-logo"><FishLogo :size="40" /></div>
       <h2>{{ t('login.welcomeBack') }}</h2>
 
       <div class="oauth-buttons">
@@ -58,7 +58,7 @@
 import { ref } from 'vue'
 import { useRouter, RouterLink } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { Fish } from 'lucide-vue-next'
+import FishLogo from '../components/FishLogo.vue'
 import { useAuthStore } from '../stores/auth.js'
 import { useFeaturesStore } from '../stores/features.js'
 import PasswordInput from '../components/PasswordInput.vue'
