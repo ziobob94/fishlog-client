@@ -8,6 +8,7 @@ import { useThemeStore } from './stores/theme.js'
 import App from './App.vue'
 import i18n from './i18n/index.js'
 import './assets/main.css'
+import { setupFormA11y } from './utils/formA11y.js'
 
 const app   = createApp(App)
 const pinia = createPinia()
@@ -33,3 +34,4 @@ if ('serviceWorker' in navigator && import.meta.env.PROD) {
 }
 
 app.mount('#app')
+setupFormA11y()
