@@ -14,18 +14,15 @@
 
     <div class="chips" role="tablist">
       <button
-        type="button" role="tab" :aria-selected="tab === 'post'"
-        class="chip" :class="{ active: tab === 'post' }" @click="setTab('post')"
-      >{{ t('posts.tabs.forYou') }}</button>
-      <button
-        type="button" role="tab" :aria-selected="tab === 'event'"
-        class="chip" :class="{ active: tab === 'event' }" @click="setTab('event')"
-      >{{ t('posts.tabs.events') }}</button>
+        v-for="tb in TABS" :key="tb.id"
+        type="button" role="tab" :aria-selected="tab === tb.id"
+        class="chip" :class="{ active: tab === tb.id }" @click="setTab(tb.id)"
+      >{{ t(tb.label) }}</button>
     </div>
 
     <template v-if="showForm">
       <div class="post-form-wrap">
-        <PostForm :create-fn="store.createPost" :initial-type="tab" @created="onCreated" />
+        <PostForm :create-fn="store.createPost" :initial-type="tab === 'event' ? 'event' : 'post'" @created="onCreated" />
       </div>
       <div class="section-separator"></div>
     </template>
@@ -147,6 +144,7 @@
         @close-event="onCloseEvent"
         @respond="onRespond"
         @like="onLike"
+        @save="po => store.toggleSave(po._id)"
         @comment="onComment"
         @delete-comment="onDeleteComment"
         @attend="onAttend"
@@ -181,6 +179,13 @@ import PageHeader from '../components/PageHeader.vue'
   const auth = useAuthStore()
   const userStore = useUserStore()
 
+  const TABS = [
+    { id: 'post', label: 'posts.tabs.forYou' },
+    { id: 'friends', label: 'posts.tabs.friends' },
+    { id: 'groups', label: 'posts.tabs.groups' },
+    { id: 'event', label: 'posts.tabs.events' },
+    { id: 'saved', label: 'posts.tabs.saved' }
+  ]
   const tab = ref('post')
   const showForm = ref(false)
   const showFilters = ref(false)
@@ -232,7 +237,9 @@ import PageHeader from '../components/PageHeader.vue'
   }
 
   function buildParams() {
-    const params = { type: tab.value }
+    const params = {}
+    if (tab.value === 'post' || tab.value === 'event') params.type = tab.value
+    else params.scope = tab.value
     if (filters.visibility) params.visibility = filters.visibility
     if (filters.dateFrom) params.dateFrom = filters.dateFrom
     if (filters.dateTo) params.dateTo = filters.dateTo
@@ -255,7 +262,7 @@ import PageHeader from '../components/PageHeader.vue'
 
   function setTab(value) {
     tab.value = value
-    if (value === 'post') {
+    if (value !== 'event') {
       filters.near = ''
       filters.radiusKm = 25
       filters.sort = 'date'

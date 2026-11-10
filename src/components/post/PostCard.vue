@@ -45,6 +45,9 @@
       <button type="button" class="act-btn" :aria-label="t('posts.share')" @click="share">
         <Send :size="24" />
       </button>
+      <button type="button" class="act-btn ml-auto -mr-2.5" :class="{ saved: post.saved }" :aria-pressed="!!post.saved" :aria-label="t(post.saved ? 'posts.unsave' : 'posts.save')" @click="$emit('save', post)">
+        <Bookmark :size="24" :fill="post.saved ? 'currentColor' : 'none'" />
+      </button>
     </div>
 
     <div class="post-text">
@@ -247,11 +250,11 @@ import AppIcon from '../AppIcon.vue'
   import { ref, computed, watch } from 'vue'
   import { useI18n } from 'vue-i18n'
   import { RouterLink } from 'vue-router'
-  import { MapPin, Calendar, Heart, MessageCircle, X, Users, Trash2, Send, MoreHorizontal, ChevronRight } from 'lucide-vue-next'
+  import { MapPin, Calendar, Heart, MessageCircle, X, Users, Trash2, Send, MoreHorizontal, ChevronRight, Bookmark } from 'lucide-vue-next'
   import { useAuthStore } from '../../stores/auth.js'
 
   const props = defineProps({ post: { type: Object, required: true } })
-  const emit = defineEmits(['delete', 'close-event', 'respond', 'like', 'comment', 'delete-comment', 'attend'])
+  const emit = defineEmits(['delete', 'close-event', 'respond', 'like', 'comment', 'delete-comment', 'attend', 'save'])
 
   const { t } = useI18n()
   const auth = useAuthStore()
@@ -383,7 +386,7 @@ const featuredCatch = computed(() => {
 
   .action-row { @apply flex items-center -ml-2.5; }
   .act-btn { @apply flex items-center justify-center w-11 h-11 bg-transparent border-none text-foam cursor-pointer; }
-  .act-btn.liked { @apply text-sand-text; }
+  .act-btn.liked, .act-btn.saved { @apply text-sand-text; }
 
   .post-text { @apply flex flex-col gap-1.5; }
   .likes-label { @apply text-sm font-bold text-foam; }

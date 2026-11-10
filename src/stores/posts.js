@@ -53,8 +53,21 @@ export const usePostStore = defineStore('posts', () => {
     return data
   }
 
+  // Le risposte che sostituiscono l'intero post non portano `saved` (è del
+  // solo utente corrente): lo si conserva dalla copia già in lista.
+  const keepSaved = (id, data) => ({ ...data, saved: feed.value.find(p => p._id === id)?.saved ?? current.value?.saved ?? false })
+
+  async function toggleSave(id) {
+    const { data } = await api.post(`/posts/${id}/save`)
+    const post = feed.value.find(p => p._id === id)
+    if (post) post.saved = data.saved
+    if (current.value?._id === id) current.value.saved = data.saved
+    return data
+  }
+
   async function updatePost(id, payload) {
-    const { data } = await api.patch(`/posts/${id}`, payload)
+    const { data: raw } = await api.patch(`/posts/${id}`, payload)
+    const data = keepSaved(id, raw)
     feed.value = feed.value.map(p => p._id === id ? data : p)
     if (current.value?._id === id) current.value = data
     return data
@@ -106,14 +119,16 @@ export const usePostStore = defineStore('posts', () => {
   }
 
   async function setAttendance(id, status, guests) {
-    const { data } = await api.post(`/posts/${id}/attendance`, { status, guests })
+    const { data: raw } = await api.post(`/posts/${id}/attendance`, { status, guests })
+    const data = keepSaved(id, raw)
     feed.value = feed.value.map(p => p._id === id ? data : p)
     if (current.value?._id === id) current.value = data
     return data
   }
 
   async function setEventStatus(id, status) {
-    const { data } = await api.patch(`/posts/${id}/status`, { status })
+    const { data: raw } = await api.patch(`/posts/${id}/status`, { status })
+    const data = keepSaved(id, raw)
     feed.value = feed.value.map(p => p._id === id ? data : p)
     if (current.value?._id === id) current.value = data
     return data
@@ -122,6 +137,6 @@ export const usePostStore = defineStore('posts', () => {
   return {
     feed, current, pagination, loading, error, unread,
     fetchPosts, fetchPost, createPost, updatePost, deletePost, respond, setEventStatus, setAttendance,
-    fetchUnreadCount, markSeen, addComment, deleteComment, toggleLike
+    fetchUnreadCount, markSeen, addComment, deleteComment, toggleLike, toggleSave
   }
 })

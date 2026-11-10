@@ -54,6 +54,7 @@
         v-for="p in posts.feed" :key="p._id" :post="p"
         @delete="po => posts.deletePost(po._id)"
         @like="po => posts.toggleLike(po._id, auth.user?._id)"
+        @save="po => posts.toggleSave(po._id)"
         @comment="(po, m) => posts.addComment(po._id, m)"
         @delete-comment="(po, c) => posts.deleteComment(po._id, c._id)"
         @respond="(po, m) => posts.respond(po._id, m)"
