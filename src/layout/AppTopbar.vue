@@ -13,42 +13,15 @@
     <RouterLink to="/" class="inline-flex items-center" aria-label="FishLog"><FishLogo :size="30" /></RouterLink>
 
     <div class="ml-auto flex items-center gap-2">
-      <div class="relative" ref="notifWrapper">
-        <button
-          class="relative flex items-center justify-center w-11 h-11 rounded-lg text-foam bg-surface-2 hover:bg-surface-2/70 transition-colors border-none cursor-pointer"
-          :title="t('notifications.title')"
-          @click="toggleNotifications"
-        >
-          <Bell :size="18" />
-          <span v-if="notifications.unreadCount" class="notif-dot">{{ notifications.unreadCount }}</span>
-        </button>
-
-        <div v-if="notifPanelOpen" class="notif-panel card">
-          <div class="notif-panel-header">
-            <h4>{{ t('notifications.title') }}</h4>
-            <div class="notif-panel-actions">
-              <button v-if="notifications.unreadCount" class="btn btn-ghost btn-sm" @click="notifications.markAllRead()">
-                {{ t('notifications.markAllRead') }}
-              </button>
-              <button v-if="notifications.items.length" class="btn btn-ghost btn-sm" @click="notifications.removeAll()">
-                {{ t('notifications.deleteAll') }}
-              </button>
-            </div>
-          </div>
-          <p v-if="!notifications.items.length" class="text-muted text-sm p-3">{{ t('notifications.empty') }}</p>
-          <ul v-else class="notif-list">
-            <li v-for="n in notifications.items" :key="n._id" class="notif-row" :class="{ unread: !n.read }">
-              <RouterLink :to="notificationLink(n)" class="notif-row-link" @click="onNotificationClick(n)">
-                <span>{{ t(`notifications.types.${n.type}`, { name: n.actor?.displayName || n.actor?.email || '' }) }}</span>
-                <span class="text-muted text-xs">{{ formatTime(n.createdAt) }}</span>
-              </RouterLink>
-              <button class="notif-remove" :title="t('notifications.delete')" @click="notifications.remove(n._id)">
-                <X :size="14" />
-              </button>
-            </li>
-          </ul>
-        </div>
-      </div>
+      <RouterLink
+        to="/notifications"
+        class="relative flex items-center justify-center w-11 h-11 rounded-lg text-foam bg-surface-2 hover:bg-surface-2/70 transition-colors border-none cursor-pointer"
+        :title="t('notifications.title')"
+        :aria-label="t('notifications.title')"
+      >
+        <Bell :size="18" />
+        <span v-if="notifications.unreadCount" class="notif-dot">{{ notifications.unreadCount }}</span>
+      </RouterLink>
 
       <div class="relative" ref="createWrapper">
         <button

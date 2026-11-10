@@ -252,8 +252,21 @@
 		"types": {
 			"friend_request": "{name} ti ha inviato una richiesta di amicizia",
 			"friend_accept": "{name} ha accettato la tua richiesta di amicizia",
-			"chat_message": "Nuovo messaggio da {name}"
-		}
+			"chat_message": "Nuovo messaggio da {name}",
+			"post_like": "{name} ha messo mi piace a un tuo post",
+			"post_comment": "{name} ha commentato un tuo post"
+		},
+		"messages": {
+			"friend_request": "ti ha inviato una richiesta di amicizia",
+			"friend_accept": "ha accettato la tua richiesta di amicizia",
+			"chat_message": "ti ha inviato un nuovo messaggio",
+			"post_like": "ha messo mi piace al tuo post",
+			"post_comment": "ha commentato il tuo post"
+		},
+		"groups": { "new": "Nuove", "earlier": "Prima" },
+		"accepted": "Richiesta accettata",
+		"declined": "Richiesta rifiutata",
+		"unread": "Da leggere"
 	},
 	"chat": {
 		"empty": "Nessuna conversazione: cerca un amico qui sopra per iniziare",
@@ -340,6 +353,7 @@
 			"add": "Aggiungi",
 			"accept": "Accetta",
 			"decline": "Rifiuta",
+			"message": "Scrivi un messaggio",
 			"cancel": "Annulla richiesta",
 			"remove": "Rimuovi amicizia",
 			"confirmRemove": "Rimuovere {name} dai tuoi amici?"
@@ -462,7 +476,8 @@
 			"notFound": "Sessione non trovata.",
 			"backToList": "← Torna alla lista",
 			"allSessions": "← Tutte le uscite",
-			"visibility": {
+			"linkedSession": "Uscita collegata",
+		"visibility": {
 				"private": "Privata",
 				"users": "Tutti gli utenti",
 				"group": "Gruppi"
@@ -810,6 +825,7 @@
 		"sessionPendingNotice": "Questa uscita è salvata solo su questo dispositivo. I media potranno essere caricati dopo la sincronizzazione con il server."
 	},
 	"posts": {
+		"linkedSession": "Uscita collegata",
 		"eventBadge": "Evento",
 		"comments": {
 			"placeholder": "Scrivi un commento...",
@@ -841,6 +857,12 @@
 			}
 		},
 		"form": {
+			"linkedSession": "Uscita collegata",
+			"noSession": "Nessuna uscita",
+			"linkedHint": "Luogo, specie e misure della cattura vengono mostrati sul post. Le coordinate esatte restano nascoste.",
+			"featuredCatch": "Cattura in evidenza",
+			"noCatch": "Nessuna",
+			"whoCanSee": "Chi può vederlo",
 			"typePost": "Post",
 			"typeEvent": "Evento",
 			"titlePlaceholder": "Titolo (es. Cerco compagni di pesca)",
@@ -1167,6 +1189,8 @@
 		"shop": {
 			"title": "Il tuo negozio",
 			"intro": "La verifica è completata. Completa la scheda che vedranno i compratori.",
+			"uploadLogo": "Carica logo",
+			"logoHint": "JPG, PNG o WEBP, massimo 5 MB.",
 			"name": "Nome del negozio",
 			"nameHint": "È il nome che vedono i compratori negli annunci.",
 			"description": "Descrizione",

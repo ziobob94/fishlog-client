@@ -5,7 +5,7 @@
            hover:shadow-[0_4px_24px_rgba(14,165,233,0.1)]"
   >
     <div class="flex items-center gap-3">
-      <img v-if="shop.avatar" :src="shop.avatar" class="w-12 h-12 rounded-full object-cover shrink-0" />
+      <img v-if="shop.shop?.logo || shop.avatar" :src="shop.shop?.logo || shop.avatar" class="w-12 h-12 rounded-lg object-cover shrink-0" alt="" />
       <span v-else class="avatar-placeholder">{{ initials }}</span>
       <div class="min-w-0">
         <h3 class="font-bold text-sm truncate text-foam">{{ shop.shop?.name || shop.displayName }}</h3>

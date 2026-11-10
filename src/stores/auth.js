@@ -84,6 +84,15 @@ export const useAuthStore = defineStore('auth', () => {
     return data
   }
 
+  async function uploadShopLogo(file) {
+    const body = new FormData()
+    body.append('file', file)
+    const { data } = await api.post('/auth/me/shop/logo', body)
+    user.value = data
+    localStorage.setItem('fl_user', JSON.stringify(data))
+    return data
+  }
+
   async function uploadShopDocument(file) {
     const body = new FormData()
     body.append('file', file)
@@ -131,7 +140,7 @@ export const useAuthStore = defineStore('auth', () => {
 
   return {
     token, user, isLoggedIn, setAuth, clearAuth, initAuth, login, register, fetchMe, logout,
-    updateProfile, updateNotificationPreferences, updateMarketPreferences, updateShop, requestShopSite, uploadShopDocument, uploadAvatar, changePassword, changeEmail, deleteAccount,
+    updateProfile, updateNotificationPreferences, updateMarketPreferences, updateShop, requestShopSite, uploadShopDocument, uploadShopLogo, uploadAvatar, changePassword, changeEmail, deleteAccount,
     forgotPassword, resetPassword
   }
 })

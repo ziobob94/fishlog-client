@@ -81,6 +81,16 @@
       <h1>{{ t('seller.shop.title') }}</h1>
       <p class="text-muted">{{ t('seller.shop.intro') }}</p>
 
+      <div class="logo-row">
+        <img v-if="logoPreview || auth.user.shop.logo" :src="logoPreview || auth.user.shop.logo" class="logo-box" alt="" />
+        <span v-else class="logo-box logo-empty"><AppIcon name="foto" :size="24" /></span>
+        <div>
+          <label for="sh-logo" class="btn btn-secondary btn-sm logo-btn">{{ t('seller.shop.uploadLogo') }}</label>
+          <input id="sh-logo" type="file" accept="image/jpeg,image/png,image/webp" class="sr-only" @change="onLogo" />
+          <p class="text-muted text-xs mt-1">{{ t('seller.shop.logoHint') }}</p>
+        </div>
+      </div>
+
       <div class="form-group">
         <label for="sh-name">{{ t('seller.shop.name') }}</label>
         <input id="sh-name" v-model="shop.name" type="text" required />
@@ -162,6 +172,14 @@ const shop = ref({
 const confirmed = ref(false)
 const docFile = ref(null)
 const hasDocument = computed(() => !!auth.user?.shop?.documentUploaded)
+const logoFile = ref(null)
+const logoPreview = ref('')
+function onLogo(e) {
+  const f = e.target.files?.[0]
+  if (!f) return
+  logoFile.value = f
+  logoPreview.value = URL.createObjectURL(f)
+}
 function onFile(e) { docFile.value = e.target.files?.[0] || null }
 const saving = ref(false)
 const saved = ref(false)
@@ -184,6 +202,7 @@ async function submitRequest() {
 async function saveShop(publish = true) {
   saving.value = true; error.value = ''; saved.value = false
   try {
+    if (logoFile.value) await auth.uploadShopLogo(logoFile.value)
     await auth.updateShop({ ...shop.value })
     saved.value = true
     router.push(publish === false ? '/market' : '/market/new')
@@ -228,6 +247,9 @@ async function siteRequest(requested) {
 .check-row.active { @apply border-ocean; background: var(--ocean-glow); }
 .check-row input { @apply w-5 h-5 shrink-0; }
 .readonly p { @apply m-0; }
+.logo-row { @apply flex items-center gap-4; }
+.logo-box { @apply w-20 h-20 shrink-0 rounded-xl object-cover border-2 border-dashed border-ocean/60 flex items-center justify-center text-ocean-text; background: var(--ocean-glow); }
+.logo-btn { @apply cursor-pointer; letter-spacing: 0; text-transform: none; }
 .site-actions { @apply flex flex-col gap-2 mt-1; }
 .success-msg { @apply text-success-text text-sm; }
 .sr-only { @apply absolute w-px h-px overflow-hidden; clip: rect(0 0 0 0); }
