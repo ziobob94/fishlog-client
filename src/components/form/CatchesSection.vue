@@ -37,16 +37,17 @@
             </div>
             <div class="field">
               <span class="mobile-label">{{ t('catchesSection.weightLabel') }}</span>
-              <input v-model.number="c.weightKg" type="number" step="0.01" min="0" :placeholder="t('catchesSection.weightPlaceholder')" @click.stop />
+              <input v-model.number="c.weightKg" :data-weight="i" type="number" inputmode="decimal" step="0.01" min="0" :placeholder="t('catchesSection.weightPlaceholder')" @click.stop />
             </div>
             <div class="field">
               <span class="mobile-label">{{ t('catchesSection.lengthLabel') }}</span>
-              <input v-model.number="c.lengthCm" type="number" step="0.5" min="0" :placeholder="t('catchesSection.lengthPlaceholder')" @click.stop />
+              <input v-model.number="c.lengthCm" type="number" inputmode="decimal" step="0.5" min="0" :placeholder="t('catchesSection.lengthPlaceholder')" @click.stop />
             </div>
           </div>
 
           <div class="row-actions">
-            <span v-show="c.released" class="released-badge" @click.stop :title="t('catchesSection.releasedLabel')">↺</span>
+            <button type="button" class="row-icon-btn row-released" :class="{ on: c.released }" :aria-pressed="!!c.released"
+              @click.stop="c.released = !c.released" :title="t('catchesSection.releasedLabel')">↺</button>
             <div class="row-photo-actions" @click.stop>
               <label class="row-icon-btn" :title="t('catchesSection.takePhoto')">
                 <Camera :size="18" />
@@ -222,7 +223,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onBeforeUnmount, computed } from 'vue'
+import { ref, onMounted, onBeforeUnmount, computed, nextTick } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { Camera, Trash2, X, Upload, ChevronDown } from 'lucide-vue-next'
 import SpeciesQuickAdd from './SpeciesQuickAdd.vue'
@@ -401,6 +402,9 @@ function addCatch(species) {
   expanded.value = new Set([index]) // apre solo la nuova riga, in modo compatto
   openSubs.value = new Map([[index, new Set(['details'])]])
   searchQuery.value = ''
+  // Scelta la specie, il campo successivo da compilare è il peso: ci si
+  // porta il cursore (se la specie manca, resta alla compilazione del nome).
+  if (species) nextTick(() => document.querySelector(`[data-weight="${index}"]`)?.focus())
 }
 
 function add() {
@@ -505,6 +509,8 @@ function confirmRemove() {
 }
 .catches-head span:nth-child(1) { padding-left: .1rem; }
 
+.row-released { font-size: 1.05rem; }
+.row-released.on { background: rgba(92, 217, 138, .15); border-color: var(--success, #5cd98a); color: var(--success, #5cd98a); }
 .released-badge {
   align-items: center; color: var(--success, #5cd98a); cursor: default;
   display: flex; font-size: 1.05rem; justify-content: center;

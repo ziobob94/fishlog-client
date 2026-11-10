@@ -481,7 +481,16 @@
 		"ongoing": {
 			"close": "Chiudi uscita",
 			"closed": "Uscita chiusa",
-			"editFull": "Modifica altri dati"
+			"editFull": "Modifica altri dati",
+			"count": "Nessun pesce | 1 pesce | {n} pesci",
+			"hint": "Cerca la specie o tocca Aggiungi: ogni pesce si salva da solo.",
+			"saving": "Salvataggio…",
+			"savedAuto": "Salvato automaticamente",
+			"needsSpecies": "Indica la specie per salvare questo pesce.",
+			"backToSummary": "Riepilogo",
+			"closeDialogTitle": "Chiudere l'uscita?",
+			"closeDialogText": "L'uscita sarà segnata come conclusa, con {n} pesci registrati. Potrai comunque modificarla dopo. | L'uscita sarà segnata come conclusa, con {n} pesci registrati. Potrai comunque modificarla dopo.",
+			"keepFishing": "Continua a pescare"
 		},
 		"view": {
 			"notFound": "Sessione non trovata.",
