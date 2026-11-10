@@ -1,8 +1,6 @@
 <template>
   <div>
-    <div class="page-header">
-      <h2 class="icon-inline"><Trophy :size="20" /> {{ t('leaderboard.title') }}</h2>
-    </div>
+    <PageHeader :title="t('leaderboard.title')" back />
 
     <div class="tabs" role="tablist">
       <button
@@ -48,6 +46,7 @@
 </template>
 
 <script setup>
+import PageHeader from '../components/PageHeader.vue'
 import { ref, computed, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { Trophy } from 'lucide-vue-next'

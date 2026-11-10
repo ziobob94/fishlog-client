@@ -2,7 +2,7 @@
   <header class="sticky top-0 z-[100] flex items-center gap-4 px-5 py-3 border-b border-border"
     style="background: rgb(var(--color-ink) / 0.92); backdrop-filter: blur(12px)">
     <button
-      class="flex flex-col justify-center gap-1.5 w-11 h-11 items-center bg-transparent border-none cursor-pointer group"
+      class="max-md:hidden flex flex-col justify-center gap-1.5 w-11 h-11 items-center bg-transparent border-none cursor-pointer group"
       :aria-label="t('nav.menu')"
       @click="$emit('toggle-sidebar')"
     >
@@ -23,7 +23,12 @@
         <span v-if="notifications.unreadCount" class="notif-dot">{{ notifications.unreadCount }}</span>
       </RouterLink>
 
-      <div class="relative" ref="createWrapper">
+      <RouterLink to="/profile" class="md:hidden topbar-avatar" :aria-label="t('nav.profile')">
+        <img v-if="auth.user?.avatar" :src="auth.user.avatar" alt="" />
+        <span v-else>{{ userInitials }}</span>
+      </RouterLink>
+
+      <div class="relative max-md:hidden" ref="createWrapper">
         <button
           class="relative flex items-center justify-center w-11 h-11 rounded-lg text-ink bg-ocean hover:bg-ocean/90 transition-colors border-none cursor-pointer"
           :title="plusTitle"
@@ -101,6 +106,7 @@ const route = useRoute()
 const router = useRouter()
 const offline = useOfflineStore()
 const sessions = useSessionStore()
+const userInitials = computed(() => (auth.user?.displayName || auth.user?.email || '?').split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2))
 const auth = useAuthStore()
 const notifications = useNotificationStore()
 
@@ -210,6 +216,11 @@ const statusTitle = computed(() => {
 </script>
 
 <style scoped>
+.topbar-avatar {
+  @apply flex items-center justify-center w-11 h-11 rounded-full border border-ocean text-ocean-text font-bold text-sm overflow-hidden no-underline;
+  background: var(--ocean-glow);
+}
+.topbar-avatar img { @apply w-full h-full object-cover; }
 .notif-dot {
   @apply absolute -top-1 -right-1 bg-danger text-white text-[0.65rem] font-bold rounded-full px-1.5 py-0.5 leading-none;
 }

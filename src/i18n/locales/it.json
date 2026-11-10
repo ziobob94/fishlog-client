@@ -316,6 +316,7 @@
 				"newTitle": "Nuovo gruppo chat",
 				"nameLabel": "Nome del gruppo",
 				"namePlaceholder": "Es. Uscite al lago",
+				"selected": "{n} selezionati",
 				"membersLabel": "Aggiungi almeno due amici",
 				"noFriends": "Non hai ancora amici da aggiungere: fatti prima qualche amicizia",
 				"create": "Crea gruppo",
@@ -341,7 +342,7 @@
 	"friends": {
 		"search": {
 			"label": "Cerca persone",
-			"placeholder": "Nome o email...",
+			"placeholder": "Cerca per nome o email",
 			"noResults": "Nessun utente trovato"
 		},
 		"received": { "title": "Richieste ricevute" },
@@ -370,6 +371,7 @@
 			"accepted": "Richiesta accettata"
 		},
 		"profile": {
+		"more": "Altro",
 			"notFound": "Utente non trovato.",
 			"memberSince": "Su FishLog dal {date}",
 			"commonGroups": "Gruppi in comune",
@@ -400,6 +402,7 @@
 			"market": { "title": "Market", "text": "Compra e vendi attrezzatura nuova e usata tra appassionati.", "cta": "Apri il market" },
 			"species": { "title": "Specie e stagioni", "text": "Calendario delle catture, esche, attrezzatura e normativa con la fonte citata, per ogni specie.", "cta": "Esplora le specie" }
 		},
+		"tiles": { "species": "Specie e stagioni", "stats": "Le mie statistiche" },
 		"quick": { "title": "Accessi rapidi", "sessions": "Uscite", "stats": "Statistiche", "leaderboard": "Classifica", "friends": "Amici", "profile": "Profilo" },
 		"liveConditions": {
 			"title": "Oggi dove sei",
@@ -588,7 +591,13 @@
 			"confirm": "L'operazione non è reversibile."
 		}
 	},
+	"sessions": {
+		"since": "dalle {time}",
+		"resume": "Riprendi",
+		"catchesCount": "{n} catture"
+	},
 	"sessionFilters": {
+		"dates": "Date",
 		"searchPlaceholder": "Cerca luogo, note...",
 		"all": "Tutte",
 		"allTechniques": "Tutte le tecniche",
@@ -876,6 +885,7 @@
 		},
 		"tabs": {
 			"posts": "Post",
+			"forYou": "Per te",
 			"events": "Eventi"
 		},
 		"filters": {
@@ -997,6 +1007,10 @@
 			"location": "Zona",
 			"locationPlaceholder": "Es. Genova",
 			"photos": "Foto",
+			"cover": "Copertina",
+			"add": "Aggiungi",
+			"titlePlaceholder": "es. Canna spinning 2,70 m",
+			"descriptionPlaceholder": "Stato, accessori inclusi, modalità di ritiro",
 			"addPhotos": "Aggiungi foto",
 			"publish": "Pubblica annuncio",
 			"saving": "Salvataggio..."

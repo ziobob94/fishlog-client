@@ -1,8 +1,6 @@
 <template>
   <div>
-    <div class="page-header">
-      <RouterLink to="/friends" class="btn btn-ghost btn-sm">{{ t('common.back') }}</RouterLink>
-    </div>
+    <PageHeader :title="user?.displayName || t('nav.profile')" back />
 
     <div v-if="loading" class="state-center"><div class="spinner"></div></div>
 
@@ -45,6 +43,7 @@
 </template>
 
 <script setup>
+import PageHeader from '../components/PageHeader.vue'
 import TideDivider from '../components/TideDivider.vue'
 import { ref, computed, onMounted } from 'vue'
 import { useRoute, RouterLink } from 'vue-router'

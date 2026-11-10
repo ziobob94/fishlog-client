@@ -1,5 +1,7 @@
 <template>
   <div>
+    <PageHeader :title="t('nav.myListings')" back />
+
     <div v-if="!store.mine.length" class="state-center">
       <p class="text-muted">{{ t('market.mine.empty') }}</p>
     </div>
@@ -11,6 +13,7 @@
 </template>
 
 <script setup>
+import PageHeader from '../components/PageHeader.vue'
 import { onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useMarketStore } from '../stores/market.js'

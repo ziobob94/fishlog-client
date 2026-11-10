@@ -1,27 +1,33 @@
 <template>
   <div>
+    <PageHeader :title="t('nav.profile')" back />
+
+    <div class="identity">
+      <div class="avatar-wrap">
+        <img v-if="auth.user?.avatar" :src="auth.user.avatar" class="avatar" alt="" />
+        <span v-else class="avatar-placeholder">{{ initials }}</span>
+        <input ref="fileInput" type="file" accept="image/jpeg,image/png,image/webp" class="hidden" @change="onAvatarChange" />
+        <button type="button" class="avatar-edit" :disabled="uploadingAvatar" :aria-label="t('profile.account.changeAvatar')" @click="fileInput.click()">
+          <Pencil :size="16" />
+        </button>
+      </div>
+      <div class="identity-text">
+        <p class="identity-name">{{ auth.user?.displayName || auth.user?.email }}</p>
+        <p v-if="auth.user?.displayName" class="identity-email">{{ auth.user?.email }}</p>
+      </div>
+    </div>
+
     <div class="profile-grid">
       <!-- Account -->
       <section class="card">
         <h3>{{ t('profile.account.title') }}</h3>
-        <div class="avatar-row">
-          <img v-if="auth.user?.avatar" :src="auth.user.avatar" class="avatar" />
-          <span v-else class="avatar-placeholder">{{ initials }}</span>
-          <div class="flex flex-col gap-1">
-            <input ref="fileInput" type="file" accept="image/jpeg,image/png,image/webp" class="hidden" @change="onAvatarChange" />
-            <button class="btn btn-secondary btn-sm" :disabled="uploadingAvatar" @click="fileInput.click()">
-              {{ uploadingAvatar ? t('profile.account.uploading') : t('profile.account.changeAvatar') }}
-            </button>
-          </div>
-        </div>
-
-        <div class="form-group mt-3">
-          <label>{{ t('profile.account.nameLabel') }}</label>
-          <input v-model="displayName" type="text" />
+        <div class="form-group">
+          <label for="pf-name">{{ t('profile.account.nameLabel') }}</label>
+          <input id="pf-name" v-model="displayName" type="text" />
         </div>
         <p v-if="accountError" class="error-msg mt-2">{{ accountError }}</p>
         <p v-if="accountSaved" class="success-msg mt-2">{{ t('common.save') }} ✓</p>
-        <button class="btn btn-primary btn-sm mt-2" :disabled="savingAccount" @click="saveAccount">
+        <button class="btn btn-primary w-full mt-3" :disabled="savingAccount" @click="saveAccount">
           {{ savingAccount ? t('profile.account.saving') : t('common.save') }}
         </button>
       </section>
@@ -262,14 +268,25 @@
         </div>
       </div>
     </Teleport>
+  
+    <nav class="more-links" :aria-label="t('profile.more')">
+      <RouterLink to="/groups" class="more-link">{{ t('nav.groups') }} <ChevronRight :size="18" /></RouterLink>
+      <RouterLink to="/board" class="more-link">{{ t('nav.board') }} <ChevronRight :size="18" /></RouterLink>
+      <RouterLink to="/classifica" class="more-link">{{ t('nav.leaderboard') }} <ChevronRight :size="18" /></RouterLink>
+      <RouterLink to="/species" class="more-link">{{ t('nav.species') }} <ChevronRight :size="18" /></RouterLink>
+      <RouterLink v-if="auth.user?.role === 'admin'" to="/admin" class="more-link">{{ t('nav.admin') }} <ChevronRight :size="18" /></RouterLink>
+    </nav>
+
+    <button type="button" class="logout-btn" @click="doLogout">{{ t('nav.logout') }}</button>
   </div>
 </template>
 
 <script setup>
+import PageHeader from '../components/PageHeader.vue'
 import { ref, computed, onMounted } from 'vue'
 import { useRouter, RouterLink } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { Sun, Moon } from 'lucide-vue-next'
+import { Sun, Moon, Pencil, ChevronRight } from 'lucide-vue-next'
 import { useAuthStore } from '../stores/auth.js'
 import { useFeaturesStore } from '../stores/features.js'
 import { useMarketStore } from '../stores/market.js'
@@ -283,6 +300,7 @@ const features = useFeaturesStore()
 const theme = useThemeStore()
 const market = useMarketStore()
 const router = useRouter()
+function doLogout() { auth.logout(); router.push('/login') }
 
 onMounted(() => {
   if (!market.categories.length) market.fetchCategories()
@@ -507,11 +525,22 @@ async function doDeleteAccount() {
 .theme-opt { @apply flex-1 inline-flex items-center justify-center gap-1.5 min-h-[44px] rounded-lg bg-transparent border-none text-sm font-semibold text-foam cursor-pointer; }
 .theme-opt.active { @apply bg-ocean text-on-primary; }
 
-.avatar-row { @apply flex items-center gap-4; }
-.avatar { @apply w-16 h-16 rounded-full object-cover; }
+.identity { @apply flex items-center gap-4 mb-5; }
+.avatar-wrap { @apply relative shrink-0; }
+.identity-text { @apply min-w-0; }
+.identity-name { @apply text-xl font-bold text-foam truncate; }
+.identity-email { @apply text-sm text-muted truncate; }
+.avatar-edit {
+  @apply absolute bottom-0 right-0 w-9 h-9 flex items-center justify-center rounded-full bg-ocean text-on-primary border-2 border-ink cursor-pointer;
+}
+.more-links { @apply flex flex-col mt-4 rounded-xl border border-border bg-surface overflow-hidden; }
+.more-link { @apply flex items-center justify-between px-4 min-h-[52px] text-foam font-bold no-underline border-b border-border; }
+.more-link:last-child { @apply border-b-0; }
+.logout-btn { @apply w-full min-h-[48px] mt-4 rounded-xl border border-danger text-danger bg-transparent font-bold cursor-pointer; }
+.avatar { @apply w-[104px] h-[104px] rounded-full object-cover border-2 border-ocean; }
 .avatar-placeholder {
-  @apply w-16 h-16 rounded-full border border-ocean text-ocean-text flex items-center
-         justify-center text-lg font-bold;
+  @apply w-[104px] h-[104px] rounded-full border-2 border-ocean text-ocean-text flex items-center
+         justify-center text-3xl font-bold;
   background: var(--ocean-glow);
 }
 .hidden { display: none; }

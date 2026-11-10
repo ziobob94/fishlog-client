@@ -2,12 +2,11 @@
   <div :class="{ 'chat-fullheight': route.params.userId }">
     <!-- Lista conversazioni -->
     <template v-if="!route.params.userId">
-      <header class="page-header">
-        <h1 class="chat-title">{{ t('chat.title') }}</h1>
+      <PageHeader :title="t('chat.title')" back="/feed">
         <RouterLink to="/friends" class="icon-btn" :title="t('chat.friendsLink')" :aria-label="t('chat.friendsLink')">
           <UserPlus :size="18" />
         </RouterLink>
-      </header>
+      </PageHeader>
       <div class="chat-search-wrap mb-3">
         <Search :size="16" class="chat-search-icon" />
         <input
@@ -91,7 +90,8 @@
             <div class="conversation-body">
               <div class="conversation-info">
                 <span class="conversation-name" :class="{ unread: c.unreadCount }">
-                  {{ c.type === 'group' ? c.name : (c.user?.displayName || c.user?.email) }}
+                  <span class="truncate">{{ c.type === 'group' ? c.name : (c.user?.displayName || c.user?.email) }}</span>
+                  <Star v-if="c.favorite" :size="14" fill="currentColor" class="fav-star shrink-0" :aria-label="t('chat.favorite')" />
                 </span>
                 <span class="conversation-preview" :class="{ unread: c.unreadCount }">
                   <CheckCheck v-if="messageTick(c) === 'read'" :size="14" class="tick tick-read shrink-0" />
@@ -100,11 +100,6 @@
                 </span>
               </div>
               <div class="conversation-meta">
-                <button
-                  type="button" class="conversation-favorite" :class="{ active: c.favorite }"
-                  :title="t(c.favorite ? 'chat.unfavorite' : 'chat.favorite')"
-                  @click.stop="toggleFavorite(c)"
-                ><Star :size="15" :fill="c.favorite ? 'currentColor' : 'none'" /></button>
                 <span class="conversation-time" :class="{ 'conversation-time-unread': c.unreadCount }">{{ formatRelativeTime(c.lastMessageAt) }}</span>
                 <span v-if="c.unreadCount" class="badge badge-ocean conversation-badge">{{ c.unreadCount }}</span>
               </div>
@@ -127,6 +122,9 @@
           </span>
         </RouterLink>
         <h2 v-else>...</h2>
+        <button v-if="currentConversation" type="button" class="icon-btn ml-auto" :class="{ 'is-fav': currentConversation.favorite }" :aria-pressed="!!currentConversation.favorite" :aria-label="t(currentConversation.favorite ? 'chat.unfavorite' : 'chat.favorite')" @click="toggleFavorite(currentConversation)">
+          <Star :size="18" :fill="currentConversation.favorite ? 'currentColor' : 'none'" />
+        </button>
       </div>
 
       <div v-if="threadError" class="error-banner"><AlertTriangle :size="16" /> {{ threadError }}</div>
@@ -147,6 +145,7 @@
   import { useAuthStore } from '../stores/auth.js'
   import { useDebouncedFn } from '../composables/useDebouncedFn.js'
   import { useToast } from '../composables/useToast.js'
+  import PageHeader from '../components/PageHeader.vue'
   import ChatThread from '../components/chat/ChatThread.vue'
 
   const { t } = useI18n()
@@ -267,6 +266,7 @@
     }
   }
 
+  const currentConversation = computed(() => chatStore.conversations.find(c => c._id === conversationId.value))
   const friend = computed(() => friendStore.friends.find(f => f._id === route.params.userId))
 
   function initials(u) {
@@ -401,48 +401,40 @@
   }
 
   .conversation-name {
-    @apply text-sm font-medium text-foam truncate;
+    @apply flex items-center gap-1.5 text-base font-bold text-foam min-w-0;
   }
-  .conversation-name.unread {
-    @apply font-bold;
-  }
+  .fav-star { @apply text-sand-text; }
 
   .conversation-preview {
-    @apply flex items-center gap-1 text-xs text-muted min-w-0;
+    @apply flex items-center gap-1 text-sm text-muted min-w-0;
   }
   .conversation-preview.unread {
-    @apply text-foam font-medium;
+    @apply text-foam font-bold;
   }
   .conversation-preview-text {
     @apply truncate min-w-0;
   }
 
   .conversation-meta {
-    @apply flex flex-col items-end gap-1 shrink-0 self-stretch;
+    @apply flex flex-col items-end justify-center gap-1.5 shrink-0 self-stretch;
   }
 
-  .conversation-favorite {
-    @apply flex items-center justify-center w-11 h-11 -mt-3 -mr-3 text-muted bg-transparent border-none cursor-pointer p-0 hover:text-sand-text transition-colors;
-  }
-  .conversation-favorite.active {
-    @apply text-sand-text;
-  }
-
+  
   .conversation-time {
     @apply text-xs text-muted font-mono;
   }
   .conversation-time-unread { @apply text-ocean-text; }
 
   .conversation-badge {
-    @apply mt-auto bg-ocean text-on-primary border-ocean rounded-full min-w-[1.5rem] h-6 inline-flex items-center justify-center font-bold;
+    @apply bg-ocean text-on-primary border-ocean rounded-full min-w-[1.5rem] h-6 inline-flex items-center justify-center font-bold;
   }
 
   .conversation-avatar {
-    @apply w-12 h-12 sm:w-14 sm:h-14 rounded-full object-cover shrink-0 my-2.5;
+    @apply w-[52px] h-[52px] rounded-full object-cover shrink-0 my-2.5;
   }
 
   .conversation-avatar-placeholder {
-    @apply w-12 h-12 sm:w-14 sm:h-14 rounded-full border border-ocean text-ocean-text flex items-center justify-center text-base font-bold shrink-0 my-2.5;
+    @apply w-[52px] h-[52px] rounded-full border border-ocean text-ocean-text flex items-center justify-center text-base font-bold shrink-0 my-2.5;
     background: var(--ocean-glow);
   }
 
@@ -463,6 +455,8 @@
   .icon-btn {
     @apply flex items-center justify-center w-11 h-11 rounded-xl text-foam bg-surface border border-border cursor-pointer hover:border-ocean hover:text-ocean-text transition-colors shrink-0;
   }
+
+  .icon-btn.is-fav { @apply text-sand-text; }
 
   .chat-fullheight {
     @apply flex flex-col flex-1 min-h-0;

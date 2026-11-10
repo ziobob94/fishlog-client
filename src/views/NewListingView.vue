@@ -5,6 +5,7 @@
     <RouterLink to="/market/sell" class="btn btn-primary mt-3">{{ t('seller.becomeSeller') }}</RouterLink>
   </div>
   <div v-else>
+    <PageHeader :title="t('market.newListing')" back close-icon />
     <ListingForm
       :categories="store.categories"
       :submit-label="t('market.form.publish')"
@@ -16,6 +17,7 @@
 </template>
 
 <script setup>
+import PageHeader from '../components/PageHeader.vue'
 import { ref, computed, onMounted } from 'vue'
 import { RouterLink, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'

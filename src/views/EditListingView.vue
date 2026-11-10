@@ -1,5 +1,6 @@
 <template>
   <div v-if="store.current">
+    <PageHeader :title="t('common.edit')" back close-icon />
     <ListingForm
       :initial="store.current"
       :categories="store.categories"
@@ -17,6 +18,7 @@ import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useMarketStore } from '../stores/market.js'
+import PageHeader from '../components/PageHeader.vue'
 import ListingForm from '../components/market/ListingForm.vue'
 
 const { t } = useI18n()

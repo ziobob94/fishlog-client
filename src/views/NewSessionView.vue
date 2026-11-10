@@ -1,8 +1,6 @@
 <template>
   <div>
-    <div class="page-header">
-      <RouterLink to="/sessions" class="btn btn-ghost btn-sm">{{ t('common.back') }}</RouterLink>
-    </div>
+    <PageHeader :title="t('nav.newSession')" back close-icon />
 
     <div v-if="error" class="error-banner" style="display:inline-flex;align-items:center;gap:.4rem"><AlertTriangle :size="16" /> {{ error }}</div>
 
@@ -13,6 +11,7 @@
 </template>
 
 <script setup>
+import PageHeader from '../components/PageHeader.vue'
 import { computed, ref, onMounted } from 'vue'
 import { useRouter, RouterLink } from 'vue-router'
 import { useI18n } from 'vue-i18n'

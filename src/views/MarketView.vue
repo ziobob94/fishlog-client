@@ -1,9 +1,8 @@
 <template>
   <div>
-    <header class="market-head">
-      <h1 class="market-title">{{ t('market.title') }}</h1>
+    <PageHeader :title="t('market.title')">
       <RouterLink to="/market/new" class="btn btn-primary btn-sm"><Plus :size="16" /> {{ t('market.sell') }}</RouterLink>
-    </header>
+    </PageHeader>
 
     <div class="segmented" role="tablist">
       <button
@@ -137,6 +136,7 @@
 </template>
 
 <script setup>
+import PageHeader from '../components/PageHeader.vue'
 import { ref, computed, watch, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { RouterLink } from 'vue-router'

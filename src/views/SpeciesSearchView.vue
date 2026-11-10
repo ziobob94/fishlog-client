@@ -1,8 +1,6 @@
 <template>
   <div>
-    <div class="page-header">
-      <h2>{{ t('species.searchTitle') }}</h2>
-    </div>
+    <PageHeader :title="t('species.searchTitle')" back />
 
     <input
       v-model="query" type="search" :placeholder="t('species.searchPlaceholder')"
@@ -31,6 +29,7 @@
 </template>
 
 <script setup>
+import PageHeader from '../components/PageHeader.vue'
 import { ref } from 'vue'
 import { RouterLink } from 'vue-router'
 import { useI18n } from 'vue-i18n'

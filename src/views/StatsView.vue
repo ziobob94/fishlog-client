@@ -1,5 +1,7 @@
 <template>
   <div>
+    <PageHeader :title="t('nav.stats')" back />
+
     <div v-if="loading" class="state-center"><div class="spinner"></div></div>
 
     <template v-else>
@@ -47,6 +49,7 @@
 </template>
 
 <script setup>
+import PageHeader from '../components/PageHeader.vue'
 import { ref, computed, onMounted } from 'vue'
 import { RouterLink } from 'vue-router'
 import { useI18n } from 'vue-i18n'
