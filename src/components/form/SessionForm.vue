@@ -39,15 +39,15 @@
       </div>
       <div class="form-group">
         <label>{{ t('sessionForm.fields.dateLabel') }} <span class="required-mark">*</span><FieldInfo :text="t('sessionForm.fields.dateInfo')" /></label>
-        <input v-model="f.date" type="date" required :class="{ 'field-missing': !f.date }" />
+        <input v-model="f.date" type="date" v-ph="'gg/mm/aaaa'" required :class="{ 'field-missing': !f.date }" />
       </div>
       <div class="form-group">
         <label>{{ t('sessionForm.fields.startTimeLabel') }}<FieldInfo :text="t('sessionForm.fields.startTimeInfo')" /></label>
-        <input v-model="f.startTime" type="time" :class="{ 'is-empty': !f.startTime }" data-placeholder="--:--" />
+        <input v-model="f.startTime" type="time" v-ph="'--:--'" />
       </div>
       <div class="form-group">
         <label>{{ t('sessionForm.fields.endTimeLabel') }}<FieldInfo :text="t('sessionForm.fields.endTimeInfo')" /></label>
-        <input v-model="f.endTime" type="time" :class="{ 'is-empty': !f.endTime }" data-placeholder="--:--" />
+        <input v-model="f.endTime" type="time" v-ph="'--:--'" />
       </div>
       <div class="form-group">
         <label>{{ t('sessionForm.fields.techniqueLabel') }}<FieldInfo :text="t('sessionForm.fields.techniqueInfo')" /></label>
@@ -184,7 +184,7 @@
       </div>
       <div class="form-group">
         <label>{{ t('sessionForm.fields.waterTempLabel') }}<FieldInfo :text="t('sessionForm.fields.waterTempInfo')" /></label>
-        <input v-model.number="f.sea.waterTemp" type="number" step="0.5" />
+        <input v-model.number="f.sea.waterTemp" type="number" step="0.5" placeholder="°C" />
       </div>
 
       <!-- MARE: marea -->
@@ -231,15 +231,15 @@
       </div>
       <div class="form-group">
         <label>{{ t('sessionForm.fields.windSpeedLabel') }}<FieldInfo :text="t('sessionForm.fields.windSpeedInfo')" /></label>
-        <input v-model.number="f.weather.windSpeed" type="number" min="0" />
+        <input v-model.number="f.weather.windSpeed" type="number" min="0" placeholder="km/h" />
       </div>
       <div class="form-group">
         <label>{{ t('sessionForm.fields.tempAirLabel') }}<FieldInfo :text="t('sessionForm.fields.tempAirInfo')" /></label>
-        <input v-model.number="f.weather.tempAir" type="number" step="0.5" />
+        <input v-model.number="f.weather.tempAir" type="number" step="0.5" placeholder="°C" />
       </div>
       <div class="form-group">
         <label>{{ t('sessionForm.fields.pressureLabel') }}<FieldInfo :text="t('sessionForm.fields.pressureInfo')" /></label>
-        <input v-model.number="f.weather.pressure" type="number" />
+        <input v-model.number="f.weather.pressure" type="number" placeholder="hPa" />
       </div>
       <div class="form-group full">
         <label>{{ t('sessionForm.fields.weatherNotesLabel') }}<FieldInfo :text="t('sessionForm.fields.weatherNotesInfo')" /></label>

@@ -33,5 +33,20 @@ if ('serviceWorker' in navigator && import.meta.env.PROD) {
   window.addEventListener('load', () => navigator.serviceWorker.register('/sw.js').catch(() => {}))
 }
 
+// Segnaposto per i campi data/ora: iOS Safari li mostra completamente vuoti.
+// Uso: <input type="date" v-ph="'gg/mm/aaaa'" />  (stile in main.css, solo iOS)
+function syncPh(el, binding) {
+  el.dataset.placeholder = binding.value || ''
+  el.classList.toggle('is-empty', !el.value)
+}
+app.directive('ph', {
+  mounted(el, binding) {
+    syncPh(el, binding)
+    el.addEventListener('input', () => syncPh(el, binding))
+    el.addEventListener('change', () => syncPh(el, binding))
+  },
+  updated: syncPh
+})
+
 app.mount('#app')
 setupFormA11y()

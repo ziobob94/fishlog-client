@@ -19,7 +19,7 @@
     />
 
     <div v-if="form.type === 'event'" class="event-fields">
-      <input v-model="form.event.date" type="datetime-local" />
+      <input v-model="form.event.date" type="datetime-local" v-ph="'gg/mm/aaaa  --:--'" />
       <LocationPicker
         :lat="form.event.location.lat"
         :lng="form.event.location.lng"
