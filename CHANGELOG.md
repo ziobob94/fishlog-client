@@ -1,3 +1,10 @@
+# [1.38.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.37.0...client-v1.38.0) (2026-11-10)
+
+
+### Features
+
+* **design:** Dettaglio uscita, Modifica uscita, Specie, Classifica, Accesso, Registrazione, Venditore allineati ai mockup; iniziali a due lettere ([2e1d358](https://github.com/ziobob94/fishlog-client/commit/2e1d3582395c50492c1da5d6df2d09b3070bccc9))
+
 # [1.37.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.36.0...client-v1.37.0) (2026-11-10)
 
 
