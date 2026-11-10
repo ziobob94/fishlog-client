@@ -1,3 +1,17 @@
+# [1.34.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.33.0...client-v1.34.0) (2026-11-10)
+
+
+### Bug Fixes
+
+* **forms:** collega etichette e campi, caselle e radio con dimensione propria, hover link accessibile ([11fda94](https://github.com/ziobob94/fishlog-client/commit/11fda94f4062b750d73dfddbd48ff4194a27f9de))
+
+
+### Features
+
+* **design:** classifica con podio e punteggi in mono ([cc476bf](https://github.com/ziobob94/fishlog-client/commit/cc476bf2b96f10d4b4fecbda9754063a51d43ef7))
+* **design:** scelta tema a segmenti nel profilo ([cdce764](https://github.com/ziobob94/fishlog-client/commit/cdce7648a8cd234a5fa41b4ecb747c0b0cab1706))
+* **market:** caricamento del documento di verifica nel percorso venditore e vista admin ([69c7c43](https://github.com/ziobob94/fishlog-client/commit/69c7c43500cb205edddc9c63476945dbe18dcffd))
+
 # [1.33.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.32.0...client-v1.33.0) (2026-11-09)
 
 
