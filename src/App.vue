@@ -27,10 +27,10 @@
       class="flex flex-col flex-1 min-w-0 min-h-0 transition-[margin] duration-300"
       :class="sidebarLocked ? 'ml-60' : 'ml-0'"
     >
-      <AppTopbar @toggle-sidebar="toggleSidebar" />
+      <AppTopbar :class="{ 'max-md:hidden': route.meta.ownHeader }" @toggle-sidebar="toggleSidebar" />
       <main
         class="flex-1 w-full max-w-[1100px] mx-auto px-4 sm:px-6 min-w-0"
-        :class="[isFullHeight ? 'flex flex-col min-h-0 overflow-hidden' : 'py-8', showBottomNav ? 'pb-[calc(var(--bottom-nav-h)+1rem)] md:pb-8' : '']"
+        :class="[isFullHeight ? 'flex flex-col min-h-0 overflow-hidden' : (route.meta.ownHeader ? 'pt-4 pb-8 md:py-8' : 'py-8'), showBottomNav ? 'pb-[calc(var(--bottom-nav-h)+1rem)] md:pb-8' : '']"
       >
         <RouterView />
       </main>

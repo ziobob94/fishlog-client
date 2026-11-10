@@ -1,9 +1,8 @@
 <template>
   <div class="notifs">
-    <div class="head">
-      <h1>{{ t('notifications.title') }}</h1>
+    <PageHeader :title="t('notifications.title')" back>
       <button v-if="store.unreadCount" type="button" class="link-btn" @click="store.markAllRead()">{{ t('notifications.markAllRead') }}</button>
-    </div>
+    </PageHeader>
 
     <div v-if="store.loading && !store.items.length" class="state-center"><div class="spinner"></div></div>
 
@@ -42,6 +41,7 @@
 </template>
 
 <script setup>
+import PageHeader from '../components/PageHeader.vue'
 import { computed, onMounted, reactive } from 'vue'
 import { RouterLink } from 'vue-router'
 import { useI18n } from 'vue-i18n'

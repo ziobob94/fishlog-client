@@ -1,5 +1,7 @@
 <template>
   <div>
+    <PageHeader :title="t('nav.board')" back />
+
     <div class="bg-surface border border-border/60 rounded-lg p-3.5">
       <PostForm :create-fn="store.createPost" @created="onCreated" />
     </div>
@@ -31,6 +33,7 @@
 </template>
 
 <script setup>
+import PageHeader from '../components/PageHeader.vue'
 import { computed, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { Pin } from 'lucide-vue-next'

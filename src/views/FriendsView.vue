@@ -1,9 +1,13 @@
 <template>
   <div>
+    <PageHeader :title="t('nav.friends')" back />
+
     <!-- Ricerca utenti -->
-    <div class="card search-card">
-      <label>{{ t('friends.search.label') }}</label>
-      <input v-model="query" type="text" :placeholder="t('friends.search.placeholder')" @input="onSearch" />
+    <div class="search-card">
+      <div class="search-wrap">
+        <Search :size="16" class="search-icon" />
+        <input v-model="query" type="text" class="search-input" :aria-label="t('friends.search.label')" :placeholder="t('friends.search.placeholder')" @input="onSearch" />
+      </div>
       <ul v-if="query.trim().length >= 2" class="search-results">
         <li v-for="u in userStore.results" :key="u._id" class="search-result-row">
           <RouterLink :to="`/users/${u._id}`" class="member-info">
@@ -40,8 +44,8 @@
             </span>
           </RouterLink>
           <div class="row-actions">
-            <button class="btn btn-primary btn-sm" @click="accept(r)">{{ t('friends.actions.accept') }}</button>
             <button class="icon-btn icon-btn-bordered" :title="t('friends.actions.decline')" :aria-label="t('friends.actions.decline')" @click="decline(r)"><AppIcon name="chiudi" :size="18" /></button>
+            <button class="btn btn-primary btn-sm" @click="accept(r)">{{ t('friends.actions.accept') }}</button>
           </div>
         </div>
       </div>
@@ -90,9 +94,6 @@
             <RouterLink :to="`/chat/${f._id}`" class="icon-btn icon-btn-primary" :title="t('friends.actions.message')" :aria-label="t('friends.actions.message')">
               <AppIcon name="community" :size="18" />
             </RouterLink>
-            <button class="icon-btn" :title="t('friends.actions.remove')" :aria-label="t('friends.actions.remove')" @click="removeFriend(f)">
-              <UserX :size="16" />
-            </button>
           </div>
         </div>
       </div>
@@ -101,11 +102,12 @@
 </template>
 
 <script setup>
+import PageHeader from '../components/PageHeader.vue'
 import AppIcon from '../components/AppIcon.vue'
 import { ref, reactive, onMounted } from 'vue'
 import { RouterLink } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { Users, UserX } from 'lucide-vue-next'
+import { Users, Search } from 'lucide-vue-next'
 import { useFriendStore } from '../stores/friends.js'
 import { useUserStore } from '../stores/users.js'
 import { useDebouncedFn } from '../composables/useDebouncedFn.js'
@@ -180,6 +182,9 @@ async function removeFriend(f) {
 
 <style scoped>
 .search-card  { @apply mb-4 relative; }
+.search-wrap { @apply relative; }
+.search-icon { @apply absolute left-3.5 top-1/2 -translate-y-1/2 text-muted pointer-events-none; }
+.search-input { @apply w-full min-h-[44px] rounded-xl pl-10 pr-4 text-sm; }
 .section-label { @apply text-xs font-bold uppercase text-muted mb-2 mt-5; letter-spacing: 0.14em; }
 .search-results {
   @apply flex flex-col gap-1 mt-2 max-h-64 overflow-y-auto;
@@ -199,10 +204,10 @@ async function removeFriend(f) {
          cursor-pointer hover:bg-surface-2 hover:text-danger transition-colors shrink-0;
 }
 .member-text { @apply flex flex-col leading-tight min-w-0; }
-.member-name { @apply truncate; }
+.member-name { @apply truncate font-bold; }
 .member-email { @apply text-xs text-muted truncate; }
 .row-actions { @apply flex items-center gap-2 shrink-0; }
-.icon-btn-bordered { @apply border border-border-light; }
+.icon-btn-bordered { @apply border border-border; }
 .icon-btn-primary { @apply text-ocean-text bg-surface-2 border border-border-light hover:text-ocean-text; }
 
 .mini-avatar { @apply w-10 h-10 rounded-full object-cover shrink-0; }

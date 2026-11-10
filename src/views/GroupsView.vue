@@ -1,5 +1,7 @@
 <template>
   <div>
+    <PageHeader :title="t('nav.groups')" back />
+
     <div v-if="store.loading" class="state-center"><div class="spinner"></div></div>
 
     <div v-else-if="!store.groups.length" class="state-center">
@@ -98,6 +100,7 @@
 </template>
 
 <script setup>
+import PageHeader from '../components/PageHeader.vue'
 import { ref, onMounted, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'

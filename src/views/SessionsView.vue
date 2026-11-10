@@ -1,15 +1,18 @@
 <template>
   <div>
-    <section v-if="store.ongoing" class="ongoing-section">
-      <h2 class="ongoing-heading">
-        <span class="pulse-dot"></span> {{ t('home.ongoingTitle') }}
-      </h2>
-      <div class="sessions-grid">
-        <SessionCard :session="store.ongoing" />
-      </div>
-    </section>
+    <PageHeader :title="t('nav.sessions')" bell />
 
     <SessionFilters v-model="filters" @reset="resetFilters" />
+
+    <RouterLink v-if="store.ongoing" :to="newSessionTarget" class="ongoing-panel">
+      <span class="pulse-dot"></span>
+      <span class="ongoing-text">
+        <span class="ongoing-eyebrow">{{ t('home.ongoingTitle') }}<template v-if="store.ongoing.startTime"> · {{ t('sessions.since', { time: store.ongoing.startTime }) }}</template></span>
+        <span class="ongoing-name">{{ store.ongoing.title || store.ongoing.location?.name || t('session.untitled') }}</span>
+        <span class="ongoing-sub">{{ [store.ongoing.technique, store.ongoing.totalCatches != null ? t('sessions.catchesCount', { n: store.ongoing.totalCatches }) : ''].filter(Boolean).join(' · ') }}</span>
+      </span>
+      <span class="btn btn-sand">{{ t('sessions.resume') }}</span>
+    </RouterLink>
 
     <TideDivider v-if="store.ongoing && historySessions.length">{{ t('home.historyTitle') }}</TideDivider>
 
@@ -35,6 +38,7 @@
 </template>
 
 <script setup>
+import PageHeader from '../components/PageHeader.vue'
 import TideDivider from '../components/TideDivider.vue'
 import { ref, computed, watch, onMounted } from 'vue'
 import { RouterLink } from 'vue-router'
@@ -94,14 +98,17 @@ onMounted(() => {
   @apply grid gap-3 sm:gap-4;
   grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
 }
-.ongoing-section {
-  @apply mb-8;
+.ongoing-panel {
+  @apply flex items-center gap-3 p-4 mb-5 rounded-xl border border-sand no-underline text-foam;
+  background: rgb(var(--color-sand) / 0.1);
 }
-.ongoing-heading {
-  @apply flex items-center gap-2 font-bold text-sm uppercase tracking-wide mb-3 text-sand;
-}
+.ongoing-text { @apply flex flex-col min-w-0 flex-1; }
+.ongoing-eyebrow { @apply text-xs font-bold uppercase text-sand-text; letter-spacing: 0.08em; }
+.ongoing-name { @apply font-bold text-lg truncate; }
+.ongoing-sub { @apply text-sm text-muted; }
+.btn-sand { @apply inline-flex items-center justify-center min-h-[44px] px-5 rounded-xl bg-sand text-on-primary font-bold shrink-0; }
 .pulse-dot {
-  @apply relative inline-flex h-2 w-2 rounded-full bg-sand;
+  @apply relative inline-flex h-3 w-3 rounded-full bg-sand shrink-0;
 }
 .pulse-dot::before {
   content: '';

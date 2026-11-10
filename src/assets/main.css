@@ -109,7 +109,7 @@
   a:hover { @apply text-sand-text; }
 
   input, textarea, select {
-    @apply w-full bg-surface-2 border border-border rounded-sm text-foam font-display text-sm
+    @apply w-full bg-surface-2 border border-border rounded-xl text-foam font-display text-sm
            px-3 py-2 outline-none transition-all duration-200;
   }
   input:not([type='checkbox']):not([type='radio']):not([type='range']):not([type='file']), select { min-height: 44px; }

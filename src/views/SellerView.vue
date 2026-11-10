@@ -1,7 +1,7 @@
 <template>
   <div class="seller">
+    <PageHeader :title="t('seller.becomeSeller')" back="/market" />
     <div class="page-header">
-      <RouterLink to="/market" class="btn btn-ghost btn-sm">{{ t('common.back') }}</RouterLink>
       <span v-if="status === 'verified'" class="badge badge-success icon-inline"><AppIcon name="verificato" :size="14" /> {{ t('seller.verified') }}</span>
     </div>
 
@@ -148,6 +148,7 @@
 </template>
 
 <script setup>
+import PageHeader from '../components/PageHeader.vue'
 import { ref, computed } from 'vue'
 import { RouterLink, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'

@@ -1,29 +1,26 @@
 <template>
   <div>
-    <div class="feed-toolbar">
-      <div class="tabs" role="tablist">
-        <button
-          type="button" role="tab" :aria-selected="tab === 'post'"
-          class="tab-pill" :class="{ active: tab === 'post' }"
-          @click="setTab('post')"
-        ><Newspaper :size="14" /> {{ t('posts.tabs.posts') }}</button>
-        <button
-          type="button" role="tab" :aria-selected="tab === 'event'"
-          class="tab-pill" :class="{ active: tab === 'event' }"
-          @click="setTab('event')"
-        ><CalendarDays :size="14" /> {{ t('posts.tabs.events') }}</button>
-      </div>
-      <div class="toolbar-actions">
-        <RouterLink to="/chat" class="icon-btn relative" :title="t('nav.chat')" :aria-label="t('nav.chat')">
-          <AppIcon name="invia" :size="17" />
-          <span v-if="chat.unreadCount" class="absolute top-1 right-1 w-2 h-2 rounded-full bg-danger"></span>
-        </RouterLink>
-        <button
-          type="button" class="icon-btn" :class="{ active: showFilters }"
-          :title="t('posts.filters.title')" :aria-pressed="showFilters"
-          @click="showFilters = !showFilters"
-        ><Filter :size="17" /></button>
-      </div>
+    <PageHeader :title="t('nav.community')" bell>
+      <RouterLink to="/chat" class="ph-icon" :title="t('nav.chat')" :aria-label="t('nav.chat')">
+        <AppIcon name="invia" :size="18" />
+        <span v-if="chat.unreadCount" class="ph-count">{{ chat.unreadCount }}</span>
+      </RouterLink>
+      <button
+        type="button" class="ph-icon" :class="{ active: showFilters }"
+        :title="t('posts.filters.title')" :aria-pressed="showFilters"
+        @click="showFilters = !showFilters"
+      ><Filter :size="18" /></button>
+    </PageHeader>
+
+    <div class="chips" role="tablist">
+      <button
+        type="button" role="tab" :aria-selected="tab === 'post'"
+        class="chip" :class="{ active: tab === 'post' }" @click="setTab('post')"
+      >{{ t('posts.tabs.forYou') }}</button>
+      <button
+        type="button" role="tab" :aria-selected="tab === 'event'"
+        class="chip" :class="{ active: tab === 'event' }" @click="setTab('event')"
+      >{{ t('posts.tabs.events') }}</button>
     </div>
 
     <template v-if="showForm">
@@ -160,10 +157,11 @@
 </template>
 
 <script setup>
+import PageHeader from '../components/PageHeader.vue'
   import { computed, onMounted, reactive, ref, watch } from 'vue'
   import { useI18n } from 'vue-i18n'
   import { useRoute, useRouter } from 'vue-router'
-  import { Newspaper, CalendarDays, MapPin, Map as MapIcon, X, Filter } from 'lucide-vue-next'
+  import { Newspaper, MapPin, Map as MapIcon, X, Filter } from 'lucide-vue-next'
   import { usePostStore } from '../stores/posts.js'
   import { useChatStore } from '../stores/chat.js'
   import AppIcon from '../components/AppIcon.vue'
@@ -342,44 +340,23 @@
 </script>
 
 <style scoped>
-  .feed-toolbar {
-    @apply flex items-center justify-between gap-2;
-  }
-
-  .tabs {
-    @apply flex flex-1 sm:flex-initial gap-1 p-1 bg-surface-2 rounded-full;
-  }
-
   .posts-list {
     @apply flex flex-col gap-3 sm:gap-4;
   }
 
-  .tab-pill {
-    @apply flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 text-xs font-semibold text-muted bg-transparent border-none rounded-full cursor-pointer px-3 min-h-[44px] transition-colors;
+  .chips { @apply flex gap-2 overflow-x-auto pb-1 mb-3; scrollbar-width: none; }
+  .chips::-webkit-scrollbar { display: none; }
+  .chip {
+    @apply inline-flex items-center shrink-0 min-h-[44px] px-5 rounded-full border border-border bg-surface text-foam text-sm font-semibold cursor-pointer whitespace-nowrap;
   }
+  .chip.active { @apply bg-ocean border-ocean text-on-primary; }
 
-  .tab-pill:hover {
-    @apply text-foam;
+  .ph-icon {
+    @apply relative flex items-center justify-center w-11 h-11 rounded-xl text-foam bg-surface border border-border cursor-pointer no-underline;
   }
-
-  .tab-pill.active {
-    @apply text-on-primary bg-ocean;
-  }
-
-  .toolbar-actions {
-    @apply flex items-center gap-1;
-  }
-
-  .icon-btn {
-    @apply flex items-center justify-center w-11 h-11 rounded-lg text-muted bg-transparent border-none cursor-pointer transition-colors;
-  }
-
-  .icon-btn:hover {
-    @apply text-foam bg-surface-2;
-  }
-
-  .icon-btn.active {
-    @apply text-ocean-text bg-ocean/10;
+  .ph-icon.active { @apply text-ocean-text border-ocean; }
+  .ph-count {
+    @apply absolute -top-1.5 -right-1.5 min-w-[1.1rem] h-[1.1rem] px-1 rounded-full bg-ocean text-on-primary text-[0.65rem] font-bold inline-flex items-center justify-center;
   }
 
   .post-form-wrap {
