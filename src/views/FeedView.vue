@@ -44,9 +44,9 @@
         <div class="filter-field">
           <label>{{ t('posts.filters.dateRangeLabel') }}</label>
           <div class="date-range">
-            <input type="date" v-model="filters.dateFrom" :title="t('posts.filters.dateFrom')" @change="reload" />
+            <input type="date" v-ph="'Dal  gg/mm/aaaa'" v-model="filters.dateFrom" :title="t('posts.filters.dateFrom')" @change="reload" />
             <span class="date-range-sep">{{ t('posts.filters.dateRangeSep') }}</span>
-            <input type="date" v-model="filters.dateTo" :title="t('posts.filters.dateTo')" @change="reload" />
+            <input type="date" v-ph="'Al  gg/mm/aaaa'" v-model="filters.dateTo" :title="t('posts.filters.dateTo')" @change="reload" />
           </div>
         </div>
 

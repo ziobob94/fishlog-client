@@ -73,11 +73,11 @@
             <div class="form-grid" v-if="isSubOpen(i, 'details')">
               <div class="form-group">
                 <label>{{ t('catchesSection.timeLabel') }}<FieldInfo :text="t('catchesSection.timeInfo')" /></label>
-                <input v-model="c.time" type="time" :class="{ 'is-empty': !c.time }" data-placeholder="--:--" />
+                <input v-model="c.time" type="time" v-ph="'--:--'" />
               </div>
               <div class="form-group">
                 <label>{{ t('catchesSection.distanceLabel') }}<FieldInfo :text="t('catchesSection.distanceInfo')" /></label>
-                <input v-model.number="c.distance" type="number" min="0" />
+                <input v-model.number="c.distance" type="number" min="0" placeholder="metri" />
               </div>
               <div class="form-group">
                 <label>{{ t('catchesSection.directionLabel') }}<FieldInfo :text="t('catchesSection.directionInfo')" /></label>
@@ -111,7 +111,7 @@
               </div>
               <div class="form-group">
                 <label>{{ t('catchesSection.baitPresentationLabel') }}<FieldInfo :text="t('catchesSection.baitPresentationInfo')" /></label>
-                <input v-model="c.baitPresentation" type="text" />
+                <input v-model="c.baitPresentation" type="text" placeholder="es. a fondo, a galla" />
               </div>
             </div>
           </div>
@@ -124,39 +124,39 @@
             <div class="form-grid" v-if="isSubOpen(i, 'rig')">
               <div class="form-group">
                 <label>{{ t('catchesSection.rigUsedLabel') }}<FieldInfo :text="t('catchesSection.rigUsedInfo')" /></label>
-                <input v-model="c.rigUsed" type="text" />
+                <input v-model="c.rigUsed" type="text" placeholder="es. montatura a spigola" />
               </div>
               <div class="form-group">
                 <label>{{ t('catchesSection.rigTypeLabel') }}<FieldInfo :text="t('catchesSection.rigTypeInfo')" /></label>
-                <input v-model="c.rigType" type="text" />
+                <input v-model="c.rigType" type="text" placeholder="es. scorrevole" />
               </div>
               <div class="form-group">
                 <label>{{ t('catchesSection.hookSizeLabel') }}<FieldInfo :text="t('catchesSection.hookSizeInfo')" /></label>
-                <input v-model="c.hookSize" type="text" />
+                <input v-model="c.hookSize" type="text" placeholder="es. n. 2" />
               </div>
               <div class="form-group">
                 <label>{{ t('catchesSection.hookTypeLabel') }}<FieldInfo :text="t('catchesSection.hookTypeInfo')" /></label>
-                <input v-model="c.hookType" type="text" />
+                <input v-model="c.hookType" type="text" placeholder="es. a occhiello" />
               </div>
               <div class="form-group">
                 <label>{{ t('catchesSection.sinkerWeightLabel') }}<FieldInfo :text="t('catchesSection.sinkerWeightInfo')" /></label>
-                <input v-model.number="c.sinkerWeight" type="number" min="0" />
+                <input v-model.number="c.sinkerWeight" type="number" min="0" placeholder="grammi" />
               </div>
               <div class="form-group">
                 <label>{{ t('catchesSection.sinkerTypeLabel') }}<FieldInfo :text="t('catchesSection.sinkerTypeInfo')" /></label>
-                <input v-model="c.sinkerType" type="text" />
+                <input v-model="c.sinkerType" type="text" placeholder="es. a piramide" />
               </div>
               <div class="form-group">
                 <label>{{ t('catchesSection.lineMainLabel') }}<FieldInfo :text="t('catchesSection.lineMainInfo')" /></label>
-                <input v-model.number="c.lineMainLb" type="number" step="0.1" min="0" />
+                <input v-model.number="c.lineMainLb" type="number" step="0.1" min="0" placeholder="lb" />
               </div>
               <div class="form-group">
                 <label>{{ t('catchesSection.leaderLabel') }}<FieldInfo :text="t('catchesSection.leaderInfo')" /></label>
-                <input v-model.number="c.leaderLb" type="number" step="0.1" min="0" />
+                <input v-model.number="c.leaderLb" type="number" step="0.1" min="0" placeholder="lb" />
               </div>
               <div class="form-group">
                 <label>{{ t('catchesSection.swivelLabel') }}<FieldInfo :text="t('catchesSection.swivelInfo')" /></label>
-                <input v-model="c.swivel" type="text" />
+                <input v-model="c.swivel" type="text" placeholder="es. girella n. 10" />
               </div>
             </div>
           </div>

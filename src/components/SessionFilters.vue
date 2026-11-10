@@ -24,6 +24,7 @@
       <input
         :value="modelValue.dateFrom"
         type="date"
+        v-ph="'Dal  gg/mm/aaaa'"
         :aria-label="t('posts.filters.dateFrom')"
         class="sm:flex-1 sm:min-w-[130px] sm:max-w-[160px]"
         @change="update('dateFrom', $event.target.value)"
@@ -32,6 +33,7 @@
       <input
         :value="modelValue.dateTo"
         type="date"
+        v-ph="'Al  gg/mm/aaaa'"
         :aria-label="t('posts.filters.dateTo')"
         class="sm:flex-1 sm:min-w-[130px] sm:max-w-[160px]"
         @change="update('dateTo', $event.target.value)"
