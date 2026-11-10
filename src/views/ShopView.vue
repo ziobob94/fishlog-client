@@ -33,6 +33,7 @@
 </template>
 
 <script setup>
+import { toInitials } from '../utils/initials.js'
 import { ref, computed, onMounted, watch } from 'vue'
 import { useRoute, RouterLink } from 'vue-router'
 import { useI18n } from 'vue-i18n'
@@ -50,7 +51,7 @@ const loading  = ref(true)
 
 const initials = computed(() => {
   const name = shop.value?.name || shop.value?.displayName || '?'
-  return name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2)
+return toInitials(name)
 })
 
 async function load() {

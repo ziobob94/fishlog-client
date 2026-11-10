@@ -100,6 +100,7 @@
 </template>
 
 <script setup>
+import { toInitials } from '../utils/initials.js'
 import PageHeader from '../components/PageHeader.vue'
 import { ref, onMounted, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
@@ -148,12 +149,12 @@ function canRemove(g, m) {
 }
 
 function groupInitials(name) {
-  return (name || '?').split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2)
+  return toInitials(name || '?')
 }
 
 function initials(u) {
   const name = u.displayName || u.email || '?'
-  return name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2)
+return toInitials(name)
 }
 
 function startEdit(g) {

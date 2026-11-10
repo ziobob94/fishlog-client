@@ -67,6 +67,7 @@
 </template>
 
 <script setup>
+import { toInitials } from '../utils/initials.js'
   import { ref, computed, onMounted } from 'vue'
   import { useRoute, useRouter, RouterLink } from 'vue-router'
   import { useI18n } from 'vue-i18n'
@@ -100,7 +101,7 @@
 
   function initials(u) {
     const n = u?.displayName || u?.email || '?'
-    return n.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2)
+return toInitials(n)
   }
 
   async function loadGroup() {

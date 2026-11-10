@@ -69,6 +69,7 @@
 </template>
 
 <script setup>
+import { toInitials } from '../utils/initials.js'
 import { ref, computed, onMounted, watch } from 'vue'
 import { RouterLink, useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
@@ -101,7 +102,7 @@ const sellerName = computed(() => {
   return (isVerifiedShop.value && sl?.shop?.name) || sl?.displayName || sl?.email || ''
 })
 const sellerImage = computed(() => (isVerifiedShop.value && listing.value?.seller?.shop?.logo) || listing.value?.seller?.avatar || '')
-const initials = computed(() => sellerName.value.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2))
+const initials = computed(() =>toInitials(sellerName.value))
 
 async function share() {
   const url = window.location.href

@@ -1,6 +1,6 @@
 <template>
   <div class="seller">
-    <PageHeader :title="t('seller.becomeSeller')" back="/market" />
+    <PageHeader :title="t('seller.title')" back="/market" />
     <div class="page-header">
       <span v-if="status === 'verified'" class="badge badge-success icon-inline"><AppIcon name="verificato" :size="14" /> {{ t('seller.verified') }}</span>
     </div>
@@ -15,7 +15,7 @@
 
     <!-- 1 · Richiesta (anche dopo un rifiuto: «Modifica e reinvia») -->
     <form v-else-if="status !== 'verified'" class="flow" @submit.prevent="submitRequest">
-      <h1>{{ t('seller.title') }}</h1>
+      <h1 class="max-md:hidden">{{ t('seller.title') }}</h1>
 
       <div v-if="status === 'rejected'" class="panel panel-danger" role="alert">
         <h2>{{ t('seller.rejected.title') }}</h2>

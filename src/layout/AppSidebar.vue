@@ -131,6 +131,7 @@
 </template>
 
 <script setup>
+import { toInitials } from '../utils/initials.js'
   import { computed, onMounted, ref } from 'vue'
   import FishLogo from '../components/FishLogo.vue'
   import { useInstallPrompt } from '../composables/useInstallPrompt.js'
@@ -174,7 +175,7 @@
 
   const initials = computed(() => {
     const name = auth.user?.displayName || auth.user?.email || '?'
-    return name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2)
+return toInitials(name)
   })
 
   function logout() {

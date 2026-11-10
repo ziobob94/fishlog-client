@@ -1,10 +1,8 @@
 <template>
   <div>
-    <div class="page-header">
-      <RouterLink :to="`/session/${route.params.id}`" class="btn btn-ghost btn-sm icon-inline">
-        <FileText :size="14" /> {{ t('session.edit.viewSummary') }}
-      </RouterLink>
-    </div>
+    <PageHeader :title="t('session.edit.title')" back close-icon>
+      <RouterLink :to="`/session/${route.params.id}`" class="ph-icon" :aria-label="t('session.edit.viewSummary')"><FileText :size="18" /></RouterLink>
+    </PageHeader>
 
     <div v-if="store.loading && !store.current" class="state-center">
       <div class="spinner"></div>
@@ -35,6 +33,7 @@
 </template>
 
 <script setup>
+import PageHeader from '../components/PageHeader.vue'
 import { computed, ref, onMounted } from 'vue'
 import { useRouter, useRoute, RouterLink } from 'vue-router'
 import { useI18n } from 'vue-i18n'
@@ -89,6 +88,7 @@ async function onSubmit(payload, pendingPhotosByIndex) {
 </script>
 
 <style scoped>
+.ph-icon { @apply flex items-center justify-center w-11 h-11 rounded-xl text-foam bg-surface border border-border no-underline; }
 .page-header  { @apply flex items-center gap-4 mb-4; }
 .icon-inline  { display: inline-flex; align-items: center; gap: .35rem; }
 .error-banner { @apply bg-danger/10 border border-danger rounded-sm text-danger px-4 py-3 mb-4; }
