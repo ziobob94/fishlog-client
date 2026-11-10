@@ -45,7 +45,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, watch } from 'vue'
+import { ref, computed, onMounted, watch, provide } from 'vue'
 import { RouterView, useRoute } from 'vue-router'
 import AppSidebar from './layout/AppSidebar.vue'
 import AppTopbar  from './layout/AppTopbar.vue'
@@ -66,6 +66,7 @@ const isPublicRoute = computed(() => !!route.meta.public)
 const isFullHeight  = computed(() => !!route.meta.fullHeight)
 const showBottomNav = computed(() => !route.meta.hideBottomNav)
 
+provide('toggleSidebar', () => { sidebarOpen.value = !sidebarOpen.value })
 const sidebarOpen   = ref(false)
 const sidebarLocked = ref(localStorage.getItem('sidebar_locked') === 'true')
 const auth    = useAuthStore()

@@ -3,6 +3,9 @@
     <button v-if="back" type="button" class="ph-btn ph-back" :aria-label="t('common.back')" @click="goBack">
       <component :is="closeIcon ? X : ArrowLeft" :size="20" />
     </button>
+    <button v-else-if="toggleSidebar" type="button" class="ph-btn ph-menu" :aria-label="t('nav.menu')" @click="toggleSidebar">
+      <Menu :size="20" />
+    </button>
     <h1 class="ph-title" :class="{ 'ph-title-sub': back }">{{ title }}</h1>
     <div class="ph-actions">
       <slot />
@@ -15,9 +18,10 @@
 </template>
 
 <script setup>
+import { inject } from 'vue'
 import { useRouter, RouterLink } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { ArrowLeft, X, Bell } from 'lucide-vue-next'
+import { ArrowLeft, X, Bell, Menu } from 'lucide-vue-next'
 import { useNotificationStore } from '../stores/notifications.js'
 
 // Intestazione di schermata del nuovo design: titolo grande per le schermate
@@ -33,6 +37,7 @@ const props = defineProps({
 
 const { t } = useI18n()
 const router = useRouter()
+const toggleSidebar = inject('toggleSidebar', null)
 const notifications = useNotificationStore()
 
 function goBack() {
@@ -51,6 +56,7 @@ function goBack() {
 .ph-btn {
   @apply relative flex items-center justify-center w-11 h-11 shrink-0 rounded-xl text-foam bg-surface border border-border cursor-pointer no-underline;
 }
+.ph-menu { @apply bg-transparent border-transparent -ml-2 md:hidden; }
 .ph-back { @apply bg-transparent border-transparent -ml-2; }
 .ph-dot { @apply absolute top-1.5 right-1.5 w-2.5 h-2.5 rounded-full bg-sand; }
 /* Sul desktop la campanella sta già nella barra in alto. */

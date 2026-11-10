@@ -2,7 +2,7 @@
   <header class="sticky top-0 z-[100] flex items-center gap-4 px-5 py-3 border-b border-border"
     style="background: rgb(var(--color-ink) / 0.92); backdrop-filter: blur(12px)">
     <button
-      class="max-md:hidden flex flex-col justify-center gap-1.5 w-11 h-11 items-center bg-transparent border-none cursor-pointer group"
+      class="flex flex-col justify-center gap-1.5 w-11 h-11 items-center bg-transparent border-none cursor-pointer group"
       :aria-label="t('nav.menu')"
       @click="$emit('toggle-sidebar')"
     >
