@@ -353,6 +353,7 @@
 			"add": "Aggiungi",
 			"accept": "Accetta",
 			"decline": "Rifiuta",
+			"message": "Scrivi un messaggio",
 			"cancel": "Annulla richiesta",
 			"remove": "Rimuovi amicizia",
 			"confirmRemove": "Rimuovere {name} dai tuoi amici?"

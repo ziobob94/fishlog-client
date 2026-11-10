@@ -12,12 +12,14 @@
     <div v-else class="groups-grid">
       <div v-for="g in store.groups" :key="g._id" class="group-card card">
         <div class="group-header">
-          <div>
+          <span class="group-tile" aria-hidden="true">{{ groupInitials(g.name) }}</span>
+          <div class="group-title">
             <h3>{{ g.name }}</h3>
-            <p v-if="g.description" class="text-muted" style="font-size:.85rem;margin-top:.2rem">{{ g.description }}</p>
+            <p class="text-muted text-sm">{{ t('groups.membersCount', { n: g.members?.length || 0 }) }}</p>
           </div>
-          <span class="badge badge-ocean">{{ t('groups.membersCount', { n: g.members?.length || 0 }) }}</span>
+          <span v-if="g.owner?._id === authStore.user?._id" class="badge badge-ocean">{{ t('groups.owner') }}</span>
         </div>
+        <p v-if="g.description" class="group-desc">{{ g.description }}</p>
 
         <div class="members-list">
           <div v-for="m in g.members" :key="m._id" class="member-row">
@@ -142,6 +144,10 @@ function canRemove(g, m) {
   return notOwner && (isOwner || isAdmin || isSelf)
 }
 
+function groupInitials(name) {
+  return (name || '?').split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2)
+}
+
 function initials(u) {
   const name = u.displayName || u.email || '?'
   return name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2)
@@ -204,17 +210,21 @@ async function removeMember(g, m) {
 
 <style scoped>
 .groups-grid  { @apply grid gap-4; grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr)); }
-.group-card   { @apply flex flex-col gap-3; }
-.group-header { @apply flex items-start justify-between; }
+.group-card   { @apply flex flex-col gap-3 rounded-xl; }
+.group-header { @apply flex items-center gap-3; }
+.group-tile { @apply w-12 h-12 shrink-0 rounded-lg border border-sand-text/60 text-sand-text flex items-center justify-center font-bold; background: rgb(var(--color-sand) / 0.15); }
+.group-title { @apply flex-1 min-w-0; }
+.group-title h3 { @apply truncate; }
+.group-desc { @apply text-sm text-foam/90; }
 
 .members-list { @apply flex flex-col gap-1.5; }
 .member-row   { @apply flex items-center justify-between gap-2; }
 .member-info  { @apply flex items-center gap-2 text-sm text-foam min-w-0 flex-1; }
 .member-name  { @apply truncate; }
 
-.mini-avatar { @apply w-7 h-7 rounded-full object-cover; }
+.mini-avatar { @apply w-9 h-9 rounded-full object-cover; }
 .mini-placeholder {
-  @apply w-7 h-7 rounded-full border border-ocean text-ocean-text flex items-center
+  @apply w-9 h-9 rounded-full border border-ocean text-ocean-text flex items-center
          justify-center text-[0.65rem] font-bold;
   background: var(--ocean-glow);
 }
