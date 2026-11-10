@@ -2,14 +2,14 @@
   <div>
     <PageHeader :title="t('nav.community')" bell>
       <RouterLink to="/chat" class="ph-icon" :title="t('nav.chat')" :aria-label="t('nav.chat')">
-        <AppIcon name="invia" :size="18" />
+        <AppIcon name="invia" :size="16" />
         <span v-if="chat.unreadCount" class="ph-count">{{ chat.unreadCount }}</span>
       </RouterLink>
       <button
         type="button" class="ph-icon" :class="{ active: showFilters }"
         :title="t('posts.filters.title')" :aria-pressed="showFilters"
         @click="showFilters = !showFilters"
-      ><Filter :size="18" /></button>
+      ><Filter :size="16" /></button>
     </PageHeader>
 
     <div class="chips" role="tablist">
@@ -341,18 +341,18 @@ import PageHeader from '../components/PageHeader.vue'
 
 <style scoped>
   .posts-list {
-    @apply flex flex-col gap-3 sm:gap-4;
+    @apply flex flex-col gap-3;
   }
 
   .chips { @apply flex gap-2 overflow-x-auto pb-1 mb-3; scrollbar-width: none; }
   .chips::-webkit-scrollbar { display: none; }
   .chip {
-    @apply inline-flex items-center shrink-0 min-h-[44px] px-5 rounded-full border border-border bg-surface text-foam text-sm font-semibold cursor-pointer whitespace-nowrap;
+    @apply inline-flex items-center shrink-0 min-h-[40px] px-4 rounded-full border border-border bg-surface text-foam text-sm font-semibold cursor-pointer whitespace-nowrap;
   }
   .chip.active { @apply bg-ocean border-ocean text-on-primary; }
 
   .ph-icon {
-    @apply relative flex items-center justify-center w-11 h-11 rounded-xl text-foam bg-surface border border-border cursor-pointer no-underline;
+    @apply relative flex items-center justify-center w-9 h-9 rounded-xl text-foam bg-surface border border-border cursor-pointer no-underline;
   }
   .ph-icon.active { @apply text-ocean-text border-ocean; }
   .ph-count {
