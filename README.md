@@ -62,3 +62,8 @@ Puntare il web server (nginx, Caddy...) sulla cartella `dist/` e fare proxy `/ap
 - **PWA**: aggiungere `vite-plugin-pwa` per offline support e install su mobile
 - **Auth**: interceptor JWT già commentato in `utils/api.js`
 - **Mappa**: aggiungere Leaflet/MapLibre su `SessionView` per visualizzare le coordinate spot
+
+
+## Mappe
+
+Le mappe usano MapLibre. Senza configurazione si usano provider gratuiti senza chiave (OpenFreeMap, Esri come ripiego per il satellite). Per immagini satellitari e stili stabili imposta `VITE_MAPTILER_KEY` (vedi `.env.example`); in alternativa `VITE_MAP_STYLE_SAT|LIGHT|DARK` con URL di stile di un altro provider.

@@ -61,6 +61,7 @@ import { Layers } from 'lucide-vue-next'
 import api from '../utils/api.js'
 import AppIcon from './AppIcon.vue'
 import { useThemeStore } from '../stores/theme.js'
+import { buildStyle as makeStyle, attributionText, applyGlobe, hasMapKey, markKeyFailed, COOP_LOCALE, loadMapLibre } from '../utils/mapStyle.js'
 
 const { t } = useI18n()
 const theme = useThemeStore()
@@ -68,8 +69,6 @@ const theme = useThemeStore()
 // Mappa reale con proiezione a globo (MapLibre GL, caricato solo qui).
 // Sfondi senza chiave API: immagini satellitari Esri World Imagery e, in
 // alternativa, mappa stradale CARTO (scura o chiara secondo il tema).
-const SAT_ATTR = 'Immagini © Esri, Maxar, Earthstar Geographics'
-const MAP_ATTR = '© OpenStreetMap, © CARTO'
 
 const spots = ref([])
 const loading = ref(true)
@@ -86,7 +85,7 @@ function readBasemap() {
   try { return localStorage.getItem('fishlog_basemap') === 'map' ? 'map' : 'sat' } catch { return 'sat' }
 }
 
-const attribution = computed(() => basemap.value === 'sat' ? SAT_ATTR : MAP_ATTR)
+const attribution = computed(() => attributionText(basemap.value))
 const ariaLabel = computed(() => t('globe.aria', { n: spots.value.length }, spots.value.length))
 const fmtDate = d => new Date(d).toLocaleDateString('it-IT', { day: '2-digit', month: 'short', year: 'numeric' })
 const markerLabel = m => m.items.length > 1
@@ -97,21 +96,6 @@ let maplibre = null
 let map = null
 let meMarker = null
 let spotMarkers = []
-
-function buildStyle() {
-  const sat = basemap.value === 'sat'
-  const dark = theme.mode !== 'light'
-  const tiles = sat
-    ? ['https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}']
-    : ['a', 'b', 'c', 'd'].map(sub => `https://${sub}.basemaps.cartocdn.com/${dark ? 'dark_all' : 'rastertiles/voyager'}/{z}/{x}/{y}@2x.png`)
-  return {
-    version: 8,
-    projection: { type: 'globe' },
-    sources: { base: { type: 'raster', tiles, tileSize: sat ? 256 : 512, maxzoom: sat ? 17 : 18, attribution: sat ? SAT_ATTR : MAP_ATTR } },
-    layers: [{ id: 'base', type: 'raster', source: 'base' }],
-    sky: { 'atmosphere-blend': ['interpolate', ['linear'], ['zoom'], 0, 1, 5, 1, 7, 0] }
-  }
-}
 
 function markerEl(count) {
   const el = document.createElement('button')
@@ -185,13 +169,13 @@ function toggleBasemap() {
   try { localStorage.setItem('fishlog_basemap', basemap.value) } catch { /* ignora */ }
 }
 
+const buildStyle = () => makeStyle({ basemap: basemap.value, dark: theme.mode !== 'light' })
 function applyStyle() { map?.setStyle(buildStyle(), { diff: false }) }
 watch([basemap, () => theme.mode], applyStyle)
 
 async function initMap() {
   try {
-    const [mod] = await Promise.all([import('maplibre-gl'), import('maplibre-gl/dist/maplibre-gl.css')])
-    maplibre = mod.default || mod
+    maplibre = await loadMapLibre()
     map = new maplibre.Map({
       container: mapEl.value,
       style: buildStyle(),
@@ -199,15 +183,17 @@ async function initMap() {
       attributionControl: false,
       cooperativeGestures: true,
       pitchWithRotate: false, dragRotate: false, touchPitch: false,
-      locale: {
-        'CooperativeGesturesHandler.WindowsHelpText': 'Usa Ctrl + scorri per ingrandire la mappa',
-        'CooperativeGesturesHandler.MacHelpText': 'Usa ⌘ + scorri per ingrandire la mappa',
-        'CooperativeGesturesHandler.MobileHelpText': 'Usa due dita per muovere la mappa'
-      }
+      locale: COOP_LOCALE
     })
+    applyGlobe(map)
     map.touchZoomRotate.disableRotation()
     map.on('moveend', refreshMarkers)
-    map.on('error', (e) => { if (e?.error?.status === 403 || e?.error?.status === 401) mapError.value = t('globe.tilesError') })
+    map.on('error', (e) => {
+      const st = e?.error?.status
+      if (st !== 401 && st !== 403) return
+      // chiave errata/limitata: ripiego automatico sui provider senza chiave
+      if (hasMapKey()) { markKeyFailed(); applyStyle() } else mapError.value = t('globe.tilesError')
+    })
     map.once('load', () => { refreshMarkers(); setMeMarker(); showAll() })
   } catch {
     mapError.value = t('globe.mapError')
