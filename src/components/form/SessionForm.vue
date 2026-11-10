@@ -43,11 +43,11 @@
       </div>
       <div class="form-group">
         <label>{{ t('sessionForm.fields.startTimeLabel') }}<FieldInfo :text="t('sessionForm.fields.startTimeInfo')" /></label>
-        <input v-model="f.startTime" type="time" />
+        <input v-model="f.startTime" type="time" :class="{ 'is-empty': !f.startTime }" data-placeholder="--:--" />
       </div>
       <div class="form-group">
         <label>{{ t('sessionForm.fields.endTimeLabel') }}<FieldInfo :text="t('sessionForm.fields.endTimeInfo')" /></label>
-        <input v-model="f.endTime" type="time" />
+        <input v-model="f.endTime" type="time" :class="{ 'is-empty': !f.endTime }" data-placeholder="--:--" />
       </div>
       <div class="form-group">
         <label>{{ t('sessionForm.fields.techniqueLabel') }}<FieldInfo :text="t('sessionForm.fields.techniqueInfo')" /></label>
@@ -706,8 +706,8 @@
     counter-increment: sec;
     background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: 20px;
-    padding: .25rem 1rem .75rem;
+    border-radius: 16px;
+    padding: .25rem .875rem .75rem;
   }
 
   .accordion-section+.accordion-section {
@@ -840,6 +840,8 @@
     bottom: 0;
     left: 0;
     padding-bottom: env(safe-area-inset-bottom);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
     position: fixed;
     right: 0;
     z-index: 160;
@@ -851,7 +853,7 @@
        specie) resta permanentemente nascosto dietro di essa, non basta
        scrollare. */
     .session-form {
-      padding-bottom: calc(env(safe-area-inset-bottom) + 6rem);
+      padding-bottom: calc(env(safe-area-inset-bottom) + 7.5rem);
     }
   }
 
@@ -861,7 +863,13 @@
     justify-content: flex-end;
     margin: 0 auto;
     max-width: 1100px;
-    padding: 1rem 1.5rem;
+    padding: .75rem 1rem;
+  }
+
+  @media (max-width: 767.98px) {
+    /* su telefono i due pulsanti riempiono la barra, a metà ciascuno */
+    .form-actions-inner > .btn { flex: 1 1 0; min-width: 0; justify-content: center; }
+    .form-actions-inner > .btn-primary { flex: 1.6 1 0; }
   }
 
   .group-checkboxes {
