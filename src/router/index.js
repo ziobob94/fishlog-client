@@ -3,7 +3,10 @@ import { useAuthStore } from '../stores/auth.js'
 
 export default createRouter({
   history: createWebHistory(),
-  scrollBehavior: () => ({ top: 0 }),
+  // Ripristina la posizione salvata tornando indietro, altrimenti in cima;
+  // si attende la fine della dissolvenza di uscita per non far "saltare"
+  // la pagina che sta uscendo.
+  scrollBehavior: (to, from, saved) => new Promise(resolve => setTimeout(() => resolve(saved || { top: 0 }), 160)),
   routes: [
     { path: '/login',          name: 'login',         component: () => import('../views/LoginView.vue'),        meta: { public: true } },
     { path: '/register',       name: 'register',      component: () => import('../views/RegisterView.vue'),     meta: { public: true } },

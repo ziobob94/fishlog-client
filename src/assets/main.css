@@ -225,3 +225,19 @@
 @media (max-width: 640px) {
   .form-grid { grid-template-columns: 1fr; }
 }
+
+/* ── Transizioni di pagina e finestre ── */
+.page-fade-enter-active, .page-fade-leave-active,
+.page-forward-enter-active, .page-forward-leave-active,
+.page-back-enter-active, .page-back-leave-active { transition: opacity 150ms ease, transform 150ms ease; }
+.page-fade-enter-from, .page-fade-leave-to { opacity: 0; }
+.page-forward-enter-from { opacity: 0; transform: translateX(18px); }
+.page-forward-leave-to   { opacity: 0; transform: translateX(-12px); }
+.page-back-enter-from    { opacity: 0; transform: translateX(-18px); }
+.page-back-leave-to      { opacity: 0; transform: translateX(12px); }
+.page-fill { @apply flex flex-col flex-1 min-h-0; }
+
+@keyframes overlay-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes sheet-up { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: none; } }
+.dialog-overlay, .lightbox, .user-modal-overlay { animation: overlay-in 180ms ease-out; }
+.dialog-overlay > *, .user-modal, .lightbox-img { animation: sheet-up 240ms cubic-bezier(.2, .8, .2, 1); }

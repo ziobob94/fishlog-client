@@ -1,7 +1,11 @@
 <template>
   <div v-if="isPublicRoute" class="flex flex-col min-h-dvh">
     <main class="flex-1 w-full max-w-[1100px] mx-auto px-4 sm:px-6 py-6 sm:py-8">
-      <RouterView />
+      <RouterView v-slot="{ Component, route: r }">
+        <Transition :name="transitionName" mode="out-in">
+          <component :is="Component" :key="r.path" />
+        </Transition>
+      </RouterView>
     </main>
     <LegalFooter />
     <ToastContainer />
@@ -32,7 +36,11 @@
         class="flex-1 w-full max-w-[1100px] mx-auto px-4 sm:px-6 min-w-0"
         :class="[isFullHeight ? 'flex flex-col min-h-0 overflow-hidden' : (route.meta.ownHeader ? 'pt-4 pb-8 md:py-8' : 'py-8'), showBottomNav ? 'pb-[calc(var(--bottom-nav-h)+1rem)] md:pb-8' : '']"
       >
-        <RouterView />
+        <RouterView v-slot="{ Component, route: r }">
+          <Transition :name="transitionName" mode="out-in">
+            <component :is="Component" :key="r.path" :class="{ 'page-fill': isFullHeight }" />
+          </Transition>
+        </RouterView>
       </main>
       <LegalFooter v-if="!isFullHeight" />
     </div>
@@ -46,7 +54,7 @@
 
 <script setup>
 import { ref, computed, onMounted, watch, provide } from 'vue'
-import { RouterView, useRoute } from 'vue-router'
+import { RouterView, useRoute, useRouter } from 'vue-router'
 import AppSidebar from './layout/AppSidebar.vue'
 import AppTopbar  from './layout/AppTopbar.vue'
 import AppBottomNav from './layout/AppBottomNav.vue'
@@ -62,6 +70,21 @@ import { useNotificationStore } from './stores/notifications.js'
 import { connectWebSocket, disconnectWebSocket } from './services/ws.js'
 
 const route = useRoute()
+const router = useRouter()
+
+// Transizioni di pagina: dissolvenza tra le sezioni della barra in basso,
+// scorrimento laterale quando si entra in una pagina più "profonda" (o si
+// torna indietro). Brevi (~150 ms per fase) e disattivate con
+// prefers-reduced-motion (regola globale in main.css).
+const TAB_ROOTS = ['/', '/sessions', '/feed', '/market', '/chat']
+const transitionName = ref('page-fade')
+const depth = (p) => p.split('/').filter(Boolean).length
+router.beforeEach((to, from) => {
+  if (!from.name) { transitionName.value = 'page-fade'; return }
+  const bothTabs = TAB_ROOTS.includes(to.path) && TAB_ROOTS.includes(from.path)
+  const d = depth(to.path) - depth(from.path)
+  transitionName.value = bothTabs || d === 0 ? 'page-fade' : (d > 0 ? 'page-forward' : 'page-back')
+})
 const isPublicRoute = computed(() => !!route.meta.public)
 const isFullHeight  = computed(() => !!route.meta.fullHeight)
 const showBottomNav = computed(() => !route.meta.hideBottomNav)
