@@ -92,7 +92,9 @@ async function respond(n, accept) {
     if (accept) await friends.acceptRequest(n.data.requestId)
     else await friends.declineRequest(n.data.requestId)
     done[n._id] = accept ? 'accepted' : 'declined'
-    store.markRead(n._id)
+    // Il server elimina la notifica gestita: riallinea solo il badge.
+    n.read = true
+    store.fetchUnreadCount()
   } catch { /* resta con i pulsanti: l'utente può riprovare */ }
 }
 
