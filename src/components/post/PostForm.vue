@@ -1,16 +1,8 @@
 <template>
   <div class="card post-form">
-    <div class="type-toggle">
-      <button
-        class="btn btn-sm"
-        :class="form.type === 'post' ? 'btn-primary' : 'btn-ghost'"
-        @click="form.type = 'post'"
-      >{{ t('posts.form.typePost') }}</button>
-      <button
-        class="btn btn-sm"
-        :class="form.type === 'event' ? 'btn-primary' : 'btn-ghost'"
-        @click="form.type = 'event'"
-      >{{ t('posts.form.typeEvent') }}</button>
+    <div class="segmented" role="radiogroup" :aria-label="t('posts.form.typePost')">
+      <button type="button" role="radio" :aria-checked="form.type === 'post'" class="seg-opt" :class="{ active: form.type === 'post' }" @click="form.type = 'post'">{{ t('posts.form.typePost') }}</button>
+      <button type="button" role="radio" :aria-checked="form.type === 'event'" class="seg-opt" :class="{ active: form.type === 'event' }" @click="form.type = 'event'">{{ t('posts.form.typeEvent') }}</button>
     </div>
 
     <input
@@ -67,16 +59,37 @@
       <div class="upload-progress-bar" :style="{ width: uploadProgress + '%' }"></div>
     </div>
 
+    <!-- Uscita collegata (solo post): luogo, specie e misure compaiono sul post, le coordinate esatte restano nascoste -->
+    <div v-if="form.type === 'post' && mySessions.length" class="linked">
+      <p class="field-label">{{ t('posts.form.linkedSession') }}</p>
+      <div class="linked-card" :class="{ active: chosenSession }">
+        <label for="linked-session" class="sr-only">{{ t('posts.form.linkedSession') }}</label>
+        <select id="linked-session" v-model="form.sessionId" @change="form.featuredCatchId = ''">
+          <option value="">{{ t('posts.form.noSession') }}</option>
+          <option v-for="s in mySessions" :key="s._id" :value="s._id">{{ s.title || s.location?.name || t('session.untitled') }} · {{ fmtDate(s.date) }}</option>
+        </select>
+        <p v-if="chosenSession" class="text-muted text-xs mt-1">{{ t('posts.form.linkedHint') }}</p>
+      </div>
+      <template v-if="chosenSession?.catches?.length">
+        <p class="field-label">{{ t('posts.form.featuredCatch') }}</p>
+        <div class="chips" role="group" :aria-label="t('posts.form.featuredCatch')">
+          <button v-for="c in chosenSession.catches" :key="c._id" type="button" class="chip" :class="{ 'chip-sand': form.featuredCatchId === c._id }" :aria-pressed="form.featuredCatchId === c._id" @click="form.featuredCatchId = c._id">
+            {{ c.species }}<template v-if="c.lengthCm"> {{ c.lengthCm }} cm</template>
+          </button>
+          <button type="button" class="chip" :class="{ 'chip-sand': !form.featuredCatchId }" :aria-pressed="!form.featuredCatchId" @click="form.featuredCatchId = ''">{{ t('posts.form.noCatch') }}</button>
+        </div>
+      </template>
+    </div>
+
+    <p class="field-label">{{ t('posts.form.whoCanSee') }}</p>
+    <div class="segmented" role="radiogroup" :aria-label="t('posts.form.whoCanSee')">
+      <button v-for="v in ['public', 'group', 'private']" :key="v" type="button" role="radio" :aria-checked="form.visibility === v" class="seg-opt" :class="{ active: form.visibility === v }" @click="form.visibility = v">{{ t(`posts.visibility.${v}`) }}</button>
+    </div>
     <div class="visibility-row">
-      <select v-model="form.visibility">
-        <option value="public">{{ t('posts.visibility.public') }}</option>
-        <option value="group">{{ t('posts.visibility.group') }}</option>
-        <option value="private">{{ t('posts.visibility.private') }}</option>
-      </select>
-      <select v-if="form.visibility === 'group'" v-model="form.allowedGroups[0]">
+      <select v-if="form.visibility === 'group'" v-model="form.allowedGroups[0]" :aria-label="t('posts.visibility.group')">
         <option v-for="g in groups" :key="g._id" :value="g._id">{{ g.name }}</option>
       </select>
-      <button class="btn btn-primary btn-sm ml-auto" :disabled="saving" @click="submit">
+      <button class="btn btn-primary ml-auto" :disabled="saving" @click="submit">
         {{ saving ? t('posts.form.saving') : t('posts.form.submit') }}
       </button>
     </div>
@@ -85,7 +98,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onBeforeUnmount, watch } from 'vue'
+import { ref, computed, onMounted, onBeforeUnmount, watch } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useI18n } from 'vue-i18n'
 import { Paperclip, X } from 'lucide-vue-next'
@@ -125,6 +138,8 @@ function emptyForm() {
     body: '',
     visibility: defaultVisibility(),
     allowedGroups: [],
+    sessionId: '',
+    featuredCatchId: '',
     event: { location: { name: '', lat: null, lng: null }, date: '' }
   }
 }
@@ -134,7 +149,17 @@ watch(() => props.initialType, (value) => {
   form.value.type = value === 'event' ? 'event' : 'post'
 })
 
-onMounted(() => { if (!groups.value.length) groupStore.fetchGroups() })
+const mySessions = ref([])
+const chosenSession = computed(() => mySessions.value.find(s => s._id === form.value.sessionId) || null)
+const fmtDate = d => new Date(d).toLocaleDateString('it-IT', { day: '2-digit', month: 'short' })
+
+onMounted(async () => {
+  if (!groups.value.length) groupStore.fetchGroups()
+  try {
+    const { data } = await api.get('/sessions', { params: { mine: true, limit: 20 } })
+    mySessions.value = (data.data || []).filter(s => s.status !== 'ongoing' && !s._pending)
+  } catch { /* il collegamento all'uscita è facoltativo */ }
+})
 onBeforeUnmount(() => clearPendingFiles())
 
 function addFiles(files) {
@@ -172,6 +197,8 @@ async function submit() {
   try {
     const payload = { ...form.value }
     if (payload.type !== 'event') delete payload.event
+    if (payload.type === 'event' || !payload.sessionId) { delete payload.sessionId; delete payload.featuredCatchId }
+    if (!payload.featuredCatchId) delete payload.featuredCatchId
     let created = await props.createFn(payload)
 
     if (pendingFiles.value.length) {
@@ -200,7 +227,17 @@ async function submit() {
 
 <style scoped>
 .post-form    { @apply flex flex-col gap-2; }
-.type-toggle  { @apply flex gap-2; }
+.segmented { @apply flex gap-1 p-1 bg-surface-2 border border-border rounded-xl; }
+.seg-opt { @apply flex-1 min-h-[44px] rounded-lg bg-transparent border-none text-sm font-semibold text-foam cursor-pointer; }
+.seg-opt.active { @apply bg-ocean text-on-primary; }
+.field-label { @apply text-xs font-bold uppercase text-muted mt-2; letter-spacing: 0.14em; }
+.linked { @apply flex flex-col gap-2; }
+.linked-card { @apply p-3 rounded-xl border border-border bg-surface; }
+.linked-card.active { @apply border-ocean; background: var(--ocean-glow); }
+.chips { @apply flex flex-wrap gap-2; }
+.chip { @apply inline-flex items-center min-h-[44px] px-4 rounded-full border border-border bg-surface text-foam text-sm font-semibold cursor-pointer; }
+.chip-sand { @apply border-sand text-sand-text; background: rgb(var(--color-sand) / 0.15); }
+.sr-only { @apply absolute w-px h-px overflow-hidden; clip: rect(0 0 0 0); }
 .event-fields { @apply flex flex-col gap-2; }
 .visibility-row { @apply flex gap-2 items-center; }
 .error-msg { @apply bg-danger/10 border border-danger rounded-sm text-danger text-xs px-2.5 py-1.5; }

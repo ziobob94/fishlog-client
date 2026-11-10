@@ -31,13 +31,22 @@
     </div>
 
     <div v-if="post.media?.length" class="media-grid">
-      <img
-        v-for="m in post.media"
-        :key="m._id"
-        :src="m.url"
-        class="media-thumb"
-        @click="lightboxItem = m"
-      />
+      <RulerFrame v-for="(m, i) in post.media" :key="m._id" class="media-frame">
+        <img :src="m.url" class="media-thumb" alt="" @click="lightboxItem = m" />
+        <template v-if="i === 0 && featuredCatch" #badge>
+          <span class="catch-pill font-mono">{{ featuredCatch.species }}<template v-if="featuredCatch.lengthCm"> · {{ featuredCatch.lengthCm }} cm</template></span>
+        </template>
+      </RulerFrame>
+    </div>
+
+    <!-- Uscita collegata -->
+    <div v-if="post.session" class="linked-session">
+      <span class="linked-ico"><AppIcon name="uscite" :size="20" /></span>
+      <span class="linked-text">
+        <span class="linked-label">{{ t('posts.linkedSession') }}</span>
+        <strong class="truncate">{{ post.session.title || post.session.location?.name || t('session.untitled') }}</strong>
+        <span class="text-muted text-xs">{{ formatDate(post.session.date) }}<template v-if="post.session.location?.name"> · {{ post.session.location.name }}</template> · {{ t('globe.catches', { n: post.session.totalCatches || 0 }, post.session.totalCatches || 0) }}</span>
+      </span>
     </div>
 
     <div v-if="post.type === 'event'" class="attendance-block">
@@ -209,6 +218,8 @@
 </template>
 
 <script setup>
+import RulerFrame from '../RulerFrame.vue'
+import AppIcon from '../AppIcon.vue'
   import { ref, computed, watch } from 'vue'
   import { useI18n } from 'vue-i18n'
   import { RouterLink } from 'vue-router'
@@ -265,6 +276,11 @@
     emit('comment', props.post, commentText.value)
     commentText.value = ''
   }
+
+const featuredCatch = computed(() => {
+  const id = props.post.featuredCatch
+  return id ? props.post.session?.catches?.find(c => c._id === id) || null : null
+})
 </script>
 
 <style scoped>
@@ -331,6 +347,11 @@
     grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
   }
 
+  .catch-pill { @apply inline-block rounded-full px-3 py-1 text-xs font-bold text-sand-text; background: rgb(var(--color-ink) / 0.85); border: 1px solid rgb(var(--color-sand)); }
+  .linked-session { @apply flex items-center gap-3 p-3 rounded-xl border border-ocean/60; background: var(--ocean-glow); }
+  .linked-ico { @apply w-10 h-10 shrink-0 rounded-lg bg-surface-2 text-ocean-text flex items-center justify-center; }
+  .linked-text { @apply flex flex-col min-w-0; }
+  .linked-label { @apply text-xs font-bold uppercase text-ocean-text; letter-spacing: 0.14em; }
   .media-thumb {
     @apply w-full aspect-[4/3] object-cover sm:rounded-sm cursor-pointer;
   }

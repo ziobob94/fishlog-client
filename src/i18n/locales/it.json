@@ -476,7 +476,8 @@
 			"notFound": "Sessione non trovata.",
 			"backToList": "← Torna alla lista",
 			"allSessions": "← Tutte le uscite",
-			"visibility": {
+			"linkedSession": "Uscita collegata",
+		"visibility": {
 				"private": "Privata",
 				"users": "Tutti gli utenti",
 				"group": "Gruppi"
@@ -824,6 +825,7 @@
 		"sessionPendingNotice": "Questa uscita è salvata solo su questo dispositivo. I media potranno essere caricati dopo la sincronizzazione con il server."
 	},
 	"posts": {
+		"linkedSession": "Uscita collegata",
 		"eventBadge": "Evento",
 		"comments": {
 			"placeholder": "Scrivi un commento...",
@@ -855,6 +857,12 @@
 			}
 		},
 		"form": {
+			"linkedSession": "Uscita collegata",
+			"noSession": "Nessuna uscita",
+			"linkedHint": "Luogo, specie e misure della cattura vengono mostrati sul post. Le coordinate esatte restano nascoste.",
+			"featuredCatch": "Cattura in evidenza",
+			"noCatch": "Nessuna",
+			"whoCanSee": "Chi può vederlo",
 			"typePost": "Post",
 			"typeEvent": "Evento",
 			"titlePlaceholder": "Titolo (es. Cerco compagni di pesca)",
