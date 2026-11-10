@@ -17,17 +17,20 @@
       <!-- Podio: 2° · 1° · 3° -->
       <ol v-if="podium.length" class="podium" :aria-label="t('leaderboard.title')">
         <li v-for="p in podium" :key="p.r.userId" class="podium-slot" :class="[`podium-${p.pos}`, { me: p.r.userId === auth.user?._id }]">
+          <RouterLink :to="`/users/${p.r.userId}`" class="contents">
           <img v-if="p.r.avatar" :src="p.r.avatar" class="podium-avatar" :alt="''" />
           <span v-else class="podium-avatar podium-placeholder">{{ initials(p.r.displayName) }}</span>
           <span class="podium-name">{{ p.r.displayName }}</span>
           <span class="podium-score font-mono">{{ p.r.score }}</span>
           <span class="podium-pos">{{ p.pos }}</span>
+          </RouterLink>
         </li>
       </ol>
 
       <ol class="leaderboard-list">
         <li v-for="(r, i) in rest" :key="r.userId" class="leaderboard-row" :class="{ 'leaderboard-row-me': r.userId === auth.user?._id }">
           <span class="rank">{{ i + (rows.length < 3 ? 1 : 4) }}</span>
+          <RouterLink :to="`/users/${r.userId}`" class="contents">
           <img v-if="r.avatar" :src="r.avatar" class="mini-avatar" :alt="''" />
           <span v-else class="mini-placeholder">{{ initials(r.displayName) }}</span>
           <div class="leaderboard-info">
@@ -36,6 +39,7 @@
               {{ t('leaderboard.sessionsCount', { n: r.sessionsCount }) }} · {{ t('leaderboard.catchesCount', { n: r.catchesCount }) }}
             </span>
           </div>
+          </RouterLink>
           <span class="leaderboard-score font-mono">{{ r.score }}</span>
         </li>
       </ol>

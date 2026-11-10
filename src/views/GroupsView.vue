@@ -25,12 +25,12 @@
 
         <div class="members-list">
           <div v-for="m in g.members" :key="m._id" class="member-row">
-            <div class="member-info">
+            <RouterLink :to="`/users/${m._id}`" class="member-info">
               <img v-if="m.avatar" :src="m.avatar" class="mini-avatar" />
               <span v-else class="mini-placeholder">{{ initials(m) }}</span>
               <span class="member-name">{{ m.displayName || m.email }}</span>
               <span v-if="m._id === g.owner?._id" class="badge badge-sand shrink-0" style="font-size:.6rem">{{ t('groups.owner') }}</span>
-            </div>
+            </RouterLink>
             <button
               v-if="canRemove(g, m)"
               class="btn btn-ghost btn-sm shrink-0"
@@ -223,7 +223,7 @@ async function removeMember(g, m) {
 
 .members-list { @apply flex flex-col gap-1.5; }
 .member-row   { @apply flex items-center justify-between gap-2; }
-.member-info  { @apply flex items-center gap-2 text-sm text-foam min-w-0 flex-1; }
+.member-info  { @apply no-underline flex items-center gap-2 text-sm text-foam min-w-0 flex-1; }
 .member-name  { @apply truncate; }
 
 .mini-avatar { @apply w-9 h-9 rounded-full object-cover; }

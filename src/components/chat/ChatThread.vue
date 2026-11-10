@@ -13,7 +13,8 @@
           :class="{ mine: m.sender?._id === auth.user?._id }"
         >
           <div class="message-bubble" :class="[{ deleted: m.deleted }, !m.deleted && m.type ? `type-${m.type}` : '']">
-            <span v-if="showSender(m)" class="message-sender">{{ m.sender?.displayName || m.sender?.email }}</span>
+            <RouterLink v-if="showSender(m) && m.sender?._id" :to="`/users/${m.sender._id}`" class="message-sender">{{ m.sender?.displayName || m.sender?.email }}</RouterLink>
+            <span v-else-if="showSender(m)" class="message-sender">{{ m.sender?.displayName || m.sender?.email }}</span>
 
             <span v-if="m.deleted" class="message-text message-deleted-text">
               <Ban :size="14" /> {{ t('chat.deletedMessage') }}
@@ -369,7 +370,7 @@
   }
 
   .message-sender {
-    @apply text-xs font-semibold text-ocean-text;
+    @apply text-xs font-semibold text-ocean-text no-underline;
   }
 
   .message-text {
