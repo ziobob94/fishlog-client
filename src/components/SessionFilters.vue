@@ -72,17 +72,17 @@ function update(key, value) {
 }
 </script>
 <style scoped>
-.filters { @apply flex flex-col gap-3; }
-.search-row { @apply flex items-center gap-2; }
+.filters { @apply flex flex-col gap-2; }
+.search-row { @apply flex items-center gap-1.5; }
 .search-wrap { @apply relative flex-1; }
-.search-icon { @apply absolute left-3.5 top-1/2 -translate-y-1/2 text-muted pointer-events-none; }
-.search-field { @apply w-full min-h-[44px] rounded-xl pl-10 pr-4 text-sm; }
-.filter-btn { @apply flex items-center justify-center w-11 h-11 shrink-0 rounded-xl border border-border bg-surface text-foam cursor-pointer; }
+.search-icon { @apply absolute left-3 top-1/2 -translate-y-1/2 text-muted pointer-events-none; }
+.search-field { @apply w-full min-h-[40px] h-10 rounded-xl pl-9 pr-3 text-sm; }
+.filter-btn { @apply flex items-center justify-center w-10 h-10 shrink-0 rounded-xl border border-border bg-surface text-foam cursor-pointer; }
 .filter-btn.active { @apply border-ocean text-ocean-text; }
-.chip-row { @apply flex gap-2 overflow-x-auto pb-1; scrollbar-width: none; }
+.chip-row { @apply flex gap-1.5 overflow-x-auto pb-0.5; scrollbar-width: none; }
 .chip-row::-webkit-scrollbar { display: none; }
 .chip-btn {
-  @apply shrink-0 inline-flex items-center min-h-[44px] px-4 rounded-full border border-border bg-surface text-foam text-sm font-semibold cursor-pointer transition-colors;
+  @apply shrink-0 inline-flex items-center min-h-[32px] px-3 rounded-full border border-border bg-surface text-foam text-[0.8125rem] font-semibold cursor-pointer transition-colors;
 }
 .chip-btn:hover { @apply border-ocean; }
 .chip-btn.active { @apply bg-ocean border-ocean text-on-primary; }

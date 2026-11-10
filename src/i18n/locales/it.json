@@ -951,6 +951,7 @@
 		}
 	},
 	"market": {
+		"view": { "label": "Come vedere gli elenchi", "grid": "Griglia", "list": "Elenco", "large": "Schede grandi", "grid3": "Griglia fitta" },
 		"title": "Market",
 		"sell": "Vendi",
 		"newListing": "Nuovo annuncio",

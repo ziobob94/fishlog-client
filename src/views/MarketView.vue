@@ -36,6 +36,16 @@
           <SlidersHorizontal :size="18" />
           <span v-if="activeFilterCount" class="filter-count-badge">{{ activeFilterCount }}</span>
         </button>
+        <div class="view-wrap">
+          <button type="button" class="filter-btn" :aria-label="t('market.view.label')" :aria-expanded="viewMenu" @click.stop="viewMenu = !viewMenu">
+            <component :is="VIEW_ICONS[view]" :size="18" />
+          </button>
+          <div v-if="viewMenu" class="view-menu" role="menu">
+            <button v-for="v in LIST_VIEWS" :key="v" type="button" role="menuitemradio" :aria-checked="view === v" :class="{ on: view === v }" @click="view = v; viewMenu = false">
+              <component :is="VIEW_ICONS[v]" :size="18" /> {{ t(`market.view.${v}`) }}
+            </button>
+          </div>
+        </div>
       </div>
 
       <div class="chips" role="group" :aria-label="t('market.filters.allCategories')">
@@ -69,8 +79,8 @@
         <p>{{ t('market.empty.text') }}</p>
       </div>
 
-      <div v-else class="listings-grid">
-        <ListingCard v-for="l in store.listings" :key="l._id" :listing="l" />
+      <div v-else class="listings-grid" :class="`gv-${view}`">
+        <ListingCard v-for="l in store.listings" :key="l._id" :listing="l" :view="view" />
       </div>
 
       <InfiniteSentinel :active="listingsHasMore" :loading="listingsLoadingMore" @trigger="listingsLoadMore" />
@@ -96,7 +106,7 @@
         <p>{{ t('market.shops.empty') }}</p>
       </div>
 
-      <div v-else class="shops-grid">
+      <div v-else class="shops-grid" :class="{ 'gv-list': view === 'list' || view === 'large' }">
         <ShopCard v-for="s in store.shops" :key="s._id" :shop="s" />
       </div>
 
@@ -121,8 +131,8 @@
         <p>{{ store.externalConfigured ? t('market.external.empty') : t('market.external.notConfigured') }}</p>
       </div>
 
-      <div v-else class="listings-grid">
-        <ExternalListingCard v-for="(l, i) in store.external" :key="`e-${i}`" :listing="l" />
+      <div v-else class="listings-grid" :class="`gv-${view}`">
+        <ExternalListingCard v-for="(l, i) in store.external" :key="`e-${i}`" :listing="l" :view="view" />
       </div>
 
       <InfiniteSentinel :active="ebayHasMore" :loading="ebayLoadingMore" @trigger="ebayLoadMore" />
@@ -140,7 +150,8 @@ import PageHeader from '../components/PageHeader.vue'
 import { ref, computed, watch, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { RouterLink } from 'vue-router'
-import { Package, Store, Globe, Plus, Search, SlidersHorizontal, X } from 'lucide-vue-next'
+import { Package, Store, Globe, Plus, Search, SlidersHorizontal, X, LayoutGrid, List, RectangleHorizontal, Grid3x3 } from 'lucide-vue-next'
+import { useListView, LIST_VIEWS } from '../composables/useListView.js'
 import { useMarketStore } from '../stores/market.js'
 import { useAuthStore } from '../stores/auth.js'
 import { useInfiniteScroll } from '../composables/useInfiniteScroll.js'
@@ -152,6 +163,10 @@ import ShopCard            from '../components/market/ShopCard.vue'
 import InfiniteSentinel    from '../components/InfiniteSentinel.vue'
 
 const { t } = useI18n()
+const { view } = useListView()
+const viewMenu = ref(false)
+const VIEW_ICONS = { grid: LayoutGrid, list: List, large: RectangleHorizontal, grid3: Grid3x3 }
+if (typeof document !== 'undefined') document.addEventListener('click', () => { viewMenu.value = false })
 const store = useMarketStore()
 const auth  = useAuthStore()
 
@@ -271,26 +286,26 @@ onMounted(() => {
 .market-head { @apply flex items-center justify-between gap-2 mb-4; }
 .market-title { @apply text-3xl font-bold text-foam; }
 
-.segmented { @apply flex gap-1 p-1 mb-3 bg-surface-2 border border-border rounded-xl; }
-.seg-opt { @apply flex-1 min-h-[44px] rounded-lg bg-transparent border-none text-sm font-semibold text-foam cursor-pointer whitespace-nowrap; }
+.segmented { @apply flex gap-0.5 p-0.5 mb-2 bg-surface-2 border border-border rounded-xl; }
+.seg-opt { @apply flex-1 min-h-[36px] rounded-[10px] bg-transparent border-none text-[0.8125rem] font-semibold text-foam cursor-pointer whitespace-nowrap; }
 .seg-opt.active { @apply bg-ocean text-on-primary; }
 
-.search-row { @apply flex items-center gap-2 mb-3; }
+.search-row { @apply flex items-center gap-1.5 mb-2; }
 .search-wrap { @apply relative flex-1; }
 .search-icon { @apply absolute left-3.5 top-1/2 -translate-y-1/2 text-muted pointer-events-none; }
-.search-input { @apply w-full min-h-[44px] rounded-xl pl-10 pr-4 text-sm; }
+.search-input { @apply w-full min-h-[40px] h-10 rounded-xl pl-9 pr-3 text-sm; }
 .filter-btn {
-  @apply relative flex items-center justify-center w-11 h-11 shrink-0 rounded-xl border border-border bg-surface text-foam cursor-pointer;
+  @apply relative flex items-center justify-center w-10 h-10 shrink-0 rounded-xl border border-border bg-surface text-foam cursor-pointer;
 }
 .filter-btn.active { @apply border-ocean text-ocean-text; background: var(--ocean-glow); }
 .filter-count-badge {
   @apply absolute -top-1.5 -right-1.5 inline-flex items-center justify-center min-w-[1.1rem] h-[1.1rem] rounded-full bg-sand text-on-primary text-[0.65rem] font-bold px-1;
 }
 
-.chips { @apply flex gap-2 overflow-x-auto pb-1 mb-3; scrollbar-width: none; }
+.chips { @apply flex gap-1.5 overflow-x-auto pb-1 mb-2; scrollbar-width: none; }
 .chips::-webkit-scrollbar { display: none; }
 .chip {
-  @apply inline-flex items-center gap-1.5 shrink-0 min-h-[44px] px-4 rounded-full border border-border bg-surface text-foam text-sm font-semibold cursor-pointer whitespace-nowrap;
+  @apply inline-flex items-center gap-1.5 shrink-0 min-h-[32px] px-3 rounded-full border border-border bg-surface text-foam text-[0.8125rem] font-semibold cursor-pointer whitespace-nowrap;
 }
 .chip-on { @apply bg-ocean border-ocean text-on-primary; }
 .active-filters { @apply flex flex-wrap items-center gap-2 mb-3; }
@@ -301,8 +316,16 @@ onMounted(() => {
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 .shops-grid { @apply grid gap-3; grid-template-columns: minmax(0, 1fr); }
+.view-wrap { @apply relative shrink-0; }
+.view-menu { @apply absolute right-0 top-11 z-30 min-w-[190px] flex flex-col bg-surface-2 border border-border rounded-xl p-1.5 shadow-lg; }
+.view-menu button { @apply flex items-center gap-2.5 text-left text-sm font-semibold px-3 min-h-[44px] rounded-lg bg-transparent border-none text-foam cursor-pointer hover:bg-surface; }
+.view-menu button.on { @apply text-ocean-text; }
+.listings-grid.gv-list, .listings-grid.gv-large { grid-template-columns: minmax(0, 1fr); }
+.listings-grid.gv-grid3 { @apply gap-2; grid-template-columns: repeat(3, minmax(0, 1fr)); }
 @media (min-width: 640px) {
-  .listings-grid { @apply gap-4; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
+  .listings-grid.gv-grid { @apply gap-4; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
+  .listings-grid.gv-large { grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); }
+  .listings-grid.gv-grid3 { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
   .shops-grid { @apply gap-4; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
 }
 

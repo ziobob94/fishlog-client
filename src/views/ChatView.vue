@@ -350,17 +350,17 @@ return toInitials(name)
   }
 
   .chat-search-icon {
-    @apply absolute left-3.5 top-1/2 -translate-y-1/2 text-muted pointer-events-none;
+    @apply absolute left-3 top-1/2 -translate-y-1/2 text-muted pointer-events-none;
   }
 
   .chat-search {
-    @apply w-full min-h-[44px] rounded-xl bg-surface border border-border pl-10 pr-4 text-sm;
+    @apply w-full min-h-[40px] h-10 rounded-xl bg-surface border border-border pl-9 pr-3 text-sm;
   }
 
-  .chips { @apply flex gap-2 overflow-x-auto pb-1 mb-3; scrollbar-width: none; }
+  .chips { @apply flex gap-1.5 overflow-x-auto pb-1 mb-2; scrollbar-width: none; }
   .chips::-webkit-scrollbar { display: none; }
   .chip {
-    @apply inline-flex items-center gap-1 shrink-0 min-h-[44px] px-4 rounded-full border border-border bg-surface text-foam text-sm font-semibold cursor-pointer whitespace-nowrap;
+    @apply inline-flex items-center gap-1 shrink-0 min-h-[32px] px-3 rounded-full border border-border bg-surface text-foam text-[0.8125rem] font-semibold cursor-pointer whitespace-nowrap;
   }
   .chip.active { @apply bg-ocean border-ocean text-on-primary; }
 
