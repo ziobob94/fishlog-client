@@ -1,3 +1,10 @@
+## [1.39.1](https://github.com/ziobob94/fishlog-client/compare/client-v1.39.0...client-v1.39.1) (2026-11-10)
+
+
+### Bug Fixes
+
+* **pwa:** icone di installazione dal nuovo logo (apple-touch-icon, manifest, maskable, favicon) con URL versionati ([18d7726](https://github.com/ziobob94/fishlog-client/commit/18d7726e12268b17d0d8cfe07ecea5bcecd25cac))
+
 # [1.39.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.38.1...client-v1.39.0) (2026-11-10)
 
 
