@@ -301,7 +301,7 @@ const features = useFeaturesStore()
 const theme = useThemeStore()
 const market = useMarketStore()
 const router = useRouter()
-function doLogout() { auth.logout(); router.push('/login') }
+function doLogout() { auth.logout(); window.location.assign('/login') }
 
 onMounted(() => {
   if (!market.categories.length) market.fetchCategories()
@@ -504,7 +504,9 @@ const deleting = ref(false)
 // ── sessione ──
 function logout() {
   auth.logout()
-  router.push('/login')
+  // ricarica: azzera gli store in memoria così un altro account sullo stesso
+  // dispositivo non vede dati del precedente
+  window.location.assign('/login')
 }
 
 async function doDeleteAccount() {

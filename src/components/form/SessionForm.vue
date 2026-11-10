@@ -24,6 +24,12 @@
     <p v-if="!autofillCollapsed && !canAutoFill" class="autofill-warning">{{ t('sessionForm.autoFill.warning') }}</p>
     <div v-if="!autofillCollapsed && autoFillMsg" class="autofill-result" :class="autoFillMsg.type">{{ autoFillMsg.text }}</div>
 
+    <div class="expand-all-row">
+      <button type="button" class="btn btn-ghost btn-sm" @click="toggleAll">
+        {{ allOpen ? t('sessionForm.collapseAll') : t('sessionForm.expandAll') }}
+      </button>
+    </div>
+
     <!-- BASE -->
     <div class="accordion-section">
     <button type="button" class="section-divider accordion-header" :class="{ incomplete: !canLeaveSection('base') }" @click="toggleSection('base')">
@@ -313,7 +319,7 @@
 </template>
 
 <script setup>
-  import { ref, computed, watch, onMounted } from 'vue'
+  import { ref, computed, watch, onMounted, nextTick } from 'vue'
   import { useI18n } from 'vue-i18n'
   import { useGroupStore } from '../../stores/groups.js'
   import { useAuthStore } from '../../stores/auth.js'
@@ -430,6 +436,15 @@
   const SECTION_BLOCKED_MSG = {
     base: () => t('sessionForm.blocked.base'),
     location: () => t('sessionForm.blocked.location')
+  }
+
+  const allOpen = computed(() => ALL_SECTIONS.every(id => openSections.value.has(id)))
+
+  // Apre tutto, oppure richiude solo le sezioni non obbligatorie compilate.
+  function toggleAll() {
+    openSections.value = allOpen.value
+      ? new Set(ALL_SECTIONS.filter(id => !canLeaveSection(id) || id === 'catches'))
+      : new Set(ALL_SECTIONS)
   }
 
   function isOpen(id) {
@@ -686,6 +701,17 @@
   const catchesRef = ref(null)
 
   function handleSubmit() {
+    // Campo obbligatorio vuoto: apre la sezione e porta lì l'utente, con
+    // messaggio chiaro (altrimenti il browser non può evidenziare un campo
+    // nascosto in una sezione chiusa e l'invio sembra non fare nulla).
+    for (const id of ['base', 'location']) {
+      if (!canLeaveSection(id)) {
+        const next = new Set(openSections.value); next.add(id); openSections.value = next
+        toast(SECTION_BLOCKED_MSG[id](), { type: 'warning' })
+        nextTick(() => document.querySelector('.field-missing')?.focus())
+        return
+      }
+    }
     const payload = JSON.parse(JSON.stringify(f.value))
     if (!payload.location.coords?.lat && !payload.location.coords?.lng) delete payload.location.coords
     if (payload.visibility !== 'group') payload.allowedGroups = []
@@ -694,6 +720,7 @@
 </script>
 
 <style scoped>
+  .expand-all-row { display: flex; justify-content: flex-end; margin: .25rem 0 .5rem; }
   .session-form {
     max-width: 920px;
     padding-bottom: 4.5rem;

@@ -11,15 +11,38 @@
 
     <div v-if="error" class="error-banner"><AlertTriangle :size="16" /> {{ error }}</div>
 
+    <div class="ongoing-status" role="status">
+      <strong>{{ t('session.ongoing.count', { n: catches.length }, catches.length) }}</strong>
+      <span class="save-state" :class="saveState">
+        <template v-if="saveState === 'saving'">{{ t('session.ongoing.saving') }}</template>
+        <template v-else-if="saveState === 'needsSpecies'">{{ t('session.ongoing.needsSpecies') }}</template>
+        <template v-else-if="saveState === 'saved'">✓ {{ t('session.ongoing.savedAuto') }}</template>
+        <template v-else>{{ t('session.ongoing.hint') }}</template>
+      </span>
+    </div>
+
     <CatchesSection ref="catchesRef" v-model="catches" :location="session.location" />
 
     <div class="ongoing-actions">
-      <button type="button" class="btn btn-ghost" @click="$emit('cancel')">{{ t('common.back') }}</button>
-      <button type="button" class="btn btn-primary" :disabled="closing" @click="closeSession">
+      <button type="button" class="btn btn-ghost" @click="$emit('cancel')">{{ t('session.ongoing.backToSummary') }}</button>
+      <button type="button" class="btn btn-primary" :disabled="closing" @click="confirmClose = true">
         <span v-if="closing" class="spinner" style="width:15px;height:15px"></span>
         {{ closing ? t('sessionForm.saving') : t('session.ongoing.close') }}
       </button>
     </div>
+
+    <Teleport to="body">
+      <div v-if="confirmClose" class="dialog-overlay" @click.self="confirmClose = false">
+        <div class="card dialog">
+          <h3>{{ t('session.ongoing.closeDialogTitle') }}</h3>
+          <p class="text-muted mt-1">{{ t('session.ongoing.closeDialogText', { n: catches.length }, catches.length) }}</p>
+          <div class="dialog-actions">
+            <button type="button" class="btn btn-ghost btn-sm" @click="confirmClose = false">{{ t('session.ongoing.keepFishing') }}</button>
+            <button type="button" class="btn btn-primary btn-sm" @click="confirmClose = false; closeSession()">{{ t('session.ongoing.close') }}</button>
+          </div>
+        </div>
+      </div>
+    </Teleport>
 
   </div>
 </template>
@@ -43,6 +66,9 @@ const emit = defineEmits(['cancel', 'closed', 'edit-full'])
 
 const error     = ref(null)
 const closing   = ref(false)
+const confirmClose = ref(false)
+// idle | saving | saved | needsSpecies — feedback visibile sul salvataggio automatico
+const saveState = ref('idle')
 const catchesRef = ref(null)
 
 // Copia locale: CatchesSection lavora su questa senza attendere il giro di
@@ -71,10 +97,14 @@ async function uploadPendingPhotos(savedCatches) {
   }
 }
 
+const missingSpecies = () => catches.value.some(c => !c.species?.trim())
+
 async function persist(extra = {}) {
   error.value = null
+  saveState.value = 'saving'
   const result = await store.updateSession(props.session._id, { catches: catches.value, ...extra })
-  if (!result) { error.value = store.error; return null }
+  if (!result) { saveState.value = 'idle'; error.value = store.error; return null }
+  saveState.value = 'saved'
   // Gli _id reali assegnati dal server servono solo per l'upload foto qui
   // sotto: non serve riportarli nella copia locale, che l'utente continua
   // a modificare nel frattempo.
@@ -87,11 +117,18 @@ async function persist(extra = {}) {
 // la cattura e resta salvata.
 watch(catches, () => {
   clearTimeout(saveTimer)
+  // Una cattura senza specie verrebbe rifiutata dal server: si aspetta che
+  // sia indicata, dicendolo chiaramente invece di mostrare un errore.
+  if (missingSpecies()) { saveState.value = 'needsSpecies'; return }
   saveTimer = setTimeout(persist, 500)
 }, { deep: true })
 
 async function closeSession() {
   clearTimeout(saveTimer)
+  if (missingSpecies()) {
+    toast(t('session.ongoing.needsSpecies'), { type: 'warning' })
+    return
+  }
   closing.value = true
   const result = await persist({ status: 'closed' })
   closing.value = false
@@ -139,6 +176,24 @@ async function closeSession() {
   gap: .4rem;
   padding: .75rem 1rem;
 }
+
+.dialog-overlay {
+  align-items: center; background: rgba(0, 0, 0, .6); display: flex;
+  inset: 0; justify-content: center; position: fixed; z-index: 1000;
+}
+.dialog { max-width: 22rem; width: 90%; }
+.dialog-actions { display: flex; gap: .75rem; justify-content: flex-end; margin-top: 1.25rem; }
+
+.ongoing-status {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem 1rem;
+  justify-content: space-between;
+}
+.save-state { color: var(--text-muted, #6b8fa8); font-size: .85rem; }
+.save-state.saved { color: var(--success, #5cd98a); }
+.save-state.needsSpecies { color: var(--warning, #e8b04a); }
 
 .ongoing-actions {
   display: flex;

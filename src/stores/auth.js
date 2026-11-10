@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import api from '../utils/api.js'
+import { useOfflineStore } from './offline.js'
 
 export const useAuthStore = defineStore('auth', () => {
   const token = ref(localStorage.getItem('fl_token') || null)
@@ -14,6 +15,7 @@ export const useAuthStore = defineStore('auth', () => {
     localStorage.setItem('fl_token', t)
     localStorage.setItem('fl_user', JSON.stringify(u))
     api.defaults.headers.common['Authorization'] = `Bearer ${t}`
+    useOfflineStore().reloadForUser() // la coda offline segue l'utente collegato
   }
 
   function clearAuth() {
@@ -22,6 +24,7 @@ export const useAuthStore = defineStore('auth', () => {
     localStorage.removeItem('fl_token')
     localStorage.removeItem('fl_user')
     delete api.defaults.headers.common['Authorization']
+    useOfflineStore().outbox = [] // la coda dell'utente uscito non deve restare visibile
   }
 
   function initAuth() {

@@ -272,7 +272,7 @@ import { toInitials } from '../utils/initials.js'
   }
 
   const currentConversation = computed(() => chatStore.conversations.find(c => c._id === conversationId.value))
-  const friend = computed(() => friendStore.friends.find(f => f._id === route.params.userId))
+  const friend = computed(() => friendStore.friends.find(f => f._id === route.params.userId) || (currentConversation.value?.type !== 'group' ? currentConversation.value?.user : null))
 
   function initials(u) {
     const name = u?.displayName || u?.email || '?'
