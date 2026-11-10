@@ -227,8 +227,8 @@ async function submit() {
 
 <style scoped>
 .post-form    { @apply flex flex-col gap-2; }
-.segmented { @apply flex gap-1 p-1 bg-surface-2 border border-border rounded-xl; }
-.seg-opt { @apply flex-1 min-h-[44px] rounded-lg bg-transparent border-none text-sm font-semibold text-foam cursor-pointer; }
+.segmented { @apply flex gap-1 p-1 bg-surface-2 border border-border rounded-full; }
+.seg-opt { @apply flex-1 min-h-[44px] rounded-full bg-transparent border-none text-sm font-semibold text-foam cursor-pointer; }
 .seg-opt.active { @apply bg-ocean text-on-primary; }
 .field-label { @apply text-xs font-bold uppercase text-muted mt-2; letter-spacing: 0.14em; }
 .linked { @apply flex flex-col gap-2; }
