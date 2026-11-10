@@ -140,8 +140,8 @@ textarea.field { @apply py-3; }
 }
 .chip.on { @apply bg-ocean border-ocean text-on-primary; }
 
-.segmented { @apply flex gap-1 p-1 bg-surface-2 border border-border rounded-xl; }
-.seg-opt { @apply flex-1 min-h-[44px] rounded-lg bg-transparent border-none text-sm font-semibold text-foam cursor-pointer; }
+.segmented { @apply flex gap-1 p-1 bg-surface-2 border border-border rounded-full; }
+.seg-opt { @apply flex-1 min-h-[44px] rounded-full bg-transparent border-none text-sm font-semibold text-foam cursor-pointer; }
 .seg-opt.active { @apply bg-ocean text-on-primary; }
 
 .form-row { @apply grid gap-3; grid-template-columns: 1fr 1fr; }

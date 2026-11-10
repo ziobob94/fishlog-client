@@ -286,8 +286,8 @@ onMounted(() => {
 .market-head { @apply flex items-center justify-between gap-2 mb-4; }
 .market-title { @apply text-3xl font-bold text-foam; }
 
-.segmented { @apply flex gap-0.5 p-0.5 mb-2 bg-surface-2 border border-border rounded-xl; }
-.seg-opt { @apply flex-1 min-h-[36px] rounded-[10px] bg-transparent border-none text-[0.8125rem] font-semibold text-foam cursor-pointer whitespace-nowrap; }
+.segmented { @apply flex gap-0.5 p-0.5 mb-2 bg-surface-2 border border-border rounded-full; }
+.seg-opt { @apply flex-1 min-h-[36px] rounded-full bg-transparent border-none text-[0.8125rem] font-semibold text-foam cursor-pointer whitespace-nowrap; }
 .seg-opt.active { @apply bg-ocean text-on-primary; }
 
 .search-row { @apply flex items-center gap-1.5 mb-2; }
