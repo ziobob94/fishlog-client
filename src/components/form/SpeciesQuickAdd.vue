@@ -1,10 +1,10 @@
 <template>
   <div class="species-quickadd">
 
-    <!-- Barra ricerca + azioni (slot per il bottone "Aggiungi cattura") -->
+    <label class="quickadd-label" for="species-quickadd-input">{{ t('speciesQuickAdd.label') }}</label>
     <div class="quickadd-toolbar">
       <div class="species-search-bar">
-        <input v-model="query" type="text" :placeholder="t('speciesQuickAdd.searchPlaceholder')" />
+        <input id="species-quickadd-input" v-model="query" type="text" autocomplete="off" :placeholder="t('speciesQuickAdd.searchPlaceholder')" />
       </div>
       <slot name="actions" />
     </div>
@@ -17,21 +17,27 @@
     </div>
     <p v-if="reportSent" class="report-sent">{{ t('speciesQuickAdd.reportSent') }}</p>
 
-    <!-- Le stesse card mostrano i suggerimenti per posizione a riposo, e i
-         risultati della ricerca live non appena si digita qualcosa. -->
-    <div v-if="isSearching" class="suggestion-row">
-      <button v-for="r in results" :key="r.gbifKey || r._id" type="button" class="suggestion-card" @click="pick(r)">
-        <span class="suggestion-species">{{ r.commonNameIt || r.commonNameEn || r.scientificName }}</span>
-        <span class="suggestion-count scientific">{{ r.scientificName }}</span>
-      </button>
+    <!-- Risultati della ricerca live oppure specie suggerite: sempre chip
+         tappabili con un titolo che spiega che toccandoli si aggiunge un pesce. -->
+    <div v-if="isSearching" class="chip-block">
+      <p class="chip-title">{{ t('speciesQuickAdd.resultsTitle') }}</p>
+      <div class="chip-row">
+        <button v-for="r in results" :key="r.gbifKey || r._id" type="button" class="species-chip" @click="pick(r)">
+          <span class="chip-plus">+</span>
+          <span class="chip-name">{{ r.commonNameIt || r.commonNameEn || r.scientificName }}</span>
+          <span class="chip-sub scientific">{{ r.scientificName }}</span>
+        </button>
+      </div>
     </div>
-    <div v-else-if="suggestions.length" class="suggestion-row">
-      <button v-for="s in suggestions" :key="s.species" type="button" class="suggestion-card" @click="pick({ commonNameIt: s.species })">
-        <span class="suggestion-species">{{ s.species }}</span>
-        <span class="suggestion-count">
-          {{ s.count != null ? t('speciesQuickAdd.caughtHere', { n: s.count }) : t('speciesQuickAdd.popularFallback') }}
-        </span>
-      </button>
+    <div v-else-if="suggestions.length" class="chip-block">
+      <p class="chip-title">{{ t('speciesQuickAdd.suggestionsTitle') }}</p>
+      <div class="chip-row">
+        <button v-for="s in suggestions" :key="s.species" type="button" class="species-chip" @click="pick({ commonNameIt: s.species })">
+          <span class="chip-plus">+</span>
+          <span class="chip-name">{{ s.species }}</span>
+          <span v-if="s.count != null" class="chip-sub">{{ t('speciesQuickAdd.caughtHere', { n: s.count }, s.count) }}</span>
+        </button>
+      </div>
     </div>
 
     <p v-if="isSearching && !loadingSearch && results.length === 0" class="no-results">
@@ -146,6 +152,19 @@ async function submitReport() {
 .report-box { display: flex; flex-wrap: wrap; gap: .5rem; }
 .report-sent { color: var(--success, #5cd98a); font-size: .8rem; }
 
+.quickadd-label { color: var(--foam, #cde); font-size: .95rem; font-weight: 700; }
+.chip-title { color: var(--text-muted, #6b8fa8); font-size: .8rem; margin-bottom: .4rem; }
+.chip-row { display: flex; flex-wrap: wrap; gap: .5rem; }
+.species-chip {
+  align-items: center; background: var(--surface, #0a1929);
+  border: 1px solid var(--border, #2a3f55); border-radius: 999px; color: var(--foam, #cde);
+  cursor: pointer; display: inline-flex; gap: .4rem; min-height: 40px; padding: .35rem .85rem;
+}
+.species-chip:hover, .species-chip:active { border-color: var(--ocean, #0ea5e9); }
+.chip-plus { color: var(--ocean, #0ea5e9); font-weight: 800; }
+.chip-name { font-size: .9rem; font-weight: 700; }
+.chip-sub { color: var(--text-muted, #6b8fa8); font-size: .72rem; }
+.chip-sub.scientific { font-style: italic; }
 .suggestion-row {
   display: grid; gap: .6rem;
   grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
