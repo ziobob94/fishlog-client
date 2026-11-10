@@ -57,7 +57,13 @@
         <label for="s-phone">{{ t('seller.phone') }}</label>
         <input id="s-phone" v-model="form.phone" type="tel" placeholder="+39 ..." required autocomplete="tel" />
       </div>
-      <p class="notice">{{ t('seller.documentNote') }}</p>
+      <div class="form-group">
+        <label for="s-doc">{{ t('seller.document.label') }}</label>
+        <input id="s-doc" type="file" accept="application/pdf,image/jpeg,image/png,image/webp" :required="!hasDocument" @change="onFile" />
+        <p class="text-muted text-xs mt-1">
+          {{ hasDocument && !docFile ? t('seller.document.already') : t('seller.document.hint') }}
+        </p>
+      </div>
 
       <label class="check-row">
         <input v-model="confirmed" type="checkbox" required />
@@ -154,6 +160,9 @@ const shop = ref({
   city: s0.city || '', delivery: [...(s0.delivery || [])], contact: s0.contact || ''
 })
 const confirmed = ref(false)
+const docFile = ref(null)
+const hasDocument = computed(() => !!auth.user?.shop?.documentUploaded)
+function onFile(e) { docFile.value = e.target.files?.[0] || null }
 const saving = ref(false)
 const saved = ref(false)
 const error = ref('')
@@ -165,6 +174,7 @@ async function submitRequest() {
   try {
     const payload = { enabled: true, ...form.value }
     if (payload.sellerType === 'privato') payload.vatNumber = ''
+    if (docFile.value) await auth.uploadShopDocument(docFile.value)
     await auth.updateShop(payload)
   } catch (e) {
     error.value = e.response?.data?.error || t('common.error')

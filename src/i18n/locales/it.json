@@ -98,6 +98,8 @@
 			"empty": "Nessuna richiesta di negozio in attesa",
 			"approve": "Approva",
 			"reject": "Rifiuta",
+			"document": "Vedi documento",
+			"noDocument": "Nessun documento",
 			"rejectReason": "Motivo del rifiuto (lo vedrà il venditore)",
 			"table": {
 				"name": "Negozio",
@@ -1144,7 +1146,11 @@
 		"vatPlaceholder": "11 cifre",
 		"city": "Città",
 		"phone": "Telefono",
-		"documentNote": "Il team può chiederti un documento (per esempio la visura camerale) via email: non viene mostrato agli altri utenti.",
+		"document": {
+			"label": "Documento per la verifica",
+			"hint": "PDF o foto (massimo 10 MB), per esempio la visura camerale o un documento d'identità. Lo vede solo il team e non viene mostrato agli altri utenti.",
+			"already": "Documento già caricato: scegline un altro solo se vuoi sostituirlo."
+		},
 		"confirm": "Confermo che i dati sono veritieri e accetto le condizioni per i venditori.",
 		"submit": "Invia richiesta",
 		"resubmit": "Modifica e reinvia",

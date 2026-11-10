@@ -106,13 +106,20 @@
   h2 { font-size: clamp(1.2rem, 3vw, 1.7rem); }
 
   a { @apply text-ocean-text no-underline transition-colors duration-200; }
-  a:hover { @apply text-sand; }
+  a:hover { @apply text-sand-text; }
 
   input, textarea, select {
     @apply w-full bg-surface-2 border border-border rounded-sm text-foam font-display text-sm
            px-3 py-2 outline-none transition-all duration-200;
   }
   input:not([type='checkbox']):not([type='radio']):not([type='range']):not([type='file']), select { min-height: 44px; }
+  /* Caselle e radio: dimensione propria, non quella dei campi di testo */
+  input[type='checkbox'], input[type='radio'] {
+    width: 1.25rem; height: 1.25rem; min-height: 0; padding: 0; flex: none;
+    accent-color: rgb(var(--color-ocean)); cursor: pointer;
+  }
+  input[type='checkbox']:focus-visible, input[type='radio']:focus-visible { outline: 2px solid rgb(var(--color-ocean-text)); outline-offset: 2px; }
+  input[type='file'] { min-height: 44px; }
   input:focus, textarea:focus, select:focus {
     @apply border-ocean;
     box-shadow: 0 0 0 3px var(--ocean-glow);
@@ -128,7 +135,7 @@
 
   /* Focus sempre visibile da tastiera */
   :focus-visible { outline: 2px solid rgb(var(--color-ocean-text)); outline-offset: 2px; }
-  input:focus-visible, textarea:focus-visible, select:focus-visible { outline: none; }
+  input:not([type='checkbox']):not([type='radio']):focus-visible, textarea:focus-visible, select:focus-visible { outline: none; }
 
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
