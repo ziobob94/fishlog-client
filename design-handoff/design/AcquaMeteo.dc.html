@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<title>FishLog Acqua e meteo</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+body{margin:0;font-family:'Manrope',system-ui,sans-serif;background:#111c2c;color:#f1f5f9}
+.i{fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+button,input,textarea,select{font-family:inherit}
+button{cursor:pointer}
+a{color:inherit;text-decoration:none}
+.lab{display:block;margin:0 0 8px;font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#9db0c8}
+.inp{width:100%;box-sizing:border-box;height:52px;border-radius:14px;border:1px solid #33486a;background:#1a293d;color:#f1f5f9;font-size:16px;padding:0 16px;outline:none}
+.inp:focus{border-color:#0ea5e9}
+.mono{font-family:'JetBrains Mono',monospace}
+.chip{flex:none;min-height:44px;padding:0 16px;border-radius:22px;border:1px solid #33486a;background:#1a293d;color:#cbd5e1;font-weight:600;font-size:15px}
+.chip.on{border-color:#0ea5e9;background:#0ea5e9;color:#0b1623;font-weight:800}
+.btn1{min-height:54px;border-radius:16px;background:#0ea5e9;color:#0b1623;font-weight:800;font-size:16px;display:flex;align-items:center;justify-content:center;gap:8px;border:0;width:100%;box-sizing:border-box}
+.btn2{min-height:48px;border-radius:14px;background:transparent;color:#cbd5e1;border:1px solid #46617f;font-weight:700;font-size:15px;display:flex;align-items:center;justify-content:center;gap:8px;width:100%;box-sizing:border-box}
+.bar{padding:12px 16px 20px;background:#1a293d;border-top:1px solid #33486a;display:flex;flex-direction:column;gap:8px}
+.iconbtn{width:44px;height:44px;border-radius:14px;border:1px solid #33486a;background:#1a293d;color:#f1f5f9;display:flex;align-items:center;justify-content:center;flex:none}
+.card{background:#1a293d;border:1px solid #33486a;border-radius:20px;padding:16px;box-sizing:border-box}
+.hint{margin:6px 0 0;font-size:13px;color:#9db0c8}
+.seg{display:grid;gap:8px}
+.seg button{min-height:44px;border-radius:12px;font-size:14px;font-weight:700}
+</style>
+</helmet>
+<div style="width:390px;height:1280px;box-sizing:border-box;background:#111c2c;display:flex;flex-direction:column;overflow:hidden">
+  <header style="display:flex;align-items:center;gap:8px;padding:8px 16px 8px 8px;min-height:64px;box-sizing:border-box;border-bottom:1px solid #33486a">
+    <a href="DatiUscita.dc.html" aria-label="Indietro" style="width:44px;height:44px;display:flex;align-items:center;justify-content:center"><svg class="i" viewBox="0 0 24 24" style="width:22px;height:22px;" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></a>
+    <h1 style="margin:0;font-size:18px;font-weight:800;letter-spacing:-.02em;flex:1">Acqua e meteo</h1>
+  </header>
+  <main style="flex:1;overflow:hidden;padding:20px 16px;display:flex;flex-direction:column;gap:22px">
+    <section class="card" style="display:flex;align-items:center;gap:14px;background:#10304d;border-radius:24px 24px 24px 8px">
+      <span style="color:#fbbf24;display:flex"><svg class="i" viewBox="0 0 24 24" style="width:28px;height:28px;" aria-hidden="true"><path d="M12 2v4M12 18v4M2 12h4M18 12h4M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/></svg></span>
+      <span style="flex:1;display:flex;flex-direction:column;gap:2px"><span style="font-size:15px;font-weight:800">Precompila dal GPS</span><span class="mono" style="font-size:12px;color:#7dd3fc">43.72°N · 13.22°E</span></span>
+      <button class="btn2" style="min-height:44px;padding:0 16px;width:auto">Rileva</button>
+    </section>
+    <div class="seg" style="grid-template-columns:repeat(2,minmax(0,1fr))" role="tablist">
+      <sc-for list="{{tabs}}" as="t" hint-placeholder-count="2"><button role="tab" aria-selected="{{t.on}}" onClick="{{t.tap}}" style="color:{{t.fg}};background:{{t.bg}};border:1px solid {{t.bd}}">{{t.label}}</button></sc-for>
+    </div>
+    <section><span class="lab">Stato del mare</span><div style="display:flex;gap:8px;flex-wrap:wrap"><sc-for list="{{sea}}" as="c" hint-placeholder-count="4"><button class="chip {{c.cls}}" aria-pressed="{{c.on}}" onClick="{{c.tap}}">{{c.label}}</button></sc-for></div></section>
+    <section style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px"><label style="display:flex;flex-direction:column;gap:6px;background:#1a293d;border:1px solid #33486a;border-radius:18px;padding:10px 14px"><span style="font-size:13px;color:#9db0c8;font-weight:600">Altezza onda</span><span style="display:flex;align-items:baseline;gap:6px"><input class="mono" inputmode="decimal" value="0,5" aria-label="Altezza onda" style="width:100%;min-width:0;background:transparent;border:0;outline:none;color:#f1f5f9;font-size:26px;padding:0"><span style="font-size:13px;color:#9db0c8">m</span></span></label><label style="display:flex;flex-direction:column;gap:6px;background:#1a293d;border:1px solid #33486a;border-radius:18px;padding:10px 14px"><span style="font-size:13px;color:#9db0c8;font-weight:600">Periodo</span><span style="display:flex;align-items:baseline;gap:6px"><input class="mono" inputmode="decimal" value="6" aria-label="Periodo" style="width:100%;min-width:0;background:transparent;border:0;outline:none;color:#f1f5f9;font-size:26px;padding:0"><span style="font-size:13px;color:#9db0c8">s</span></span></label><label style="display:flex;flex-direction:column;gap:6px;background:#1a293d;border:1px solid #33486a;border-radius:18px;padding:10px 14px"><span style="font-size:13px;color:#9db0c8;font-weight:600">Temp. acqua</span><span style="display:flex;align-items:baseline;gap:6px"><input class="mono" inputmode="decimal" value="16" aria-label="Temp. acqua" style="width:100%;min-width:0;background:transparent;border:0;outline:none;color:#f1f5f9;font-size:26px;padding:0"><span style="font-size:13px;color:#9db0c8">°C</span></span></label><label style="display:flex;flex-direction:column;gap:6px;background:#1a293d;border:1px solid #33486a;border-radius:18px;padding:10px 14px"><span style="font-size:13px;color:#9db0c8;font-weight:600">Temp. aria</span><span style="display:flex;align-items:baseline;gap:6px"><input class="mono" inputmode="decimal" value="12" aria-label="Temp. aria" style="width:100%;min-width:0;background:transparent;border:0;outline:none;color:#f1f5f9;font-size:26px;padding:0"><span style="font-size:13px;color:#9db0c8">°C</span></span></label></section>
+    <section><span class="lab">Corrente</span><div style="display:flex;gap:8px;flex-wrap:wrap"><sc-for list="{{cur}}" as="c" hint-placeholder-count="4"><button class="chip {{c.cls}}" aria-pressed="{{c.on}}" onClick="{{c.tap}}">{{c.label}}</button></sc-for></div></section>
+    <section><span class="lab">Colore dell'acqua</span><div style="display:flex;gap:8px;flex-wrap:wrap"><sc-for list="{{col}}" as="c" hint-placeholder-count="4"><button class="chip {{c.cls}}" aria-pressed="{{c.on}}" onClick="{{c.tap}}">{{c.label}}</button></sc-for></div></section>
+    <section><span class="lab">Marea</span><div style="display:flex;gap:8px;flex-wrap:wrap"><sc-for list="{{tide}}" as="c" hint-placeholder-count="4"><button class="chip {{c.cls}}" aria-pressed="{{c.on}}" onClick="{{c.tap}}">{{c.label}}</button></sc-for></div></section>
+    <section><span class="lab">Cielo</span><div style="display:flex;gap:8px;flex-wrap:wrap"><sc-for list="{{sky}}" as="c" hint-placeholder-count="4"><button class="chip {{c.cls}}" aria-pressed="{{c.on}}" onClick="{{c.tap}}">{{c.label}}</button></sc-for></div></section>
+  </main>
+  <div class="bar"><a href="DatiUscita.dc.html" class="btn1">Salva</a></div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":1280}}'>
+class Component extends DCLogic {
+constructor(props) { super(props); this.state = { tab: 0, sea: 1, cur: 0, col: 1, tide: 2, sky: 0 }; }
+renderVals() {
+  const s = this.state;
+  const mk = (k, arr) => arr.map((label, i) => ({ label, on: s[k] === i, cls: s[k] === i ? 'on' : '', tap: () => this.setState({ [k]: i }) }));
+  return {
+    tabs: ['Acqua', 'Meteo'].map((label, i) => s.tab === i
+      ? { label, on: true, fg: '#0b1623', bg: '#0ea5e9', bd: '#0ea5e9', tap: () => this.setState({ tab: i }) }
+      : { label, on: false, fg: '#cbd5e1', bg: '#1a293d', bd: '#33486a', tap: () => this.setState({ tab: i }) }),
+    sea: mk('sea', ['Calmo', 'Poco mosso', 'Mosso', 'Agitato']),
+    cur: mk('cur', ['Assente', 'Debole', 'Forte']),
+    col: mk('col', ['Limpida', 'Verde', 'Torbida']),
+    tide: mk('tide', ['Crescente', 'Calante', 'Alta', 'Bassa']),
+    sky: mk('sky', ['Sereno', 'Nuvoloso', 'Pioggia', 'Nebbia'])
+  };
+}
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<title>FishLog Uscita in corso</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+body{margin:0;font-family:'Manrope',system-ui,sans-serif;background:#111c2c;color:#f1f5f9}
+.i{fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+button,input,textarea,select{font-family:inherit}
+button{cursor:pointer}
+a{color:inherit;text-decoration:none}
+.lab{display:block;margin:0 0 8px;font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#9db0c8}
+.inp{width:100%;box-sizing:border-box;height:52px;border-radius:14px;border:1px solid #33486a;background:#1a293d;color:#f1f5f9;font-size:16px;padding:0 16px;outline:none}
+.inp:focus{border-color:#0ea5e9}
+.mono{font-family:'JetBrains Mono',monospace}
+.chip{flex:none;min-height:44px;padding:0 16px;border-radius:22px;border:1px solid #33486a;background:#1a293d;color:#cbd5e1;font-weight:600;font-size:15px}
+.chip.on{border-color:#0ea5e9;background:#0ea5e9;color:#0b1623;font-weight:800}
+.btn1{min-height:54px;border-radius:16px;background:#0ea5e9;color:#0b1623;font-weight:800;font-size:16px;display:flex;align-items:center;justify-content:center;gap:8px;border:0;width:100%;box-sizing:border-box}
+.btn2{min-height:48px;border-radius:14px;background:transparent;color:#cbd5e1;border:1px solid #46617f;font-weight:700;font-size:15px;display:flex;align-items:center;justify-content:center;gap:8px;width:100%;box-sizing:border-box}
+.bar{padding:12px 16px 20px;background:#1a293d;border-top:1px solid #33486a;display:flex;flex-direction:column;gap:8px}
+.iconbtn{width:44px;height:44px;border-radius:14px;border:1px solid #33486a;background:#1a293d;color:#f1f5f9;display:flex;align-items:center;justify-content:center;flex:none}
+.card{background:#1a293d;border:1px solid #33486a;border-radius:20px;padding:16px;box-sizing:border-box}
+.hint{margin:6px 0 0;font-size:13px;color:#9db0c8}
+.seg{display:grid;gap:8px}
+.seg button{min-height:44px;border-radius:12px;font-size:14px;font-weight:700}
+@media (prefers-reduced-motion:no-preference){.bob{animation:bob 2.6s ease-in-out infinite}@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(6px)}}}</style>
+</helmet>
+<div style="width:390px;height:1000px;box-sizing:border-box;background:#111c2c;display:flex;flex-direction:column;overflow:hidden">
+
+  <section style="position:relative;background:#10304d;border-radius:0 0 28px 8px;overflow:hidden;padding:8px 16px 22px 8px;display:flex;flex-direction:column;gap:14px">
+    <svg width="100%" height="100%" viewBox="0 0 400 240" preserveAspectRatio="xMaxYMid slice" style="position:absolute;inset:0;pointer-events:none" aria-hidden="true"><g fill="none" stroke="#7dd3fc" stroke-width="1.5" stroke-linejoin="round"><path opacity=".12" d="M250-10c80 0 160 45 170 120s-40 140-120 150-170-20-190-100S170-10 250-10Z"/><path opacity=".2" d="M255 14c60 0 125 38 132 96s-30 110-95 124-135-12-152-80S198 14 255 14Z"/><path opacity=".3" d="M260 40c40 0 80 30 85 70s-20 80-70 90-100-10-110-55 55-105 95-105Z"/><path opacity=".42" d="M262 66c28 0 55 22 58 50s-14 56-48 62-70-8-76-38 38-74 66-74Z"/></g></svg>
+    <div style="position:relative;display:flex;align-items:center;gap:4px">
+      <a href="Uscite.dc.html" aria-label="Torna alle uscite" style="width:44px;height:44px;display:flex;align-items:center;justify-content:center"><svg class="i" viewBox="0 0 24 24" style="width:22px;height:22px;" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></a>
+      <span style="flex:1"></span>
+      <a href="Dettaglio.dc.html" aria-label="Vedi il riepilogo" class="iconbtn" style="background:rgba(17,28,44,.6);border-color:#46617f"><svg class="i" viewBox="0 0 24 24" style="width:20px;height:20px;" aria-hidden="true"><path d="M7 3h7l5 5v11a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2ZM14 3v5h5M9 13h6M9 17h6"/></svg></a>
+      <a href="DatiUscita.dc.html" aria-label="Modifica i dati dell'uscita" class="iconbtn" style="background:rgba(17,28,44,.6);border-color:#46617f;margin-left:6px"><svg class="i" viewBox="0 0 24 24" style="width:20px;height:20px;" aria-hidden="true"><path d="M5 12h.01M12 12h.01M19 12h.01"/></svg></a>
+    </div>
+    <div style="position:relative;padding-left:8px;display:flex;flex-direction:column;gap:6px">
+      <span style="display:flex;align-items:center;gap:8px;font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#fbbf24"><span style="width:10px;height:10px;border-radius:50%;background:#f59e0b"></span>In corso · dalle 22:10</span>
+      <h1 style="margin:0;font-size:28px;line-height:1.1;letter-spacing:-.03em;font-weight:800">Molo di Senigallia</h1>
+      <span class="mono" style="font-size:12px;color:#7dd3fc">43.72°N · 13.22°E · Spinning</span>
+    </div>
+    <div style="position:relative;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;padding-left:8px">
+      <div style="display:flex;flex-direction:column;gap:2px"><span class="mono" style="font-size:32px;line-height:1;letter-spacing:-.04em">{{st.n}}</span><span style="font-size:12px;color:#b4c3d6;font-weight:600">catture</span></div>
+      <div style="display:flex;flex-direction:column;gap:2px"><span class="mono" style="font-size:32px;line-height:1;letter-spacing:-.04em">{{st.kg}}</span><span style="font-size:12px;color:#b4c3d6;font-weight:600">kg totali</span></div>
+      <div style="display:flex;flex-direction:column;gap:2px"><span class="mono" style="font-size:32px;line-height:1;letter-spacing:-.04em;color:#fbbf24">1:02</span><span style="font-size:12px;color:#b4c3d6;font-weight:600">ore a pesca</span></div>
+    </div>
+  </section>
+
+  <main style="flex:1;overflow:hidden;padding:18px 16px 0;display:flex;flex-direction:column;gap:18px">
+
+    <div role="group" aria-label="Anteprima stato" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px">
+      <button aria-pressed="{{t0.on}}" onClick="{{set0}}" style="min-height:44px;border-radius:12px;font-size:13px;font-weight:700;color:{{t0.fg}};background:{{t0.bg}};border:1px solid {{t0.bd}}">Anteprima: nessun pesce</button>
+      <button aria-pressed="{{t1.on}}" onClick="{{set1}}" style="min-height:44px;border-radius:12px;font-size:13px;font-weight:700;color:{{t1.fg}};background:{{t1.bg}};border:1px solid {{t1.bd}}">Anteprima: con pesci</button>
+    </div>
+
+    <a href="AggiungiCattura.dc.html" class="btn1" style="min-height:60px;font-size:17px;box-shadow:0 8px 22px rgba(14,165,233,.28)"><svg class="i" viewBox="0 0 24 24" style="width:24px;height:24px;stroke-width:2.4" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Aggiungi cattura</a>
+
+    <sc-if value="{{empty}}" hint-placeholder-val="{{ false }}">
+    <div style="display:flex;flex-direction:column;align-items:center;gap:6px;padding:20px 16px;text-align:center">
+      <svg width="96" height="112" viewBox="0 0 120 140" aria-hidden="true"><g class="bob"><path d="M60 6v22" stroke="#f1f5f9" stroke-width="5" stroke-linecap="round" fill="none"/><path d="M60 28c-17 0-26 14-26 28 0 16 12 28 26 28s26-12 26-28c0-14-9-28-26-28Z" fill="#f1f5f9"/><path d="M36 52c3-14 13-24 24-24s21 10 24 24Z" fill="#f59e0b"/><path d="M60 84v20" stroke="#f1f5f9" stroke-width="3" stroke-linecap="round" fill="none" opacity=".6"/></g><path d="M4 102c10 0 10 8 21 8s11-8 21 0 11 8 21 8 11-8 21 0 11 8 22 0" fill="none" stroke="#7dd3fc" stroke-width="3" stroke-linecap="round"/><path d="M4 118c10 0 10 8 21 8s11-8 21 0 11 8 21 8 11-8 21 0 11 8 22 0" fill="none" stroke="#7dd3fc" stroke-width="3" stroke-linecap="round" opacity=".4"/></svg>
+      <span style="font-size:18px;font-weight:800;letter-spacing:-.02em">Ancora nessun pesce</span>
+      <span style="font-size:14px;color:#9db0c8;line-height:1.45;max-width:26ch">Quando abbocca, tocca «Aggiungi cattura».</span>
+    </div>
+    </sc-if>
+
+    <sc-if value="{{full}}" hint-placeholder-val="{{ true }}">
+    <section style="display:flex;flex-direction:column;gap:12px">
+      <div style="display:flex;align-items:center;gap:12px"><span style="font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#9db0c8">Catture</span><svg height="12" width="100%" style="flex:1;min-width:0" aria-hidden="true"><defs><pattern id="uw" width="24" height="12" patternUnits="userSpaceOnUse"><path d="M0 6c3 0 3-4 6-4s3 4 6 4 3 4 6 4 3-4 6-4" fill="none" stroke="#33486a" stroke-opacity="1" stroke-width="2" stroke-linecap="round"/></pattern></defs><rect width="100%" height="12" fill="url(#uw)"/></svg><span style="font-size:12px;color:#86efac;display:flex;align-items:center;gap:4px"><svg class="i" viewBox="0 0 24 24" style="width:14px;height:14px;" aria-hidden="true"><path d="m5 12 5 5 9-10"/></svg>Salvate</span></div>
+      <sc-for list="{{fishes}}" as="f" hint-placeholder-count="2">
+      <a href="AggiungiCattura.dc.html" style="display:flex;gap:12px;align-items:center;background:#1a293d;border:1px solid #33486a;border-radius:20px;padding:10px;min-height:64px">
+        <span style="position:relative;width:72px;height:72px;border-radius:16px 16px 16px 6px;background:linear-gradient(160deg,#1f3a56,#10304d);color:#4d7ba3;display:flex;align-items:center;justify-content:center;flex:none;overflow:hidden"><svg class="i" viewBox="0 0 24 24" style="width:30px;height:30px;" aria-hidden="true"><path d="M2.5 12.4c0-3.7 3.7-6.4 8.3-6.4s7.2 2.6 7.2 6.4-3 6.4-7.2 6.4-8.3-2.7-8.3-6.4ZM17.5 12.4l3.4-3.7a.8.8 0 0 1 1.3.5v6.4a.8.8 0 0 1-1.3.5l-3.4-3.7ZM7.2 11h.01"/></svg><div style="position:absolute;left:8px;right:8px;bottom:6px;height:7px;background:repeating-linear-gradient(90deg,rgba(241,245,249,.8) 0 2px,transparent 2px 8px)"></div><div style="position:absolute;left:8px;right:8px;bottom:6px;height:12px;background:repeating-linear-gradient(90deg,#fbbf24 0 2px,transparent 2px 40px)"></div></span>
+        <span style="flex:1;min-width:0;display:flex;flex-direction:column;gap:3px">
+          <span style="font-size:17px;font-weight:800;letter-spacing:-.01em">{{f.name}}</span>
+          <span class="mono" style="font-size:13px;color:#fbbf24">{{f.size}}</span>
+          <span style="font-size:12px;color:#9db0c8">{{f.time}}{{f.rel}}</span>
+        </span>
+        <svg class="i" viewBox="0 0 24 24" style="width:20px;height:20px;color:#7dd3fc" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>
+      </a>
+      </sc-for>
+    </section>
+    </sc-if>
+  </main>
+
+  <div class="bar">
+    <a href="ChiudiUscita.dc.html" class="btn2" style="border-color:#f59e0b;color:#fbbf24">Chiudi uscita</a>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":1000}}'>
+class Component extends DCLogic {
+constructor(props) { super(props); this.state = { s: 1 }; }
+renderVals() {
+  const s = this.state.s;
+  const tab = (i) => i === s ? { on: true, fg: '#0b1623', bg: '#0ea5e9', bd: '#0ea5e9' } : { on: false, fg: '#cbd5e1', bg: '#1a293d', bd: '#33486a' };
+  return {
+    t0: tab(0), t1: tab(1), set0: () => this.setState({ s: 0 }), set1: () => this.setState({ s: 1 }),
+    empty: s === 0, full: s === 1,
+    st: s === 0 ? { n: '0', kg: '0,0' } : { n: '2', kg: '2,3' },
+    fishes: [
+      { name: 'Spigola', size: '52 cm · 1,4 kg', time: '23:20', rel: ' · rilasciata' },
+      { name: 'Orata', size: '38 cm · 0,9 kg', time: '22:40', rel: '' }
+    ]
+  };
+}
+}
+</script>
+</body>
+</html>

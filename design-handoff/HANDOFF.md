@@ -54,7 +54,7 @@ Ordine e numeri come in `screenshots/`. Stato: **Restyling** = esiste già, camb
 | 04 | Home desktop | `/` → `HomeView.vue`, `AppSidebar.vue` | Restyling + mappamondo |
 | 02 | Uscite | `/sessions` → `SessionsView.vue`, `SessionCard.vue`, `SessionFilters.vue` | Restyling |
 | 03 | Dettaglio uscita | `/session/:id` → `SessionView.vue` | Restyling |
-| 12 | Nuova uscita | `/new` → `NewSessionView.vue`, `SessionForm.vue` | Restyling |
+| 12 | Nuova uscita (solo essenziale) | `/new` → `NewSessionView.vue`, `SessionForm.vue` | **Semplificata**: luogo, quando, tecnica; il resto in «Dati uscita» |
 | 05 | Community · feed | `/feed` → `FeedView.vue`, `PostCard.vue` | Restyling |
 | 06 | Nuovo post | `PostForm.vue` | Restyling |
 | 17 | Commenti | commenti del post (`stores/posts.js`) | Restyling (verificare) |
@@ -83,6 +83,20 @@ Ordine e numeri come in `screenshots/`. Stato: **Restyling** = esiste già, camb
 | 31–33 | Logo, Stile, Icone | riferimento, nessuna view | — |
 
 Non disegnati: Admin e pagine legali (privacy, termini, cookie).
+
+### Flusso uscita semplificato (schermate 34-38, riga y=8800 del canvas)
+Il form unico a sezioni e la scheda «Modifica uscita» erano confusionari. Nuovo flusso a passi corti:
+
+| # | Schermata | Codice di oggi | Cosa cambia |
+|---|---|---|---|
+| 12 | Nuova uscita | `NewSessionView.vue` / `SessionForm.vue` | Solo luogo, data/ora, ambiente, tecnica. Interruttore «Uscita già conclusa». CTA «Inizia a pescare» (crea `ongoing` e va a `/session/:id/edit`) |
+| 34 | Uscita in corso | `EditSessionView.vue` + `OngoingCatchForm.vue` | Un grande «Aggiungi cattura», **un solo** stato vuoto, elenco catture salvate, «Chiudi uscita». Barra di navigazione nascosta. Il bottone «Modifica altri dati» diventa l'icona «⋯» → Dati uscita |
+| 35 | Aggiungi cattura | `CatchesSection.vue`, `SpeciesQuickAdd.vue` | Pagina a sé: ricerca + chip delle specie frequenti (con «1 qui»), peso e lunghezza grandi, «Rilasciato», foto, «Altri dettagli». Salvataggio **esplicito** («Salva cattura» / «Salva e aggiungine un'altra»), non più autosave |
+| 36 | Chiudi uscita | `OngoingCatchForm.vue` (dialog di chiusura) | Riepilogo, voto a stelle, note, visibilità, «Chiudi uscita» / «Continua a pescare» |
+| 37 | Dati uscita | `SessionForm.vue` (sezioni) | Elenco di righe con stato (Compilato / Da aggiungere) che porta a una schermata per sezione; «Elimina uscita» in fondo |
+| 38 | Acqua e meteo | sezioni acqua/meteo di `SessionForm.vue` | Chip e campi grandi, precompila dal GPS. (Il selettore Acqua/Meteo nel mockup non cambia ancora il contenuto: nel codice sono due gruppi separati) |
+
+Chiavi i18n da aggiungere/rinominare: `session.ongoing.*`, `catchesSection.*`, `sessionForm.*`. Il tasto «Riprendi» in Home e Uscite porta a `/session/:id/edit` (schermata 34).
 
 ## Navigazione (cambia)
 
