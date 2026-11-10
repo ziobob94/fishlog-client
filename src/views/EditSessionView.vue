@@ -1,7 +1,10 @@
 <template>
   <div>
-    <PageHeader :title="t('session.edit.title')" back close-icon>
+    <PageHeader :title="store.current?.status === 'ongoing' && !showFullForm ? '' : t('session.edit.title')" back close-icon>
       <RouterLink :to="`/session/${route.params.id}`" class="ph-icon" :aria-label="t('session.edit.viewSummary')"><FileText :size="18" /><span class="ph-label">{{ t('session.edit.viewSummary') }}</span></RouterLink>
+      <button v-if="store.current?.status === 'ongoing' && !showFullForm" type="button" class="ph-icon" @click="showFullForm = true">
+        <MoreHorizontal :size="18" /><span class="ph-label">{{ t('session.ongoing.dataLink') }}</span>
+      </button>
     </PageHeader>
 
     <div v-if="store.loading && !store.current" class="state-center">
@@ -16,9 +19,6 @@
     <OngoingCatchForm
       v-else-if="store.current?.status === 'ongoing' && !showFullForm"
       :session="store.current"
-      @cancel="router.push(`/session/${route.params.id}`)"
-      @closed="onClosed"
-      @edit-full="showFullForm = true"
     />
 
     <SessionForm
@@ -37,7 +37,7 @@ import PageHeader from '../components/PageHeader.vue'
 import { computed, ref, onMounted } from 'vue'
 import { useRouter, useRoute, RouterLink } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { AlertTriangle, FileText } from 'lucide-vue-next'
+import { AlertTriangle, FileText, MoreHorizontal } from 'lucide-vue-next'
 import { useSessionStore } from '../stores/sessions.js'
 import { useToast } from '../composables/useToast.js'
 import SessionForm from '../components/form/SessionForm.vue'
