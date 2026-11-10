@@ -1,3 +1,10 @@
+# [1.36.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.35.0...client-v1.36.0) (2026-11-10)
+
+
+### Features
+
+* **design:** restyling Chat (lista, conversazione, allegati) e Market (testata, chip, filtri, card, dettaglio annuncio) ([719cd50](https://github.com/ziobob94/fishlog-client/commit/719cd503a82e424a0e12ff5460c1cbb3df577fac))
+
 # [1.35.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.34.0...client-v1.35.0) (2026-11-10)
 
 
