@@ -1,8 +1,15 @@
 <template>
   <div class="auth-page">
-    <div class="auth-card card">
-      <div class="auth-logo" style="display:inline-flex;align-items:center;gap:.4rem"><Fish :size="22" /> FishLog</div>
-      <h2>{{ t('register.title') }}</h2>
+    <div class="auth-card card overflow-hidden">
+      <div class="auth-hero">
+        <IsobathBg />
+        <Bobber class="auth-bobber" :size="44" />
+        <FishLogo :size="44" />
+        <div>
+          <h2>{{ t('register.title') }}</h2>
+          <p class="auth-sub">{{ t('register.subtitle') }}</p>
+        </div>
+      </div>
 
       <div class="oauth-buttons">
         <a :href="apiBase + '/auth/google'" class="btn btn-oauth">
@@ -75,7 +82,6 @@ import FishLogo from '../components/FishLogo.vue'
 import { ref } from 'vue'
 import { useRouter, RouterLink } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { Fish } from 'lucide-vue-next'
 import { useAuthStore } from '../stores/auth.js'
 import { useFeaturesStore } from '../stores/features.js'
 import PasswordInput from '../components/PasswordInput.vue'
@@ -135,4 +141,11 @@ async function handleRegister() {
 .oauth-terms-note a { @apply text-ocean-text hover:underline; }
 .auth-switch { @apply text-muted text-sm text-center mt-5; }
 .coming-soon { @apply flex items-center gap-2 text-muted text-sm; }
+
+.auth-sub { @apply text-muted text-sm mt-1; }
+@media (max-width: 639px) {
+  .auth-page { @apply -mx-4 -mt-6 items-start min-h-0; }
+  .auth-card { @apply max-w-none rounded-none border-0 bg-transparent shadow-none px-5 pb-8 pt-0; }
+  .auth-hero { @apply -mx-5 mb-6 px-5 pt-10 pb-7; border-radius: 0 0 24px 24px; }
+}
 </style>

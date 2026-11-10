@@ -282,6 +282,7 @@
 </template>
 
 <script setup>
+import { toInitials } from '../utils/initials.js'
 import PageHeader from '../components/PageHeader.vue'
 import { ref, computed, onMounted } from 'vue'
 import { useRouter, RouterLink } from 'vue-router'
@@ -308,7 +309,7 @@ onMounted(() => {
 
 const initials = computed(() => {
   const name = auth.user?.displayName || auth.user?.email || '?'
-  return name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2)
+return toInitials(name)
 })
 
 // ── account ──

@@ -15,9 +15,12 @@
       </div>
 
       <!-- Header -->
+      <PageHeader title="" back="/sessions" class="md:hidden">
+        <RouterLink :to="`/session/${session._id}/edit`" class="ph-icon" :aria-label="t('groups.editAction')"><Pencil :size="18" /></RouterLink>
+      </PageHeader>
       <div class="detail-header">
         <div class="detail-header-left">
-          <RouterLink to="/sessions" class="btn btn-ghost btn-sm">{{ t('session.view.allSessions') }}</RouterLink>
+          <RouterLink to="/sessions" class="btn btn-ghost btn-sm max-md:hidden">{{ t('session.view.allSessions') }}</RouterLink>
           <div class="detail-title-block">
             <div class="detail-meta">
               <span class="font-mono text-muted tracking-wide">{{ fmtDate(session.date) }}</span>
@@ -32,7 +35,7 @@
             <p v-if="coordsLabel" class="coords-pill font-mono">{{ coordsLabel }}</p>
           </div>
         </div>
-        <div class="detail-header-actions">
+        <div class="detail-header-actions max-md:hidden">
           <RouterLink :to="`/session/${session._id}/edit`" class="btn btn-secondary icon-inline"><Pencil :size="15" /> {{ t('groups.editAction') }}</RouterLink>
           <button class="btn btn-danger icon-inline" @click="confirmDelete = true"><Trash2 :size="15" /> {{ t('groups.deleteAction') }}</button>
         </div>
@@ -144,7 +147,7 @@
         </div>
 
         <!-- Sidebar -->
-        <aside class="detail-side">
+        <aside class="max-md:hidden detail-side">
           <div class="card side-card">
             <p class="side-label">{{ t('session.view.sideLabels.technique') }}</p>
             <p class="side-value">{{ session.technique || t('common.none') }}</p>
@@ -162,6 +165,11 @@
             <p class="side-value text-mono" style="font-size:.82rem">{{ fmtDatetime(session.createdAt) }}</p>
           </div>
         </aside>
+      </div>
+
+      <div class="detail-footer-actions md:hidden">
+        <RouterLink :to="`/session/${session._id}/edit`" class="btn btn-secondary">{{ t('groups.editAction') }}</RouterLink>
+        <button class="btn btn-danger" @click="confirmDelete = true">{{ t('groups.deleteAction') }}</button>
       </div>
     </template>
 
@@ -188,6 +196,7 @@ import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter, RouterLink } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { Hourglass, MapPin, Pencil, Trash2, Camera, Sun, Fish, FileText, Waves, Trees, Mountain, Droplet } from 'lucide-vue-next'
+import PageHeader from '../components/PageHeader.vue'
 import { useSessionStore } from '../stores/sessions.js'
 import MediaUploader from '../components/MediaUploader.vue'
 import InfoItem      from '../components/InfoItem.vue'
@@ -255,6 +264,9 @@ async function doDelete() {
   @apply bg-sand/10 border border-sand text-sand-text rounded-sm text-sm px-4 py-3 mb-5;
 }
 
+.detail-footer-actions { @apply grid grid-cols-2 gap-3 mt-6; }
+.detail-footer-actions > * { @apply justify-center; }
+.ph-icon { @apply flex items-center justify-center w-11 h-11 rounded-xl text-foam bg-surface border border-border no-underline; }
 .detail-header       { @apply flex flex-wrap items-start justify-between gap-3 mb-4; }
 .detail-header-left  { @apply flex flex-col gap-3; }
 .detail-meta         { @apply flex flex-wrap items-center gap-2; }

@@ -41,6 +41,7 @@
 </template>
 
 <script setup>
+import { toInitials } from '../utils/initials.js'
 import PageHeader from '../components/PageHeader.vue'
 import { computed, onMounted, reactive } from 'vue'
 import { RouterLink } from 'vue-router'
@@ -72,7 +73,7 @@ const BADGES = {
 }
 const badge = n => BADGES[n.type] || BADGES.chat_message
 const name = n => n.actor?.displayName || n.actor?.email || ''
-const initials = a => (a?.displayName || a?.email || '?').split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2)
+const initials = a => toInitials(a?.displayName || a?.email || '?')
 
 function linkFor(n) {
   if (n.type === 'chat_message') {

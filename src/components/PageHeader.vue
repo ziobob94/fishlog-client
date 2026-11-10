@@ -24,7 +24,7 @@ import { useNotificationStore } from '../stores/notifications.js'
 // principali, freccia + titolo per quelle di secondo livello. Su mobile
 // sostituisce la barra con il logo (che resta solo nella Home).
 const props = defineProps({
-  title: { type: String, required: true },
+  title: { type: String, default: '' },
   back: { type: [Boolean, String], default: false },   // true = indietro, stringa = rotta
   closeIcon: { type: Boolean, default: false },
   bell: { type: Boolean, default: false },

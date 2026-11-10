@@ -43,6 +43,7 @@
 </template>
 
 <script setup>
+import { toInitials } from '../utils/initials.js'
 import PageHeader from '../components/PageHeader.vue'
 import TideDivider from '../components/TideDivider.vue'
 import { ref, computed, onMounted } from 'vue'
@@ -66,7 +67,7 @@ const acting       = ref(false)
 
 const initials = computed(() => {
   const name = user.value?.displayName || '?'
-  return name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2)
+return toInitials(name)
 })
 
 const memberSince = computed(() => user.value?.createdAt ? new Date(user.value.createdAt).toLocaleDateString() : '')

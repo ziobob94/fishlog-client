@@ -220,6 +220,7 @@
 </template>
 
 <script setup>
+import { toInitials } from '../../utils/initials.js'
 import RulerFrame from '../RulerFrame.vue'
 import AppIcon from '../AppIcon.vue'
   import { ref, computed, watch } from 'vue'
@@ -259,7 +260,7 @@ import AppIcon from '../AppIcon.vue'
 
   function initials(u) {
     const name = u?.displayName || u?.email || '?'
-    return name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2)
+return toInitials(name)
   }
 
   function formatDate(d) {

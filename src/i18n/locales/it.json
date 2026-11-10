@@ -166,6 +166,7 @@
 	},
 	"login": {
 		"welcomeBack": "Bentornato",
+		"subtitle": "Accedi per ritrovare le tue uscite.",
 		"google": "Continua con Google",
 		"facebook": "Continua con Facebook",
 		"emailLabel": "Email",
@@ -180,6 +181,7 @@
 	},
 	"register": {
 		"title": "Crea account",
+		"subtitle": "Registrati per tenere il diario delle tue uscite.",
 		"google": "Registrati con Google",
 		"facebook": "Registrati con Facebook",
 		"nameLabel": "Nome",
@@ -469,7 +471,7 @@
 		}
 	},
 	"session": {
-		"edit": { "viewSummary": "Riepilogo" },
+		"edit": { "title": "Modifica uscita", "viewSummary": "Riepilogo" },
 		"untitled": "Uscita",
 		"ongoing": {
 			"close": "Chiudi uscita",

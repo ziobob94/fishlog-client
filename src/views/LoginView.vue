@@ -4,8 +4,11 @@
       <div class="auth-hero">
         <IsobathBg />
         <Bobber class="auth-bobber" :size="44" />
-        <FishLogo :size="40" />
-        <h2>{{ t('login.welcomeBack') }}</h2>
+        <FishLogo :size="44" />
+        <div>
+          <h2>{{ t('login.welcomeBack') }}</h2>
+          <p class="auth-sub">{{ t('login.subtitle') }}</p>
+        </div>
       </div>
 
       <div class="oauth-buttons">
@@ -115,4 +118,11 @@ async function handleLogin() {
 .auth-switch { @apply text-muted text-sm text-center mt-5; }
 .forgot-link { @apply text-right text-xs; }
 .coming-soon { @apply flex items-center gap-2 text-muted text-sm; }
+
+.auth-sub { @apply text-muted text-sm mt-1; }
+@media (max-width: 639px) {
+  .auth-page { @apply -mx-4 -mt-6 items-start min-h-0; }
+  .auth-card { @apply max-w-none rounded-none border-0 bg-transparent shadow-none px-5 pb-8 pt-0; }
+  .auth-hero { @apply -mx-5 mb-6 px-5 pt-10 pb-7; border-radius: 0 0 24px 24px; }
+}
 </style>

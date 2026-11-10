@@ -135,6 +135,7 @@
 </template>
 
 <script setup>
+import { toInitials } from '../utils/initials.js'
   import { ref, reactive, computed, watch, onMounted, onBeforeUnmount } from 'vue'
   import { useRoute, useRouter, RouterLink } from 'vue-router'
   import { useI18n } from 'vue-i18n'
@@ -271,7 +272,7 @@
 
   function initials(u) {
     const name = u?.displayName || u?.email || '?'
-    return name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2)
+return toInitials(name)
   }
 
   function goToThread(userId) {

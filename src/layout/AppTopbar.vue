@@ -89,6 +89,7 @@
 </template>
 
 <script setup>
+import { toInitials } from '../utils/initials.js'
 import { computed, onMounted, onBeforeUnmount, ref, watch } from 'vue'
 import { RouterLink, useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
@@ -106,7 +107,7 @@ const route = useRoute()
 const router = useRouter()
 const offline = useOfflineStore()
 const sessions = useSessionStore()
-const userInitials = computed(() => (auth.user?.displayName || auth.user?.email || '?').split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2))
+const userInitials = computed(() => toInitials(auth.user?.displayName || auth.user?.email || '?'))
 const auth = useAuthStore()
 const notifications = useNotificationStore()
 

@@ -30,6 +30,7 @@
 </template>
 
 <script setup>
+import { toInitials } from '../utils/initials.js'
 import PageHeader from '../components/PageHeader.vue'
   import { ref, onMounted } from 'vue'
   import { useRouter } from 'vue-router'
@@ -49,7 +50,7 @@ import PageHeader from '../components/PageHeader.vue'
 
   function initials(u) {
     const n = u?.displayName || u?.email || '?'
-    return n.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2)
+return toInitials(n)
   }
 
   async function submit() {

@@ -18,6 +18,7 @@
 </template>
 
 <script setup>
+import { toInitials } from '../../utils/initials.js'
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { Tag } from 'lucide-vue-next'
@@ -27,7 +28,7 @@ const props = defineProps({ shop: { type: Object, required: true } })
 
 const initials = computed(() => {
   const name = props.shop.shop?.name || props.shop.displayName || '?'
-  return name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2)
+return toInitials(name)
 })
 </script>
 

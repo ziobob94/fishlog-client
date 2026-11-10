@@ -46,6 +46,7 @@
 </template>
 
 <script setup>
+import { toInitials } from '../utils/initials.js'
 import PageHeader from '../components/PageHeader.vue'
 import { ref, computed, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
@@ -69,7 +70,7 @@ const podium = computed(() => {
 const rest = computed(() => (rows.value.length < 3 ? rows.value : rows.value.slice(3)))
 
 function initials(name) {
-  return (name || '?').split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2)
+  return toInitials(name || '?')
 }
 
 async function load() {
@@ -170,5 +171,7 @@ watch(period, load, { immediate: true })
 .podium-score { @apply text-xl text-foam; }
 .podium-1 .podium-score { @apply text-3xl text-sand-text; }
 .podium-pos { @apply inline-flex items-center justify-center w-7 h-7 rounded-full bg-surface-2 text-xs font-bold text-foam; }
+.podium-2 .podium-pos { background: #cbd5e1; @apply text-on-primary; }
+.podium-3 .podium-pos { background: #c08457; @apply text-on-primary; }
 .podium-1 .podium-pos { @apply bg-sand text-on-primary; }
 </style>

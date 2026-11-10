@@ -102,6 +102,7 @@
 </template>
 
 <script setup>
+import { toInitials } from '../utils/initials.js'
 import PageHeader from '../components/PageHeader.vue'
 import AppIcon from '../components/AppIcon.vue'
 import { ref, reactive, onMounted } from 'vue'
@@ -130,7 +131,7 @@ onMounted(() => {
 
 function initials(u) {
   const name = u.displayName || u.email || '?'
-  return name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2)
+return toInitials(name)
 }
 
 function statusFor(userId) {
