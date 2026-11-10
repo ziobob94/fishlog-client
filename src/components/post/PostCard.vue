@@ -171,6 +171,7 @@
           <span v-else class="mini-placeholder">{{ initials(c.user) }}</span>
           <div class="comment-body">
             <span class="text-sm"><strong>{{ c.user?.displayName || c.user?.email }}</strong> {{ c.message }}</span>
+            <span class="comment-time text-muted">{{ formatDate(c.createdAt) }}</span>
           </div>
           <button
             v-if="c.user?._id === auth.user?._id || isAuthor"
@@ -184,9 +185,10 @@
           v-model="commentText"
           type="text"
           :placeholder="t('posts.comments.placeholder')"
+          :aria-label="t('posts.comments.placeholder')"
           @keydown.enter="submitComment"
         />
-        <button class="btn btn-secondary btn-sm" @click="submitComment">{{ t('posts.comments.send') }}</button>
+        <button class="btn btn-primary btn-sm" @click="submitComment">{{ t('posts.comments.send') }}</button>
       </div>
     </div>
 
@@ -501,8 +503,13 @@ const featuredCatch = computed(() => {
   }
 
   .comment-row {
-    @apply flex items-center gap-2;
+    @apply flex items-start gap-3 py-1;
   }
+
+  .comment-body { @apply flex flex-col gap-0.5; }
+  .comment-time { @apply text-xs; }
+  .comment-row .mini-avatar, .comment-row .mini-placeholder { @apply w-9 h-9 shrink-0; }
+  .comment-remove { @apply w-11 h-11 p-0; }
 
   .comment-body {
     @apply flex-1 min-w-0;
@@ -517,6 +524,6 @@ const featuredCatch = computed(() => {
   }
 
   .comment-row-input input {
-    @apply text-sm flex-1;
+    @apply text-sm flex-1 rounded-full px-4;
   }
 </style>

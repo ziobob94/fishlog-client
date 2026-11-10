@@ -1189,6 +1189,8 @@
 		"shop": {
 			"title": "Il tuo negozio",
 			"intro": "La verifica è completata. Completa la scheda che vedranno i compratori.",
+			"uploadLogo": "Carica logo",
+			"logoHint": "JPG, PNG o WEBP, massimo 5 MB.",
 			"name": "Nome del negozio",
 			"nameHint": "È il nome che vedono i compratori negli annunci.",
 			"description": "Descrizione",
