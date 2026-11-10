@@ -138,7 +138,7 @@
       <p class="text-muted mt-1">{{ t('posts.feed.empty.text') }}</p>
     </div>
 
-    <div v-else class="posts-list mt-4">
+    <div v-else class="posts-list mt-4 -mx-4 sm:mx-0">
       <PostCard
         v-for="p in store.feed"
         :key="p._id"
@@ -341,7 +341,7 @@ import PageHeader from '../components/PageHeader.vue'
 
 <style scoped>
   .posts-list {
-    @apply flex flex-col gap-3;
+    @apply flex flex-col gap-5;
   }
 
   .chips { @apply flex gap-2 overflow-x-auto pb-1 mb-3; scrollbar-width: none; }
