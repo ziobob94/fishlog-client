@@ -844,6 +844,8 @@
 	"posts": {
 		"linkedSession": "Uscita collegata",
 		"more": "Altre azioni",
+		"save": "Salva",
+		"unsave": "Rimuovi dai salvati",
 		"like": "Mi piace",
 		"comment": "Commenta",
 		"share": "Condividi",
@@ -901,6 +903,9 @@
 		"tabs": {
 			"posts": "Post",
 			"forYou": "Per te",
+			"friends": "Amici",
+			"groups": "Gruppi",
+			"saved": "Salvati",
 			"events": "Eventi"
 		},
 		"filters": {
