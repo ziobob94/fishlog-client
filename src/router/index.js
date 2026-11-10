@@ -36,6 +36,7 @@ export default createRouter({
     { path: '/chat/group/new', name: 'chat-group-new', component: () => import('../views/NewGroupView.vue'), meta: { fullHeight: true, hideBottomNav: true } },
     { path: '/chat/group/:conversationId', name: 'chat-group', component: () => import('../views/GroupChatView.vue'), meta: { fullHeight: true, hideBottomNav: true } },
     { path: '/chat/:userId', name: 'chat-thread', component: () => import('../views/ChatView.vue'), meta: { fullHeight: true, hideBottomNav: true } },
+    { path: '/notifications', name: 'notifications', component: () => import('../views/NotificationsView.vue') },
     { path: '/profile', name: 'profile', component: () => import('../views/ProfileView.vue') },
     { path: '/stats',   name: 'stats',   component: () => import('../views/StatsView.vue') },
     { path: '/species', name: 'species-search', component: () => import('../views/SpeciesSearchView.vue') },
