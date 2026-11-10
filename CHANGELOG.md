@@ -1,3 +1,13 @@
+# [1.35.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.34.0...client-v1.35.0) (2026-11-10)
+
+
+### Features
+
+* **design:** Nuovo post con uscita collegata e cattura in evidenza, cornice a metro sui post ([6ca8e5e](https://github.com/ziobob94/fishlog-client/commit/6ca8e5e0d5b3bf109666a72bd91ed843a748f247))
+* **design:** pagina Notifiche con gruppi, azioni sulle richieste e nuovi tipi ([9351b51](https://github.com/ziobob94/fishlog-client/commit/9351b51a938eae17ff6af031e2a40e1da560d033))
+* **design:** restyling Amici e Gruppi ([7fc88d4](https://github.com/ziobob94/fishlog-client/commit/7fc88d445f5e3b7d9e63cc7761eeb5ad273f64df))
+* **market:** logo del negozio (carica, scheda negozio e vetrina), commenti rifiniti ([1b11e5d](https://github.com/ziobob94/fishlog-client/commit/1b11e5daf73dcfb5becebda06579f84435d52841))
+
 # [1.34.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.33.0...client-v1.34.0) (2026-11-10)
 
 
