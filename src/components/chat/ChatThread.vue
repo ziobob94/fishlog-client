@@ -74,12 +74,13 @@
     <div class="message-input-row" ref="attachWrapper">
       <div v-if="!editingId" class="attach-wrap">
         <button class="icon-btn" type="button" :title="t('chat.attach.label')" @click="attachMenuOpen = !attachMenuOpen">
-          <Paperclip :size="18" />
+          <Plus :size="20" />
         </button>
         <div v-if="attachMenuOpen" class="attach-menu">
-          <button type="button" @click="triggerMediaInput">{{ t('chat.attach.media') }}</button>
-          <button type="button" @click="triggerFileInput">{{ t('chat.attach.file') }}</button>
-          <button type="button" @click="shareLocation">{{ t('chat.attach.location') }}</button>
+          <button type="button" @click="triggerMediaInput"><ImageIcon :size="18" /> {{ t('chat.attach.media') }}</button>
+          <button type="button" @click="triggerFileInput"><FileText :size="18" /> {{ t('chat.attach.file') }}</button>
+          <button type="button" @click="shareLocation"><MapPin :size="18" /> {{ t('chat.attach.location') }}</button>
+          <button type="button" @click="startVoiceFromMenu"><Mic :size="18" /> {{ t('chat.attach.voice') }}</button>
         </div>
         <input ref="mediaInputEl" type="file" accept="image/*,video/*" class="hidden-input" @change="onFileChosen" />
         <input ref="fileInputEl" type="file" class="hidden-input" @change="onFileChosen" />
@@ -97,8 +98,10 @@
           :placeholder="t('chat.messagePlaceholder')"
           @keydown.enter="send"
         />
-        <button v-if="draft.trim() || editingId" class="btn btn-primary btn-sm" type="button" :disabled="!draft.trim()" @click="send">{{ t('chat.send') }}</button>
-        <button v-else class="icon-btn" type="button" :title="t('chat.attach.voice')" @click="startVoice">
+        <button v-if="draft.trim() || editingId" class="send-btn" type="button" :disabled="!draft.trim()" :aria-label="t('chat.send')" @click="send">
+          <SendHorizontal :size="18" />
+        </button>
+        <button v-else class="send-btn" type="button" :title="t('chat.attach.voice')" :aria-label="t('chat.attach.voice')" @click="startVoice">
           <Mic :size="18" />
         </button>
       </template>
@@ -109,7 +112,7 @@
 <script setup>
   import { ref, watch, onMounted, onBeforeUnmount, nextTick } from 'vue'
   import { useI18n } from 'vue-i18n'
-  import { AlertTriangle, Paperclip, Mic, MapPin, FileText, Check, CheckCheck, Pencil, Trash2, Ban, X } from 'lucide-vue-next'
+  import { AlertTriangle, Plus, Image as ImageIcon, SendHorizontal, Mic, MapPin, FileText, Check, CheckCheck, Pencil, Trash2, Ban, X } from 'lucide-vue-next'
   import { useChatStore } from '../../stores/chat.js'
   import { useAuthStore } from '../../stores/auth.js'
   import { useToast } from '../../composables/useToast.js'
@@ -170,6 +173,7 @@
   }
 
   function triggerMediaInput() { attachMenuOpen.value = false; mediaInputEl.value?.click() }
+  function startVoiceFromMenu() { attachMenuOpen.value = false; startVoice() }
   function triggerFileInput() { attachMenuOpen.value = false; fileInputEl.value?.click() }
 
   async function onFileChosen(e) {
@@ -222,7 +226,7 @@
   }
 
   function formatTime(date) {
-    return new Date(date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    return new Date(date).toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' })
   }
 
   function isSameDay(a, b) {
@@ -353,11 +357,13 @@
   }
 
   .message-bubble {
-    @apply max-w-[84%] sm:max-w-[68%] min-w-[2.5rem] flex flex-col gap-0.5 bg-surface-2 border border-border rounded-2xl px-3 py-2 text-sm text-foam;
+    @apply max-w-[84%] sm:max-w-[68%] min-w-[2.5rem] flex flex-col gap-0.5 bg-surface-2 border border-border px-3.5 py-2.5 text-sm text-foam;
+    border-radius: 20px 20px 20px 6px;
   }
 
   .message-row.mine .message-bubble {
     @apply bg-ocean border-ocean text-on-primary;
+    border-radius: 20px 20px 6px 20px;
   }
 
   .message-sender {
@@ -381,7 +387,7 @@
   }
 
   .message-meta {
-    @apply self-end flex items-center gap-1 text-[0.65rem] opacity-90 mt-0.5 whitespace-nowrap;
+    @apply self-end flex items-center gap-1 text-[0.7rem] font-mono opacity-90 mt-0.5 whitespace-nowrap;
   }
 
   .message-edited {
@@ -462,11 +468,14 @@
   }
 
   .message-input-row input {
-    @apply text-sm flex-1;
+    @apply text-sm flex-1 min-h-[44px] rounded-full px-4;
+  }
+  .send-btn {
+    @apply flex items-center justify-center w-11 h-11 shrink-0 rounded-full bg-ocean text-on-primary border-none cursor-pointer disabled:opacity-50;
   }
 
   .icon-btn {
-    @apply flex items-center justify-center w-11 h-11 rounded-lg text-muted bg-transparent border-none cursor-pointer hover:bg-surface-2 hover:text-ocean transition-colors shrink-0;
+    @apply flex items-center justify-center w-11 h-11 rounded-full text-foam bg-surface-2 border border-border cursor-pointer hover:text-ocean-text transition-colors shrink-0;
   }
 
   .icon-btn-sm {
@@ -482,11 +491,14 @@
   }
 
   .attach-menu {
-    @apply absolute bottom-11 left-0 flex flex-col gap-0.5 bg-surface border border-border rounded-lg p-1 z-10 min-w-[160px] shadow-lg;
+    @apply absolute bottom-14 left-0 flex flex-col gap-0.5 bg-surface-2 border border-border rounded-xl p-2 z-10 min-w-[220px] shadow-lg;
   }
 
   .attach-menu button {
-    @apply text-left text-sm px-3 py-2 rounded bg-transparent border-none text-foam cursor-pointer hover:bg-surface-2 transition-colors;
+    @apply flex items-center gap-3 text-left text-sm font-semibold px-3 min-h-[44px] rounded-lg bg-transparent border-none text-foam cursor-pointer hover:bg-surface transition-colors;
+  }
+  .attach-menu button svg {
+    @apply text-ocean-text;
   }
 
   .recording-indicator {

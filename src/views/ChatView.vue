@@ -2,17 +2,18 @@
   <div :class="{ 'chat-fullheight': route.params.userId }">
     <!-- Lista conversazioni -->
     <template v-if="!route.params.userId">
-      <div class="page-header">
-        <div class="chat-search-wrap">
-          <Search :size="16" class="chat-search-icon" />
-          <input
-            v-model="query" type="text" class="chat-search"
-            :placeholder="t('chat.search.placeholder')" @input="onSearch"
-          />
-        </div>
-        <RouterLink to="/friends" class="icon-btn shrink-0" :title="t('chat.friendsLink')">
-          <Users :size="18" />
+      <header class="page-header">
+        <h1 class="chat-title">{{ t('chat.title') }}</h1>
+        <RouterLink to="/friends" class="icon-btn" :title="t('chat.friendsLink')" :aria-label="t('chat.friendsLink')">
+          <UserPlus :size="18" />
         </RouterLink>
+      </header>
+      <div class="chat-search-wrap mb-3">
+        <Search :size="16" class="chat-search-icon" />
+        <input
+          v-model="query" type="text" class="chat-search" :aria-label="t('chat.search.placeholder')"
+          :placeholder="t('chat.search.placeholder')" @input="onSearch"
+        />
       </div>
 
       <!-- Ricerca attiva: stessa lista sia per amici già in chat (aprono il
@@ -44,22 +45,22 @@
       </div>
 
       <template v-else>
-        <div v-if="chatStore.conversations.length" class="tabs" role="tablist">
+        <div v-if="chatStore.conversations.length" class="chips" role="tablist">
           <button
             type="button" role="tab" :aria-selected="filterMode === 'all'"
-            class="tab-pill" :class="{ active: filterMode === 'all' }" @click="filterMode = 'all'"
+            class="chip" :class="{ active: filterMode === 'all' }" @click="filterMode = 'all'"
           >{{ t('chat.filters.all') }}</button>
           <button
             type="button" role="tab" :aria-selected="filterMode === 'unread'"
-            class="tab-pill" :class="{ active: filterMode === 'unread' }" @click="filterMode = 'unread'"
+            class="chip" :class="{ active: filterMode === 'unread' }" @click="filterMode = 'unread'"
           >{{ t('chat.filters.unread') }}<span v-if="unreadConversationsCount"> {{ unreadConversationsCount }}</span></button>
           <button
             type="button" role="tab" :aria-selected="filterMode === 'favorites'"
-            class="tab-pill" :class="{ active: filterMode === 'favorites' }" @click="filterMode = 'favorites'"
+            class="chip" :class="{ active: filterMode === 'favorites' }" @click="filterMode = 'favorites'"
           >{{ t('chat.filters.favorites') }}<span v-if="favoriteConversationsCount"> {{ favoriteConversationsCount }}</span></button>
           <button
             type="button" role="tab" :aria-selected="filterMode === 'groups'"
-            class="tab-pill" :class="{ active: filterMode === 'groups' }" @click="filterMode = 'groups'"
+            class="chip" :class="{ active: filterMode === 'groups' }" @click="filterMode = 'groups'"
           >{{ t('chat.filters.groups') }}<span v-if="groupConversationsCount"> {{ groupConversationsCount }}</span></button>
         </div>
 
@@ -104,7 +105,7 @@
                   :title="t(c.favorite ? 'chat.unfavorite' : 'chat.favorite')"
                   @click.stop="toggleFavorite(c)"
                 ><Star :size="15" :fill="c.favorite ? 'currentColor' : 'none'" /></button>
-                <span class="conversation-time">{{ formatRelativeTime(c.lastMessageAt) }}</span>
+                <span class="conversation-time" :class="{ 'conversation-time-unread': c.unreadCount }">{{ formatRelativeTime(c.lastMessageAt) }}</span>
                 <span v-if="c.unreadCount" class="badge badge-ocean conversation-badge">{{ c.unreadCount }}</span>
               </div>
             </div>
@@ -116,7 +117,7 @@
     <!-- Thread con un amico -->
     <template v-else>
       <div class="page-header chat-thread-header pt-4">
-        <RouterLink to="/chat" class="btn btn-ghost btn-sm">{{ t('common.back') }}</RouterLink>
+        <RouterLink to="/chat" class="icon-btn" :aria-label="t('common.back')"><ArrowLeft :size="18" /></RouterLink>
         <RouterLink v-if="friend" :to="`/users/${friend._id}`" class="chat-header-info">
           <img v-if="friend.avatar" :src="friend.avatar" class="mini-avatar" />
           <span v-else class="mini-placeholder">{{ initials(friend) }}</span>
@@ -139,7 +140,7 @@
   import { ref, reactive, computed, watch, onMounted, onBeforeUnmount } from 'vue'
   import { useRoute, useRouter, RouterLink } from 'vue-router'
   import { useI18n } from 'vue-i18n'
-  import { MessagesSquare, AlertTriangle, Users, UsersRound, Search, Star, Check, CheckCheck } from 'lucide-vue-next'
+  import { MessagesSquare, AlertTriangle, UserPlus, ArrowLeft, UsersRound, Search, Star, Check, CheckCheck } from 'lucide-vue-next'
   import { useChatStore } from '../stores/chat.js'
   import { useFriendStore } from '../stores/friends.js'
   import { useUserStore } from '../stores/users.js'
@@ -183,7 +184,7 @@
     const startOfDay = (x) => new Date(x.getFullYear(), x.getMonth(), x.getDate())
     const diffDays = Math.round((startOfDay(new Date()) - startOfDay(d)) / 86400000)
 
-    if (diffDays === 0) return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    if (diffDays === 0) return d.toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' })
     if (diffDays === 1) return t('chat.yesterday')
     if (diffDays < 7) return d.toLocaleDateString('it-IT', { weekday: 'short' })
     return d.toLocaleDateString('it-IT', { day: '2-digit', month: '2-digit' })
@@ -308,6 +309,7 @@
   .page-header {
     @apply flex items-center justify-between gap-4 mb-4;
   }
+  .chat-title { @apply text-3xl font-bold text-foam; }
 
   .chat-thread-header {
     @apply border-b border-border pb-4 justify-start;
@@ -322,7 +324,7 @@
   }
 
   .chat-header-name {
-    @apply font-semibold text-foam truncate;
+    @apply font-bold text-foam truncate;
   }
 
   .chat-header-email {
@@ -338,21 +340,19 @@
   }
 
   .chat-search-icon {
-    @apply absolute left-3 top-1/2 -translate-y-1/2 text-muted pointer-events-none;
+    @apply absolute left-3.5 top-1/2 -translate-y-1/2 text-muted pointer-events-none;
   }
 
   .chat-search {
-    @apply w-full rounded-full bg-surface-2 border-none pl-9 pr-4 py-2 text-sm;
+    @apply w-full min-h-[44px] rounded-xl bg-surface border border-border pl-10 pr-4 text-sm;
   }
 
-  .tabs {
-    @apply flex gap-1 p-1 mb-3 bg-surface-2 rounded-full w-full sm:w-auto;
+  .chips { @apply flex gap-2 overflow-x-auto pb-1 mb-3; scrollbar-width: none; }
+  .chips::-webkit-scrollbar { display: none; }
+  .chip {
+    @apply inline-flex items-center gap-1 shrink-0 min-h-[44px] px-4 rounded-full border border-border bg-surface text-foam text-sm font-semibold cursor-pointer whitespace-nowrap;
   }
-  .tab-pill {
-    @apply flex-1 sm:flex-initial inline-flex items-center justify-center gap-1 text-xs font-semibold text-muted bg-transparent border-none rounded-full cursor-pointer px-3 min-h-[44px] transition-colors;
-  }
-  .tab-pill:hover { @apply text-foam; }
-  .tab-pill.active { @apply text-on-primary bg-ocean; }
+  .chip.active { @apply bg-ocean border-ocean text-on-primary; }
 
   .search-results {
     @apply flex flex-col gap-1;
@@ -429,11 +429,12 @@
   }
 
   .conversation-time {
-    @apply text-[0.7rem] text-muted;
+    @apply text-xs text-muted font-mono;
   }
+  .conversation-time-unread { @apply text-ocean-text; }
 
   .conversation-badge {
-    @apply mt-auto bg-ocean text-on-primary border-ocean rounded-full;
+    @apply mt-auto bg-ocean text-on-primary border-ocean rounded-full min-w-[1.5rem] h-6 inline-flex items-center justify-center font-bold;
   }
 
   .conversation-avatar {
@@ -460,7 +461,7 @@
   }
 
   .icon-btn {
-    @apply flex items-center justify-center w-11 h-11 rounded-lg text-muted bg-transparent border-none cursor-pointer hover:bg-surface-2 hover:text-ocean transition-colors shrink-0;
+    @apply flex items-center justify-center w-11 h-11 rounded-xl text-foam bg-surface border border-border cursor-pointer hover:border-ocean hover:text-ocean-text transition-colors shrink-0;
   }
 
   .chat-fullheight {

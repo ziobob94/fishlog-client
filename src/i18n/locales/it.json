@@ -269,6 +269,7 @@
 		"unread": "Da leggere"
 	},
 	"chat": {
+		"title": "Chat",
 		"empty": "Nessuna conversazione: cerca un amico qui sopra per iniziare",
 		"friendsLink": "Vai ai tuoi amici",
 		"search": {
@@ -918,8 +919,14 @@
 		}
 	},
 	"market": {
+		"title": "Market",
+		"sell": "Vendi",
 		"newListing": "Nuovo annuncio",
 		"contactSeller": "Contatta venditore",
+		"description": "Descrizione",
+		"seller": "Venditore",
+		"photo": "Foto",
+		"share": "Condividi",
 		"deleteConfirm": "Eliminare questo annuncio?",
 		"tabs": {
 			"listings": "Annunci",
@@ -971,6 +978,8 @@
 		},
 		"filters": {
 			"title": "Filtri",
+			"all": "Tutte",
+			"active": "Filtro attivo:",
 			"searchPlaceholder": "Cerca annunci...",
 			"allCategories": "Tutte le categorie",
 			"allConditions": "Nuovo o usato",
