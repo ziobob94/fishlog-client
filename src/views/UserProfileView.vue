@@ -8,7 +8,8 @@
       <p class="text-muted">{{ t('friends.profile.notFound') }}</p>
     </div>
 
-    <div v-else class="card profile-card">
+    <div v-else>
+    <div class="card profile-card">
       <div class="profile-head">
         <img v-if="user.avatar" :src="user.avatar" class="avatar" />
         <span v-else class="avatar-placeholder">{{ initials }}</span>
@@ -16,6 +17,12 @@
           <h2>{{ user.displayName || t('session.untitled') }}</h2>
           <p class="text-muted" style="font-size:.85rem">{{ t('friends.profile.memberSince', { date: memberSince }) }}</p>
         </div>
+      </div>
+
+      <div v-if="user.stats" class="profile-stats">
+        <div class="pstat"><span class="pstat-n font-mono">{{ user.stats.sessionsCount }}</span><span class="pstat-l">{{ t('friends.profile.sessions') }}</span></div>
+        <div class="pstat"><span class="pstat-n font-mono">{{ user.stats.catchesCount }}</span><span class="pstat-l">{{ t('friends.profile.catches') }}</span></div>
+        <div class="pstat"><span class="pstat-n font-mono">{{ posts.feed.length }}</span><span class="pstat-l">{{ t('friends.profile.posts') }}</span></div>
       </div>
 
       <div class="friend-action">
@@ -39,6 +46,22 @@
         <li v-for="g in commonGroups" :key="g._id" class="badge badge-ocean">{{ g.name }}</li>
       </ul>
     </div>
+
+    <TideDivider class="mt-6">{{ t('friends.profile.postsTitle') }}</TideDivider>
+    <p v-if="!posts.feed.length" class="text-muted text-sm">{{ t('friends.profile.noPosts') }}</p>
+    <div v-else class="profile-posts -mx-4 sm:mx-0">
+      <PostCard
+        v-for="p in posts.feed" :key="p._id" :post="p"
+        @delete="po => posts.deletePost(po._id)"
+        @like="po => posts.toggleLike(po._id, auth.user?._id)"
+        @comment="(po, m) => posts.addComment(po._id, m)"
+        @delete-comment="(po, c) => posts.deleteComment(po._id, c._id)"
+        @respond="(po, m) => posts.respond(po._id, m)"
+        @attend="(po, st, g) => posts.setAttendance(po._id, st, g)"
+        @close-event="po => posts.setEventStatus(po._id, 'closed')"
+      />
+    </div>
+    </div>
   </div>
 </template>
 
@@ -52,11 +75,16 @@ import { useI18n } from 'vue-i18n'
 import { UserX } from 'lucide-vue-next'
 import { useUserStore } from '../stores/users.js'
 import { useFriendStore } from '../stores/friends.js'
+import { usePostStore } from '../stores/posts.js'
+import { useAuthStore } from '../stores/auth.js'
+import PostCard from '../components/post/PostCard.vue'
 
 const { t } = useI18n()
 const route = useRoute()
 const userStore   = useUserStore()
 const friendStore = useFriendStore()
+const posts       = usePostStore()
+const auth        = useAuthStore()
 
 const user         = ref(null)
 const loading      = ref(true)
@@ -78,7 +106,8 @@ async function load() {
   const [u, st, groups] = await Promise.all([
     userStore.fetchUser(id),
     friendStore.fetchStatus(id),
-    friendStore.fetchCommonGroups(id)
+    friendStore.fetchCommonGroups(id),
+    posts.fetchPosts({ author: id })
   ])
   user.value = u
   status.value = st.status
@@ -143,4 +172,9 @@ async function onRemove() {
 }
 
 .common-groups { @apply flex flex-wrap gap-2; }
+.profile-stats { @apply grid grid-cols-3 gap-2 mb-4; }
+.pstat { @apply flex flex-col items-center gap-0.5 py-2.5 rounded-xl bg-surface-2/60 border border-border/60; }
+.pstat-n { @apply text-lg font-bold text-foam; }
+.pstat-l { @apply text-[0.7rem] uppercase text-muted; letter-spacing: 0.14em; }
+.profile-posts { @apply flex flex-col gap-5 mt-3; }
 </style>

@@ -1,10 +1,12 @@
 <template>
   <article class="post-card">
     <div class="post-header">
-      <span v-if="!post.author?.avatar" class="mini-placeholder">{{ initials(post.author) }}</span>
-      <img v-else :src="post.author.avatar" class="mini-avatar" alt="" />
+      <component :is="post.author?._id ? RouterLink : 'span'" :to="post.author?._id ? `/users/${post.author._id}` : undefined" class="post-author-link" :aria-label="post.author?.displayName">
+        <span v-if="!post.author?.avatar" class="mini-placeholder">{{ initials(post.author) }}</span>
+        <img v-else :src="post.author.avatar" class="mini-avatar" alt="" />
+      </component>
       <div class="post-author">
-        <span class="post-author-name">{{ post.author?.displayName || post.author?.email }}</span>
+        <component :is="post.author?._id ? RouterLink : 'span'" :to="post.author?._id ? `/users/${post.author._id}` : undefined" class="post-author-name">{{ post.author?.displayName || post.author?.email }}</component>
         <span class="post-sub">{{ subtitle }}</span>
       </div>
       <span v-if="post.type === 'event'" class="badge badge-ocean">{{ t('posts.eventBadge') }}</span>
@@ -180,10 +182,16 @@
     <div v-if="post.type !== 'event' && showComments" class="comments-block">
       <div v-if="post.comments?.length" class="comments-list">
         <div v-for="c in post.comments" :key="c._id" class="comment-row">
-          <img v-if="c.user?.avatar" :src="c.user.avatar" class="mini-avatar" />
-          <span v-else class="mini-placeholder">{{ initials(c.user) }}</span>
+          <RouterLink v-if="c.user?._id" :to="`/users/${c.user._id}`" class="post-author-link">
+            <img v-if="c.user?.avatar" :src="c.user.avatar" class="mini-avatar" />
+            <span v-else class="mini-placeholder">{{ initials(c.user) }}</span>
+          </RouterLink>
+          <template v-else>
+            <img v-if="c.user?.avatar" :src="c.user.avatar" class="mini-avatar" />
+            <span v-else class="mini-placeholder">{{ initials(c.user) }}</span>
+          </template>
           <div class="comment-body">
-            <span class="text-sm"><strong>{{ c.user?.displayName || c.user?.email }}</strong> {{ c.message }}</span>
+            <span class="text-sm"><RouterLink v-if="c.user?._id" :to="`/users/${c.user._id}`" class="comment-author"><strong>{{ c.user?.displayName || c.user?.email }}</strong></RouterLink><strong v-else>{{ c.user?.displayName || c.user?.email }}</strong> {{ c.message }}</span>
             <span class="comment-time text-muted">{{ formatDate(c.createdAt) }}</span>
           </div>
           <button
@@ -354,7 +362,9 @@ const featuredCatch = computed(() => {
   .post-author {
     @apply flex flex-col gap-px min-w-0 flex-1;
   }
-  .post-author-name { @apply text-[15px] font-bold text-foam truncate; }
+  .post-author-link { @apply shrink-0 no-underline; }
+  .comment-author { @apply no-underline text-foam; }
+  .post-author-name { @apply text-[15px] font-bold text-foam truncate no-underline; }
   .post-sub { @apply text-xs text-muted truncate; }
 
   .more-wrap { @apply relative; }

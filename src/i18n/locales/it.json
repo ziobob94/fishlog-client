@@ -377,7 +377,12 @@
 			"notFound": "Utente non trovato.",
 			"memberSince": "Su FishLog dal {date}",
 			"commonGroups": "Gruppi in comune",
-			"noCommonGroups": "Nessun gruppo in comune"
+			"noCommonGroups": "Nessun gruppo in comune",
+			"sessions": "Uscite",
+			"catches": "Catture",
+			"posts": "Post",
+			"postsTitle": "Post",
+			"noPosts": "Nessun post visibile."
 		}
 	},
 	"home": {
