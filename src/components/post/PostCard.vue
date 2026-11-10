@@ -1,53 +1,74 @@
 <template>
-  <div class="post-card">
+  <article class="post-card">
     <div class="post-header">
+      <span v-if="!post.author?.avatar" class="mini-placeholder">{{ initials(post.author) }}</span>
+      <img v-else :src="post.author.avatar" class="mini-avatar" alt="" />
       <div class="post-author">
-        <img v-if="post.author?.avatar" :src="post.author.avatar" class="mini-avatar" />
-        <span v-else class="mini-placeholder">{{ initials(post.author) }}</span>
-        <div>
-          <div class="text-sm font-medium">{{ post.author?.displayName || post.author?.email }}</div>
-          <div class="text-xs text-muted">{{ formatDate(post.createdAt) }}</div>
-        </div>
+        <span class="post-author-name">{{ post.author?.displayName || post.author?.email }}</span>
+        <span class="post-sub">{{ subtitle }}</span>
       </div>
       <span v-if="post.type === 'event'" class="badge badge-ocean">{{ t('posts.eventBadge') }}</span>
       <span v-if="post.visibility === 'group'" class="badge badge-sand">{{ groupNames }}</span>
       <span v-else-if="post.visibility === 'private'" class="badge badge-sand">{{ t('posts.visibility.private') }}</span>
+      <div v-if="isAuthor" class="more-wrap">
+        <button type="button" class="more-btn" :aria-label="t('posts.more')" :aria-expanded="menuOpen" @click="menuOpen = !menuOpen"><MoreHorizontal :size="20" /></button>
+        <div v-if="menuOpen" class="more-menu" @click="menuOpen = false">
+          <button v-if="post.type === 'event' && post.event?.status === 'open'" type="button" @click="$emit('close-event', post)">{{ t('posts.event.closeAction') }}</button>
+          <button type="button" class="danger" @click="$emit('delete', post)"><Trash2 :size="16" /> {{ t('common.delete') }}</button>
+        </div>
+      </div>
     </div>
 
-    <h3 v-if="post.title" class="post-title">{{ post.title }}</h3>
-    <p class="post-body">{{ post.body }}</p>
-
-    <div v-if="post.type === 'event'" class="event-info">
-      <span v-if="post.event?.location?.name" style="display:inline-flex;align-items:center;gap:.4rem"><MapPin :size="14" /> {{ post.event.location.name }}</span>
-      <span v-if="post.event?.date" style="display:inline-flex;align-items:center;gap:.4rem"><Calendar :size="14" /> {{ formatDate(post.event.date) }}</span>
-      <span class="badge" :class="post.event?.status === 'open' ? 'badge-ocean' : 'badge-sand'">
-        {{ post.event?.status === 'open' ? t('posts.event.open') : t('posts.event.closed') }}
-      </span>
-      <button
-        v-if="isAuthor && post.event?.status === 'open'"
-        class="btn btn-ghost btn-sm"
-        @click="$emit('close-event', post)"
-      >{{ t('posts.event.closeAction') }}</button>
+    <div v-if="post.media?.length" class="post-media">
+      <div ref="mediaEl" class="media-scroll" @scroll.passive="onMediaScroll">
+        <RulerFrame v-for="(m, i) in post.media" :key="m._id" class="media-frame">
+          <video v-if="isVideo(m)" :src="m.url" class="media-thumb" controls playsinline preload="metadata"></video>
+          <img v-else :src="m.url" class="media-thumb" alt="" @click="lightboxItem = m" />
+          <template v-if="i === 0 && featuredCatch" #badge>
+            <span class="catch-pill">{{ featuredCatch.species }}{{ featuredCatch.lengthCm ? ` ${featuredCatch.lengthCm} cm` : '' }}</span>
+          </template>
+        </RulerFrame>
+      </div>
+      <span v-if="coords" class="media-chip media-coords">{{ coords }}</span>
+      <span v-if="post.media.length > 1" class="media-chip media-count">{{ mediaIndex + 1 }} / {{ post.media.length }}</span>
     </div>
 
-    <div v-if="post.media?.length" class="media-grid">
-      <RulerFrame v-for="(m, i) in post.media" :key="m._id" class="media-frame">
-        <img :src="m.url" class="media-thumb" alt="" @click="lightboxItem = m" />
-        <template v-if="i === 0 && featuredCatch" #badge>
-          <span class="catch-pill font-mono">{{ featuredCatch.species }}<template v-if="featuredCatch.lengthCm"> · {{ featuredCatch.lengthCm }} cm</template></span>
-        </template>
-      </RulerFrame>
+    <div class="action-row">
+      <button type="button" class="act-btn" :class="{ liked: isLiked }" :aria-pressed="isLiked" :aria-label="t('posts.like')" @click="$emit('like', post)">
+        <Heart :size="24" :fill="isLiked ? 'currentColor' : 'none'" />
+      </button>
+      <button v-if="post.type !== 'event'" type="button" class="act-btn" :aria-label="t('posts.comment')" @click="showComments = !showComments">
+        <MessageCircle :size="24" />
+      </button>
+      <button type="button" class="act-btn" :aria-label="t('posts.share')" @click="share">
+        <Send :size="24" />
+      </button>
+    </div>
+
+    <div class="post-text">
+      <span class="likes-label">{{ t('posts.likesCount', { n: post.likes?.length || 0 }, post.likes?.length || 0) }}</span>
+      <h3 v-if="post.title" class="post-title">{{ post.title }}</h3>
+      <p class="post-body"><strong>{{ post.author?.displayName || post.author?.email }}</strong> {{ post.body }}</p>
+
+      <div v-if="post.type === 'event'" class="event-info">
+        <span v-if="post.event?.location?.name" class="inline-flex items-center gap-1.5"><MapPin :size="14" /> {{ post.event.location.name }}</span>
+        <span v-if="post.event?.date" class="inline-flex items-center gap-1.5"><Calendar :size="14" /> {{ formatDate(post.event.date) }}</span>
+        <span class="badge" :class="post.event?.status === 'open' ? 'badge-ocean' : 'badge-sand'">
+          {{ post.event?.status === 'open' ? t('posts.event.open') : t('posts.event.closed') }}
+        </span>
+      </div>
     </div>
 
     <!-- Uscita collegata -->
-    <div v-if="post.session" class="linked-session">
+    <RouterLink v-if="post.session" :to="`/session/${post.session._id}`" class="linked-session">
       <span class="linked-ico"><AppIcon name="uscite" :size="20" /></span>
       <span class="linked-text">
         <span class="linked-label">{{ t('posts.linkedSession') }}</span>
         <strong class="truncate">{{ post.session.title || post.session.location?.name || t('session.untitled') }}</strong>
-        <span class="text-muted text-xs">{{ formatDate(post.session.date) }}<template v-if="post.session.location?.name"> · {{ post.session.location.name }}</template> · {{ t('globe.catches', { n: post.session.totalCatches || 0 }, post.session.totalCatches || 0) }}</span>
+        <span class="text-muted text-xs">{{ formatShort(post.session.date) }} · {{ t('globe.catches', { n: post.session.totalCatches || 0 }, post.session.totalCatches || 0) }}<template v-if="post.session.type"> · {{ post.session.type }}</template></span>
       </span>
-    </div>
+      <ChevronRight :size="20" class="text-muted shrink-0" />
+    </RouterLink>
 
     <div v-if="post.type === 'event'" class="attendance-block">
       <div v-if="post.event?.status === 'open'" class="attendance-actions my-2">
@@ -152,17 +173,9 @@
 
     </template>
 
-    <div class="engagement-row">
-      <button
-        class="btn btn-ghost btn-sm like-btn"
-        :class="{ liked: isLiked }"
-        @click="$emit('like', post)"
-      ><Heart :size="14" :fill="isLiked ? 'currentColor' : 'none'" /> {{ post.likes?.length || 0 }}</button>
-      <button v-if="post.type !== 'event'" class="btn btn-ghost btn-sm" @click="showComments = !showComments">
-        <MessageCircle :size="14" /> {{ post.comments?.length || 0 }}
-      </button>
-      <button v-if="isAuthor" class="delete-btn ml-auto" :title="t('common.delete')" :aria-label="t('common.delete')" @click="$emit('delete', post)"><Trash2 :size="16" /></button>
-    </div>
+    <button v-if="post.type !== 'event'" type="button" class="comments-link" @click="showComments = !showComments">
+      {{ post.comments?.length ? t('posts.viewComments', { n: post.comments.length }, post.comments.length) : t('posts.addComment') }}
+    </button>
 
     <div v-if="post.type !== 'event' && showComments" class="comments-block">
       <div v-if="post.comments?.length" class="comments-list">
@@ -216,7 +229,7 @@
         </div>
       </div>
     </Teleport>
-  </div>
+  </article>
 </template>
 
 <script setup>
@@ -226,7 +239,7 @@ import AppIcon from '../AppIcon.vue'
   import { ref, computed, watch } from 'vue'
   import { useI18n } from 'vue-i18n'
   import { RouterLink } from 'vue-router'
-  import { MapPin, Calendar, Heart, MessageCircle, X, Users, Trash2 } from 'lucide-vue-next'
+  import { MapPin, Calendar, Heart, MessageCircle, X, Users, Trash2, Send, MoreHorizontal, ChevronRight } from 'lucide-vue-next'
   import { useAuthStore } from '../../stores/auth.js'
 
   const props = defineProps({ post: { type: Object, required: true } })
@@ -241,6 +254,47 @@ import AppIcon from '../AppIcon.vue'
   const showResponses = ref(false)
   const lightboxItem = ref(null)
   const selectedUser = ref(null)
+  const menuOpen = ref(false)
+  const mediaEl = ref(null)
+  const mediaIndex = ref(0)
+
+  function isVideo(m) { return (m.mimetype || '').startsWith('video/') }
+  function onMediaScroll() {
+    const el = mediaEl.value
+    if (el && el.clientWidth) mediaIndex.value = Math.round(el.scrollLeft / el.clientWidth)
+  }
+
+  const place = computed(() => props.post.session?.location?.name || props.post.event?.location?.name || '')
+  const coords = computed(() => {
+    const loc = props.post.session?.location || props.post.event?.location
+    if (loc?.lat == null || loc?.lng == null) return ''
+    const lat = Number(loc.lat), lng = Number(loc.lng)
+    return `${Math.abs(lat).toFixed(2)}°${lat >= 0 ? 'N' : 'S'} · ${Math.abs(lng).toFixed(2)}°${lng >= 0 ? 'E' : 'W'}`
+  })
+  const subtitle = computed(() => [place.value, timeAgo(props.post.createdAt)].filter(Boolean).join(' · '))
+
+  function timeAgo(d) {
+    if (!d) return ''
+    const mins = Math.floor((Date.now() - new Date(d).getTime()) / 60000)
+    if (mins < 1) return t('posts.time.now')
+    if (mins < 60) return t('posts.time.minutes', { n: mins })
+    const hours = Math.floor(mins / 60)
+    if (hours < 24) return t('posts.time.hours', { n: hours })
+    if (hours < 48) return t('posts.time.yesterday')
+    return formatDate(d)
+  }
+
+  function formatShort(d) {
+    return d ? new Date(d).toLocaleDateString('it-IT', { day: 'numeric', month: 'short' }) : ''
+  }
+
+  async function share() {
+    const text = props.post.body || ''
+    try {
+      if (navigator.share) await navigator.share({ text, url: window.location.origin + '/feed' })
+      else await navigator.clipboard.writeText(text)
+    } catch (e) { /* annullato dall'utente */ }
+  }
 
   const isAuthor = computed(() => props.post.author?._id === auth.user?._id || auth.user?.role === 'admin')
   const isLiked = computed(() => props.post.likes?.some(id => id === auth.user?._id))
@@ -288,23 +342,49 @@ const featuredCatch = computed(() => {
 
 <style scoped>
   .post-card {
-    @apply flex flex-col gap-2.5 bg-surface border border-border/60 rounded-2xl p-3;
+    @apply flex flex-col gap-2 border-t border-border pt-3.5 px-4 sm:px-0;
   }
 
+  .post-card:first-child { @apply border-t-0 pt-0; }
+
   .post-header {
-    @apply flex items-center gap-2;
+    @apply flex items-center gap-2.5;
   }
 
   .post-author {
-    @apply flex items-center gap-2 flex-1;
+    @apply flex flex-col gap-px min-w-0 flex-1;
   }
+  .post-author-name { @apply text-[15px] font-bold text-foam truncate; }
+  .post-sub { @apply text-xs text-muted truncate; }
+
+  .more-wrap { @apply relative; }
+  .more-btn { @apply flex items-center justify-center w-11 h-11 -mr-2 bg-transparent border-none text-muted cursor-pointer hover:text-foam; }
+  .more-menu { @apply absolute right-0 top-11 z-20 min-w-[170px] flex flex-col bg-surface-2 border border-border rounded-xl p-1.5 shadow-lg; }
+  .more-menu button { @apply flex items-center gap-2 text-left text-sm font-semibold px-3 min-h-[44px] rounded-lg bg-transparent border-none text-foam cursor-pointer hover:bg-surface; }
+  .more-menu button.danger { @apply text-danger; }
+
+  .post-media { @apply relative -mx-4 sm:mx-0; }
+  .media-scroll { @apply flex overflow-x-auto snap-x snap-mandatory; scrollbar-width: none; }
+  .media-scroll::-webkit-scrollbar { display: none; }
+  .media-frame { @apply snap-center shrink-0 w-full bg-surface-2; }
+  .media-chip { @apply absolute top-3 text-xs font-bold text-foam px-2.5 py-1 rounded-full pointer-events-none; background: rgb(var(--color-ink) / 0.82); }
+  .media-coords { @apply left-3 font-mono text-[0.7rem] font-medium text-ocean-text; }
+  .media-count { @apply right-3; }
+
+  .action-row { @apply flex items-center -ml-2.5; }
+  .act-btn { @apply flex items-center justify-center w-11 h-11 bg-transparent border-none text-foam cursor-pointer; }
+  .act-btn.liked { @apply text-sand-text; }
+
+  .post-text { @apply flex flex-col gap-1.5; }
+  .likes-label { @apply text-sm font-bold text-foam; }
+  .comments-link { @apply self-start min-h-[44px] bg-transparent border-none px-0 text-sm text-muted cursor-pointer text-left; }
 
   .post-title {
     @apply font-bold text-base leading-snug;
   }
 
   .post-body {
-    @apply text-sm leading-relaxed whitespace-pre-wrap break-words;
+    @apply text-[15px] leading-normal whitespace-pre-wrap break-words;
   }
 
   .mini-avatar {
@@ -345,18 +425,14 @@ const featuredCatch = computed(() => {
     @apply font-semibold text-base mt-1;
   }
 
-  .media-grid {
-    @apply grid gap-1.5 -mx-3.5 sm:mx-0;
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  }
-
-  .catch-pill { @apply inline-block rounded-full px-3 py-1 text-xs font-bold text-sand-text; background: rgb(var(--color-ink) / 0.85); border: 1px solid rgb(var(--color-sand)); }
-  .linked-session { @apply flex items-center gap-3 p-3 rounded-xl border border-ocean/60; background: var(--ocean-glow); }
+  .catch-pill { @apply inline-block rounded-full px-3 py-1.5 text-[0.8rem] font-extrabold bg-sand; color: #1a1204; }
+  .linked-session { @apply flex items-center gap-3 px-3 py-2.5 min-h-[44px] rounded-2xl border border-border bg-surface no-underline text-foam; }
   .linked-ico { @apply w-10 h-10 shrink-0 rounded-lg bg-surface-2 text-ocean-text flex items-center justify-center; }
   .linked-text { @apply flex flex-col min-w-0; }
   .linked-label { @apply text-xs font-bold uppercase text-ocean-text; letter-spacing: 0.14em; }
   .media-thumb {
-    @apply w-full aspect-[4/3] object-cover sm:rounded-sm cursor-pointer;
+    @apply w-full object-cover cursor-pointer block bg-surface-2;
+    height: min(390px, 100vw);
   }
 
   .lightbox {

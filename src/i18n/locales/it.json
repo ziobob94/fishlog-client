@@ -838,6 +838,14 @@
 	},
 	"posts": {
 		"linkedSession": "Uscita collegata",
+		"more": "Altre azioni",
+		"like": "Mi piace",
+		"comment": "Commenta",
+		"share": "Condividi",
+		"likesCount": "{n} mi piace | {n} mi piace | {n} mi piace",
+		"viewComments": "Vedi il commento | Vedi tutti i {n} commenti",
+		"addComment": "Aggiungi un commento",
+		"time": { "now": "ora", "minutes": "{n} min fa", "hours": "{n} h fa", "yesterday": "ieri" },
 		"eventBadge": "Evento",
 		"comments": {
 			"placeholder": "Scrivi un commento...",
