@@ -1,30 +1,60 @@
 <template>
   <div>
-    <div class="market-toolbar">
-      <div class="tabs" role="tablist">
+    <header class="market-head">
+      <h1 class="market-title">{{ t('market.title') }}</h1>
+      <RouterLink to="/market/new" class="btn btn-primary btn-sm"><Plus :size="16" /> {{ t('market.sell') }}</RouterLink>
+    </header>
+
+    <div class="segmented" role="tablist">
+      <button
+        type="button" role="tab" :aria-selected="tab === 'listings'"
+        class="seg-opt" :class="{ active: tab === 'listings' }" @click="tab = 'listings'"
+      >{{ t('market.tabs.listings') }}</button>
+      <button
+        type="button" role="tab" :aria-selected="tab === 'shops'"
+        class="seg-opt" :class="{ active: tab === 'shops' }" @click="tab = 'shops'"
+      >{{ t('market.tabs.shops') }}</button>
+      <button
+        type="button" role="tab" :aria-selected="tab === 'ebay'"
+        class="seg-opt" :class="{ active: tab === 'ebay' }" @click="tab = 'ebay'"
+      >{{ t('market.tabs.ebay') }}</button>
+    </div>
+
+    <template v-if="tab !== 'shops'">
+      <div class="search-row">
+        <div class="search-wrap">
+          <Search :size="16" class="search-icon" />
+          <input
+            :value="curFilters.search" type="search" class="search-input"
+            :placeholder="t('market.filters.searchPlaceholder')" :aria-label="t('market.filters.searchPlaceholder')"
+            @input="setFilter('search', $event.target.value)"
+          />
+        </div>
         <button
-          type="button" role="tab" :aria-selected="tab === 'listings'"
-          class="tab-pill" :class="{ active: tab === 'listings' }" @click="tab = 'listings'"
-        ><Package :size="14" /> {{ t('market.tabs.listings') }}</button>
-        <button
-          type="button" role="tab" :aria-selected="tab === 'shops'"
-          class="tab-pill" :class="{ active: tab === 'shops' }" @click="tab = 'shops'"
-        ><Store :size="14" /> {{ t('market.tabs.shops') }}</button>
-        <button
-          type="button" role="tab" :aria-selected="tab === 'ebay'"
-          class="tab-pill" :class="{ active: tab === 'ebay' }" @click="tab = 'ebay'"
-        ><Globe :size="14" /> {{ t('market.tabs.ebay') }}</button>
+          type="button" class="filter-btn" :class="{ active: showFilters || activeFilterCount }"
+          :aria-pressed="showFilters" :aria-label="t('market.filters.title')" @click="showFilters = !showFilters"
+        >
+          <SlidersHorizontal :size="18" />
+          <span v-if="activeFilterCount" class="filter-count-badge">{{ activeFilterCount }}</span>
+        </button>
       </div>
 
-      <button
-        v-if="tab === 'listings' || tab === 'ebay'"
-        type="button" class="btn btn-ghost btn-sm" :class="{ 'btn-toggle-active': showFilters }"
-        :aria-pressed="showFilters" @click="showFilters = !showFilters"
-      >
-        <Filter :size="14" /> {{ t('market.filters.title') }}
-        <span v-if="activeFilterCount" class="filter-count-badge">{{ activeFilterCount }}</span>
-      </button>
-    </div>
+      <div class="chips" role="group" :aria-label="t('market.filters.allCategories')">
+        <button type="button" class="chip" :class="{ 'chip-on': !curFilters.category }" :aria-pressed="!curFilters.category" @click="setFilter('category', '')">{{ t('market.filters.all') }}</button>
+        <button
+          v-for="c in store.categories" :key="c" type="button" class="chip"
+          :class="{ 'chip-on': curFilters.category === c }" :aria-pressed="curFilters.category === c"
+          @click="setFilter('category', c)"
+        >{{ t(`market.categories.${c}`) }}</button>
+      </div>
+
+      <div v-if="activeFilterCount" class="active-filters">
+        <span class="text-muted text-xs">{{ t('market.filters.active') }}</span>
+        <button v-for="f in activeChips" :key="f.key" type="button" class="chip chip-on chip-remove" @click="setFilter(f.key, '')">
+          {{ f.label }} <X :size="14" />
+        </button>
+      </div>
+    </template>
 
     <!-- Tab Annunci: solo venditori privati, le vetrine dei negozi hanno una
          tab propria per non mescolare due modi diversi di sfogliare. -->
@@ -50,10 +80,13 @@
     <!-- Tab Negozi: elenco delle vetrine verificate, separato dagli annunci
          perché qui si sfoglia per venditore invece che per articolo. -->
     <template v-else-if="tab === 'shops'">
-      <input
-        v-model="shopSearch" type="search" :placeholder="t('market.shops.searchPlaceholder')"
-        class="shop-search mb-4"
-      />
+      <div class="search-wrap mb-4">
+        <Search :size="16" class="search-icon" />
+        <input
+          v-model="shopSearch" type="search" :placeholder="t('market.shops.searchPlaceholder')"
+          :aria-label="t('market.shops.searchPlaceholder')" class="search-input"
+        />
+      </div>
 
       <div v-if="shopsInfiniteLoading" class="state-center">
         <div class="spinner"></div>
@@ -106,7 +139,8 @@
 <script setup>
 import { ref, computed, watch, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { Package, Filter, Store, Globe } from 'lucide-vue-next'
+import { RouterLink } from 'vue-router'
+import { Package, Store, Globe, Plus, Search, SlidersHorizontal, X } from 'lucide-vue-next'
 import { useMarketStore } from '../stores/market.js'
 import { useAuthStore } from '../stores/auth.js'
 import { useInfiniteScroll } from '../composables/useInfiniteScroll.js'
@@ -125,10 +159,23 @@ const tab = ref('listings')
 const showFilters = ref(false)
 const zip = ref('')
 
-const activeFilterCount = computed(() => {
-  const source = tab.value === 'ebay' ? ebayFilters.value : filters.value
-  return Object.values(source).filter(v => v).length
+const curFilters = computed(() => tab.value === 'ebay' ? ebayFilters.value : filters.value)
+// Il contatore e i chip "Filtro attivo" non contano la ricerca testuale e la
+// categoria: quelle hanno già il loro campo e i chip sopra.
+const activeFilterCount = computed(() => activeChips.value.length)
+const activeChips = computed(() => {
+  const f = curFilters.value
+  const out = []
+  if (f.condition) out.push({ key: 'condition', label: t(`market.condition.${f.condition}`) })
+  if (f.location) out.push({ key: 'location', label: f.location })
+  if (f.priceMin) out.push({ key: 'priceMin', label: `≥ ${f.priceMin} €` })
+  if (f.priceMax) out.push({ key: 'priceMax', label: `≤ ${f.priceMax} €` })
+  return out
 })
+function setFilter(key, value) {
+  const target = tab.value === 'ebay' ? ebayFilters : filters
+  target.value = { ...target.value, [key]: value }
+}
 
 // ── tab Annunci (venditori privati) ──
 const filters = ref({ search: '', category: '', condition: '', location: '', priceMin: '', priceMax: '' })
@@ -221,24 +268,33 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.market-toolbar { @apply flex items-center justify-between gap-2 mb-4 flex-wrap; }
+.market-head { @apply flex items-center justify-between gap-2 mb-4; }
+.market-title { @apply text-3xl font-bold text-foam; }
 
-.tabs {
-  @apply flex gap-1 p-1 bg-surface-2 rounded-full w-full sm:w-auto;
-}
-.tab-pill {
-  @apply flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 text-xs font-semibold text-muted bg-transparent border-none rounded-full cursor-pointer px-3 min-h-[44px] transition-colors whitespace-nowrap;
-}
-.tab-pill:hover { @apply text-foam; }
-.tab-pill.active { @apply text-on-primary bg-ocean; }
+.segmented { @apply flex gap-1 p-1 mb-3 bg-surface-2 border border-border rounded-xl; }
+.seg-opt { @apply flex-1 min-h-[44px] rounded-lg bg-transparent border-none text-sm font-semibold text-foam cursor-pointer whitespace-nowrap; }
+.seg-opt.active { @apply bg-ocean text-on-primary; }
 
-.btn-toggle-active {
-  @apply text-ocean-text bg-ocean/10;
+.search-row { @apply flex items-center gap-2 mb-3; }
+.search-wrap { @apply relative flex-1; }
+.search-icon { @apply absolute left-3.5 top-1/2 -translate-y-1/2 text-muted pointer-events-none; }
+.search-input { @apply w-full min-h-[44px] rounded-xl pl-10 pr-4 text-sm; }
+.filter-btn {
+  @apply relative flex items-center justify-center w-11 h-11 shrink-0 rounded-xl border border-border bg-surface text-foam cursor-pointer;
 }
-
+.filter-btn.active { @apply border-ocean text-ocean-text; background: var(--ocean-glow); }
 .filter-count-badge {
-  @apply inline-flex items-center justify-center min-w-[1.1rem] h-[1.1rem] rounded-full bg-ocean text-on-primary text-[0.65rem] font-bold px-1;
+  @apply absolute -top-1.5 -right-1.5 inline-flex items-center justify-center min-w-[1.1rem] h-[1.1rem] rounded-full bg-sand text-on-primary text-[0.65rem] font-bold px-1;
 }
+
+.chips { @apply flex gap-2 overflow-x-auto pb-1 mb-3; scrollbar-width: none; }
+.chips::-webkit-scrollbar { display: none; }
+.chip {
+  @apply inline-flex items-center gap-1.5 shrink-0 min-h-[44px] px-4 rounded-full border border-border bg-surface text-foam text-sm font-semibold cursor-pointer whitespace-nowrap;
+}
+.chip-on { @apply bg-ocean border-ocean text-on-primary; }
+.active-filters { @apply flex flex-wrap items-center gap-2 mb-3; }
+.chip-remove { @apply min-h-[36px] px-3; background: var(--ocean-glow); @apply text-ocean-text border-ocean; }
 
 .listings-grid {
   @apply grid gap-3;
@@ -249,8 +305,6 @@ onMounted(() => {
   .listings-grid { @apply gap-4; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
   .shops-grid { @apply gap-4; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
 }
-
-.shop-search { @apply sm:max-w-xs; }
 
 .market-empty {
   @apply flex items-center justify-center gap-2 text-muted text-sm py-8;

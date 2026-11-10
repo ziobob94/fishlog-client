@@ -1,17 +1,6 @@
 <template>
-  <div class="card grid grid-cols-2 sm:flex sm:flex-wrap items-center gap-2.5 p-3 mb-5">
-    <input
-      :value="modelValue.search"
-      type="search"
-      :placeholder="t('market.filters.searchPlaceholder')"
-      class="col-span-2 sm:col-span-1 sm:flex-1 sm:min-w-[140px] sm:max-w-xs"
-      @input="update('search', $event.target.value)"
-    />
-    <select :value="modelValue.category" class="sm:flex-1 sm:min-w-[140px] sm:max-w-[180px]" @change="update('category', $event.target.value)">
-      <option value="">{{ t('market.filters.allCategories') }}</option>
-      <option v-for="c in categories" :key="c" :value="c">{{ t(`market.categories.${c}`) }}</option>
-    </select>
-    <select :value="modelValue.condition" class="sm:flex-1 sm:min-w-[120px] sm:max-w-[150px]" @change="update('condition', $event.target.value)">
+  <div class="card grid grid-cols-2 sm:flex sm:flex-wrap items-center gap-2.5 p-3 mb-4">
+    <select :value="modelValue.condition" :aria-label="t('market.filters.allConditions')" class="col-span-2 sm:col-span-1 sm:flex-1 sm:min-w-[120px] sm:max-w-[150px]" @change="update('condition', $event.target.value)">
       <option value="">{{ t('market.filters.allConditions') }}</option>
       <option value="nuovo">{{ t('market.condition.nuovo') }}</option>
       <option value="usato">{{ t('market.condition.usato') }}</option>
