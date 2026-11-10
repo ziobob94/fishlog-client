@@ -12,14 +12,14 @@
     </button>
     <RouterLink to="/" class="inline-flex items-center -ml-1" aria-label="FishLog"><FishLogo :size="30" /></RouterLink>
 
-    <div class="ml-auto flex items-center gap-2">
+    <div class="ml-auto flex items-center gap-1.5">
       <RouterLink
         to="/notifications"
-        class="relative flex items-center justify-center w-11 h-11 rounded-lg text-foam bg-surface-2 hover:bg-surface-2/70 transition-colors border-none cursor-pointer"
+        class="relative flex items-center justify-center w-9 h-9 rounded-lg text-foam bg-surface-2 hover:bg-surface-2/70 transition-colors border-none cursor-pointer"
         :title="t('notifications.title')"
         :aria-label="t('notifications.title')"
       >
-        <Bell :size="18" />
+        <Bell :size="16" />
         <span v-if="notifications.unreadCount" class="notif-dot">{{ notifications.unreadCount }}</span>
       </RouterLink>
 
@@ -30,11 +30,11 @@
 
       <div class="relative max-md:hidden" ref="createWrapper">
         <button
-          class="relative flex items-center justify-center w-11 h-11 rounded-lg text-ink bg-ocean hover:bg-ocean/90 transition-colors border-none cursor-pointer"
+          class="relative flex items-center justify-center w-9 h-9 rounded-lg text-ink bg-ocean hover:bg-ocean/90 transition-colors border-none cursor-pointer"
           :title="plusTitle"
           @click="onPlusClick"
         >
-          <Plus :size="18" />
+          <Plus :size="16" />
           <span v-if="sessions.ongoing && !onOngoingEditPage" class="absolute -top-0.5 -right-0.5 flex h-2.5 w-2.5">
             <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-sand/70"></span>
             <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-sand"></span>
@@ -218,7 +218,7 @@ const statusTitle = computed(() => {
 
 <style scoped>
 .topbar-avatar {
-  @apply flex items-center justify-center w-11 h-11 rounded-full border border-ocean text-ocean-text font-bold text-sm overflow-hidden no-underline;
+  @apply flex items-center justify-center w-9 h-9 rounded-full border border-ocean text-ocean-text font-bold text-xs overflow-hidden no-underline;
   background: var(--ocean-glow);
 }
 .topbar-avatar img { @apply w-full h-full object-cover; }
