@@ -1,8 +1,8 @@
 <template>
-  <header class="sticky top-0 z-[100] flex items-center gap-4 px-5 py-3 border-b border-border"
+  <header class="sticky top-0 z-[100] flex items-center gap-0 pl-2 pr-4 sm:pl-3 py-3 border-b border-border"
     style="background: rgb(var(--color-ink) / 0.92); backdrop-filter: blur(12px)">
     <button
-      class="flex flex-col justify-center gap-1.5 w-11 h-11 items-center bg-transparent border-none cursor-pointer group"
+      class="flex flex-col justify-center gap-1.5 w-10 h-11 items-center bg-transparent border-none cursor-pointer group"
       :aria-label="t('nav.menu')"
       @click="$emit('toggle-sidebar')"
     >
@@ -10,7 +10,7 @@
       <span class="block w-5 h-0.5 bg-foam rounded group-hover:bg-ocean transition-colors duration-200"></span>
       <span class="block w-5 h-0.5 bg-foam rounded group-hover:bg-ocean transition-colors duration-200"></span>
     </button>
-    <RouterLink to="/" class="inline-flex items-center" aria-label="FishLog"><FishLogo :size="30" /></RouterLink>
+    <RouterLink to="/" class="inline-flex items-center -ml-1" aria-label="FishLog"><FishLogo :size="30" /></RouterLink>
 
     <div class="ml-auto flex items-center gap-2">
       <RouterLink
