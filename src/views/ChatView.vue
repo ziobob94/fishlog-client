@@ -114,11 +114,15 @@
       <div class="page-header chat-thread-header pt-4">
         <RouterLink to="/chat" class="icon-btn" :aria-label="t('common.back')"><ArrowLeft :size="18" /></RouterLink>
         <RouterLink v-if="friend" :to="`/users/${friend._id}`" class="chat-header-info">
-          <img v-if="friend.avatar" :src="friend.avatar" class="mini-avatar" />
-          <span v-else class="mini-placeholder">{{ initials(friend) }}</span>
+          <span class="chat-avatar">
+            <img v-if="friend.avatar" :src="friend.avatar" class="mini-avatar" />
+            <span v-else class="mini-placeholder">{{ initials(friend) }}</span>
+            <span v-if="friend.online" class="online-dot"></span>
+          </span>
           <span class="chat-header-text">
             <span class="chat-header-name">{{ friend.displayName || friend.email }}</span>
-            <span v-if="friend.email" class="chat-header-email">{{ friend.email }}</span>
+            <span v-if="friend.online" class="chat-header-online">online</span>
+            <span v-else-if="friend.email" class="chat-header-email">{{ friend.email }}</span>
           </span>
         </RouterLink>
         <h2 v-else>...</h2>
@@ -316,6 +320,8 @@ return toInitials(name)
     @apply border-b border-border pb-4 justify-start;
   }
 
+  .chat-thread-header .icon-btn { @apply bg-transparent border-transparent; }
+  .chat-thread-header .icon-btn.is-fav { @apply text-sand-text; }
   .chat-header-info {
     @apply flex items-center gap-2.5 no-underline text-inherit min-w-0;
   }
@@ -328,6 +334,9 @@ return toInitials(name)
     @apply font-bold text-foam truncate;
   }
 
+  .chat-avatar { @apply relative shrink-0; }
+  .online-dot { @apply absolute bottom-0 right-0 w-3 h-3 rounded-full bg-success border-2 border-surface; }
+  .chat-header-online { @apply text-xs text-success-text truncate; }
   .chat-header-email {
     @apply text-xs text-muted truncate;
   }
