@@ -1,5 +1,6 @@
 import { useAuthStore } from '../stores/auth.js'
 import { useChatStore } from '../stores/chat.js'
+import { useFriendStore } from '../stores/friends.js'
 import { useNotificationStore } from '../stores/notifications.js'
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001'
@@ -22,6 +23,12 @@ function handleMessage(event) {
 
   if (message.type === 'notification') {
     useNotificationStore().applyRealtimeEvent(message.payload)
+    // Richiesta accettata/ricevuta: aggiorna subito amici e richieste.
+    if (['friend_accept', 'friend_request'].includes(message.payload?.type)) {
+      const friends = useFriendStore()
+      friends.fetchRequests()
+      if (message.payload.type === 'friend_accept') friends.fetchFriends()
+    }
   } else if (message.type === 'chat:unread') {
     const chat = useChatStore()
     chat.setUnreadCount(message.count)
@@ -59,6 +66,17 @@ export function connectWebSocket() {
   socket.addEventListener('message', handleMessage)
   socket.addEventListener('close', scheduleReconnect)
   socket.addEventListener('error', () => socket.close())
+}
+
+// Torna in primo piano / torna la rete: il socket può essere stato sospeso
+// dal sistema (iOS) senza evento 'close', quindi lo riapre se non è vivo.
+export function ensureConnected() {
+  const auth = useAuthStore()
+  if (!auth.token || manuallyClosed) return
+  if (socket && (socket.readyState === WebSocket.OPEN || socket.readyState === WebSocket.CONNECTING)) return
+  clearTimeout(reconnectTimer)
+  reconnectDelay = 1000
+  connectWebSocket()
 }
 
 export function disconnectWebSocket() {

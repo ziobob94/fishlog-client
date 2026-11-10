@@ -53,7 +53,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, watch, provide } from 'vue'
+import { ref, computed, onMounted, onBeforeUnmount, watch, provide } from 'vue'
 import { RouterView, useRoute, useRouter } from 'vue-router'
 import AppSidebar from './layout/AppSidebar.vue'
 import AppTopbar  from './layout/AppTopbar.vue'
@@ -67,7 +67,7 @@ import { usePostStore } from './stores/posts.js'
 import { useChatStore } from './stores/chat.js'
 import { useFriendStore } from './stores/friends.js'
 import { useNotificationStore } from './stores/notifications.js'
-import { connectWebSocket, disconnectWebSocket } from './services/ws.js'
+import { connectWebSocket, disconnectWebSocket, ensureConnected } from './services/ws.js'
 
 const route = useRoute()
 const router = useRouter()
@@ -110,7 +110,38 @@ onMounted(() => {
 })
 
 watch(() => auth.isLoggedIn, (loggedIn) => {
-  if (!loggedIn) disconnectWebSocket()
+  if (!loggedIn) { disconnectWebSocket(); return }
+  syncBadges()
+  ensureConnected()
+})
+
+// Badge e richieste restano aggiornati anche se il websocket è stato sospeso
+// (app in background, rete assente): risincronizza al ritorno in primo piano,
+// quando torna la rete e ogni 30 s mentre l'app è visibile.
+function syncBadges() {
+  if (!auth.isLoggedIn) return
+  notifications.fetchUnreadCount()
+  chat.fetchUnreadCount()
+  posts.fetchUnreadCount()
+  friends.fetchRequests()
+}
+function resync() {
+  if (document.visibilityState === 'hidden') return
+  ensureConnected()
+  syncBadges()
+}
+let pollTimer = null
+onMounted(() => {
+  document.addEventListener('visibilitychange', resync)
+  window.addEventListener('focus', resync)
+  window.addEventListener('online', resync)
+  pollTimer = setInterval(resync, 30000)
+})
+onBeforeUnmount(() => {
+  document.removeEventListener('visibilitychange', resync)
+  window.removeEventListener('focus', resync)
+  window.removeEventListener('online', resync)
+  clearInterval(pollTimer)
 })
 
 function toggleSidebar() { sidebarOpen.value = !sidebarOpen.value }
