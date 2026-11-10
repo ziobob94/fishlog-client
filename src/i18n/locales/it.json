@@ -831,7 +831,9 @@
 	},
 	"locationPicker": {
 		"hint": "Cerca un luogo o clicca sulla mappa per impostare le coordinate",
-		"namePlaceholder": "Cerca un luogo..."
+		"namePlaceholder": "Cerca un luogo...",
+		"searchError": "Ricerca non disponibile, riprova tra poco.",
+		"mapError": "Non riesco a caricare la mappa."
 	},
 	"offline": {
 		"offlineBanner": "Sei offline — le modifiche restano salvate sul dispositivo e verranno inviate al server alla riconnessione",
