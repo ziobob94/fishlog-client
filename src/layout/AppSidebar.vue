@@ -180,7 +180,8 @@ return toInitials(name)
 
   function logout() {
     auth.logout()
-    router.push('/login')
+    // ricarica: azzera gli store in memoria (vedi ProfileView)
+    window.location.assign('/login')
   }
 </script>
 
