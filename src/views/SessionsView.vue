@@ -70,6 +70,7 @@ const pagesRef = computed(() => store.pagination.pages)
 const { loading: infiniteLoading, loadingMore, hasMore, reset, loadMore } = useInfiniteScroll(
   (page, { append }) => store.fetchSessions({
     page,
+    mine:      'true',
     search:    filters.value.search    || undefined,
     technique: filters.value.technique || undefined,
     dateFrom:  filters.value.dateFrom  || undefined,
