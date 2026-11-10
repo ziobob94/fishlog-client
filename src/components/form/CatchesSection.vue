@@ -73,7 +73,7 @@
             <div class="form-grid" v-if="isSubOpen(i, 'details')">
               <div class="form-group">
                 <label>{{ t('catchesSection.timeLabel') }}<FieldInfo :text="t('catchesSection.timeInfo')" /></label>
-                <input v-model="c.time" type="time" />
+                <input v-model="c.time" type="time" :class="{ 'is-empty': !c.time }" data-placeholder="--:--" />
               </div>
               <div class="form-group">
                 <label>{{ t('catchesSection.distanceLabel') }}<FieldInfo :text="t('catchesSection.distanceInfo')" /></label>
