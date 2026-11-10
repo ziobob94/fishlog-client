@@ -17,6 +17,7 @@ import { useRouter, RouterLink } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { AlertTriangle } from 'lucide-vue-next'
 import { useSessionStore } from '../stores/sessions.js'
+import { useToast } from '../composables/useToast.js'
 import SessionForm from '../components/form/SessionForm.vue'
 
 const { t }  = useI18n()
@@ -24,12 +25,14 @@ const store  = useSessionStore()
 const router = useRouter()
 const error  = computed(() => store.error)
 const checkingOngoing = ref(true)
+const { toast } = useToast()
 
 // Non si può aprire una nuova uscita se ce n'è già una in corso: si viene
 // rimandati dritti lì, invece di lasciare che la creazione la chiuda.
 onMounted(async () => {
   const ongoing = await store.fetchOngoing()
   if (ongoing) {
+    toast(t('sessionForm.ongoingRedirect'), { type: 'info' })
     router.replace(`/session/${ongoing._id}/edit`)
     return
   }

@@ -749,6 +749,9 @@
 		},
 		"saving": "Salvataggio...",
 		"saved": "Modifiche salvate.",
+		"expandAll": "Espandi tutte le sezioni",
+		"collapseAll": "Comprimi sezioni",
+		"ongoingRedirect": "Hai già un'uscita in corso: continua da qui.",
 		"submitCreate": "Salva uscita",
 		"submitEdit": "Aggiorna uscita"
 	},
