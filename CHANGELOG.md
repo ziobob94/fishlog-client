@@ -1,3 +1,10 @@
+# [1.39.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.38.1...client-v1.39.0) (2026-11-10)
+
+
+### Features
+
+* **market:** percorso venditore per privati senza P.IVA, documenti o verifica; i negozi restano verificati ([2dbf01e](https://github.com/ziobob94/fishlog-client/commit/2dbf01e601c31808857a64a87bbd05b18d6cad2c))
+
 ## [1.38.1](https://github.com/ziobob94/fishlog-client/compare/client-v1.38.0...client-v1.38.1) (2026-11-10)
 
 
