@@ -1,3 +1,10 @@
+## [1.38.1](https://github.com/ziobob94/fishlog-client/compare/client-v1.38.0...client-v1.38.1) (2026-11-10)
+
+
+### Bug Fixes
+
+* **nav:** menu hamburger di nuovo disponibile su mobile (Home e intestazioni delle schermate principali) ([1e1cc83](https://github.com/ziobob94/fishlog-client/commit/1e1cc832166a24e35a90d5f9e79e45629eea2177))
+
 # [1.38.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.37.0...client-v1.38.0) (2026-11-10)
 
 
