@@ -16,7 +16,7 @@
 
       <!-- Header -->
       <PageHeader title="" back="/sessions" class="md:hidden">
-        <RouterLink :to="`/session/${session._id}/edit`" class="ph-icon" :aria-label="t('groups.editAction')"><Pencil :size="18" /></RouterLink>
+        <RouterLink v-if="isOwner" :to="`/session/${session._id}/edit`" class="ph-icon" :aria-label="t('groups.editAction')"><Pencil :size="18" /></RouterLink>
       </PageHeader>
       <div class="detail-header">
         <div class="detail-header-left">
@@ -35,7 +35,7 @@
             <p v-if="coordsLabel" class="coords-pill font-mono">{{ coordsLabel }}</p>
           </div>
         </div>
-        <div class="detail-header-actions max-md:hidden">
+        <div v-if="isOwner" class="detail-header-actions max-md:hidden">
           <RouterLink :to="`/session/${session._id}/edit`" class="btn btn-secondary icon-inline"><Pencil :size="15" /> {{ t('groups.editAction') }}</RouterLink>
           <button class="btn btn-danger icon-inline" @click="confirmDelete = true"><Trash2 :size="15" /> {{ t('groups.deleteAction') }}</button>
         </div>
@@ -167,7 +167,7 @@
         </aside>
       </div>
 
-      <div class="detail-footer-actions md:hidden">
+      <div v-if="isOwner" class="detail-footer-actions md:hidden">
         <RouterLink :to="`/session/${session._id}/edit`" class="btn btn-secondary">{{ t('groups.editAction') }}</RouterLink>
         <button class="btn btn-danger" @click="confirmDelete = true">{{ t('groups.deleteAction') }}</button>
       </div>
@@ -198,6 +198,7 @@ import { useI18n } from 'vue-i18n'
 import { Hourglass, MapPin, Pencil, Trash2, Camera, Sun, Fish, FileText, Waves, Trees, Mountain, Droplet } from 'lucide-vue-next'
 import PageHeader from '../components/PageHeader.vue'
 import { useSessionStore } from '../stores/sessions.js'
+import { useAuthStore } from '../stores/auth.js'
 import MediaUploader from '../components/MediaUploader.vue'
 import InfoItem      from '../components/InfoItem.vue'
 import StatBar       from '../components/StatBar.vue'
@@ -206,6 +207,16 @@ import TideDivider   from '../components/TideDivider.vue'
 
 const { t }  = useI18n()
 const store  = useSessionStore()
+const auth   = useAuthStore()
+// Solo l'autore può modificare/eliminare (il server applica lo stesso controllo).
+// Le uscite offline in coda non hanno ancora un autore dal server: sono sempre mie.
+const isOwner = computed(() => {
+  const s = store.current
+  if (!s) return false
+  if (s._pending || !s.userId) return true
+  const me = auth.user?._id || auth.user?.id
+  return String(s.userId?._id || s.userId) === String(me)
+})
 const route  = useRoute()
 const router = useRouter()
 
