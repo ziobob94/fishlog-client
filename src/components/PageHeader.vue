@@ -49,7 +49,7 @@ function goBack() {
 
 <style scoped>
 .page-header { @apply flex items-center gap-2 mb-4 min-h-[44px]; }
-.page-header-sticky { @apply sticky top-0 z-30 bg-ink py-3 mb-0 border-b border-border; }
+.page-header-sticky { top: env(safe-area-inset-top); @apply sticky z-30 bg-ink py-3 mb-0 border-b border-border; }
 .ph-title { @apply text-2xl leading-tight font-bold text-foam flex-1 min-w-0 truncate; }
 .ph-title-sub { @apply text-xl; }
 .ph-actions { @apply flex items-center gap-1.5 ml-auto shrink-0; }
