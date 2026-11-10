@@ -7,6 +7,8 @@
       </template>
     </SpeciesQuickAdd>
 
+    <slot name="list-title" />
+
     <div v-if="modelValue.length" class="catches-table">
       <div class="catches-row catches-head">
         <span>{{ t('catchesSection.speciesLabel') }}</span>
@@ -200,7 +202,7 @@
       </template>
     </div>
 
-    <p v-else class="catches-empty">{{ t('catchesSection.empty') }}</p>
+    <p v-else-if="!hideEmpty" class="catches-empty">{{ t('catchesSection.empty') }}</p>
 
     <datalist id="bait-suggestions">
       <option v-for="b in baitSuggestions" :key="b" :value="b" />
@@ -258,7 +260,8 @@ function applyBaitType(c) {
 }
 const props = defineProps({
   modelValue: { type: Array, default: () => [] },
-  location:   { type: Object, default: () => ({}) }
+  location:   { type: Object, default: () => ({}) },
+  hideEmpty:  { type: Boolean, default: false }
 })
 const emit = defineEmits(['update:modelValue'])
 

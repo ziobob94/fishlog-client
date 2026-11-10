@@ -3,6 +3,7 @@
 
     <div class="ongoing-summary">
       <div>
+        <p class="ongoing-badge">{{ t('session.ongoing.badge') }}</p>
         <h3>{{ session.title || t('session.untitled') }}</h3>
         <p class="ongoing-meta">{{ formattedDate }}<template v-if="session.location?.name"> · {{ session.location.name }}</template></p>
       </div>
@@ -11,24 +12,28 @@
 
     <div v-if="error" class="error-banner"><AlertTriangle :size="16" /> {{ error }}</div>
 
-    <div class="ongoing-status" role="status">
-      <strong>{{ t('session.ongoing.count', { n: catches.length }, catches.length) }}</strong>
-      <span class="save-state" :class="saveState">
-        <template v-if="saveState === 'saving'">{{ t('session.ongoing.saving') }}</template>
-        <template v-else-if="saveState === 'needsSpecies'">{{ t('session.ongoing.needsSpecies') }}</template>
-        <template v-else-if="saveState === 'saved'">✓ {{ t('session.ongoing.savedAuto') }}</template>
-        <template v-else>{{ t('session.ongoing.hint') }}</template>
-      </span>
-    </div>
-
-    <CatchesSection ref="catchesRef" v-model="catches" :location="session.location" />
+    <!-- Un solo gesto: scegli o scrivi la specie, tocca per aggiungere -->
+    <CatchesSection ref="catchesRef" v-model="catches" :location="session.location" hide-empty>
+      <template #list-title>
+        <div class="catches-heading">
+          <h4>{{ t('session.ongoing.listTitle', { n: catches.length }) }}</h4>
+          <span class="save-state" :class="saveState" role="status">
+            <template v-if="saveState === 'saving'">{{ t('session.ongoing.saving') }}</template>
+            <template v-else-if="saveState === 'needsSpecies'">{{ t('session.ongoing.needsSpecies') }}</template>
+            <template v-else-if="saveState === 'saved'">✓ {{ t('session.ongoing.savedAuto') }}</template>
+          </span>
+        </div>
+        <p v-if="!catches.length" class="catches-empty-hint">{{ t('session.ongoing.emptyList') }}</p>
+      </template>
+    </CatchesSection>
 
     <div class="ongoing-actions">
-      <button type="button" class="btn btn-ghost" @click="$emit('cancel')">{{ t('session.ongoing.backToSummary') }}</button>
-      <button type="button" class="btn btn-primary" :disabled="closing" @click="confirmClose = true">
+      <button type="button" class="btn btn-primary btn-lg" :disabled="closing" @click="confirmClose = true">
         <span v-if="closing" class="spinner" style="width:15px;height:15px"></span>
         {{ closing ? t('sessionForm.saving') : t('session.ongoing.close') }}
       </button>
+      <button type="button" class="btn btn-ghost" @click="$emit('cancel')">{{ t('session.ongoing.backToSummary') }}</button>
+      <p class="actions-hint">{{ t('session.ongoing.closeHint') }}</p>
     </div>
 
     <Teleport to="body">
@@ -184,6 +189,12 @@ async function closeSession() {
 .dialog { max-width: 22rem; width: 90%; }
 .dialog-actions { display: flex; gap: .75rem; justify-content: flex-end; margin-top: 1.25rem; }
 
+.ongoing-badge { color: var(--success, #5cd98a); font-size: .72rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; margin-bottom: .2rem; }
+.catches-heading { align-items: baseline; display: flex; flex-wrap: wrap; gap: .25rem 1rem; justify-content: space-between; }
+.catches-heading h4 { color: var(--foam, #cde); font-size: 1.05rem; font-weight: 700; margin: 0; }
+.catches-empty-hint { color: var(--text-muted, #6b8fa8); font-size: .85rem; margin-top: .35rem; }
+.actions-hint { color: var(--text-muted, #6b8fa8); flex-basis: 100%; font-size: .78rem; text-align: right; }
+
 .ongoing-status {
   align-items: center;
   display: flex;
@@ -196,8 +207,13 @@ async function closeSession() {
 .save-state.needsSpecies { color: var(--warning, #e8b04a); }
 
 .ongoing-actions {
+  align-items: center;
+  border-top: 1px solid var(--border, #2a3f55);
   display: flex;
+  flex-wrap: wrap;
   gap: .75rem;
   justify-content: flex-end;
+  padding-top: 1rem;
 }
+.btn-lg { min-height: 48px; padding-left: 1.5rem; padding-right: 1.5rem; }
 </style>

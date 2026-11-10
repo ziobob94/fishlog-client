@@ -1,7 +1,7 @@
 <template>
   <div>
     <PageHeader :title="t('session.edit.title')" back close-icon>
-      <RouterLink :to="`/session/${route.params.id}`" class="ph-icon" :aria-label="t('session.edit.viewSummary')"><FileText :size="18" /></RouterLink>
+      <RouterLink :to="`/session/${route.params.id}`" class="ph-icon" :aria-label="t('session.edit.viewSummary')"><FileText :size="18" /><span class="ph-label">{{ t('session.edit.viewSummary') }}</span></RouterLink>
     </PageHeader>
 
     <div v-if="store.loading && !store.current" class="state-center">
@@ -88,7 +88,8 @@ async function onSubmit(payload, pendingPhotosByIndex) {
 </script>
 
 <style scoped>
-.ph-icon { @apply flex items-center justify-center w-11 h-11 rounded-xl text-foam bg-surface border border-border no-underline; }
+.ph-label { @apply text-sm font-semibold ml-1.5; }
+.ph-icon { @apply flex items-center justify-center h-11 px-3 rounded-xl text-foam bg-surface border border-border no-underline; }
 .page-header  { @apply flex items-center gap-4 mb-4; }
 .icon-inline  { display: inline-flex; align-items: center; gap: .35rem; }
 .error-banner { @apply bg-danger/10 border border-danger rounded-sm text-danger px-4 py-3 mb-4; }
