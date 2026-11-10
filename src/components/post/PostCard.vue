@@ -21,6 +21,19 @@
       </div>
     </div>
 
+    <!-- Post senza foto/video: il testo è il contenuto, subito sotto l'intestazione -->
+    <div v-if="!post.media?.length" class="post-lead">
+      <h3 v-if="post.title" class="post-title">{{ post.title }}</h3>
+      <p class="post-lead-body">{{ post.body }}</p>
+      <div v-if="post.type === 'event'" class="event-info">
+        <span v-if="post.event?.location?.name" class="inline-flex items-center gap-1.5"><MapPin :size="14" /> {{ post.event.location.name }}</span>
+        <span v-if="post.event?.date" class="inline-flex items-center gap-1.5"><Calendar :size="14" /> {{ formatDate(post.event.date) }}</span>
+        <span class="badge" :class="post.event?.status === 'open' ? 'badge-ocean' : 'badge-sand'">
+          {{ post.event?.status === 'open' ? t('posts.event.open') : t('posts.event.closed') }}
+        </span>
+      </div>
+    </div>
+
     <div v-if="post.media?.length" class="post-media">
       <div ref="mediaEl" class="media-scroll" @scroll.passive="onMediaScroll">
         <RulerFrame v-for="(m, i) in post.media" :key="m._id" class="media-frame">
@@ -52,10 +65,12 @@
 
     <div class="post-text">
       <span class="likes-label">{{ t('posts.likesCount', { n: post.likes?.length || 0 }, post.likes?.length || 0) }}</span>
+      <template v-if="post.media?.length">
       <h3 v-if="post.title" class="post-title">{{ post.title }}</h3>
       <p class="post-body"><strong>{{ post.author?.displayName || post.author?.email }}</strong> {{ post.body }}</p>
+      </template>
 
-      <div v-if="post.type === 'event'" class="event-info">
+      <div v-if="post.media?.length && post.type === 'event'" class="event-info">
         <span v-if="post.event?.location?.name" class="inline-flex items-center gap-1.5"><MapPin :size="14" /> {{ post.event.location.name }}</span>
         <span v-if="post.event?.date" class="inline-flex items-center gap-1.5"><Calendar :size="14" /> {{ formatDate(post.event.date) }}</span>
         <span class="badge" :class="post.event?.status === 'open' ? 'badge-ocean' : 'badge-sand'">
@@ -390,7 +405,10 @@ const featuredCatch = computed(() => {
 
   .post-text { @apply flex flex-col gap-1.5; }
   .likes-label { @apply text-sm font-bold text-foam; }
-  .comments-link { @apply self-start min-h-[44px] bg-transparent border-none px-0 text-sm text-muted cursor-pointer text-left; }
+  .post-lead { @apply flex flex-col gap-2 pt-1; }
+  .post-lead-body { @apply text-[17px] leading-relaxed text-foam whitespace-pre-wrap break-words; }
+  .post-lead .post-title { @apply text-lg; }
+  .comments-link { @apply self-start min-h-[36px] bg-transparent border-none px-0 -mt-1 text-sm text-muted cursor-pointer text-left; }
 
   .post-title {
     @apply font-bold text-base leading-snug;
