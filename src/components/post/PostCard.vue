@@ -161,7 +161,7 @@
       <button v-if="post.type !== 'event'" class="btn btn-ghost btn-sm" @click="showComments = !showComments">
         <MessageCircle :size="14" /> {{ post.comments?.length || 0 }}
       </button>
-      <button v-if="isAuthor" class="btn btn-danger btn-sm ml-auto" @click="$emit('delete', post)">{{ t('common.delete') }}</button>
+      <button v-if="isAuthor" class="delete-btn ml-auto" :title="t('common.delete')" :aria-label="t('common.delete')" @click="$emit('delete', post)"><Trash2 :size="16" /></button>
     </div>
 
     <div v-if="post.type !== 'event' && showComments" class="comments-block">
@@ -226,7 +226,7 @@ import AppIcon from '../AppIcon.vue'
   import { ref, computed, watch } from 'vue'
   import { useI18n } from 'vue-i18n'
   import { RouterLink } from 'vue-router'
-  import { MapPin, Calendar, Heart, MessageCircle, X, Users } from 'lucide-vue-next'
+  import { MapPin, Calendar, Heart, MessageCircle, X, Users, Trash2 } from 'lucide-vue-next'
   import { useAuthStore } from '../../stores/auth.js'
 
   const props = defineProps({ post: { type: Object, required: true } })
@@ -288,7 +288,7 @@ const featuredCatch = computed(() => {
 
 <style scoped>
   .post-card {
-    @apply flex flex-col gap-2.5 bg-surface border border-border/60 rounded-signature p-3.5 sm:p-4;
+    @apply flex flex-col gap-2.5 bg-surface border border-border/60 rounded-2xl p-3;
   }
 
   .post-header {
@@ -480,15 +480,19 @@ const featuredCatch = computed(() => {
   }
 
   .engagement-row {
-    @apply flex items-center gap-2 border-t border-border/60 pt-2.5;
+    @apply flex items-center gap-2 border-t border-border/60 pt-2;
   }
 
   .engagement-row .btn {
-    @apply min-h-[36px] px-3;
+    @apply min-h-[36px] px-3 gap-1.5 text-xs font-semibold rounded-full border-transparent bg-surface-2/70 text-foam shadow-none;
   }
 
   .like-btn.liked {
-    @apply text-danger border-danger;
+    @apply text-danger bg-danger/10;
+  }
+
+  .delete-btn {
+    @apply flex items-center justify-center w-9 h-9 rounded-full bg-transparent border-none text-muted cursor-pointer hover:text-danger hover:bg-danger/10 transition-colors;
   }
 
   .ml-auto {

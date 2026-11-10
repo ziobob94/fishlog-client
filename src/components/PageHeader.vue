@@ -48,17 +48,17 @@ function goBack() {
 </script>
 
 <style scoped>
-.page-header { @apply flex items-center gap-3 mb-4 min-h-[44px]; }
+.page-header { @apply flex items-center gap-2 mb-4 min-h-[44px]; }
 .page-header-sticky { @apply sticky top-0 z-30 bg-ink py-3 mb-0 border-b border-border; }
-.ph-title { @apply text-[1.65rem] leading-tight font-bold text-foam flex-1 min-w-0 truncate; }
+.ph-title { @apply text-2xl leading-tight font-bold text-foam flex-1 min-w-0 truncate; }
 .ph-title-sub { @apply text-xl; }
-.ph-actions { @apply flex items-center gap-2 ml-auto shrink-0; }
+.ph-actions { @apply flex items-center gap-1.5 ml-auto shrink-0; }
 .ph-btn {
-  @apply relative flex items-center justify-center w-11 h-11 shrink-0 rounded-xl text-foam bg-surface border border-border cursor-pointer no-underline;
+  @apply relative flex items-center justify-center w-9 h-9 shrink-0 rounded-xl text-foam bg-surface border border-border cursor-pointer no-underline;
 }
-.ph-menu { @apply bg-transparent border-transparent -ml-2 md:hidden; }
+.ph-menu { @apply bg-transparent border-transparent -ml-2 w-10 md:hidden; }
 .ph-back { @apply bg-transparent border-transparent -ml-2; }
-.ph-dot { @apply absolute top-1.5 right-1.5 w-2.5 h-2.5 rounded-full bg-sand; }
+.ph-dot { @apply absolute top-1 right-1 w-2 h-2 rounded-full bg-sand; }
 /* Sul desktop la campanella sta già nella barra in alto. */
 .ph-bell { @apply md:hidden; }
 </style>
