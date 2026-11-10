@@ -12,7 +12,7 @@
           class="message-row"
           :class="{ mine: m.sender?._id === auth.user?._id }"
         >
-          <div class="message-bubble" :class="{ deleted: m.deleted }">
+          <div class="message-bubble" :class="[{ deleted: m.deleted }, !m.deleted && m.type ? `type-${m.type}` : '']">
             <span v-if="showSender(m)" class="message-sender">{{ m.sender?.displayName || m.sender?.email }}</span>
 
             <span v-if="m.deleted" class="message-text message-deleted-text">
@@ -22,13 +22,14 @@
             <template v-else>
               <span v-if="!m.type || m.type === 'text'" class="message-text">{{ m.body }}</span>
 
-              <a v-else-if="m.type === 'image'" :href="m.media?.url" target="_blank" rel="noopener">
-                <img :src="m.media?.url" class="message-media-image" />
+              <a v-else-if="m.type === 'image'" :href="m.media?.url" target="_blank" rel="noopener" class="message-image-card">
+                <ImageIcon :size="40" class="message-image-ph" />
+                <img :src="m.media?.url" class="message-media-image" alt="" @error="$event.target.style.display = 'none'" />
               </a>
 
               <video v-else-if="m.type === 'video'" :src="m.media?.url" controls class="message-media-video"></video>
 
-              <audio v-else-if="m.type === 'audio'" :src="m.media?.url" controls class="message-audio"></audio>
+              <AudioMessage v-else-if="m.type === 'audio'" :src="m.media?.url" :seed="m._id" />
 
               <a v-else-if="m.type === 'file'" :href="m.media?.url" target="_blank" rel="noopener" class="message-file">
                 <FileText :size="20" />
@@ -80,7 +81,7 @@
           <button type="button" @click="triggerMediaInput"><ImageIcon :size="18" /> {{ t('chat.attach.media') }}</button>
           <button type="button" @click="triggerFileInput"><FileText :size="18" /> {{ t('chat.attach.file') }}</button>
           <button type="button" @click="shareLocation"><MapPin :size="18" /> {{ t('chat.attach.location') }}</button>
-          <button type="button" @click="startVoiceFromMenu"><Mic :size="18" /> {{ t('chat.attach.voice') }}</button>
+          <button type="button" @click="startVoiceFromMenu"><Mic :size="18" class="ic-voice" /> {{ t('chat.attach.voice') }}</button>
         </div>
         <input ref="mediaInputEl" type="file" accept="image/*,video/*" class="hidden-input" @change="onFileChosen" />
         <input ref="fileInputEl" type="file" class="hidden-input" @change="onFileChosen" />
@@ -118,6 +119,7 @@
   import { useToast } from '../../composables/useToast.js'
   import { useVoiceRecorder } from '../../composables/useVoiceRecorder.js'
   import MapDisplay from '../MapDisplay.vue'
+  import AudioMessage from './AudioMessage.vue'
 
   // Vista di un thread singolo (diretto o di gruppo): riceve l'id della
   // conversazione già risolto e gestisce da sé cronologia, invio, allegati
@@ -414,9 +416,22 @@
     @apply flex items-center justify-center w-11 h-11 rounded text-muted bg-transparent border-none cursor-pointer hover:bg-surface-2 hover:text-ocean transition-colors;
   }
 
-  .message-media-image {
-    @apply max-w-full rounded-sm max-h-72 object-cover cursor-pointer;
+  .message-bubble.type-image {
+    @apply bg-transparent border-none p-0 w-[72%] max-w-[300px];
   }
+  .message-bubble.type-image .message-meta { @apply hidden; }
+  .message-image-card {
+    @apply relative block w-full rounded-[20px] overflow-hidden bg-ocean/20 border border-border;
+    aspect-ratio: 6 / 5;
+  }
+  .message-image-ph { @apply absolute inset-0 m-auto text-ocean-text/60; }
+  .message-media-image { @apply absolute inset-0 w-full h-full object-cover cursor-pointer; }
+
+  .message-bubble.type-location, .message-row.mine .message-bubble.type-location {
+    @apply bg-ocean border-ocean p-1 border-[3px];
+  }
+  .message-bubble.type-location .message-meta { @apply px-2 pb-1 text-on-primary; }
+  .message-location-map :deep(.map-display) { border-radius: 14px; overflow: hidden; }
 
   .message-media-video {
     @apply max-w-full rounded-sm max-h-72;
@@ -447,7 +462,7 @@
   }
 
   .message-location-map :deep(.map-display) {
-    height: 140px;
+    height: 160px;
     width: 220px;
   }
 
@@ -464,7 +479,7 @@
   }
 
   .message-input-row {
-    @apply flex items-center gap-2 border-t border-border pt-3 relative shrink-0;
+    @apply flex items-center gap-2 border-t border-border pt-3 pb-1 relative shrink-0;
   }
 
   .message-input-row input {
@@ -499,6 +514,9 @@
   }
   .attach-menu button svg {
     @apply text-ocean-text;
+  }
+  .attach-menu button svg.ic-voice {
+    @apply text-sand-text;
   }
 
   .recording-indicator {
