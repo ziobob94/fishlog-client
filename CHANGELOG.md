@@ -1,3 +1,10 @@
+# [1.37.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.36.0...client-v1.37.0) (2026-11-10)
+
+
+### Features
+
+* **design:** intestazioni per schermata, Uscite, Chat, Amici, Nuovo gruppo, Nuovo annuncio, Home e Profilo allineati al design ([ecd95e0](https://github.com/ziobob94/fishlog-client/commit/ecd95e0c0e8f88932b23e08ae67fb1d9ebc1a2cd))
+
 # [1.36.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.35.0...client-v1.36.0) (2026-11-10)
 
 
