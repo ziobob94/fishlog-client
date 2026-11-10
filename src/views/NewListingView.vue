@@ -29,7 +29,8 @@ const { t } = useI18n()
 const router = useRouter()
 const store = useMarketStore()
 const auth = useAuthStore()
-const verified = computed(() => auth.user?.shop?.verificationStatus === 'verified')
+// Un privato pubblica sempre; un negozio solo dopo la verifica
+const verified = computed(() => auth.user?.shop?.canPublish ?? auth.user?.shop?.verificationStatus === 'verified')
 
 const saving = ref(false)
 const error  = ref('')

@@ -11,6 +11,7 @@
       <p class="text-muted">{{ t('seller.pending.text') }}</p>
       <p class="notice">{{ t('seller.pending.noPublish') }}</p>
       <RouterLink to="/market" class="btn btn-secondary mt-3">{{ t('seller.backToMarket') }}</RouterLink>
+      <button type="button" class="btn btn-ghost mt-2" :disabled="saving" @click="switchToPrivate">{{ t('seller.switchToPrivate') }}</button>
     </section>
 
     <!-- 1 · Richiesta (anche dopo un rifiuto: «Modifica e reinvia») -->
@@ -23,7 +24,7 @@
         <p class="text-muted text-sm">{{ t('seller.rejected.hint') }}</p>
       </div>
 
-      <div class="panel">
+      <div v-if="form.sellerType === 'negozio'" class="panel">
         <h2 class="icon-inline"><AppIcon name="verificato" :size="20" /> {{ t('seller.intro.title') }}</h2>
         <p class="text-muted">{{ t('seller.intro.text') }}</p>
         <ol class="steps">
@@ -40,39 +41,47 @@
         </label>
       </fieldset>
 
-      <h2 class="section-label">{{ t('seller.business') }}</h2>
-      <div class="form-group">
-        <label for="s-legal">{{ form.sellerType === 'negozio' ? t('seller.legalName') : t('seller.fullName') }}</label>
-        <input id="s-legal" v-model="form.legalName" type="text" required autocomplete="organization" />
-      </div>
-      <div v-if="form.sellerType === 'negozio'" class="form-group">
-        <label for="s-vat">{{ t('seller.vat') }}</label>
-        <input id="s-vat" v-model="form.vatNumber" type="text" inputmode="numeric" maxlength="11" pattern="[0-9]{11}" :placeholder="t('seller.vatPlaceholder')" required />
-      </div>
-      <div class="form-group">
-        <label for="s-city">{{ t('seller.city') }}</label>
-        <input id="s-city" v-model="form.city" type="text" required autocomplete="address-level2" />
-      </div>
-      <div class="form-group">
-        <label for="s-phone">{{ t('seller.phone') }}</label>
-        <input id="s-phone" v-model="form.phone" type="tel" placeholder="+39 ..." required autocomplete="tel" />
-      </div>
-      <div class="form-group">
-        <label for="s-doc">{{ t('seller.document.label') }}</label>
-        <input id="s-doc" type="file" accept="application/pdf,image/jpeg,image/png,image/webp" :required="!hasDocument" @change="onFile" />
-        <p class="text-muted text-xs mt-1">
-          {{ hasDocument && !docFile ? t('seller.document.already') : t('seller.document.hint') }}
-        </p>
+      <!-- Privato: nessun dato aziendale né documento, si pubblica subito. -->
+      <div v-if="form.sellerType === 'privato'" class="panel">
+        <h2>{{ t('seller.private.title') }}</h2>
+        <p class="text-muted">{{ t('seller.private.text') }}</p>
       </div>
 
-      <label class="check-row">
-        <input v-model="confirmed" type="checkbox" required />
-        <span>{{ t('seller.confirm') }}</span>
-      </label>
+      <template v-else>
+        <h2 class="section-label">{{ t('seller.business') }}</h2>
+        <div class="form-group">
+          <label for="s-legal">{{ t('seller.legalName') }}</label>
+          <input id="s-legal" v-model="form.legalName" type="text" required autocomplete="organization" />
+        </div>
+        <div class="form-group">
+          <label for="s-vat">{{ t('seller.vat') }}</label>
+          <input id="s-vat" v-model="form.vatNumber" type="text" inputmode="numeric" maxlength="11" pattern="[0-9]{11}" :placeholder="t('seller.vatPlaceholder')" required />
+        </div>
+        <div class="form-group">
+          <label for="s-city">{{ t('seller.city') }}</label>
+          <input id="s-city" v-model="form.city" type="text" required autocomplete="address-level2" />
+        </div>
+        <div class="form-group">
+          <label for="s-phone">{{ t('seller.phone') }}</label>
+          <input id="s-phone" v-model="form.phone" type="tel" placeholder="+39 ..." required autocomplete="tel" />
+        </div>
+        <div class="form-group">
+          <label for="s-doc">{{ t('seller.document.label') }}</label>
+          <input id="s-doc" type="file" accept="application/pdf,image/jpeg,image/png,image/webp" :required="!hasDocument" @change="onFile" />
+          <p class="text-muted text-xs mt-1">
+            {{ hasDocument && !docFile ? t('seller.document.already') : t('seller.document.hint') }}
+          </p>
+        </div>
+
+        <label class="check-row">
+          <input v-model="confirmed" type="checkbox" required />
+          <span>{{ t('seller.confirm') }}</span>
+        </label>
+      </template>
 
       <p v-if="error" class="error-msg" role="alert">{{ error }}</p>
-      <button type="submit" class="btn btn-primary w-full" :disabled="saving || !confirmed">
-        {{ status === 'rejected' ? t('seller.resubmit') : t('seller.submit') }}
+      <button type="submit" class="btn btn-primary w-full" :disabled="saving || (form.sellerType === 'negozio' && !confirmed)">
+        {{ form.sellerType === 'privato' ? t('seller.startPrivate') : (status === 'rejected' ? t('seller.resubmit') : t('seller.submit')) }}
       </button>
     </form>
 
@@ -163,7 +172,7 @@ const status = computed(() => auth.user?.shop?.verificationStatus || 'none')
 const s0 = auth.user?.shop || {}
 
 const form = ref({
-  sellerType: s0.sellerType || 'negozio', legalName: s0.legalName || '', vatNumber: s0.vatNumber || '',
+  sellerType: s0.enabled ? (s0.sellerType || 'privato') : 'privato', legalName: s0.legalName || '', vatNumber: s0.vatNumber || '',
   city: s0.city || '', phone: s0.phone || ''
 })
 const shop = ref({
@@ -188,11 +197,21 @@ const error = ref('')
 const siteBusy = ref(false)
 const siteDone = ref(s0.siteRequested ? true : null)
 
+async function switchToPrivate() {
+  saving.value = true; error.value = ''
+  try {
+    await auth.updateShop({ sellerType: 'privato' })
+    router.push('/market/new')
+  } catch (e) {
+    error.value = e.response?.data?.error || t('common.error')
+  } finally { saving.value = false }
+}
+
 async function submitRequest() {
+  if (form.value.sellerType === 'privato') return switchToPrivate()
   saving.value = true; error.value = ''
   try {
     const payload = { enabled: true, ...form.value }
-    if (payload.sellerType === 'privato') payload.vatNumber = ''
     if (docFile.value) await auth.uploadShopDocument(docFile.value)
     await auth.updateShop(payload)
   } catch (e) {

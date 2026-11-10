@@ -1204,7 +1204,7 @@
 		"pending": {
 			"title": "Richiesta in revisione",
 			"text": "Il team sta controllando i tuoi dati. Ti avvisiamo appena c'è una risposta.",
-			"noPublish": "Finché la richiesta non è approvata non puoi pubblicare annunci come venditore verificato."
+			"noPublish": "Finché la richiesta non è approvata non puoi pubblicare come negozio: nel frattempo puoi vendere come privato."
 		},
 		"rejected": {
 			"title": "Richiesta non approvata",
@@ -1236,10 +1236,16 @@
 			"thanks": "Grazie, ti scriviamo presto."
 		},
 		"gate": {
-			"title": "Prima la verifica",
-			"text": "Per pubblicare annunci devi essere un venditore verificato dal team. Invia i tuoi dati: ti avvisiamo appena c'è una risposta."
+			"title": "Negozio in verifica",
+			"text": "Hai chiesto di vendere come negozio: potrai pubblicare appena il team approva. Intanto puoi vendere come privato."
 		},
-		"becomeSeller": "Diventa venditore verificato"
+		"becomeSeller": "Vendi come privato o negozio",
+		"startPrivate": "Inizia a vendere",
+		"switchToPrivate": "Vendi come privato",
+		"private": {
+			"title": "Vendi subito, senza verifica",
+			"text": "Come privato non servono P.IVA né documenti: pubblica i tuoi annunci e gli acquirenti ti contattano in chat. I negozi con P.IVA possono chiedere la verifica per avere vetrina e badge."
+		}
 	},
 	"globe": {
 		"title": "Mappamondo delle tue pescate",
