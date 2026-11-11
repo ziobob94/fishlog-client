@@ -91,10 +91,12 @@
 @layer base {
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-  html { font-size: 18px; @apply overflow-x-hidden; }
+  html { font-size: 18px; overflow-x: clip; }
 
   body {
-    @apply bg-ink text-foam font-display antialiased min-h-screen overflow-x-hidden;
+    @apply bg-ink text-foam font-display antialiased min-h-screen;
+    /* clip (non hidden): hidden fa di body un contenitore di scroll e rompe i sticky (top bar) */
+    overflow-x: clip;
   }
 
   ::-webkit-scrollbar { width: 5px; }

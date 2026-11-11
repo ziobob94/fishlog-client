@@ -14,6 +14,16 @@
 
     <div class="ml-auto flex items-center gap-1.5">
       <RouterLink
+        to="/chat"
+        class="relative flex items-center justify-center w-9 h-9 rounded-lg text-foam bg-surface-2 hover:bg-surface-2/70 transition-colors border-none cursor-pointer"
+        :title="t('nav.chat')"
+        :aria-label="t('nav.chat')"
+      >
+        <MessageCircle :size="16" />
+        <span v-if="chat.unreadCount" class="notif-dot">{{ chat.unreadCount > 99 ? '99+' : chat.unreadCount }}</span>
+      </RouterLink>
+
+      <RouterLink
         to="/notifications"
         class="relative flex items-center justify-center w-9 h-9 rounded-lg text-foam bg-surface-2 hover:bg-surface-2/70 transition-colors border-none cursor-pointer"
         :title="t('notifications.title')"
@@ -94,11 +104,12 @@ import { computed, onMounted, onBeforeUnmount, ref, watch } from 'vue'
 import { RouterLink, useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import FishLogo from '../components/FishLogo.vue'
-import { Fish, WifiOff, RefreshCw, AlertTriangle, Hourglass, Plus, Bell, X, Newspaper, ShoppingBag, MessagesSquare, Users, UsersRound } from 'lucide-vue-next'
+import { Fish, WifiOff, RefreshCw, AlertTriangle, Hourglass, Plus, Bell, X, Newspaper, ShoppingBag, MessagesSquare, MessageCircle, Users, UsersRound } from 'lucide-vue-next'
 import { useOfflineStore } from '../stores/offline.js'
 import { useSessionStore } from '../stores/sessions.js'
 import { useAuthStore } from '../stores/auth.js'
 import { useNotificationStore } from '../stores/notifications.js'
+import { useChatStore } from '../stores/chat.js'
 
 defineEmits(['toggle-sidebar'])
 
@@ -110,6 +121,7 @@ const sessions = useSessionStore()
 const userInitials = computed(() => toInitials(auth.user?.displayName || auth.user?.email || '?'))
 const auth = useAuthStore()
 const notifications = useNotificationStore()
+const chat = useChatStore()
 
 const notifPanelOpen = ref(false)
 const notifWrapper = ref(null)
