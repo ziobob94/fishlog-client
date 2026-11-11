@@ -6,9 +6,9 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, watch, onMounted, onUnmounted } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { loadMap, placesErrorKey } from '../utils/places.js'
+import { loadMap, placesMessage, reportMapError, placesStatus } from '../utils/places.js'
 
 // Mappa di dettaglio con segnaposto (Google Maps, caricata solo quando serve).
 const { t } = useI18n()
@@ -31,8 +31,9 @@ onMounted(async () => {
       zoomControl: true, mapTypeControl: false, streetViewControl: false, fullscreenControl: false, clickableIcons: false
     })
     new window.google.maps.Marker({ position: pos, map })
-  } catch { err.value = t(placesErrorKey() || 'globe.mapError') }
+  } catch (e) { reportMapError(e); err.value = placesMessage(t) || t('globe.mapError') }
 })
+watch(() => [placesStatus.error, placesStatus.code], () => { if (placesStatus.error) err.value = placesMessage(t) })
 
 onUnmounted(() => { map = null })
 </script>

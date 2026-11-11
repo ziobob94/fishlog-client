@@ -59,7 +59,7 @@ import { useI18n } from 'vue-i18n'
 import { Layers } from 'lucide-vue-next'
 import api from '../utils/api.js'
 import AppIcon from './AppIcon.vue'
-import { loadMap, loadGoogle, placesStatus, placesErrorKey } from '../utils/places.js'
+import { loadMap, placesStatus, placesMessage, reportMapError } from '../utils/places.js'
 
 const { t } = useI18n()
 
@@ -75,7 +75,7 @@ const reduceMotion = ref(false)
 const mapEl = ref(null)
 const stage = ref(null)
 const basemap = ref(readBasemap())
-const gmErr = computed(() => placesStatus.error ? placesErrorKey() : '')
+const gmErr = computed(() => placesStatus.error)
 
 function readBasemap() {
   try { return localStorage.getItem('fishlog_basemap') === 'map' ? 'map' : 'sat' } catch { return 'sat' }
@@ -185,11 +185,12 @@ async function initMap() {
     })
     map.addListener('idle', refreshMarkers)
     window.google.maps.event.addListenerOnce(map, 'tilesloaded', () => { refreshMarkers(); setMeMarker(); showAll() })
-  } catch {
-    mapError.value = t(placesErrorKey() || 'globe.mapError')
+  } catch (e) {
+    reportMapError(e)
+    mapError.value = placesMessage(t) || t('globe.mapError')
   }
 }
-watch(gmErr, (k) => { if (k) mapError.value = t(k) })
+watch(() => [placesStatus.error, placesStatus.code], () => { if (placesStatus.error) mapError.value = placesMessage(t) })
 
 onMounted(async () => {
   reduceMotion.value = !!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
