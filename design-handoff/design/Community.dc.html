@@ -19,10 +19,15 @@ a{color:inherit;text-decoration:none}
 h1,.disp{font-family:'Fraunces',Georgia,serif;font-optical-sizing:auto}
 </style>
 </helmet>
-<div style="width:390px;height:1760px;box-sizing:border-box;background:#111c2c;display:flex;flex-direction:column;overflow:hidden">
+<div style="width:390px;height:1700px;box-sizing:border-box;background:#111c2c;display:flex;flex-direction:column;overflow:hidden">
 
-  <header style="display:flex;align-items:center;gap:10px;padding:12px 16px;min-height:64px;box-sizing:border-box">
-    <h1 style="margin:0;font-size:26px;font-weight:800;letter-spacing:-.01em;font-family:'Fraunces',Georgia,serif">Community</h1>
+  <header style="position:relative;z-index:5;display:flex;align-items:center;gap:10px;padding:12px 16px;min-height:64px;box-sizing:border-box">
+    <h1 style="margin:0;font-size:26px;font-weight:800;letter-spacing:-.01em;font-family:'Fraunces',Georgia,serif"><button onClick="{{toggleFilter}}" aria-haspopup="listbox" aria-expanded="{{filterOpen}}" aria-label="Filtra il feed: {{filterLabel}}" style="min-height:44px;padding:0 6px 0 0;border:0;background:transparent;color:inherit;font:inherit;letter-spacing:inherit;display:flex;align-items:center;gap:6px">{{filterLabel}}<svg class="i" viewBox="0 0 24 24" style="width:22px;height:22px;color:#7dd3fc" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button></h1>
+    <sc-if value="{{filterOpen}}" hint-placeholder-val="{{ false }}">
+    <div role="listbox" aria-label="Filtra il feed" style="position:absolute;left:16px;top:62px;width:220px;background:#243650;border:1px solid #46617f;border-radius:20px;padding:6px;box-shadow:0 12px 32px rgba(0,0,0,.5)">
+      <sc-for list="{{filters}}" as="f" hint-placeholder-count="4"><button role="option" aria-selected="{{f.on}}" onClick="{{f.tap}}" style="width:100%;min-height:48px;border:0;border-radius:14px;background:{{f.bg}};color:{{f.fg}};font-size:16px;font-weight:700;display:flex;align-items:center;justify-content:space-between;padding:0 14px;text-align:left">{{f.label}}<sc-if value="{{f.on}}" hint-placeholder-val="{{ false }}"><svg class="i" viewBox="0 0 24 24" style="width:20px;height:20px" aria-hidden="true"><path d="m5 12 5 5 9-10"/></svg></sc-if></button></sc-for>
+    </div>
+    </sc-if>
     <div style="margin-left:auto;display:flex;gap:8px">
       <a href="ChatLista.dc.html" aria-label="Messaggi, 3 da leggere" style="position:relative;width:44px;height:44px;border-radius:14px;border:1px solid #33486a;background:#1a293d;color:#f1f5f9;display:flex;align-items:center;justify-content:center"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M4.8 11.2 19.7 4.9a.7.7 0 0 1 .9.9L14.2 20.2a.7.7 0 0 1-1.3-.1L11.6 14.9 5 13a.7.7 0 0 1-.2-1.8Z"/></svg><span style="position:absolute;top:-6px;right:-6px;min-width:20px;height:20px;padding:0 5px;box-sizing:border-box;border-radius:999px;background:#0ea5e9;color:#0b1623;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;border:2px solid #111c2c">3</span></a>
       <button aria-label="Cerca pescatori" style="width:44px;height:44px;border-radius:14px;border:1px solid #33486a;background:#1a293d;color:#f1f5f9;display:flex;align-items:center;justify-content:center"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.500-3.500"/></svg></button>
@@ -30,12 +35,6 @@ h1,.disp{font-family:'Fraunces',Georgia,serif;font-optical-sizing:auto}
     </div>
   </header>
 
-  <div class="chips" style="display:flex;gap:8px;overflow-x:auto;padding:0 16px 12px;scrollbar-width:none">
-    <button style="flex:none;min-height:44px;padding:0 16px;border-radius:22px;border:1px solid #0ea5e9;background:#0ea5e9;color:#0b1623;font-weight:700;font-size:14px">Per te</button>
-    <button style="flex:none;min-height:44px;padding:0 16px;border-radius:22px;border:1px solid #33486a;background:#1a293d;color:#cbd5e1;font-weight:600;font-size:14px">Amici</button>
-    <button style="flex:none;min-height:44px;padding:0 16px;border-radius:22px;border:1px solid #33486a;background:#1a293d;color:#cbd5e1;font-weight:600;font-size:14px">Gruppi</button>
-    <button style="flex:none;min-height:44px;padding:0 16px;border-radius:22px;border:1px solid #33486a;background:#1a293d;color:#cbd5e1;font-weight:600;font-size:14px">Eventi</button>
-  </div>
 
 
   <section aria-label="Storie" class="chips" style="display:flex;gap:6px;overflow-x:auto;padding:4px 16px 14px;scrollbar-width:none">
@@ -107,15 +106,20 @@ h1,.disp{font-family:'Fraunces',Georgia,serif;font-optical-sizing:auto}
   </nav>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":1760}}'>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":1700}}'>
 class Component extends DCLogic {
-constructor(props) { super(props); this.state = { liked: { 0: false, 1: true } }; }
+constructor(props) { super(props); this.state = { liked: { 0: false, 1: true }, filterOpen: false, filter: 0 }; }
 renderVals() {
   const base = [
     { coords: '44.49°N · 12.29°E', initials: 'GR', author: 'giorgio.r', place: 'Marina di Ravenna', when: '2 h fa', tone: '#1f3a56', isVideo: false, isPhoto: true, counter: '1 / 3', badge: 'Spigola 52 cm', likes: 41, caption: 'Prima uscita dopo la mareggiata: acqua ancora un po’ torbida ma le spigole c’erano. Presa al minnow da 9 cm.', session: 'Surfcasting serale', sessionMeta: '26 ott · 2 catture · Surfcasting', comments: 8 },
     { coords: '43.55°N · 13.62°E', initials: 'LB', author: 'luca_bolentino', place: 'Conero', when: 'ieri', tone: '#24415c', isVideo: true, isPhoto: false, counter: '0:18', badge: 'Scorfano 31 cm', likes: 112, caption: 'Combattimento sul fondo a 40 m. Rilasciato dopo la foto.', session: 'Bolentino sul fondo', sessionMeta: '12 ott · 9 catture · Bolentino', comments: 23 }
   ];
-  return { posts: base.map((p, i) => {
+  const names = ['Per te', 'Amici', 'Gruppi', 'Eventi'];
+  const fs = this.state.filter;
+  return { filterLabel: names[fs], filterOpen: this.state.filterOpen,
+    toggleFilter: () => this.setState({ filterOpen: !this.state.filterOpen }),
+    filters: names.map((label, i) => ({ label, on: fs === i, bg: fs === i ? 'rgba(14,165,233,.18)' : 'transparent', fg: fs === i ? '#7dd3fc' : '#f1f5f9', tap: () => this.setState({ filter: i, filterOpen: false }) })),
+    posts: base.map((p, i) => {
     const liked = !!this.state.liked[i];
     const n = p.likes + (liked && i === 0 ? 1 : 0) - (!liked && i === 1 ? 1 : 0);
     return { ...p, liked, heartColor: liked ? '#fbbf24' : '#f1f5f9', heartFill: liked ? '#fbbf24' : 'none',

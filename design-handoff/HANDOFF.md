@@ -111,7 +111,7 @@ Prima mancava il punto d'ingresso per un nuovo post. Ora:
 | # | Schermata | Codice | Note |
 |---|---|---|---|
 | 39 | Crea (foglio dal basso) | nuovo, apre da «+» della barra | Post, Storia, Uscita, Annuncio. Il «+» non porta più direttamente a `PostForm.vue` |
-| 05 | Community · feed | `FeedView.vue` | In alto: fila storie (`StoriesRail.vue`, nuovo) e riga «Cosa hai pescato oggi?» che apre il form del post |
+| 05 | Community · feed | `FeedView.vue` | Il filtro (Per te / Amici / Gruppi / Eventi) non è più una fila di chip: è il titolo della pagina con freccia («Per te ▾») che apre un menu. In alto: fila storie (`StoriesRail.vue`, nuovo) e riga «Cosa hai pescato oggi?» che apre il form del post |
 | 40 | Storia · crea | nuovo `StoryComposer.vue` | Foto/video, adesivi della pesca (cattura, luogo, acqua e meteo), pubblico Tutti / Solo amici, scade dopo 24 ore |
 | 41 | Storia · guarda | nuovo `StoryViewer.vue` | Barre di avanzamento, risposta in chat, cuore. L'adesivo cattura apre il dettaglio uscita |
 
