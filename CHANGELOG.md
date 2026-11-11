@@ -1,3 +1,10 @@
+# [1.45.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.44.1...client-v1.45.0) (2026-11-11)
+
+
+### Features
+
+* luoghi con Google (Places, Geocoding, Maps) in tutti i campi, regione e coordinate coerenti; fix foglio mappa che si chiudeva con due dita ([360cd66](https://github.com/ziobob94/fishlog-client/commit/360cd66828ca452b2bd5dad772cb2d7ad860a336))
+
 ## [1.44.1](https://github.com/ziobob94/fishlog-client/compare/client-v1.44.0...client-v1.44.1) (2026-11-11)
 
 
