@@ -23,7 +23,7 @@
           <RouterLink to="/sessions" class="btn btn-ghost btn-sm max-md:hidden">{{ t('session.view.allSessions') }}</RouterLink>
           <div class="detail-title-block">
             <div class="detail-meta">
-              <span class="font-mono text-muted tracking-wide">{{ fmtDate(session.date) }}</span>
+              <span class="text-muted tracking-wide">{{ fmtDate(session.date) }}</span>
               <span v-if="session.technique" class="badge badge-ocean">{{ session.technique }}</span>
               <span v-if="session.visibility !== 'private'" class="badge badge-sand">{{ visibilityLabel(session.visibility) }}</span>
               <span v-if="session.rating" class="stars">{{ '★'.repeat(session.rating) }}</span>

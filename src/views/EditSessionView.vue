@@ -1,10 +1,8 @@
 <template>
   <div>
-    <PageHeader :title="store.current?.status === 'ongoing' && !showFullForm ? '' : t('session.edit.title')" back close-icon>
-      <RouterLink :to="`/session/${route.params.id}`" class="ph-icon" :aria-label="t('session.edit.viewSummary')"><FileText :size="18" /><span class="ph-label">{{ t('session.edit.viewSummary') }}</span></RouterLink>
-      <button v-if="store.current?.status === 'ongoing' && !showFullForm" type="button" class="ph-icon" @click="showFullForm = true">
-        <MoreHorizontal :size="18" /><span class="ph-label">{{ t('session.ongoing.dataLink') }}</span>
-      </button>
+    <!-- Uscita in corso: la testata con i pulsanti è dentro la scheda (mockup 34) -->
+    <PageHeader v-if="!isOngoingCard" :title="t('sessionForm.menu.pageTitle')" back compact>
+      <RouterLink :to="`/session/${route.params.id}`" class="fl-iconbtn" :aria-label="t('session.edit.viewSummary')" :title="t('session.edit.viewSummary')"><FileText :size="20" /></RouterLink>
     </PageHeader>
 
     <div v-if="store.loading && !store.current" class="state-center">
@@ -17,8 +15,9 @@
          form completo resta un'eccezione esplicita, richiesta con "Modifica
          altri dati" per intervenire su meteo/luogo/altre info. -->
     <OngoingCatchForm
-      v-else-if="store.current?.status === 'ongoing' && !showFullForm"
+      v-else-if="isOngoingCard"
       :session="store.current"
+      @edit-full="showFullForm = true"
     />
 
     <SessionForm
@@ -38,7 +37,7 @@ import PageHeader from '../components/PageHeader.vue'
 import { computed, ref, onMounted } from 'vue'
 import { useRouter, useRoute, RouterLink } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { AlertTriangle, FileText, MoreHorizontal } from 'lucide-vue-next'
+import { AlertTriangle, FileText } from 'lucide-vue-next'
 import { useSessionStore } from '../stores/sessions.js'
 import { useToast } from '../composables/useToast.js'
 import SessionForm from '../components/form/SessionForm.vue'
@@ -55,6 +54,7 @@ const { toast } = useToast()
 // meteo/luogo/altre info, "annulla" deve tornare alla scheda catture
 // invece che al riepilogo — l'uscita resta comunque in corso.
 const showFullForm = ref(false)
+const isOngoingCard = computed(() => store.current?.status === 'ongoing' && !showFullForm.value)
 
 onMounted(() => store.fetchSession(route.params.id))
 

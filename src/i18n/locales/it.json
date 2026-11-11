@@ -65,7 +65,13 @@
 		"newChatGroup": "Nuovo gruppo chat"
 	},
 	"admin": {
-		"tabs": { "users": "Utenti", "sessions": "Sessioni", "shops": "Negozi", "config": "Configurazioni", "regulations": "Normativa" },
+		"tabs": {
+			"users": "Utenti",
+			"sessions": "Sessioni",
+			"shops": "Negozi",
+			"config": "Configurazioni",
+			"regulations": "Normativa"
+		},
 		"users": {
 			"searchPlaceholder": "Cerca utente...",
 			"table": {
@@ -128,7 +134,10 @@
 			"saved": "Norma salvata",
 			"saveError": "Errore nel salvataggio della norma",
 			"confirmDelete": "Eliminare questa norma?",
-			"scope": { "species": "Specie", "general": "Generale" },
+			"scope": {
+				"species": "Specie",
+				"general": "Generale"
+			},
 			"fields": {
 				"scope": "Tipo",
 				"speciesName": "Specie",
@@ -265,7 +274,10 @@
 			"post_like": "ha messo mi piace al tuo post",
 			"post_comment": "ha commentato il tuo post"
 		},
-		"groups": { "new": "Nuove", "earlier": "Prima" },
+		"groups": {
+			"new": "Nuove",
+			"earlier": "Prima"
+		},
 		"accepted": "Richiesta accettata",
 		"declined": "Richiesta rifiutata",
 		"unread": "Da leggere"
@@ -312,43 +324,47 @@
 			"micDenied": "Permesso microfono negato",
 			"micUnsupported": "Registrazione vocale non supportata su questo dispositivo",
 			"voiceEmpty": "Registrazione troppo breve, riprova"
-			},
-			"group": {
-				"back": "Indietro",
-				"newTitle": "Nuovo gruppo chat",
-				"nameLabel": "Nome del gruppo",
-				"namePlaceholder": "Es. Uscite al lago",
-				"selected": "{n} selezionati",
-				"membersLabel": "Aggiungi almeno due amici",
-				"noFriends": "Non hai ancora amici da aggiungere: fatti prima qualche amicizia",
-				"create": "Crea gruppo",
-				"creating": "Creazione...",
-				"nameRequired": "Il nome del gruppo \u00e8 obbligatorio",
-				"minMembers": "Servono almeno due amici da aggiungere",
-				"membersCount": "{n} membri",
-				"owner": "Admin",
-				"you": "Tu",
-				"manageMembers": "Gestisci membri",
-				"addMembers": "Aggiungi amici",
-				"add": "Aggiungi",
-				"removeMember": "Rimuovi dal gruppo",
-				"confirmRemoveMember": "Rimuovere questo membro dal gruppo?",
-				"leave": "Esci dal gruppo",
-				"confirmLeave": "Uscire da questo gruppo?",
-				"rename": "Rinomina",
-				"renamePlaceholder": "Nome del gruppo",
-				"save": "Salva",
-				"notFound": "Gruppo non trovato o non ne fai pi\u00f9 parte"
-			}
 		},
+		"group": {
+			"back": "Indietro",
+			"newTitle": "Nuovo gruppo chat",
+			"nameLabel": "Nome del gruppo",
+			"namePlaceholder": "Es. Uscite al lago",
+			"selected": "{n} selezionati",
+			"membersLabel": "Aggiungi almeno due amici",
+			"noFriends": "Non hai ancora amici da aggiungere: fatti prima qualche amicizia",
+			"create": "Crea gruppo",
+			"creating": "Creazione...",
+			"nameRequired": "Il nome del gruppo è obbligatorio",
+			"minMembers": "Servono almeno due amici da aggiungere",
+			"membersCount": "{n} membri",
+			"owner": "Admin",
+			"you": "Tu",
+			"manageMembers": "Gestisci membri",
+			"addMembers": "Aggiungi amici",
+			"add": "Aggiungi",
+			"removeMember": "Rimuovi dal gruppo",
+			"confirmRemoveMember": "Rimuovere questo membro dal gruppo?",
+			"leave": "Esci dal gruppo",
+			"confirmLeave": "Uscire da questo gruppo?",
+			"rename": "Rinomina",
+			"renamePlaceholder": "Nome del gruppo",
+			"save": "Salva",
+			"notFound": "Gruppo non trovato o non ne fai più parte"
+		}
+	},
 	"friends": {
 		"search": {
 			"label": "Cerca persone",
 			"placeholder": "Cerca per nome o email",
 			"noResults": "Nessun utente trovato"
 		},
-		"received": { "title": "Richieste ricevute" },
-		"sent": { "title": "Richieste inviate" },
+		"received": {
+			"title": "Richieste ricevute"
+		},
+		"sent": {
+			"title": "Richieste inviate"
+		},
 		"list": {
 			"title": "Amici",
 			"empty": "Non hai ancora amici: cercali qui sopra"
@@ -373,7 +389,7 @@
 			"accepted": "Richiesta accettata"
 		},
 		"profile": {
-		"more": "Altro",
+			"more": "Altro",
 			"notFound": "Utente non trovato.",
 			"memberSince": "Su FishLog dal {date}",
 			"commonGroups": "Gruppi in comune",
@@ -397,7 +413,14 @@
 		},
 		"zones": {
 			"title": "Scegli la zona",
-			"items": { "here": "La mia posizione", "adriatic": "Adriatico", "tyrrhenian": "Tirreno", "ligurian": "Mar Ligure", "ionian": "Ionio", "sicily": "Canale di Sicilia" }
+			"items": {
+				"here": "La mia posizione",
+				"adriatic": "Adriatico",
+				"tyrrhenian": "Tirreno",
+				"ligurian": "Mar Ligure",
+				"ionian": "Ionio",
+				"sicily": "Canale di Sicilia"
+			}
 		},
 		"sea": {
 			"title": "Oggi in mare",
@@ -405,12 +428,34 @@
 			"unavailable": "Dati non disponibili per questa zona in questo momento."
 		},
 		"stories": {
-			"community": { "title": "Community", "text": "Racconta le tue uscite, confrontati con gli altri pescatori e scala la classifica.", "cta": "Vai alla community" },
-			"market": { "title": "Market", "text": "Compra e vendi attrezzatura nuova e usata tra appassionati.", "cta": "Apri il market" },
-			"species": { "title": "Specie e stagioni", "text": "Calendario delle catture, esche, attrezzatura e normativa con la fonte citata, per ogni specie.", "cta": "Esplora le specie" }
+			"community": {
+				"title": "Community",
+				"text": "Racconta le tue uscite, confrontati con gli altri pescatori e scala la classifica.",
+				"cta": "Vai alla community"
+			},
+			"market": {
+				"title": "Market",
+				"text": "Compra e vendi attrezzatura nuova e usata tra appassionati.",
+				"cta": "Apri il market"
+			},
+			"species": {
+				"title": "Specie e stagioni",
+				"text": "Calendario delle catture, esche, attrezzatura e normativa con la fonte citata, per ogni specie.",
+				"cta": "Esplora le specie"
+			}
 		},
-		"tiles": { "species": "Specie e stagioni", "stats": "Le mie statistiche" },
-		"quick": { "title": "Accessi rapidi", "sessions": "Uscite", "stats": "Statistiche", "leaderboard": "Classifica", "friends": "Amici", "profile": "Profilo" },
+		"tiles": {
+			"species": "Specie e stagioni",
+			"stats": "Le mie statistiche"
+		},
+		"quick": {
+			"title": "Accessi rapidi",
+			"sessions": "Uscite",
+			"stats": "Statistiche",
+			"leaderboard": "Classifica",
+			"friends": "Amici",
+			"profile": "Profilo"
+		},
 		"liveConditions": {
 			"title": "Oggi dove sei",
 			"subtitle": "Condizioni attuali in base alla tua posizione",
@@ -418,7 +463,13 @@
 			"enable": "Attiva la posizione per vedere le condizioni di oggi",
 			"enableCta": "Attiva posizione",
 			"disclaimer": "Dati indicativi da Open-Meteo, non per la navigazione. Verifica sempre le condizioni reali prima di uscire.",
-			"labels": { "wind": "Vento", "wave": "Onda", "water": "Acqua", "air": "Aria", "pressure": "Pressione" }
+			"labels": {
+				"wind": "Vento",
+				"wave": "Onda",
+				"water": "Acqua",
+				"air": "Aria",
+				"pressure": "Pressione"
+			}
 		},
 		"empty": {
 			"title": "Nessuna uscita trovata",
@@ -427,10 +478,20 @@
 		},
 		"hub": {
 			"comingSoon": "Prossimamente",
-			"groups": { "diary": "Il tuo diario", "community": "Community", "more": "Altro" },
+			"groups": {
+				"diary": "Il tuo diario",
+				"community": "Community",
+				"more": "Altro"
+			},
 			"sections": {
-				"species": { "title": "Specie", "text": "Schede, calendario, attrezzatura e normativa" },
-				"leaderboard": { "title": "Classifica", "text": "I pescatori più attivi della community" },
+				"species": {
+					"title": "Specie",
+					"text": "Schede, calendario, attrezzatura e normativa"
+				},
+				"leaderboard": {
+					"title": "Classifica",
+					"text": "I pescatori più attivi della community"
+				},
 				"sessions": {
 					"title": "Uscite",
 					"text": "Registra e rivedi le tue sessioni di pesca"
@@ -463,7 +524,10 @@
 					"title": "Cultura della pesca",
 					"text": "Articoli e approfondimenti"
 				},
-				"chat": { "title": "Chat", "text": "Messaggi privati e chat globale" },
+				"chat": {
+					"title": "Chat",
+					"text": "Messaggi privati e chat globale"
+				},
 				"profile": {
 					"title": "Profilo",
 					"text": "Credenziali, privacy e impostazioni account"
@@ -476,7 +540,10 @@
 		}
 	},
 	"session": {
-		"edit": { "title": "Modifica uscita", "viewSummary": "Riepilogo" },
+		"edit": {
+			"title": "Modifica uscita",
+			"viewSummary": "Riepilogo"
+		},
 		"untitled": "Uscita",
 		"ongoing": {
 			"close": "Chiudi uscita",
@@ -508,6 +575,10 @@
 			"whoCanSee": "Chi può vederla",
 			"canEditLater": "Potrai modificarla anche dopo.",
 			"badge": "Uscita in corso",
+			"backToList": "Torna alle uscite",
+			"emptyTitle": "Ancora nessun pesce",
+			"emptyText": "Quando abbocca, tocca «Aggiungi cattura».",
+			"saved": "Salvate",
 			"addFish": "Aggiungi pesce",
 			"newFish": "Nuovo pesce",
 			"editFish": "Modifica pesce",
@@ -535,14 +606,23 @@
 			"backToSummary": "Vedi riepilogo",
 			"closeDialogTitle": "Chiudere l'uscita?",
 			"closeDialogText": "L'uscita sarà segnata come conclusa, con {n} pesci registrati. Potrai comunque modificarla dopo. | L'uscita sarà segnata come conclusa, con {n} pesci registrati. Potrai comunque modificarla dopo.",
-			"keepFishing": "Continua a pescare"
+			"keepFishing": "Continua a pescare",
+			"weight": "Peso",
+			"length": "Lunghezza",
+			"weightAria": "Peso in chilogrammi",
+			"lengthAria": "Lunghezza in centimetri",
+			"releasedShort": "Rilasciato",
+			"hoursLabel": "ore",
+			"visPrivateHint": "Solo tu la vedi.",
+			"visUsersHint": "Visibile a tutti gli utenti.",
+			"visGroupHint": "Visibile ai gruppi scelti."
 		},
 		"view": {
 			"notFound": "Sessione non trovata.",
 			"backToList": "← Torna alla lista",
 			"allSessions": "← Tutte le uscite",
 			"linkedSession": "Uscita collegata",
-		"visibility": {
+			"visibility": {
 				"private": "Privata",
 				"users": "Tutti gli utenti",
 				"group": "Gruppi"
@@ -690,9 +770,12 @@
 				"notes": "Visibilità e note"
 			},
 			"back": "Tutte le sezioni",
+			"pageTitle": "Dati dell'uscita",
 			"done": "Fatto",
 			"delete": "Elimina uscita",
-			"deleteConfirm": "Eliminare questa uscita? L'operazione non si può annullare."
+			"deleteConfirm": "Eliminare questa uscita? L'operazione non si può annullare.",
+			"autofill": "Compila luogo e meteo",
+			"autofillSub": "Dal GPS, in un tocco"
 		},
 		"requiredToContinue": "Completa i campi obbligatori per continuare",
 		"blocked": {
@@ -907,11 +990,12 @@
 	},
 	"speciesQuickAdd": {
 		"label": "Che pesce hai preso?",
-		"resultsTitle": "Risultati: tocca la specie per aggiungere il pesce",
-		"suggestionsTitle": "Specie usate di recente o comuni qui: tocca per aggiungere",
-		"caughtHere": "{n} volta qui | {n} volte qui",
+		"resultsTitle": "Risultati. Tocca per scegliere.",
+		"suggestionsTitle": "Le tue più frequenti. Tocca per scegliere.",
+		"caughtHere": "{n} qui | {n} qui",
 		"popularFallback": "Specie comune",
-		"searchPlaceholder": "Scrivi la specie (es. orata)",
+		"searchPlaceholder": "Cerca la specie",
+		"searchAria": "Cerca specie",
 		"noResults": "Nessun pesce trovato",
 		"reportMissing": "Segnala pesce mancante",
 		"reportNotePlaceholder": "Note per il supporto (opzionale)",
@@ -943,7 +1027,12 @@
 		"likesCount": "{n} mi piace | {n} mi piace | {n} mi piace",
 		"viewComments": "Vedi il commento | Vedi tutti i {n} commenti",
 		"addComment": "Aggiungi un commento",
-		"time": { "now": "ora", "minutes": "{n} min fa", "hours": "{n} h fa", "yesterday": "ieri" },
+		"time": {
+			"now": "ora",
+			"minutes": "{n} min fa",
+			"hours": "{n} h fa",
+			"yesterday": "ieri"
+		},
 		"eventBadge": "Evento",
 		"comments": {
 			"placeholder": "Scrivi un commento...",
@@ -1040,7 +1129,13 @@
 		}
 	},
 	"market": {
-		"view": { "label": "Come vedere gli elenchi", "grid": "Griglia", "list": "Elenco", "large": "Schede grandi", "grid3": "Griglia fitta" },
+		"view": {
+			"label": "Come vedere gli elenchi",
+			"grid": "Griglia",
+			"list": "Elenco",
+			"large": "Schede grandi",
+			"grid3": "Griglia fitta"
+		},
 		"title": "Market",
 		"sell": "Vendi",
 		"newListing": "Nuovo annuncio",
@@ -1227,7 +1322,11 @@
 	},
 	"leaderboard": {
 		"title": "Classifica",
-		"periods": { "week": "Settimana", "month": "Mese", "all": "Sempre" },
+		"periods": {
+			"week": "Settimana",
+			"month": "Mese",
+			"all": "Sempre"
+		},
 		"formula": "+10 per uscita pubblica, +3 per cattura registrata, +5 se l'uscita ha foto o video. Conta solo quello che è già visibile a tutti.",
 		"empty": "Nessuna uscita pubblica in questo periodo",
 		"sessionsCount": "{n} uscite",
@@ -1272,12 +1371,25 @@
 			"source": "Fonte",
 			"disclaimer": "Il testo vincolante è sempre il provvedimento ufficiale citato, non questo riassunto."
 		},
-		"badges": { "seasonNow": "Stagione ora", "minSize": "Minima {n} cm" },
+		"badges": {
+			"seasonNow": "Stagione ora",
+			"minSize": "Minima {n} cm"
+		},
 		"catchCount": "{n} catture registrate",
 		"scientificName": "Nome scientifico",
 		"months": {
-			"1": "Gen", "2": "Feb", "3": "Mar", "4": "Apr", "5": "Mag", "6": "Giu",
-			"7": "Lug", "8": "Ago", "9": "Set", "10": "Ott", "11": "Nov", "12": "Dic"
+			"1": "Gen",
+			"2": "Feb",
+			"3": "Mar",
+			"4": "Apr",
+			"5": "Mag",
+			"6": "Giu",
+			"7": "Lug",
+			"8": "Ago",
+			"9": "Set",
+			"10": "Ott",
+			"11": "Nov",
+			"12": "Dic"
 		}
 	},
 	"seller": {
@@ -1293,8 +1405,14 @@
 		},
 		"who": "Chi sei",
 		"type": {
-			"privato": { "name": "Privato", "hint": "Vendo la mia attrezzatura" },
-			"negozio": { "name": "Negozio", "hint": "Attività con P.IVA" }
+			"privato": {
+				"name": "Privato",
+				"hint": "Vendo la mia attrezzatura"
+			},
+			"negozio": {
+				"name": "Negozio",
+				"hint": "Attività con P.IVA"
+			}
 		},
 		"business": "Dati dell'attività",
 		"legalName": "Ragione sociale",
@@ -1333,7 +1451,10 @@
 			"legalHint": "Per cambiarle serve una nuova verifica.",
 			"website": "Sito web (se ce l'hai)",
 			"delivery": "Come consegni",
-			"deliveryOptions": { "ritiro": "Ritiro in negozio", "spedizione": "Spedizione" },
+			"deliveryOptions": {
+				"ritiro": "Ritiro in negozio",
+				"spedizione": "Spedizione"
+			},
 			"contact": "Contatto per i compratori",
 			"saveAndPublish": "Salva e pubblica un annuncio",
 			"saveAndBack": "Salva e torna al market"

@@ -1,6 +1,6 @@
 <template>
   <div class="close-page">
-    <PageHeader :title="t('session.ongoing.close')" back />
+    <PageHeader :title="t('session.ongoing.close')" back compact />
 
     <div v-if="!session" class="state-center"><div class="spinner"></div></div>
 
@@ -8,33 +8,37 @@
       <div v-if="error" class="error-banner"><AlertTriangle :size="16" /> {{ error }}</div>
 
       <div class="summary-card">
-        <h3>{{ session.title || session.location?.name || t('session.untitled') }}</h3>
-        <p class="meta">{{ dateLabel }}</p>
+        <h3>{{ session.location?.name || session.title || t('session.untitled') }}</h3>
+        <p class="fl-mono meta">{{ metaLine }}</p>
         <div class="stats">
-          <div><strong>{{ session.catches?.length || 0 }}</strong><span>{{ t('session.ongoing.statCatches') }}</span></div>
-          <div><strong>{{ totalKg }}</strong><span>{{ t('session.ongoing.statKg') }}</span></div>
+          <div><span class="fl-mono num">{{ session.catches?.length || 0 }}</span><span class="lbl">{{ t('session.ongoing.statCatches') }}</span></div>
+          <div><span class="fl-mono num">{{ totalKg }}</span><span class="lbl">{{ t('session.ongoing.statKg') }}</span></div>
+          <div><span class="fl-mono num amber">{{ hours }}</span><span class="lbl">{{ t('session.ongoing.hoursLabel') }}</span></div>
         </div>
       </div>
 
       <section>
-        <h4 class="sec-title">{{ t('session.ongoing.howWent') }}</h4>
+        <span class="fl-lab">{{ t('session.ongoing.howWent') }}</span>
         <div class="stars">
-          <button v-for="n in 5" :key="n" type="button" class="star" :class="{ on: n <= rating }" :aria-label="`${n}`" @click="rating = rating === n ? 0 : n">★</button>
+          <button v-for="n in 5" :key="n" type="button" class="star" :class="{ on: n <= rating }" :aria-label="`${n}`" @click="rating = rating === n ? 0 : n">
+            <svg viewBox="0 0 24 24" width="26" height="26" :fill="n <= rating ? 'currentColor' : 'none'" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M12 3l2.7 5.8 6.3.7-4.7 4.3 1.3 6.2L12 16.9 6.4 20l1.3-6.2L3 9.5l6.3-.7z" /></svg>
+          </button>
         </div>
       </section>
 
       <section>
-        <h4 class="sec-title">{{ t('session.ongoing.notesOptional') }}</h4>
-        <textarea v-model="notes" rows="4" :placeholder="t('session.ongoing.notesPlaceholder')" />
+        <label class="fl-lab" for="close-notes">{{ t('session.ongoing.notesOptional') }}</label>
+        <textarea id="close-notes" v-model="notes" class="fl-inp" rows="4" :placeholder="t('session.ongoing.notesPlaceholder')" />
       </section>
 
       <section>
-        <h4 class="sec-title">{{ t('session.ongoing.whoCanSee') }}</h4>
+        <span class="fl-lab">{{ t('session.ongoing.whoCanSee') }}</span>
         <div class="seg">
           <button v-for="v in ['private', 'users', 'group']" :key="v" type="button" :class="{ on: visibility === v }" @click="visibility = v">
             {{ t(`sessionForm.visibility.${v}`) }}
           </button>
         </div>
+        <p class="fl-hint vis-hint">{{ t(`session.ongoing.${hintKey}`) }}</p>
         <div v-if="visibility === 'group'" class="groups">
           <label v-for="g in groups" :key="g._id" class="group-check">
             <input type="checkbox" :value="g._id" v-model="allowedGroups" /> {{ g.name }}
@@ -43,13 +47,13 @@
         </div>
       </section>
 
-      <div class="close-actions">
-        <button type="button" class="btn btn-primary save-btn" :disabled="closing" @click="closeSession">
+      <div class="fl-bar">
+        <button type="button" class="fl-btn1" :disabled="closing" @click="closeSession">
           <span v-if="closing" class="spinner" style="width:15px;height:15px"></span>
           {{ t('session.ongoing.close') }}
         </button>
         <button type="button" class="link-btn" @click="router.replace(`/session/${route.params.id}/edit`)">{{ t('session.ongoing.keepFishing') }}</button>
-        <p>{{ t('session.ongoing.canEditLater') }}</p>
+        <p class="later">{{ t('session.ongoing.canEditLater') }}</p>
       </div>
     </div>
   </div>
@@ -61,6 +65,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { AlertTriangle } from 'lucide-vue-next'
 import PageHeader from '../components/PageHeader.vue'
+import { elapsedLabel, totalKgLabel } from '../utils/sessionTime.js'
 import api from '../utils/api.js'
 import { useSessionStore } from '../stores/sessions.js'
 import { useToast } from '../composables/useToast.js'
@@ -80,11 +85,14 @@ const visibility = ref('private')
 const allowedGroups = ref([])
 const groups = ref([])
 
-const dateLabel = computed(() => session.value?.date ? new Date(session.value.date).toLocaleDateString() : '')
-const totalKg = computed(() => {
-  const kg = (session.value?.catches || []).reduce((s, c) => s + (Number(c.weightKg) || 0), 0)
-  return (Math.round(kg * 10) / 10).toString().replace('.', ',')
+const metaLine = computed(() => {
+  const c = session.value?.location?.coords
+  const d = session.value?.date ? new Date(session.value.date).toLocaleDateString('it-IT', { day: 'numeric', month: 'short', year: 'numeric' }) : ''
+  return [c?.lat && c?.lng ? `${Number(c.lat).toFixed(2)}°N · ${Number(c.lng).toFixed(2)}°E` : '', d].filter(Boolean).join(' · ')
 })
+const totalKg = computed(() => totalKgLabel(session.value?.catches))
+const hours = computed(() => elapsedLabel(session.value))
+const hintKey = computed(() => ({ private: 'visPrivateHint', users: 'visUsersHint', group: 'visGroupHint' })[visibility.value])
 
 onMounted(async () => {
   if (store.current?._id !== route.params.id) await store.fetchSession(route.params.id)
@@ -112,27 +120,27 @@ async function closeSession() {
 </script>
 
 <style scoped>
-.close-form { display: flex; flex-direction: column; gap: 1.25rem; max-width: 640px; padding-bottom: 2rem; }
+.close-form { display: flex; flex-direction: column; gap: 22px; max-width: 640px; padding: 4px 0 11rem; }
 .state-center { display: flex; justify-content: center; padding: 4rem; }
-.error-banner { align-items: center; background: rgba(240,80,80,.1); border: 1px solid var(--danger, #f05050); border-radius: 6px; color: var(--danger, #f05050); display: inline-flex; gap: .4rem; padding: .75rem 1rem; }
-.summary-card { background: var(--surface, #0a1929); border: 1px solid var(--border, #2a3f55); border-radius: 16px; padding: 1rem 1.1rem; }
-.summary-card h3 { color: var(--foam, #cde); font-size: 1.2rem; margin: 0; }
-.meta { color: var(--text-muted, #6b8fa8); font-size: .85rem; margin: .2rem 0 .8rem; }
-.stats { display: flex; gap: 2rem; }
-.stats div { display: flex; flex-direction: column; }
-.stats strong { color: var(--foam, #cde); font-family: monospace; font-size: 1.8rem; }
-.stats span { color: var(--text-muted, #6b8fa8); font-size: .78rem; }
-.sec-title { color: var(--text-muted, #6b8fa8); font-size: .75rem; font-weight: 800; letter-spacing: .06em; margin-bottom: .5rem; text-transform: uppercase; }
-.stars { display: flex; gap: .5rem; }
-.star { background: var(--surface, #0a1929); border: 1px solid var(--border, #2a3f55); border-radius: 12px; color: var(--text-muted, #6b8fa8); cursor: pointer; font-size: 1.5rem; height: 52px; width: 52px; }
-.star.on { color: var(--sand); }
-.seg { display: grid; gap: .5rem; grid-template-columns: repeat(3, 1fr); }
-.seg button { background: var(--surface, #0a1929); border: 1px solid var(--border, #2a3f55); border-radius: 10px; color: var(--foam, #cde); cursor: pointer; font-weight: 700; min-height: 48px; }
-.seg button.on { background: var(--ocean, #0ea5e9); border-color: var(--ocean, #0ea5e9); color: rgb(var(--color-on-primary)); }
+.error-banner { align-items: center; background: rgba(240,80,80,.1); border: 1px solid var(--danger); border-radius: 6px; color: var(--danger); display: inline-flex; gap: .4rem; padding: .75rem 1rem; }
+.summary-card { background: rgb(var(--color-sea-deep)); border: 1px solid var(--border); border-radius: 24px 24px 24px 8px; padding: 18px 20px; }
+.summary-card h3 { color: var(--foam); font-size: 20px; font-weight: 800; letter-spacing: -.02em; margin: 0; }
+.meta { color: rgb(var(--color-ocean-text)); font-size: 12px; margin: 4px 0 16px; }
+.stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.stats > div { display: flex; flex-direction: column; gap: 2px; }
+.num { color: var(--foam); font-size: 30px; line-height: 1; letter-spacing: -.04em; }
+.num.amber { color: rgb(var(--color-sand-text)); }
+.lbl { color: var(--text-muted); font-size: 12px; font-weight: 600; }
+.stars { display: flex; gap: 8px; }
+.star { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; color: var(--text-muted); cursor: pointer; display: flex; align-items: center; justify-content: center; height: 52px; flex: 1; max-width: 64px; padding: 0; }
+.star.on { color: rgb(var(--color-sand-text)); border-color: var(--sand); }
+.seg { display: grid; gap: 8px; grid-template-columns: repeat(3, 1fr); }
+.seg button { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; color: var(--foam); cursor: pointer; font-weight: 700; font-size: 14px; min-height: 52px; }
+.seg button.on { background: var(--ocean); border-color: var(--ocean); color: rgb(var(--color-on-primary)); }
+.vis-hint { margin-top: 8px; }
 .groups { display: flex; flex-direction: column; gap: .5rem; margin-top: .75rem; }
-.group-check { align-items: center; display: flex; gap: .5rem; }
-.close-actions { align-items: center; display: flex; flex-direction: column; gap: .5rem; }
-.close-actions p { color: var(--text-muted, #6b8fa8); font-size: .78rem; }
-.save-btn { min-height: 52px; width: 100%; }
-.link-btn { background: none; border: none; color: var(--ocean, #0ea5e9); cursor: pointer; font-weight: 600; padding: .6rem; }
+.group-check { align-items: center; display: flex; gap: .5rem; margin: 0; text-transform: none; letter-spacing: 0; }
+.later { color: var(--text-muted); font-size: 12px; margin: 0; text-align: center; }
+.link-btn { background: none; border: none; color: rgb(var(--color-ocean-text)); cursor: pointer; font-weight: 700; font-size: 15px; min-height: 44px; }
+.fl-bar { align-items: stretch; }
 </style>
