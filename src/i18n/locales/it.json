@@ -572,29 +572,15 @@
 			"pickPlace": "Scegli un luogo a mano",
 			"noPlaceText": "Per vedere vento, onde e pressione vicino a te serve la posizione, oppure un luogo che scegli tu.",
 			"search": "Cerca un luogo",
-			"errorHint": "Il servizio non risponde.",
-			"stripLabel": "Meteo di oggi: apri meteo e mare",
-			"barLabel": "Meteo di oggi"
+			"errorHint": "Il servizio non risponde."
 		},
 		"globe": {
-			"expand": "Espandi",
-			"collapse": "Riduci",
-			"title": "Mappamondo",
-			"here": "La mia posizione",
-			"spots": "nessuna pescata | 1 pescata | {n} pescate",
 			"noPosition": "Posizione non attiva",
-			"activate": "Attiva la posizione",
 			"locating": "Cerco la posizione…",
 			"locDeniedText": "FishLog non può usare la posizione di questo dispositivo. Riattivala così:",
 			"locUnavailableText": "Non riesco a leggere la posizione adesso. Controlla il GPS e che il segnale sia buono, poi riprova.",
 			"locRetry": "Riprova",
-			"pickPlace": "Scegli un luogo a mano",
-			"mapNotLoaded": "Mappa non caricata",
-			"mapNotLoadedText": "Controlla la connessione e riprova.",
-			"zones": "Zone di mare",
-			"expandedAria": "Mappamondo espanso",
-			"handle": "Trascina verso il basso per ridurre",
-			"compactAria": "Mappamondo compatto"
+			"pickPlace": "Scegli un luogo a mano"
 		}
 	},
 	"session": {

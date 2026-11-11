@@ -1,24 +1,6 @@
 <template>
-  <!-- Barra: il meteo ridotto sopra il mappamondo espanso (desktop). -->
-  <section v-if="variant === 'bar'" class="hw-bar" :aria-label="t('home.weather.barLabel')">
-    <p v-if="offline && state === 'ok'" class="hw-banner hw-banner-bar" role="status"><WifiOff :size="16" aria-hidden="true" /> {{ t('home.weather.offlineBanner') }} {{ t('weather.offline.cardShort', { time: savedLabel }) }}</p>
-    <div v-if="state === 'ok'" class="hw-bar-row">
-      <WeatherIcon :code="s.wmo" :is-day="s.isDay" :size="32" class="hw-ico" />
-      <span class="hw-temp-s wx-num">{{ fmt(s.temp) }}°</span>
-      <span class="hw-cond-s">{{ s.condition }}</span>
-      <span class="hw-bar-det">
-        <MapPin :size="14" aria-hidden="true" /> {{ place }} ·
-        <span class="wx-num">{{ fmt(s.wind.speed) }}</span> km/h<template v-if="s.wind.info.from">{{ ' ' + t('weather.wind.from') + ' ' + s.wind.info.abbr }}</template><template v-if="s.wave">{{ ' · ' + t('weather.sea.wave').toLowerCase() + ' ' }}<span class="wx-num">{{ fmt(s.wave.height, 1) }}</span> m</template> ·
-        <span class="wx-num">{{ fmt(s.pressure.value) }}</span> hPa<template v-if="pressWord">{{ ' ' + pressWord.toLowerCase() }}</template>
-      </span>
-      <RouterLink to="/meteo" class="hw-link m-press">{{ t('weather.card.open') }} <ArrowRight :size="16" aria-hidden="true" /></RouterLink>
-    </div>
-    <div v-else-if="state === 'loading'" class="hw-bar-row" aria-busy="true"><span class="wx-sr" role="status">{{ t('weather.loading') }}</span><div class="m-skeleton" style="height:32px;flex:1"></div></div>
-    <div v-else class="hw-bar-row"><span class="hw-cond-s">{{ stateText }}</span><RouterLink to="/meteo" class="hw-link m-press">{{ t('weather.card.open') }} <ArrowRight :size="16" aria-hidden="true" /></RouterLink></div>
-  </section>
-
   <!-- Scheda grande -->
-  <section v-else class="hw-card" :aria-label="t('weather.card.label')" :aria-busy="state === 'loading' ? 'true' : undefined">
+  <section class="hw-card" :aria-label="t('weather.card.label')" :aria-busy="state === 'loading' ? 'true' : undefined">
     <!-- Senza luogo -->
     <div v-if="state === 'noplace'" class="hw-empty">
       <MapPin :size="28" aria-hidden="true" class="hw-ico" />
@@ -133,9 +115,8 @@ import { fmt, MISSING } from '../../utils/weather.js'
 import { useHomeWeather } from '../../composables/useHomeWeather.js'
 import '../../assets/weather.css'
 
-const props = defineProps({ variant: { type: String, default: 'card' } }) // 'card' | 'bar'
 const { t } = useI18n()
-const { activate, activating, denied, state, offline, summary, placeName, savedLabel, retry, refresh, refreshing, refreshFailed, coolingDown } = useHomeWeather({ autoload: props.variant !== 'bar' })
+const { activate, activating, denied, state, offline, summary, placeName, savedLabel, retry, refresh, refreshing, refreshFailed, coolingDown } = useHomeWeather()
 const s = computed(() => summary.value)
 const place = computed(() => placeName.value || t('weather.yourPosition'))
 const pressWord = computed(() => {
@@ -149,7 +130,6 @@ try { open.value = localStorage.getItem(OPEN_KEY) === '1' } catch { /* resta chi
 function toggle() { open.value = !open.value; try { localStorage.setItem(OPEN_KEY, open.value ? '1' : '0') } catch { /* ignora */ } }
 const refreshDisabled = computed(() => offline.value || refreshing.value || coolingDown.value)
 const refreshLabel = computed(() => refreshing.value ? t('weather.refreshing') : offline.value ? t('home.weather.refreshOffline') : coolingDown.value ? t('home.weather.refreshWait') : t('weather.refresh'))
-const stateText = computed(() => state.value === 'noplace' ? t('home.weather.noPlaceTitle') : state.value === 'error' ? t('weather.error.title') : t('weather.offline.title'))
 </script>
 
 <style scoped>
@@ -221,14 +201,6 @@ const stateText = computed(() => state.value === 'noplace' ? t('home.weather.noP
 .hw-error { display: grid; gap: 10px; }
 .hw-cta, .hw-retry { width: 100%; text-decoration: none; }
 .hw-sk { display: grid; gap: 12px; }
-
-/* barra (desktop, mappamondo espanso) */
-.hw-bar { display: grid; gap: 8px; padding: 10px 14px; border-radius: 20px; background: rgb(var(--color-surface)); border: 1px solid rgb(var(--color-border)); }
-.hw-bar-row { display: flex; align-items: center; gap: 12px; min-width: 0; flex-wrap: wrap; }
-.hw-temp-s { font-size: 1.5rem; font-weight: 700; color: rgb(var(--color-foam)); }
-.hw-cond-s { font-weight: 700; color: rgb(var(--color-foam)); }
-.hw-bar-det { flex: 1; min-width: 200px; font-size: .8rem; color: rgb(var(--color-muted)); display: inline-flex; align-items: center; gap: 4px; flex-wrap: wrap; }
-.hw-banner-bar { padding: 6px 12px; font-size: .82rem; }
 
 /* Tema chiaro: il bianco su ocean (3 130 195) dà 4,2:1, sotto AA; qui si usa ocean-dark (≈ 6:1). */
 :root[data-theme='light'] .hw-cta, :root[data-theme='light'] .hw-retry { background: rgb(var(--color-ocean-dark)); }
