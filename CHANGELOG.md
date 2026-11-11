@@ -1,3 +1,16 @@
+# [1.58.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.57.0...client-v1.58.0) (2026-11-11)
+
+
+### Bug Fixes
+
+* mappamondo della Home come prima dell'espansione (compatto, senza «Espandi») ([8568605](https://github.com/ziobob94/fishlog-client/commit/85686059a3de9c11c5d0453077cf064824345c93))
+* **motion:** animazioni più affidabili su iOS (comparsa liste, direzione pagina, swipe di sistema, diagnostica fps) ([0579bfa](https://github.com/ziobob94/fishlog-client/commit/0579bfa05cfbdc5b37ed805af409de1246542347))
+
+
+### Features
+
+* **home:** badge meteo compatto più leggibile ([ec3a7f9](https://github.com/ziobob94/fishlog-client/commit/ec3a7f9efb61642e804f376ec6f3007aeb1c5b5b))
+
 # [1.57.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.56.0...client-v1.57.0) (2026-11-11)
 
 
