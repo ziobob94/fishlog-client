@@ -1209,7 +1209,6 @@
 			"errorTitle": "Non riesco a caricare la bacheca",
 			"errorText": "Controlla la connessione e riprova."
 		},
-		"composePrompt": "Cosa hai pescato oggi?",
 		"detail": {
 			"title": "Post",
 			"notFound": "Post non trovato"
