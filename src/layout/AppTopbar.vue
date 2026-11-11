@@ -1,5 +1,5 @@
 <template>
-  <header class="sticky z-[100] flex items-center gap-0 pl-2 pr-4 sm:pl-3 py-3 border-b border-border"
+  <header class="sticky z-[100] flex items-center gap-0 pl-2 pr-4 sm:pl-3 py-2 sm:py-3 border-b border-border"
     style="top: env(safe-area-inset-top); background: rgb(var(--color-ink) / 0.92); backdrop-filter: blur(12px)">
     <button
       class="flex flex-col justify-center gap-1.5 w-10 h-11 items-center bg-transparent border-none cursor-pointer group"
