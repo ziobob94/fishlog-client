@@ -1,3 +1,10 @@
+## [1.54.3](https://github.com/ziobob94/fishlog-client/compare/client-v1.54.2...client-v1.54.3) (2026-11-11)
+
+
+### Bug Fixes
+
+* **uscite:** top bar fissa durante lo scroll su mobile ([881ca18](https://github.com/ziobob94/fishlog-client/commit/881ca187f22dc67c0ee67ceba480c04053b0fac4))
+
 ## [1.54.2](https://github.com/ziobob94/fishlog-client/compare/client-v1.54.1...client-v1.54.2) (2026-11-11)
 
 
