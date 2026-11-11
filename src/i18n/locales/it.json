@@ -756,7 +756,10 @@
 			"start": "Inizia a pescare",
 			"save": "Salva uscita",
 			"later": "Acqua, meteo e note li aggiungi dopo, quando vuoi.",
-			"detectedHere": "Posizione rilevata"
+			"detectedHere": "Posizione rilevata",
+			"required": "obbligatorio",
+			"whereRequired": "Scrivi dove stai pescando: il luogo è obbligatorio.",
+			"dateRequired": "Indica la data dell'uscita."
 		},
 		"menu": {
 			"filled": "Compilato",
@@ -780,8 +783,8 @@
 		},
 		"requiredToContinue": "Completa i campi obbligatori per continuare",
 		"blocked": {
-			"base": "Prima di chiudere questa sezione, inserisci la data dell'uscita.",
-			"location": "Prima di chiudere questa sezione, scrivi il nome del luogo dove hai pescato."
+			"base": "Inserisci la data dell'uscita.",
+			"location": "Scrivi il nome del luogo dove hai pescato."
 		},
 		"sections": {
 			"base": "Dati uscita",
