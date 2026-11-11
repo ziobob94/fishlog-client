@@ -114,7 +114,7 @@ async function closeSession() {
   closing.value = false
   if (!result) { error.value = store.error; return }
   toast(t('session.ongoing.closed'), { type: 'success' })
-  router.replace(`/session/${route.params.id}`)
+  router.replace('/sessions')
 }
 </script>
 
