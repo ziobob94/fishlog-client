@@ -178,7 +178,7 @@ const quickLinks = [
   { key: 'stats',       to: '/stats',      icon: BarChart3 },
   { key: 'leaderboard', to: '/classifica', icon: Trophy },
   { key: 'friends',     to: '/friends',    icon: UserPlus },
-  { key: 'profile',     to: '/profile',    icon: UserCircle }
+  { key: 'profile',     to: '/board',    icon: UserCircle }
 ]
 
 // Solo i valori disponibili: fuori mare onda e temperatura acqua mancano e

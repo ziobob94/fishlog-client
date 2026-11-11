@@ -75,7 +75,7 @@
       </RouterLink>
 
       <div class="nav-section-label">{{ t('nav.sections.account') }}</div>
-      <RouterLink to="/profile" class="nav-item" @click="$emit('close')">
+      <RouterLink to="/board" class="nav-item" @click="$emit('close')">
         <span class="w-5 text-center flex justify-center"><UserCircle :size="16" /></span> {{ t('nav.profile') }}
       </RouterLink>
       <RouterLink
@@ -103,7 +103,7 @@
     <!-- Footer -->
     <div class="border-t border-border p-4 flex flex-col gap-3">
       <template v-if="auth.isLoggedIn">
-        <RouterLink to="/profile" class="flex items-center gap-2.5" @click="$emit('close')">
+        <RouterLink to="/board" class="flex items-center gap-2.5" @click="$emit('close')">
           <img
             v-if="auth.user?.avatar"
             :src="auth.user.avatar"

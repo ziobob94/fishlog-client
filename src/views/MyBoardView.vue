@@ -1,30 +1,20 @@
 <template>
-  <div>
-    <PageHeader :title="t('nav.board')" back />
+  <div class="board">
+    <PageHeader :title="auth.user?.username || auth.user?.displayName || t('nav.board')" back>
+      <button type="button" class="ph-btn" :aria-label="t('profile.menu.title')" @click="menuOpen = true"><Menu :size="20" /></button>
+    </PageHeader>
 
-    <!-- Profilo: anello con «+» per creare una storia, conteggi in mono -->
-    <section class="board-head">
-      <RouterLink to="/story/new?from=board" class="avatar-ring" :aria-label="t('stories.new')">
-        <span class="avatar"><img v-if="auth.user?.avatar" :src="auth.user.avatar" alt="" /><template v-else>{{ initials }}</template></span>
-        <span class="plus"><Plus :size="16" :stroke-width="2.6" /></span>
-      </RouterLink>
-      <div class="who">
-        <strong class="name">{{ auth.user?.displayName || auth.user?.email }}</strong>
-        <div class="stats">
-          <div><span class="fl-mono num">{{ counts.post }}</span><span class="lbl">{{ t('posts.board.statPosts') }}</span></div>
-          <div><span class="fl-mono num">{{ counts.event }}</span><span class="lbl">{{ t('posts.board.statEvents') }}</span></div>
-          <div><span class="fl-mono num">{{ friendStore.friends.length }}</span><span class="lbl">{{ t('posts.board.statFriends') }}</span></div>
-        </div>
-      </div>
-    </section>
+    <ProfileHeader :user="auth.user" :own="ownStory" :stats="stats" />
 
-    <div class="chips" role="radiogroup" :aria-label="t('posts.board.filter')">
-      <button v-for="f in FILTERS" :key="f.id" type="button" role="radio" :aria-checked="filter === f.id" class="chip" :class="{ on: filter === f.id }" @click="setFilter(f.id)">{{ t(f.label) }}</button>
+    <div class="tabs" role="tablist" :aria-label="t('nav.board')">
+      <button v-for="tb in TABS" :key="tb.id" type="button" role="tab" :aria-selected="tab === tb.id" class="tab" :class="{ on: tab === tb.id }" @click="setTab(tb.id)">
+        <component :is="tb.icon" :size="18" /> {{ t(tb.label) }}
+      </button>
     </div>
 
     <!-- Caricamento: skeleton -->
-    <div v-if="infiniteLoading" class="skeletons" role="status" :aria-label="t('common.loading')">
-      <div v-for="n in 3" :key="n" class="skeleton"></div>
+    <div v-if="infiniteLoading" class="skeleton-grid" role="status" :aria-label="t('common.loading')">
+      <span v-for="n in 9" :key="n" class="skeleton"></span>
     </div>
 
     <!-- Errore -->
@@ -34,114 +24,102 @@
       <button type="button" class="btn btn-secondary btn-sm mt-3" @click="load">{{ t('common.retry') }}</button>
     </div>
 
-    <div v-else-if="!store.feed.length" class="state-center mt-4">
-      <div style="font-size:3rem; display:flex; justify-content:center"><Pin :size="48" /></div>
-      <h3>{{ t('posts.board.empty.title') }}</h3>
-      <p class="text-muted mt-1">{{ t('posts.board.empty.text') }}</p>
+    <!-- Vuota -->
+    <div v-else-if="!items.length" class="state-center mt-4">
+      <div style="font-size:3rem; display:flex; justify-content:center"><component :is="emptyIcon" :size="48" /></div>
+      <h3>{{ t(`profile.board.empty.${tab}.title`) }}</h3>
+      <p class="text-muted mt-1">{{ t(`profile.board.empty.${tab}.text`) }}</p>
+      <RouterLink v-if="tab === 'posts'" to="/post/new?from=board" class="btn btn-primary btn-sm mt-3">{{ t('profile.board.createFirst') }}</RouterLink>
     </div>
 
-    <div v-else class="posts-list mt-4">
-      <PostCard
-        v-for="p in store.feed"
-        :key="p._id"
-        :post="p"
-        @delete="onDelete"
-        @close-event="onCloseEvent"
-        @respond="onRespond"
-        @like="onLike"
-        @comment="onComment"
-        @delete-comment="onDeleteComment"
-        @attend="onAttend"
-      />
+    <template v-else>
+      <PostGrid :items="items" />
       <InfiniteSentinel :active="hasMore" :loading="loadingMore" @trigger="loadMore" />
-    </div>
+    </template>
+
+    <ProfileMenu :open="menuOpen" @close="menuOpen = false" />
   </div>
 </template>
 
 <script setup>
-import PageHeader from '../components/PageHeader.vue'
 import { computed, onMounted, ref } from 'vue'
 import { RouterLink } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { Pin, Plus } from 'lucide-vue-next'
-import { usePostStore } from '../stores/posts.js'
-import { useAuthStore } from '../stores/auth.js'
-import { useFriendStore } from '../stores/friends.js'
-import { toInitials } from '../utils/initials.js'
-import api from '../utils/api.js'
-import { useInfiniteScroll } from '../composables/useInfiniteScroll.js'
-import PostCard from '../components/post/PostCard.vue'
+import { Menu, LayoutGrid, Fish, Bookmark } from 'lucide-vue-next'
+import PageHeader from '../components/PageHeader.vue'
+import ProfileHeader from '../components/profile/ProfileHeader.vue'
+import PostGrid from '../components/profile/PostGrid.vue'
+import ProfileMenu from '../components/profile/ProfileMenu.vue'
 import InfiniteSentinel from '../components/InfiniteSentinel.vue'
+import { usePostStore } from '../stores/posts.js'
+import { useSessionStore } from '../stores/sessions.js'
+import { useAuthStore } from '../stores/auth.js'
+import { useStoryStore } from '../stores/stories.js'
+import { useInfiniteScroll } from '../composables/useInfiniteScroll.js'
+import api from '../utils/api.js'
 
 const { t } = useI18n()
-const store = usePostStore()
-const auth  = useAuthStore()
-const friendStore = useFriendStore()
+const posts = usePostStore()
+const sessions = useSessionStore()
+const auth = useAuthStore()
+const stories = useStoryStore()
 
-const FILTERS = [
-  { id: '', label: 'posts.board.filterAll' },
-  { id: 'post', label: 'posts.board.filterPosts' },
-  { id: 'event', label: 'posts.board.filterEvents' }
+const TABS = [
+  { id: 'posts', label: 'profile.board.tabPosts', icon: LayoutGrid },
+  { id: 'sessions', label: 'profile.board.tabSessions', icon: Fish },
+  { id: 'saved', label: 'profile.board.tabSaved', icon: Bookmark }
 ]
-const filter = ref('')
+const tab = ref('posts')
+const menuOpen = ref(false)
 const loadError = ref(false)
-const counts = ref({ post: 0, event: 0 })
-const initials = computed(() => toInitials(auth.user?.displayName || auth.user?.email || '?'))
+const stats = ref({ sessionsCount: 0, catchesCount: 0, friendsCount: 0 })
+const ownStory = computed(() => stories.groups.find(g => g.own) || null)
+const emptyIcon = computed(() => TABS.find(x => x.id === tab.value).icon)
 
-const pagesRef = computed(() => store.pagination.pages)
-const { loading: infiniteLoading, loadingMore, hasMore, reset, loadMore } = useInfiniteScroll(
-  (page, { append }) => store.fetchPosts({ author: auth.user?._id, page, ...(filter.value ? { type: filter.value } : {}) }, { append }),
-  pagesRef
-)
+const pagesRef = computed(() => (tab.value === 'sessions' ? sessions.pagination?.pages : posts.pagination?.pages))
+const { loading: infiniteLoading, loadingMore, hasMore, reset, loadMore } = useInfiniteScroll((page, { append }) => {
+  if (tab.value === 'sessions') return sessions.fetchSessions({ page }, { append })
+  if (tab.value === 'saved') return posts.fetchPosts({ scope: 'saved', page }, { append })
+  return posts.fetchPosts({ author: auth.user?._id, page }, { append })
+}, pagesRef)
 
-async function loadCounts() {
-  try {
-    const [p, e] = await Promise.all(['post', 'event'].map(type => api.get('/posts', { params: { author: auth.user?._id, type, limit: 1 } })))
-    counts.value = { post: p.data.pagination?.total ?? 0, event: e.data.pagination?.total ?? 0 }
-  } catch { /* i conteggi sono accessori */ }
-}
+const isVideo = m => (m?.mimetype || '').startsWith('video/')
+const items = computed(() => {
+  if (tab.value === 'sessions') {
+    return sessions.sessions.map(s => ({
+      id: s._id, to: `/session/${s._id}`, url: s.media?.[0]?.url, isVideo: isVideo(s.media?.[0]), multi: (s.media?.length || 0) > 1,
+      text: s.title || s.location?.name || t('session.untitled'), label: s.title || s.location?.name || t('session.untitled')
+    }))
+  }
+  return posts.feed.map(p => ({
+    id: p._id, to: `/post/${p._id}`, url: p.media?.[0]?.url, isVideo: isVideo(p.media?.[0]), multi: (p.media?.length || 0) > 1,
+    text: p.title || p.body, label: p.title || p.body
+  }))
+})
 
 async function load() {
   loadError.value = false
-  store.error = null
+  posts.error = null; sessions.error = null
   try { await reset() } catch { loadError.value = true }
-  if (store.error && !store.feed.length) loadError.value = true
+  if ((tab.value === 'sessions' ? sessions.error : posts.error) && !items.value.length) loadError.value = true
 }
-function setFilter(id) { filter.value = id; load() }
+function setTab(id) { tab.value = id; load() }
 
-onMounted(() => {
+onMounted(async () => {
   load()
-  loadCounts()
-  friendStore.fetchFriends()
-  store.markSeen('board')
+  stories.fetchRail()
+  posts.markSeen('board')
+  try { stats.value = (await api.get('/users/me/stats')).data } catch { /* conteggi accessori */ }
 })
-
-async function onDelete(post) { await store.deletePost(post._id); loadCounts() }
-async function onCloseEvent(post) { await store.setEventStatus(post._id, 'closed') }
-async function onRespond(post, message) { await store.respond(post._id, message) }
-async function onLike(post) { await store.toggleLike(post._id, auth.user?._id) }
-async function onComment(post, message) { await store.addComment(post._id, message) }
-async function onDeleteComment(post, comment) { await store.deleteComment(post._id, comment._id) }
-async function onAttend(post, status, guests) { await store.setAttendance(post._id, status, guests) }
 </script>
 
 <style scoped>
-.board-head { display: flex; align-items: center; gap: 16px; margin: 4px 0 16px; }
-.avatar-ring { position: relative; flex: none; width: 76px; height: 76px; border-radius: 50%; border: 2px dashed var(--border-light); padding: 4px; display: flex; text-decoration: none; box-sizing: border-box; }
-.avatar { width: 100%; height: 100%; border-radius: 50%; background: var(--ocean-glow); border: 1px solid var(--ocean); color: rgb(var(--color-ocean-text)); font-weight: 800; display: flex; align-items: center; justify-content: center; overflow: hidden; }
-.avatar img { width: 100%; height: 100%; object-fit: cover; }
-.plus { position: absolute; right: -2px; bottom: -2px; width: 26px; height: 26px; border-radius: 50%; background: var(--ocean); color: rgb(var(--color-on-primary)); border: 2px solid rgb(var(--color-ink)); display: flex; align-items: center; justify-content: center; }
-.who { min-width: 0; flex: 1; }
-.name { display: block; font-size: 17px; font-weight: 800; color: var(--foam); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.stats { display: flex; gap: 22px; margin-top: 6px; }
-.stats > div { display: flex; flex-direction: column; }
-.num { font-size: 22px; color: var(--foam); line-height: 1.1; }
-.lbl { font-size: 12px; color: var(--text-muted); font-weight: 600; }
-.chips { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
-.chip { min-height: 44px; border-radius: 999px; border: 1px solid var(--border); background: var(--surface); color: var(--foam); font-weight: 700; font-size: 14px; cursor: pointer; }
-.chip.on { background: var(--ocean); border-color: var(--ocean); color: rgb(var(--color-on-primary)); }
-.skeletons { display: flex; flex-direction: column; gap: 12px; margin-top: 16px; }
-.skeleton { height: 220px; border-radius: 24px; background: linear-gradient(90deg, var(--surface) 0%, var(--surface-2) 50%, var(--surface) 100%); background-size: 200% 100%; animation: sk 1.4s linear infinite; }
+.tabs { display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); margin: 0 -1rem 2px; }
+.tab { display: flex; align-items: center; justify-content: center; gap: 6px; min-height: 48px; background: none; border: 0; border-bottom: 2px solid transparent; color: var(--text-muted); font-weight: 700; font-size: 14px; cursor: pointer; }
+.tab.on { color: var(--foam); border-bottom-color: var(--ocean); }
+.board :deep(.grid), .skeleton-grid { margin: 0 -1rem; }
+.skeleton-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; }
+.skeleton { aspect-ratio: 1; background: linear-gradient(90deg, var(--surface) 0%, var(--surface-2) 50%, var(--surface) 100%); background-size: 200% 100%; animation: sk 1.4s linear infinite; }
 @keyframes sk { to { background-position: -200% 0; } }
-.posts-list  { @apply flex flex-col gap-3 sm:gap-4; }
+@media (min-width: 640px) { .tabs, .board :deep(.grid), .skeleton-grid { margin-left: -1.5rem; margin-right: -1.5rem; } }
 </style>

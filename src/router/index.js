@@ -45,6 +45,8 @@ export default createRouter({
     { path: '/chat/group/:conversationId', name: 'chat-group', component: () => import('../views/GroupChatView.vue'), meta: { ownHeader: true, fullHeight: true, hideBottomNav: true } },
     { path: '/chat/:userId', name: 'chat-thread', component: () => import('../views/ChatView.vue'), meta: { ownHeader: true, fullHeight: true, hideBottomNav: true } },
     { path: '/notifications', name: 'notifications', component: () => import('../views/NotificationsView.vue'), meta: { ownHeader: true } },
+    { path: '/profile/edit', name: 'profile-edit', component: () => import('../views/ProfileSettingsView.vue'), meta: { ownHeader: true, hideBottomNav: true } },
+    { path: '/post/:id', name: 'post-detail', component: () => import('../views/PostDetailView.vue'), meta: { ownHeader: true } },
     { path: '/profile', name: 'profile', component: () => import('../views/ProfileView.vue'), meta: { ownHeader: true } },
     { path: '/stats',   name: 'stats',   component: () => import('../views/StatsView.vue'), meta: { ownHeader: true } },
     { path: '/species', name: 'species-search', component: () => import('../views/SpeciesSearchView.vue'), meta: { ownHeader: true } },

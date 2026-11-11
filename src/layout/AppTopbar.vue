@@ -33,7 +33,7 @@
         <span v-if="notifications.unreadCount" class="notif-dot">{{ notifications.unreadCount }}</span>
       </RouterLink>
 
-      <RouterLink to="/profile" class="md:hidden topbar-avatar" :aria-label="t('nav.profile')">
+      <RouterLink to="/board" class="md:hidden topbar-avatar" :aria-label="t('nav.profile')">
         <img v-if="auth.user?.avatar" :src="auth.user.avatar" alt="" />
         <span v-else>{{ userInitials }}</span>
       </RouterLink>

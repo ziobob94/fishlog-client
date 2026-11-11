@@ -1,12 +1,12 @@
 <template>
   <article class="post-card">
     <div class="post-header">
-      <component :is="post.author?._id ? RouterLink : 'span'" :to="post.author?._id ? `/users/${post.author._id}` : undefined" class="post-author-link" :aria-label="post.author?.displayName">
+      <component :is="post.author?._id ? RouterLink : 'span'" :to="post.author?._id ? authorTo : undefined" class="post-author-link" :aria-label="post.author?.displayName">
         <span v-if="!post.author?.avatar" class="mini-placeholder">{{ initials(post.author) }}</span>
         <img v-else :src="post.author.avatar" class="mini-avatar" alt="" />
       </component>
       <div class="post-author">
-        <component :is="post.author?._id ? RouterLink : 'span'" :to="post.author?._id ? `/users/${post.author._id}` : undefined" class="post-author-name">{{ post.author?.displayName || post.author?.email }}</component>
+        <component :is="post.author?._id ? RouterLink : 'span'" :to="post.author?._id ? authorTo : undefined" class="post-author-name">{{ post.author?.displayName || post.author?.email }}</component>
         <span class="post-sub">{{ subtitle }}</span>
       </div>
       <span v-if="post.type === 'event'" class="badge badge-ocean">{{ t('posts.eventBadge') }}</span>
@@ -284,6 +284,8 @@ import AppIcon from '../AppIcon.vue'
   const mediaEl = ref(null)
   const mediaIndex = ref(0)
 
+  const authorTo = computed(() => post_authorIsMe() ? '/board' : `/users/${props.post.author._id}`)
+  function post_authorIsMe() { return String(props.post.author?._id) === String(auth.user?._id || auth.user?.id) }
   function isVideo(m) { return (m.mimetype || '').startsWith('video/') }
   function onMediaScroll() {
     const el = mediaEl.value
