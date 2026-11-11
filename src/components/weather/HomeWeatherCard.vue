@@ -1,20 +1,32 @@
 <template>
-  <!-- Barra: il meteo ridotto sopra il mappamondo espanso (desktop). -->
-  <section v-if="variant === 'bar'" class="hw-bar" :aria-label="t('home.weather.barLabel')">
+  <!-- Compatta (mappamondo chiuso): solo icona, temperatura e vento + tasto aggiorna. -->
+  <section v-if="variant === 'bar'" class="hw-bar" :aria-label="t('home.weather.barLabel')" :aria-busy="state === 'loading' ? 'true' : undefined">
     <p v-if="offline && state === 'ok'" class="hw-banner hw-banner-bar" role="status"><WifiOff :size="16" aria-hidden="true" /> {{ t('home.weather.offlineBanner') }} {{ t('weather.offline.cardShort', { time: savedLabel }) }}</p>
     <div v-if="state === 'ok'" class="hw-bar-row">
-      <WeatherIcon :code="s.wmo" :is-day="s.isDay" :size="32" class="hw-ico" />
-      <span class="hw-temp-s wx-num">{{ fmt(s.temp) }}°</span>
-      <span class="hw-cond-s">{{ s.condition }}</span>
-      <span class="hw-bar-det">
-        <MapPin :size="14" aria-hidden="true" /> {{ place }} ·
-        <span class="wx-num">{{ fmt(s.wind.speed) }}</span> km/h<template v-if="s.wind.info.from">{{ ' ' + t('weather.wind.from') + ' ' + s.wind.info.abbr }}</template><template v-if="s.wave">{{ ' · ' + t('weather.sea.wave').toLowerCase() + ' ' }}<span class="wx-num">{{ fmt(s.wave.height, 1) }}</span> m</template> ·
-        <span class="wx-num">{{ fmt(s.pressure.value) }}</span> hPa<template v-if="pressWord">{{ ' ' + pressWord.toLowerCase() }}</template>
-      </span>
-      <RouterLink to="/meteo" class="hw-link m-press">{{ t('weather.card.open') }} <ArrowRight :size="16" aria-hidden="true" /></RouterLink>
+      <RouterLink to="/meteo" class="hw-bar-main m-press" :aria-label="t('weather.card.open') + ': ' + place">
+        <WeatherIcon :code="s.wmo" :is-day="s.isDay" :size="32" class="hw-ico" />
+        <span class="hw-temp-s wx-num">{{ fmt(s.temp) }}°</span>
+        <span class="hw-bar-det"><WeatherIcon name="vento" :size="16" plain /> <span class="wx-num">{{ fmt(s.wind.speed) }}</span> km/h<template v-if="s.wind.info.from">{{ ' ' + s.wind.info.abbr }}</template></span>
+      </RouterLink>
+      <button type="button" class="hw-refresh m-press" :aria-disabled="refreshDisabled || undefined" :aria-label="refreshLabel" :title="refreshLabel" @click="refresh">
+        <span v-if="refreshing" class="m-spinner" style="width:14px;height:14px" aria-hidden="true"></span><RefreshCw v-else :size="16" aria-hidden="true" />
+      </button>
+      <p v-if="refreshing" class="wx-sr" role="status">{{ t('weather.refreshing') }}</p>
+      <p v-else-if="refreshFailed && !offline" class="hw-banner hw-banner-bar hw-banner-err" role="alert"><TriangleAlert :size="16" aria-hidden="true" /> {{ t('home.weather.refreshFailed') }}</p>
     </div>
     <div v-else-if="state === 'loading'" class="hw-bar-row" aria-busy="true"><span class="wx-sr" role="status">{{ t('weather.loading') }}</span><div class="m-skeleton" style="height:32px;flex:1"></div></div>
-    <div v-else class="hw-bar-row"><span class="hw-cond-s">{{ stateText }}</span><RouterLink to="/meteo" class="hw-link m-press">{{ t('weather.card.open') }} <ArrowRight :size="16" aria-hidden="true" /></RouterLink></div>
+    <div v-else-if="state === 'noplace'" class="hw-bar-row">
+      <MapPin :size="20" aria-hidden="true" class="hw-ico" />
+      <span class="hw-cond-s">{{ t('home.weather.noPlaceTitle') }}</span>
+      <button v-if="!denied" type="button" class="hw-link m-press" :disabled="activating" @click="activate">{{ activating ? t('home.globe.locating') : t('home.weather.activatePosition') }}</button>
+      <RouterLink v-else :to="{ path: '/meteo', query: { modo: 'cerca' } }" class="hw-link m-press">{{ t('home.weather.pickPlace') }} <ArrowRight :size="16" aria-hidden="true" /></RouterLink>
+    </div>
+    <div v-else-if="state === 'error'" class="hw-bar-row" role="alert">
+      <TriangleAlert :size="20" aria-hidden="true" class="hw-ico" />
+      <span class="hw-cond-s">{{ t('weather.error.title') }}</span>
+      <button type="button" class="hw-link m-press" @click="retry"><RefreshCw :size="16" aria-hidden="true" /> {{ t('weather.retry') }}</button>
+    </div>
+    <div v-else class="hw-bar-row" role="status"><WifiOff :size="20" aria-hidden="true" class="hw-ico" /><span class="hw-cond-s">{{ stateText }}</span></div>
   </section>
 
   <!-- Scheda grande -->
@@ -121,9 +133,9 @@ import { fmt, MISSING } from '../../utils/weather.js'
 import { useHomeWeather } from '../../composables/useHomeWeather.js'
 import '../../assets/weather.css'
 
-const props = defineProps({ variant: { type: String, default: 'card' } }) // 'card' | 'bar'
+defineProps({ variant: { type: String, default: 'card' } }) // 'card' (completa, mappamondo espanso) | 'bar' (compatta)
 const { t } = useI18n()
-const { activate, activating, denied, state, offline, summary, placeName, savedLabel, retry, refresh, refreshing, refreshFailed, coolingDown } = useHomeWeather({ autoload: props.variant !== 'bar' })
+const { activate, activating, denied, state, offline, summary, placeName, savedLabel, retry, refresh, refreshing, refreshFailed, coolingDown } = useHomeWeather()
 const s = computed(() => summary.value)
 const place = computed(() => placeName.value || t('weather.yourPosition'))
 const pressWord = computed(() => {
@@ -199,9 +211,12 @@ const stateText = computed(() => state.value === 'noplace' ? t('home.weather.noP
 /* barra (desktop, mappamondo espanso) */
 .hw-bar { display: grid; gap: 8px; padding: 10px 14px; border-radius: 20px; background: rgb(var(--color-surface)); border: 1px solid rgb(var(--color-border)); }
 .hw-bar-row { display: flex; align-items: center; gap: 12px; min-width: 0; flex-wrap: wrap; }
+.hw-bar-main { flex: 1; display: flex; align-items: center; gap: 12px; min-width: 0; min-height: 44px; text-decoration: none; color: inherit; border-radius: 12px; }
+.hw-bar-main:focus-visible { outline: 2px solid rgb(var(--color-ocean-text)); outline-offset: 2px; }
+.hw-bar .hw-refresh { margin: 0; }
 .hw-temp-s { font-size: 1.5rem; font-weight: 700; color: rgb(var(--color-foam)); }
 .hw-cond-s { font-weight: 700; color: rgb(var(--color-foam)); }
-.hw-bar-det { flex: 1; min-width: 200px; font-size: .8rem; color: rgb(var(--color-muted)); display: inline-flex; align-items: center; gap: 4px; flex-wrap: wrap; }
+.hw-bar-det { flex: 1; min-width: 0; font-size: .8rem; color: rgb(var(--color-muted)); display: inline-flex; align-items: center; gap: 4px; flex-wrap: wrap; }
 .hw-banner-bar { padding: 6px 12px; font-size: .82rem; }
 
 /* Tema chiaro: il bianco su ocean (3 130 195) dà 4,2:1, sotto AA; qui si usa ocean-dark (≈ 6:1). */

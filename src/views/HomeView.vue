@@ -1,7 +1,7 @@
 <template>
   <div class="home">
     <!-- Meteo in evidenza: scheda grande (barra sopra il mappamondo quando, da desktop, lo si espande). -->
-    <HomeWeatherCard :variant="globeOpen && isDesktop ? 'bar' : 'card'" class="mb-4" />
+    <HomeWeatherCard :variant="globeOpen ? 'card' : 'bar'" class="mb-4" />
 
     <!-- Uscita in corso (mobile): riprendi con un tocco. -->
     <RouterLink v-if="sessions.ongoing" :to="{ path: `/session/${sessions.ongoing._id}/edit`, hash: '#section-catches' }" class="ongoing-panel md:hidden">
