@@ -82,13 +82,13 @@ export async function loadMapLibre() {
 // Uso leggero: la ricerca parte solo dopo una pausa di digitazione.
 const NOMINATIM = 'https://nominatim.openstreetmap.org'
 export async function searchPlaces(query) {
-  const r = await fetch(`${NOMINATIM}/search?format=jsonv2&limit=5&accept-language=it&q=${encodeURIComponent(query)}`)
+  const r = await fetch(`${NOMINATIM}/search?format=jsonv2&limit=5&accept-language=it,en&q=${encodeURIComponent(query)}`)
   if (!r.ok) throw new Error('search failed')
   const rows = await r.json()
   return rows.map(p => ({ name: p.display_name, lat: parseFloat(p.lat), lng: parseFloat(p.lon) }))
 }
 export async function reversePlace(lat, lng) {
-  const r = await fetch(`${NOMINATIM}/reverse?format=jsonv2&accept-language=it&lat=${lat}&lon=${lng}`)
+  const r = await fetch(`${NOMINATIM}/reverse?format=jsonv2&accept-language=it,en&lat=${lat}&lon=${lng}`)
   if (!r.ok) return ''
   const j = await r.json()
   return j.display_name || ''

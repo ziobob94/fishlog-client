@@ -45,7 +45,7 @@
       </div>
       <div>
         <label for="lf-zone" class="field-label">{{ t('market.form.location') }}</label>
-        <input id="lf-zone" v-model="form.location.name" type="text" class="field" :placeholder="t('market.form.locationPlaceholder')" />
+        <PlaceInput id="lf-zone" v-model="form.location.name" v-model:lat="form.location.coords.lat" v-model:lng="form.location.coords.lng" :placeholder="t('market.form.locationPlaceholder')" />
       </div>
     </div>
 
@@ -83,6 +83,7 @@
 <script setup>
 import { ref, reactive, computed, onMounted, onBeforeUnmount } from 'vue'
 import { storeToRefs } from 'pinia'
+import PlaceInput from '../form/PlaceInput.vue'
 import { useGroupStore } from '../../stores/groups.js'
 import { useI18n } from 'vue-i18n'
 import { X, Plus } from 'lucide-vue-next'
@@ -103,7 +104,7 @@ const form = reactive({
   category: props.initial.category || props.categories[0] || 'altro',
   condition: props.initial.condition || 'usato',
   price: props.initial.price ?? null,
-  location: { name: props.initial.location?.name || '' },
+  location: { name: props.initial.location?.name || '', coords: { lat: props.initial.location?.coords?.lat ?? null, lng: props.initial.location?.coords?.lng ?? null } },
   visibility: props.initial.visibility || 'all',
   allowedGroups: (props.initial.allowedGroups || []).map(g => g._id || g)
 })
@@ -179,7 +180,7 @@ textarea.field { @apply py-3; }
 .seg-opt { @apply flex-1 min-h-[44px] rounded-full bg-transparent border-none text-sm font-semibold text-foam cursor-pointer; }
 .seg-opt.active { @apply bg-ocean text-on-primary; }
 
-.form-row { @apply grid gap-3; grid-template-columns: 1fr 1fr; }
+.form-row { @apply grid gap-3; grid-template-columns: 1fr; }
 .error-msg { @apply bg-danger/10 border border-danger rounded-sm text-danger text-xs px-2.5 py-1.5; }
 
 .cta-bar { @apply fixed left-0 right-0 bottom-0 z-20 px-4 py-3 bg-surface border-t border-border; }

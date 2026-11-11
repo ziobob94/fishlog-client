@@ -15,6 +15,7 @@
 
       <section>
         <label class="fl-lab" for="ess-where">{{ t('sessionForm.essential.where') }} <span class="req" :title="t('sessionForm.essential.required')">*</span></label>
+        <div class="where-row">
         <div class="where-wrap">
           <input id="ess-where" v-model="f.location.name" type="text" class="fl-inp" :class="{ 'fl-err': essErr.where }" :aria-invalid="essErr.where" aria-describedby="ess-where-err" aria-required="true" autocomplete="off" @input="onWhereInput" @focus="whereOpen = true" @blur="closeWhereSoon" :placeholder="t('sessionForm.fields.locationNamePlaceholder')" />
           <ul v-if="whereOpen && whereOptions.length" class="where-list" role="listbox">
@@ -26,6 +27,15 @@
             </li>
           </ul>
         </div>
+        <button type="button" class="where-map" :aria-label="t('placeInput.pickOnMap')" :title="t('placeInput.pickOnMap')" @click="openWhereMap"><MapIcon :size="20" /></button>
+        </div>
+        <BottomSheet v-model="whereMapOpen" :label="t('placeInput.pickOnMap')">
+          <div class="where-sheet">
+            <h2 class="where-sheet-title">{{ t('placeInput.pickOnMap') }}</h2>
+            <LocationPicker v-if="whereMapOpen" :lat="mapDraft.lat" :lng="mapDraft.lng" :name="mapDraft.name" @update:name="v => mapDraft.name = v" @update:lat="v => mapDraft.lat = v" @update:lng="v => mapDraft.lng = v" />
+            <button type="button" class="fl-btn1 m-press" :disabled="!mapDraft.lat || !mapDraft.lng" @click="confirmWhereMap">{{ t('placeInput.useThisPoint') }}</button>
+          </div>
+        </BottomSheet>
         <p v-if="essErr.where" id="ess-where-err" class="fl-error" role="alert">{{ t('sessionForm.essential.whereRequired') }}</p>
         <p v-if="f.location.coords.lat && f.location.coords.lng" class="fl-hint fl-mono">{{ f.location.coords.lat }}°N · {{ f.location.coords.lng }}°E · {{ t('sessionForm.essential.detected') }}</p>
       </section>
@@ -408,8 +418,8 @@
 </template>
 
 <script setup>
-  import { ref, computed, watch, onMounted, nextTick } from 'vue'
-  import { ChevronRight, ArrowLeft, MapPin, RefreshCw, Trash2, FileText, Waves, CloudSun, Fish, StickyNote } from 'lucide-vue-next'
+  import { ref, reactive, computed, watch, onMounted, nextTick } from 'vue'
+  import { ChevronRight, ArrowLeft, MapPin, Map as MapIcon, RefreshCw, Trash2, FileText, Waves, CloudSun, Fish, StickyNote } from 'lucide-vue-next'
   const MENU_ICONS = { base: FileText, location: MapPin, water: Waves, weather: CloudSun, catches: Fish, notes: StickyNote }
   import { useI18n } from 'vue-i18n'
   import { useGroupStore } from '../../stores/groups.js'
@@ -417,6 +427,7 @@
   import { RouterLink } from 'vue-router'
   import { storeToRefs } from 'pinia'
   import LocationPicker from './LocationPicker.vue'
+  import BottomSheet from '../motion/BottomSheet.vue'
   import CatchesSection from './CatchesSection.vue'
   import FieldInfo from '../FieldInfo.vue'
   import { useToast } from '../../composables/useToast.js'
@@ -680,8 +691,8 @@
   async function reverseGeocode(lat, lng) {
     try {
       const res = await fetch(
-        `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json&accept-language=it`,
-        { headers: { 'Accept-Language': 'it' } }
+        `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json&accept-language=it,en`,
+        { headers: { 'Accept-Language': 'it,en' } }
       )
       const data = await res.json()
       const a = data.address || {}
@@ -714,8 +725,8 @@
   async function forwardGeocode(query) {
     try {
       const res = await fetch(
-        `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=1&accept-language=it`,
-        { headers: { 'Accept-Language': 'it' } }
+        `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=1&accept-language=it,en`,
+        { headers: { 'Accept-Language': 'it,en' } }
       )
       const data = await res.json()
       if (!data.length) return null
@@ -747,7 +758,7 @@
     if (q.length < 3) { placeResults.value = []; return }
     suggestTimer = setTimeout(async () => {
       try {
-        const res = await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(q)}&format=json&limit=5&accept-language=it&addressdetails=0`)
+        const res = await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(q)}&format=json&limit=5&accept-language=it,en&addressdetails=0`)
         const data = await res.json()
         if ((f.value.location.name || '').trim() !== q) return
         placeResults.value = data.map(d => {
@@ -766,6 +777,17 @@
     f.value.location.coords.lng = parseFloat(Number(o.lng).toFixed(6))
     placeResults.value = []
     whereOpen.value = false
+  }
+  const whereMapOpen = ref(false)
+  const mapDraft = reactive({ name: '', lat: null, lng: null })
+  function openWhereMap() {
+    const c = f.value.location.coords
+    mapDraft.name = f.value.location.name || ''; mapDraft.lat = c.lat || null; mapDraft.lng = c.lng || null
+    whereMapOpen.value = true
+  }
+  function confirmWhereMap() {
+    pickPlace({ name: mapDraft.name || f.value.location.name, lat: mapDraft.lat, lng: mapDraft.lng })
+    whereMapOpen.value = false
   }
   function closeWhereSoon() { setTimeout(() => { whereOpen.value = false }, 150) }
 
@@ -1233,6 +1255,11 @@
   .ess-end { margin-top: 10px; }
   .ess-chips { display: flex; flex-wrap: wrap; gap: 8px; }
   .form-actions-inner.ess-actions { flex-direction: column; align-items: stretch; gap: 6px; padding: 10px 16px; }
+  .where-row { display: flex; align-items: center; gap: 8px; min-width: 0; }
+  .where-row .where-wrap { flex: 1; min-width: 0; }
+  .where-map { flex: none; width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; border-radius: 14px; border: 1px solid var(--border-light); background: var(--surface-2); color: rgb(var(--color-ocean-text)); cursor: pointer; }
+  .where-sheet { display: flex; flex-direction: column; gap: 12px; padding-bottom: 8px; }
+  .where-sheet-title { font-size: 20px; font-weight: 800; margin: 4px 0 0; color: var(--foam); }
   .where-wrap { position: relative; }
   .where-list { position: absolute; left: 0; right: 0; top: calc(100% + 6px); z-index: 50; margin: 0; padding: 6px; list-style: none; background: var(--surface); border: 1px solid var(--border-light); border-radius: 16px; box-shadow: 0 12px 30px rgba(0,0,0,.25); }
   .where-opt { display: flex; align-items: center; gap: 12px; width: 100%; min-height: 52px; padding: 6px 8px; background: none; border: 0; border-radius: 12px; color: var(--foam); text-align: left; cursor: pointer; }
