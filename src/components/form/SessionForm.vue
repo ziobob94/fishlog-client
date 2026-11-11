@@ -4,9 +4,9 @@
     <!-- ═══ NUOVA USCITA: solo l'essenziale (luogo, quando, ambiente, tecnica) ═══ -->
     <div v-if="mode === 'essential'" class="essential">
       <button type="button" class="detect-card" :disabled="!canAutoFill || autoFilling || gpsLoading" @click="autoFillWeatherAndSea">
-        <span class="detect-icon"><MapPin :size="22" /></span>
+        <span class="detect-icon"><span v-if="autoFilling || gpsLoading" class="spinner" style="width:18px;height:18px"></span><RefreshCw v-else-if="hasAutoData" :size="22" /><MapPin v-else :size="22" /></span>
         <span class="detect-text">
-          <strong>{{ gpsLoading ? t('sessionForm.fields.gpsDetecting') : (autoFilling ? t('sessionForm.autoFill.loading') : t('sessionForm.essential.detect')) }}</strong>
+          <strong>{{ gpsLoading ? t('sessionForm.fields.gpsDetecting') : (autoFilling ? t('sessionForm.autoFill.loading') : (hasAutoData ? t('sessionForm.autoFill.recalc') : t('sessionForm.essential.detect'))) }}</strong>
           <small>{{ t('sessionForm.essential.detectSub') }}</small>
         </span>
       </button>
@@ -66,9 +66,9 @@
     <!-- ═══ DATI USCITA: elenco di righe → una schermata per sezione ═══ -->
     <div v-else-if="menuMode && !activeSection" class="data-menu">
       <button type="button" class="detect-card" :disabled="!canAutoFill || autoFilling || gpsLoading" @click="autoFillWeatherAndSea">
-        <span class="detect-icon"><MapPin :size="22" /></span>
+        <span class="detect-icon"><span v-if="autoFilling || gpsLoading" class="spinner" style="width:18px;height:18px"></span><RefreshCw v-else-if="hasAutoData" :size="22" /><MapPin v-else :size="22" /></span>
         <span class="detect-text">
-          <strong>{{ gpsLoading ? t('sessionForm.fields.gpsDetecting') : (autoFilling ? t('sessionForm.autoFill.loading') : t('sessionForm.menu.autofill')) }}</strong>
+          <strong>{{ gpsLoading ? t('sessionForm.fields.gpsDetecting') : (autoFilling ? t('sessionForm.autoFill.loading') : (hasAutoData ? t('sessionForm.autoFill.recalc') : t('sessionForm.menu.autofill'))) }}</strong>
           <small>{{ t('sessionForm.menu.autofillSub') }}</small>
         </span>
         <ChevronRight :size="20" class="menu-go" />
@@ -90,7 +90,7 @@
 
     <div v-show="mode !== 'essential' && (!menuMode || activeSection)" :class="{ 'single-section': menuMode }">
     <!-- BOTTONE AUTO-FILL (sempre visibile, sopra a tutte le sezioni) -->
-    <div class="autofill-bar" v-if="!autofillCollapsed && showAutofill">
+    <div class="autofill-bar" v-if="showAutofill">
       <div>
         <p class="autofill-title">{{ t('sessionForm.autoFill.title') }}</p>
         <p class="autofill-sub">{{ t('sessionForm.autoFill.subtitle') }}</p>
@@ -99,18 +99,12 @@
       <button type="button" class="btn btn-secondary btn-sm"
         :disabled="!canAutoFill || autoFilling || gpsLoading" @click="autoFillWeatherAndSea">
         <span v-if="autoFilling || gpsLoading" class="spinner" style="width:13px;height:13px"></span>
-        {{ gpsLoading ? t('sessionForm.fields.gpsDetecting') : (autoFilling ? t('sessionForm.autoFill.loading') : t('sessionForm.autoFill.button')) }}
+        <RefreshCw v-else-if="hasAutoData" :size="14" />
+        {{ gpsLoading ? t('sessionForm.fields.gpsDetecting') : (autoFilling ? t('sessionForm.autoFill.loading') : (hasAutoData ? t('sessionForm.autoFill.recalc') : t('sessionForm.autoFill.button'))) }}
       </button>
     </div>
-    <div v-else-if="showAutofill" class="autofill-bar autofill-bar-collapsed">
-      <span class="autofill-collapsed-btn" role="button" tabindex="0"
-        @click="autofillCollapsed = false" @keydown.enter="autofillCollapsed = false">
-        {{ t('sessionForm.autoFill.button') }}
-        <FieldInfo :text="t('sessionForm.autoFill.collapsedHint')" />
-      </span>
-    </div>
-    <p v-if="!autofillCollapsed && !canAutoFill" class="autofill-warning">{{ t('sessionForm.autoFill.warning') }}</p>
-    <div v-if="!autofillCollapsed && autoFillMsg" class="autofill-result" :class="autoFillMsg.type">{{ autoFillMsg.text }}</div>
+    <p v-if="!canAutoFill" class="autofill-warning">{{ t('sessionForm.autoFill.warning') }}</p>
+    <div v-if="autoFillMsg" class="autofill-result" :class="autoFillMsg.type" role="status">{{ autoFillMsg.text }}</div>
 
     <div class="expand-all-row">
       <button type="button" class="btn btn-ghost btn-sm" @click="toggleAll">
@@ -415,7 +409,7 @@
 
 <script setup>
   import { ref, computed, watch, onMounted, nextTick } from 'vue'
-  import { ChevronRight, ArrowLeft, MapPin, Trash2, FileText, Waves, CloudSun, Fish, StickyNote } from 'lucide-vue-next'
+  import { ChevronRight, ArrowLeft, MapPin, RefreshCw, Trash2, FileText, Waves, CloudSun, Fish, StickyNote } from 'lucide-vue-next'
   const MENU_ICONS = { base: FileText, location: MapPin, water: Waves, weather: CloudSun, catches: Fish, notes: StickyNote }
   import { useI18n } from 'vue-i18n'
   import { useGroupStore } from '../../stores/groups.js'
@@ -610,7 +604,9 @@
   const autoFilling = ref(false)
   const geocodeMsg = ref('')
   const autoFillMsg = ref(null)
-  const autofillCollapsed = ref(false)
+  const autofillDone = ref(false)
+  // già compilato (in questa sessione di modifica o salvato in precedenza): l'azione diventa «Ricalcola»
+  const hasAutoData = computed(() => autofillDone.value || f.value.weather?.windSpeed != null || f.value.weather?.tempAir != null || !!f.value.weather?.condition)
   let geocodeTimer = null
 
   const canAutoFill = computed(() => !!f.value.date)
@@ -774,13 +770,16 @@
   function closeWhereSoon() { setTimeout(() => { whereOpen.value = false }, 150) }
 
   let nameGeocodeTimer = null
+  let nameGeocodePending = false
   watch(
     () => f.value.location.name,
     (name) => {
       clearTimeout(nameGeocodeTimer)
       if (skipNameGeocode) { skipNameGeocode = false; return }
       if (!name || name.trim().length < 3) return
+      nameGeocodePending = true
       nameGeocodeTimer = setTimeout(async () => {
+        nameGeocodePending = false
         geocodeMsg.value = t('sessionForm.autoFill.geocoding')
         const result = await forwardGeocode(name)
         if (!result) { geocodeMsg.value = ''; return }
@@ -793,19 +792,36 @@
 
   // ─── Weather + Marine auto-fill ───────────────────────────────────────────────
 
+  // Se il luogo è stato appena cambiato, le coordinate vanno aggiornate prima di ricalcolare.
+  async function flushNameGeocode() {
+    if (!nameGeocodePending) return
+    clearTimeout(nameGeocodeTimer)
+    nameGeocodePending = false
+    const name = f.value.location.name
+    if (!name || name.trim().length < 3) return
+    geocodeMsg.value = t('sessionForm.autoFill.geocoding')
+    const result = await forwardGeocode(name)
+    geocodeMsg.value = ''
+    if (!result) return
+    f.value.location.coords.lat = parseFloat(result.lat.toFixed(6))
+    f.value.location.coords.lng = parseFloat(result.lng.toFixed(6))
+  }
+
+  // Compila (o ricalcola) meteo e condizioni acqua con i valori correnti di luogo, data e ora.
   async function autoFillWeatherAndSea() {
     const date = f.value.date
-    if (!date) return
+    autoFillMsg.value = null
+    if (!date) { autoFillMsg.value = { type: 'error', text: t('sessionForm.autoFill.warning') }; return }
 
+    await flushNameGeocode()
     if (!f.value.location.coords.lat || !f.value.location.coords.lng) {
       await detectGPS()
     }
 
     const { lat, lng } = f.value.location.coords
-    if (!lat || !lng) return
+    if (!lat || !lng) { autoFillMsg.value = { type: 'error', text: t('sessionForm.autoFill.noPlace') }; return }
 
     autoFilling.value = true
-    autoFillMsg.value = null
 
     const today = new Date().toISOString().split('T')[0]
     const weatherBase = date < today
@@ -831,7 +847,8 @@
         const tMin = d.temperature_2m_min?.[0]
         const windSpeed = d.wind_speed_10m_max?.[0]
         const windDeg = d.wind_direction_10m_dominant?.[0]
-        const pressure = h?.surface_pressure?.[12]
+        const hour = Math.min(23, Math.max(0, parseInt(String(f.value.startTime || '12').split(':')[0], 10) || 12))
+        const pressure = h?.surface_pressure?.[hour]
 
         if (code != null) { f.value.weather.condition = wmoToCondition(code, windSpeed); filled.push(t('sessionForm.autoFill.filledFields.condition')) }
         if (tMax != null && tMin != null) { f.value.weather.tempAir = Math.round((tMax + tMin) / 2); filled.push(t('sessionForm.autoFill.filledFields.temperature')) }
@@ -859,10 +876,10 @@
         ? { type: 'success', text: t('sessionForm.autoFill.success', { fields: filled.join(', ') }) }
         : { type: 'warn', text: t('sessionForm.autoFill.noData') }
 
-      if (filled.length) autofillCollapsed.value = true
+      if (filled.length) autofillDone.value = true
 
     } catch (err) {
-      autoFillMsg.value = { type: 'error', text: t('sessionForm.autoFill.error') }
+      autoFillMsg.value = { type: 'error', text: navigator.onLine === false ? t('sessionForm.autoFill.offline') : t('sessionForm.autoFill.error') }
       console.error('autoFill error', err)
     } finally {
       autoFilling.value = false
