@@ -755,7 +755,8 @@
 			"water": "Dove peschi",
 			"start": "Inizia a pescare",
 			"save": "Salva uscita",
-			"later": "Acqua, meteo e note li aggiungi dopo, quando vuoi."
+			"later": "Acqua, meteo e note li aggiungi dopo, quando vuoi.",
+			"detectedHere": "Posizione rilevata"
 		},
 		"menu": {
 			"filled": "Compilato",
@@ -879,7 +880,7 @@
 		"visibility": {
 			"private": "Solo io",
 			"users": "Tutti gli utenti",
-			"group": "Gruppi specifici"
+			"group": "Gruppi"
 		},
 		"autoFill": {
 			"title": "Compila posizione, meteo e condizioni acqua automaticamente",

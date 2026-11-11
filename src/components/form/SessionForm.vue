@@ -15,7 +15,17 @@
 
       <section>
         <label class="fl-lab" for="ess-where">{{ t('sessionForm.essential.where') }}</label>
-        <input id="ess-where" v-model="f.location.name" type="text" class="fl-inp" autocomplete="off" :placeholder="t('sessionForm.fields.locationNamePlaceholder')" />
+        <div class="where-wrap">
+          <input id="ess-where" v-model="f.location.name" type="text" class="fl-inp" autocomplete="off" @input="onWhereInput" @focus="whereOpen = true" @blur="closeWhereSoon" :placeholder="t('sessionForm.fields.locationNamePlaceholder')" />
+          <ul v-if="whereOpen && whereOptions.length" class="where-list" role="listbox">
+            <li v-for="(o, i) in whereOptions" :key="i" role="option">
+              <button type="button" class="where-opt" @mousedown.prevent @click="pickPlace(o)">
+                <span class="where-ic"><MapPin :size="18" /></span>
+                <span class="where-tx"><strong>{{ o.title }}</strong><small>{{ o.sub }}</small></span>
+              </button>
+            </li>
+          </ul>
+        </div>
         <p v-if="f.location.coords.lat && f.location.coords.lng" class="fl-hint fl-mono">{{ f.location.coords.lat }}°N · {{ f.location.coords.lng }}°E · {{ t('sessionForm.essential.detected') }}</p>
       </section>
 
@@ -693,7 +703,8 @@
         geocodeMsg.value = t('sessionForm.autoFill.geocoding')
         const result = await reverseGeocode(lat, lng)
         if (!result) { geocodeMsg.value = ''; return }
-        if (!f.value.location.name) f.value.location.name = result.name
+        gpsPlace.value = result.name
+        if (!f.value.location.name) { skipNameGeocode = true; f.value.location.name = result.name }
         if (!f.value.location.region) f.value.location.region = result.region
         geocodeMsg.value = result.name ? t('sessionForm.autoFill.geocodeFound', { name: result.name }) : ''
       }, 800)
@@ -714,11 +725,58 @@
     } catch { return null }
   }
 
+  // Suggerimenti luogo mentre si digita (Nominatim, senza chiavi): il luogo rilevato dal GPS è il primo
+  const gpsPlace = ref('')
+  const placeResults = ref([])
+  const whereOpen = ref(false)
+  let suggestTimer = null
+  let skipNameGeocode = false
+
+  const whereOptions = computed(() => {
+    const out = []
+    const c = f.value.location.coords
+    if (c.lat && c.lng && gpsPlace.value) {
+      out.push({ title: gpsPlace.value, sub: t('sessionForm.essential.detectedHere'), name: gpsPlace.value, lat: c.lat, lng: c.lng })
+    }
+    for (const r of placeResults.value) if (!out.some(o => o.title === r.title && o.sub === r.sub)) out.push(r)
+    return out
+  })
+
+  function onWhereInput() {
+    clearTimeout(suggestTimer)
+    whereOpen.value = true
+    const q = (f.value.location.name || '').trim()
+    if (q.length < 3) { placeResults.value = []; return }
+    suggestTimer = setTimeout(async () => {
+      try {
+        const res = await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(q)}&format=json&limit=5&accept-language=it&addressdetails=0`)
+        const data = await res.json()
+        if ((f.value.location.name || '').trim() !== q) return
+        placeResults.value = data.map(d => {
+          const parts = String(d.display_name).split(',').map(x => x.trim())
+          return { title: parts[0], sub: parts.slice(1, 3).join(', '), name: parts[0], lat: parseFloat(d.lat), lng: parseFloat(d.lon) }
+        })
+      } catch { placeResults.value = [] }
+    }, 500)
+  }
+
+  function pickPlace(o) {
+    clearTimeout(suggestTimer); clearTimeout(nameGeocodeTimer)
+    skipNameGeocode = true
+    f.value.location.name = o.name
+    f.value.location.coords.lat = parseFloat(Number(o.lat).toFixed(6))
+    f.value.location.coords.lng = parseFloat(Number(o.lng).toFixed(6))
+    placeResults.value = []
+    whereOpen.value = false
+  }
+  function closeWhereSoon() { setTimeout(() => { whereOpen.value = false }, 150) }
+
   let nameGeocodeTimer = null
   watch(
     () => f.value.location.name,
     (name) => {
       clearTimeout(nameGeocodeTimer)
+      if (skipNameGeocode) { skipNameGeocode = false; return }
       if (!name || name.trim().length < 3) return
       nameGeocodeTimer = setTimeout(async () => {
         geocodeMsg.value = t('sessionForm.autoFill.geocoding')
@@ -1146,6 +1204,14 @@
   .ess-end { margin-top: 10px; }
   .ess-chips { display: flex; flex-wrap: wrap; gap: 8px; }
   .form-actions-inner.ess-actions { flex-direction: column; align-items: stretch; gap: 8px; padding-bottom: 4px; }
+  .where-wrap { position: relative; }
+  .where-list { position: absolute; left: 0; right: 0; top: calc(100% + 6px); z-index: 50; margin: 0; padding: 6px; list-style: none; background: var(--surface); border: 1px solid var(--border-light); border-radius: 16px; box-shadow: 0 12px 30px rgba(0,0,0,.25); }
+  .where-opt { display: flex; align-items: center; gap: 12px; width: 100%; min-height: 52px; padding: 6px 8px; background: none; border: 0; border-radius: 12px; color: var(--foam); text-align: left; cursor: pointer; }
+  .where-opt:hover { background: var(--surface-2); }
+  .where-ic { width: 36px; height: 36px; border-radius: 10px; background: var(--surface-2); color: rgb(var(--color-ocean-text)); display: flex; align-items: center; justify-content: center; flex: none; }
+  .where-tx { display: flex; flex-direction: column; min-width: 0; }
+  .where-tx strong { font-size: 15px; font-weight: 700; }
+  .where-tx small { font-size: 12px; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .essential .field-missing { border-color: var(--border); }
   .ess-foot { color: var(--text-muted); font-size: 12px; text-align: center; margin: 0; padding: 0 1rem 12px; }
   .fl-inp[type="date"], .fl-inp[type="time"] { display: flex; align-items: center; text-align: left; -webkit-appearance: none; appearance: none; }
