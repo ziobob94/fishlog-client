@@ -147,7 +147,7 @@ const elapsed = computed(() => elapsedLabel(props.session, now.value))
 .ticks { position: absolute; left: 8px; right: 8px; bottom: 6px; height: 7px; background: repeating-linear-gradient(90deg, rgb(var(--color-foam) / .8) 0 2px, transparent 2px 8px); }
 .ticks.gold { height: 12px; background: repeating-linear-gradient(90deg, rgb(var(--color-sand-text)) 0 2px, transparent 2px 40px); }
 .row-main { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
-.row-name { font-size: 17px; font-weight: 800; letter-spacing: -.01em; }
+.row-name { font-family: var(--font-display); font-size: 17px; font-weight: 800; letter-spacing: -.01em; }
 .row-size { font-size: 13px; color: rgb(var(--color-sand-text)); }
 .row-time { font-size: 12px; color: var(--text-muted); }
 .go { color: rgb(var(--color-ocean-text)); flex: none; }

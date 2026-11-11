@@ -62,7 +62,15 @@
 		"newListing": "Nuovo annuncio",
 		"newMessage": "Nuovo messaggio",
 		"newGroup": "Nuovo gruppo pesca",
-		"newChatGroup": "Nuovo gruppo chat"
+		"newChatGroup": "Nuovo gruppo chat",
+		"sheetTitle": "Cosa vuoi condividere?",
+		"post": "Post",
+		"postSub": "Foto o video con una descrizione",
+		"session": "Uscita",
+		"sessionSub": "Registra una nuova uscita di pesca",
+		"listing": "Annuncio",
+		"listingSub": "Vendi o scambia attrezzatura",
+		"close": "Chiudi"
 	},
 	"admin": {
 		"tabs": {
@@ -1130,7 +1138,8 @@
 				"title": "Nessun post",
 				"text": "Pubblica il tuo primo post o evento"
 			}
-		}
+		},
+		"composePrompt": "Cosa hai pescato oggi?"
 	},
 	"market": {
 		"view": {
