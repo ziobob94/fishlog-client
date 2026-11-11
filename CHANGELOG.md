@@ -1,3 +1,10 @@
+# [1.40.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.39.1...client-v1.40.0) (2026-11-11)
+
+
+### Features
+
+* UserAvatar con anello storia e tocco storia o profilo ([f6bd44c](https://github.com/ziobob94/fishlog-client/commit/f6bd44cdb62ae5821bef5099ceeac7d56dbae4ec))
+
 ## [1.39.1](https://github.com/ziobob94/fishlog-client/compare/client-v1.39.0...client-v1.39.1) (2026-11-10)
 
 
