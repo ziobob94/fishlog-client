@@ -17,7 +17,9 @@
 		"fieldInfo": "Informazioni sul campo",
 		"showPassword": "Mostra password",
 		"hidePassword": "Nascondi password",
-		"close": "Chiudi"
+		"close": "Chiudi",
+		"fileTooLarge": "Il file è troppo grande. Scegli una foto più piccola o un video più corto.",
+		"uploadTimeout": "Caricamento troppo lento. Controlla la connessione e riprova."
 	},
 	"nav": {
 		"mainNavigation": "Navigazione principale",

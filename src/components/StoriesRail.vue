@@ -41,7 +41,7 @@ onMounted(() => stories.fetchRail())
 </script>
 
 <style scoped>
-.rail { display: flex; gap: 14px; overflow-x: auto; padding: 4px 2px 12px; margin-bottom: 4px; scrollbar-width: none; }
+.rail { position: relative; z-index: 0; display: flex; gap: 14px; overflow-x: auto; padding: 4px 2px 12px; margin-bottom: 4px; scrollbar-width: none; }
 .rail::-webkit-scrollbar { display: none; }
 .item { flex: none; width: 72px; display: flex; flex-direction: column; align-items: center; gap: 6px; text-decoration: none; color: var(--foam); min-height: 44px; }
 .ring { position: relative; width: 68px; height: 68px; border-radius: 50%; padding: 3px; border: 3px solid rgb(var(--color-sand-text)); display: flex; align-items: center; justify-content: center; box-sizing: border-box; }

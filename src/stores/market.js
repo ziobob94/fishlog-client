@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import api from '../utils/api.js'
+import { compressAll, compressImage } from '../utils/image.js'
 
 export const useMarketStore = defineStore('market', () => {
   const listings   = ref([])
@@ -101,7 +102,7 @@ export const useMarketStore = defineStore('market', () => {
 
   async function uploadMedia(id, files) {
     const form = new FormData()
-    for (const f of files) form.append('file', f)
+    for (const f of await compressAll(files)) form.append('file', f)
     // Niente Content-Type esplicito: senza il boundary generato dal browser
     // per il FormData, il multipart non è più parsabile lato server.
     const { data } = await api.post(`/media/upload/listing/${id}`, form)

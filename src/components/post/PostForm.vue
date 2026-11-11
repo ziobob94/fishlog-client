@@ -1,5 +1,5 @@
 <template>
-  <div class="card post-form">
+  <div class="post-form">
     <div class="segmented" role="radiogroup" :aria-label="t('posts.form.typePost')">
       <button type="button" role="radio" :aria-checked="form.type === 'post'" class="seg-opt" :class="{ active: form.type === 'post' }" @click="form.type = 'post'">{{ t('posts.form.typePost') }}</button>
       <button type="button" role="radio" :aria-checked="form.type === 'event'" class="seg-opt" :class="{ active: form.type === 'event' }" @click="form.type = 'event'">{{ t('posts.form.typeEvent') }}</button>
@@ -62,14 +62,12 @@
     <!-- Uscita collegata (solo post): luogo, specie e misure compaiono sul post, le coordinate esatte restano nascoste -->
     <div v-if="form.type === 'post' && mySessions.length" class="linked">
       <p class="field-label">{{ t('posts.form.linkedSession') }}</p>
-      <div class="linked-card" :class="{ active: chosenSession }">
-        <label for="linked-session" class="sr-only">{{ t('posts.form.linkedSession') }}</label>
-        <select id="linked-session" v-model="form.sessionId" @change="form.featuredCatchId = ''">
-          <option value="">{{ t('posts.form.noSession') }}</option>
-          <option v-for="s in mySessions" :key="s._id" :value="s._id">{{ s.title || s.location?.name || t('session.untitled') }} · {{ fmtDate(s.date) }}</option>
-        </select>
-        <p v-if="chosenSession" class="text-muted text-xs mt-1">{{ t('posts.form.linkedHint') }}</p>
-      </div>
+      <label for="linked-session" class="sr-only">{{ t('posts.form.linkedSession') }}</label>
+      <select id="linked-session" v-model="form.sessionId" class="fl-inp" :class="{ 'linked-on': chosenSession }" @change="form.featuredCatchId = ''">
+        <option value="">{{ t('posts.form.noSession') }}</option>
+        <option v-for="s in mySessions" :key="s._id" :value="s._id">{{ s.title || s.location?.name || t('session.untitled') }} · {{ fmtDate(s.date) }}</option>
+      </select>
+      <p v-if="chosenSession" class="text-muted text-xs">{{ t('posts.form.linkedHint') }}</p>
       <template v-if="chosenSession?.catches?.length">
         <p class="field-label">{{ t('posts.form.featuredCatch') }}</p>
         <div class="chips" role="group" :aria-label="t('posts.form.featuredCatch')">
@@ -85,14 +83,12 @@
     <div class="segmented" role="radiogroup" :aria-label="t('posts.form.whoCanSee')">
       <button v-for="v in ['public', 'group', 'private']" :key="v" type="button" role="radio" :aria-checked="form.visibility === v" class="seg-opt" :class="{ active: form.visibility === v }" @click="form.visibility = v">{{ t(`posts.visibility.${v}`) }}</button>
     </div>
-    <div class="visibility-row">
-      <select v-if="form.visibility === 'group'" v-model="form.allowedGroups[0]" :aria-label="t('posts.visibility.group')">
-        <option v-for="g in groups" :key="g._id" :value="g._id">{{ g.name }}</option>
-      </select>
-      <button class="btn btn-primary ml-auto" :disabled="saving" @click="submit">
-        {{ saving ? t('posts.form.saving') : t('posts.form.submit') }}
-      </button>
-    </div>
+    <select v-if="form.visibility === 'group'" v-model="form.allowedGroups[0]" class="fl-inp" :aria-label="t('posts.visibility.group')">
+      <option v-for="g in groups" :key="g._id" :value="g._id">{{ g.name }}</option>
+    </select>
+    <button type="button" class="fl-btn1 publish" :disabled="saving" @click="submit">
+      {{ saving ? t('posts.form.saving') : t('posts.form.submit') }}
+    </button>
     <p v-if="error" class="error-msg">{{ error }}</p>
   </div>
 </template>
@@ -106,6 +102,7 @@ import { useGroupStore } from '../../stores/groups.js'
 import { useAuthStore } from '../../stores/auth.js'
 import LocationPicker from '../form/LocationPicker.vue'
 import api from '../../utils/api.js'
+import { compressAll, uploadErrorMessage } from '../../utils/image.js'
 
 const emit = defineEmits(['created'])
 const props = defineProps({
@@ -203,7 +200,7 @@ async function submit() {
 
     if (pendingFiles.value.length) {
       const fd = new FormData()
-      for (const item of pendingFiles.value) fd.append('files', item.file)
+      for (const f of await compressAll(pendingFiles.value.map(i => i.file))) fd.append('files', f)
       // Niente Content-Type esplicito: senza il boundary generato dal browser
       // per il FormData, il multipart non è più parsabile lato server.
       await api.post(`/media/upload/post/${created._id}`, fd, {
@@ -217,7 +214,7 @@ async function submit() {
     clearPendingFiles()
     form.value = emptyForm()
   } catch (e) {
-    error.value = e.response?.data?.error || t('common.error')
+    error.value = uploadErrorMessage(e, t)
   } finally {
     saving.value = false
     uploadProgress.value = 0
@@ -227,21 +224,21 @@ async function submit() {
 
 <style scoped>
 .post-form    { @apply flex flex-col gap-2; }
+.publish { width: 100%; margin-top: 12px; }
+.linked-on { border-color: rgb(var(--color-ocean-text)); }
 .segmented { @apply flex gap-1 p-1 bg-surface-2 border border-border rounded-full; }
 .seg-opt { @apply flex-1 min-h-[44px] rounded-full bg-transparent border-none text-sm font-semibold text-foam cursor-pointer; }
 .seg-opt.active { @apply bg-ocean text-on-primary; }
 .field-label { @apply text-xs font-bold uppercase text-muted mt-2; letter-spacing: 0.14em; }
 .linked { @apply flex flex-col gap-2; }
-.linked-card { @apply p-3 rounded-xl border border-border bg-surface; }
-.linked-card.active { @apply border-ocean; background: var(--ocean-glow); }
 .chips { @apply flex flex-wrap gap-2; }
 .chip { @apply inline-flex items-center min-h-[44px] px-4 rounded-full border border-border bg-surface text-foam text-sm font-semibold cursor-pointer; }
 .chip-sand { @apply border-sand text-sand-text; background: rgb(var(--color-sand) / 0.15); }
 .sr-only { @apply absolute w-px h-px overflow-hidden; clip: rect(0 0 0 0); }
 .event-fields { @apply flex flex-col gap-2; }
-.visibility-row { @apply flex gap-2 items-center; }
 .error-msg { @apply bg-danger/10 border border-danger rounded-sm text-danger text-xs px-2.5 py-1.5; }
-textarea, input, select { @apply text-sm; }
+textarea, input:not([type=file]):not([type=checkbox]) { width: 100%; box-sizing: border-box; min-height: 52px; border-radius: 14px; border: 1px solid var(--border); background: var(--surface); color: var(--foam); font-size: 16px; padding: .8rem 1rem; outline: none; }
+textarea { min-height: 96px; resize: none; }
 
 .photo-picker {
   @apply flex items-center justify-center gap-2 py-2.5 border-2 border-dashed border-border rounded-lg

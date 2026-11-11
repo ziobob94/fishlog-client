@@ -1,6 +1,8 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import api from '../utils/api.js'
+import i18n from '../i18n/index.js'
+import { compressImage, uploadErrorMessage } from '../utils/image.js'
 
 // Storie a 24 ore: elenco per autore (fila in Community), creazione e visualizzazione.
 export const useStoryStore = defineStore('stories', () => {
@@ -29,13 +31,13 @@ export const useStoryStore = defineStore('stories', () => {
       const { data } = await api.post('/stories', { audience, stickers })
       if (file) {
         const form = new FormData()
-        form.append('file', file)
+        form.append('file', await compressImage(file))
         await api.post(`/stories/${data._id}/media`, form)
       }
       await fetchRail()
       return data
     } catch (e) {
-      error.value = e.response?.data?.error || e.message
+      error.value = uploadErrorMessage(e, i18n.global.t)
       return null
     }
   }
