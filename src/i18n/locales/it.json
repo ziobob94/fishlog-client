@@ -1780,7 +1780,11 @@
 			"tideNote": "Stima del modello (livello del mare), non una tabella delle maree: nel Mediterraneo l'escursione è piccola. Non usarla per la navigazione.",
 			"tideAria": "Maree stimate nelle prossime 48 ore: {summary}",
 			"noExtremes": "nessun massimo o minimo previsto",
-			"none": "Qui non ci sono dati sul mare. Per laghi, fiumi e zone interne mostriamo solo il meteo."
+			"none": "Qui non ci sono dati sul mare. Per laghi, fiumi e zone interne mostriamo solo il meteo.",
+			"waves": "Altezza dell'onda · prossime 48 h",
+			"waveMax": "Massimo {h} m alle {time}",
+			"waveAria": "Altezza dell'onda nelle prossime 48 ore: da {first} m a {last} m, massimo {max} m alle {time}",
+			"noTides": "Maree non disponibili per questo luogo: il modello non copre questo punto."
 		},
 		"glance": {
 			"title": "Colpo d'occhio per la pesca",
