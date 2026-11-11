@@ -1047,6 +1047,7 @@
 		"errApi": "Una delle API non è abilitata o la chiave non può usarla: abilita Maps JavaScript API, Places API (New) e Geocoding API e consentile nelle restrizioni della chiave.",
 		"errBilling": "La fatturazione del progetto Google non è attiva (o la quota è esaurita): attivala nella Cloud Console.",
 		"errInvalid": "La chiave Google non è valida o è scaduta: controlla VITE_GOOGLE_MAPS_KEY e rifai il build.",
+		"errEmpty": "Google ha risposto ma non ha fornito la mappa: di solito la chiave ha restrizioni che non includono questo sito ({origin}). Nei referrer HTTP consentiti metti sia il dominio senza sottodominio (es. fishlog.it/*) sia quello con (*.fishlog.it/*) e controlla che Maps JavaScript, Places (New) e Geocoding siano abilitate. Se è tutto giusto, prova senza ad-blocker.",
 		"errBlocked": "Lo script di Google Maps è bloccato (rete, ad-blocker o Content-Security-Policy del server): consenti maps.googleapis.com e maps.gstatic.com.",
 		"errTimeout": "Google Maps non risponde: controlla la connessione e riprova.",
 		"errInit": "Errore imprevisto nel caricamento di Google Maps: ",
