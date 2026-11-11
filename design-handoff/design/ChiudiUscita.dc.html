@@ -81,8 +81,8 @@ class Component extends DCLogic {
 constructor(props) { super(props); this.state = { r: 4, v: 1 }; }
 renderVals() {
   const s = this.state;
-  const labels = ['Solo io', 'Amici', 'Community'];
-  const hints = ['Solo tu vedi questa uscita.', 'La vedono i tuoi amici.', 'Compare nel feed della community.'];
+  const labels = ['Solo io', 'Amici', 'Social'];
+  const hints = ['Solo tu vedi questa uscita.', 'La vedono i tuoi amici.', 'Compare nel feed dei social.'];
   return {
     stars: [1,2,3,4,5].map((n) => ({ on: s.r === n, label: n + (n === 1 ? ' stella' : ' stelle'), color: n <= s.r ? '#fbbf24' : '#5f7897', tap: () => this.setState({ r: n }) })),
     vis: labels.map((label, i) => s.v === i

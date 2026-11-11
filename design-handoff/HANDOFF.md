@@ -63,7 +63,7 @@ Ordine e numeri come in `screenshots/`. Stato: **Restyling** = esiste già, camb
 | 02 | Uscite | `/sessions` → `SessionsView.vue`, `SessionCard.vue`, `SessionFilters.vue` | Restyling |
 | 03 | Dettaglio uscita | `/session/:id` → `SessionView.vue` | Restyling |
 | 12 | Nuova uscita (solo essenziale) | `/new` → `NewSessionView.vue`, `SessionForm.vue` | **Semplificata**: luogo, quando, tecnica; il resto in «Dati uscita» |
-| 05 | Community · feed | `/feed` → `FeedView.vue`, `PostCard.vue` | Restyling |
+| 05 | Social · feed | `/feed` → `FeedView.vue`, `PostCard.vue` | Restyling |
 | 06 | Nuovo post | `PostForm.vue` | Restyling |
 | 17 | Commenti | commenti del post (`stores/posts.js`) | Restyling (verificare) |
 | 18 | Profilo utente | `/users/:id` → `UserProfileView.vue` | Restyling |
@@ -111,15 +111,15 @@ Prima mancava il punto d'ingresso per un nuovo post. Ora:
 
 | # | Schermata | Codice | Note |
 |---|---|---|---|
-| 39 | Crea (foglio dal basso) | nuovo, apre da «+» della barra (tranne in Community, dove il «+» crea subito un post) | Post, Storia, Uscita, Annuncio. Il «+» non porta più direttamente a `PostForm.vue` |
-| 05 | Community · feed | `FeedView.vue` | Il filtro (Per te / Amici / Gruppi / Eventi) non è più una fila di chip: è il titolo della pagina con freccia («Per te ▾») che apre un menu. In alto: fila storie (`StoriesRail.vue`, nuovo) e riga «Cosa hai pescato oggi?» che apre il form del post |
+| 39 | Crea (foglio dal basso) | nuovo, apre da «+» della barra (tranne nei Social, dove il «+» crea subito un post) | Post, Storia, Uscita, Annuncio. Il «+» non porta più direttamente a `PostForm.vue` |
+| 05 | Social · feed | `FeedView.vue` | Il filtro (Per te / Amici / Gruppi / Eventi) non è più una fila di chip: è il titolo della pagina con freccia («Per te ▾») che apre un menu. In alto: fila storie (`StoriesRail.vue`, nuovo) e riga «Cosa hai pescato oggi?» che apre il form del post |
 | 40 | Storia · crea | nuovo `StoryComposer.vue` | Foto/video, adesivi della pesca (cattura, luogo, acqua e meteo), pubblico Tutti / Solo amici, scade dopo 24 ore |
 | 41 | Storia · guarda | nuovo `StoryViewer.vue` | Barre di avanzamento, risposta in chat, cuore. L'adesivo cattura apre il dettaglio uscita |
 
 **Backend da aggiungere** (`fishlog-server`): modello `Story` (autore, media, adesivi, pubblico, `expiresAt` = +24 h con indice TTL), elenco storie degli amici raggruppate per autore con flag «vista», registrazione delle visualizzazioni, risposta alla storia come messaggio chat. Upload media come per le catture.
 
 ### Profilo e bacheca personale (schermate 42-47, riga y=11300 del canvas)
-**Decisione:** il profilo è la bacheca personale, in stile Instagram (`/board`, `MyBoardView.vue` riscritta). Toccando il proprio avatar o nome in Community si apre lì. Le **impostazioni non stanno più nel profilo**: si raggiungono dal menù (icona in alto a destra). La creazione usa **le stesse pagine dedicate di Community** (nuovo post/evento, nuova storia, schermate 39-41), non una variante: il form inline di `MyBoardView.vue` sparisce. Cambia solo l'ingresso (il «+» della barra apre il foglio Crea; l'anello con «+» sull'avatar apre direttamente la storia) e il ritorno (chiudere o pubblicare riporta a `/board`). Nel foglio Crea c'è anche **Evento**, perché `PostForm.vue` ha il tipo post/evento.
+**Decisione:** il profilo è la bacheca personale, in stile Instagram (`/board`, `MyBoardView.vue` riscritta). Toccando il proprio avatar o nome nei Social si apre lì. Le **impostazioni non stanno più nel profilo**: si raggiungono dal menù (icona in alto a destra). La creazione usa **le stesse pagine dedicate di Social** (nuovo post/evento, nuova storia, schermate 39-41), non una variante: il form inline di `MyBoardView.vue` sparisce. Cambia solo l'ingresso (il «+» della barra apre il foglio Crea; l'anello con «+» sull'avatar apre direttamente la storia) e il ritorno (chiudere o pubblicare riporta a `/board`). Nel foglio Crea c'è anche **Evento**, perché `PostForm.vue` ha il tipo post/evento.
 
 | # | Schermata | Codice | Stati / note |
 |---|---|---|---|
@@ -132,11 +132,14 @@ Prima mancava il punto d'ingresso per un nuovo post. Ora:
 
 Nessun nuovo endpoint per il post (`store.createPost` resta). Da verificare nel server: conteggi uscite/catture/amici sul profilo, elenco «Salvati» (se manca, serve un modello di segnalibri), unicità del nome utente. Le schermate sono solo disegnate, non funzionanti.
 
+### Rinomina: «Social» → «Social»
+Nella barra, nei titoli e nei testi la sezione si chiama **Social**. Cambia solo l'etichetta (chiave i18n, es. `nav.social` → testo «Social»); route (`/feed`), file e nomi dei componenti restano invariati. Le schermate 05, 06, 17, 18 sono ancora intitolate «Social» nei nomi dei file.
+
 ## Navigazione (cambia)
 
-- **Mobile, barra in basso:** Home · Uscite · **+** (tasto centrale grande, azione «Nuova uscita») · Community · Market. Oggi è Home, Uscite, Feed, Market, Chat.
-- **Il «+» centrale** apre il foglio «Crea» (post, storia, uscita, annuncio); **solo in Community** porta direttamente al nuovo post (la storia si crea da «La tua storia»). **Chat esce dalla barra:** si apre dall'icona messaggi (con badge) nell'intestazione di Community, come i DM di Instagram. Mantieni il badge dei non letti.
-- **Desktop:** la sidebar resta, con le stesse voci raggruppate (Pesca, Community) e l'icona/logo nuovi.
+- **Mobile, barra in basso:** Home · Uscite · **+** (tasto centrale grande, azione «Nuova uscita») · Social · Market. Oggi è Home, Uscite, Feed, Market, Chat.
+- **Il «+» centrale** apre il foglio «Crea» (post, storia, uscita, annuncio); **solo nei Social** porta direttamente al nuovo post (la storia si crea da «La tua storia»). **Chat esce dalla barra:** si apre dall'icona messaggi (con badge) nell'intestazione di Social, come i DM di Instagram. Mantieni il badge dei non letti.
+- **Desktop:** la sidebar resta, con le stesse voci raggruppate (Pesca, Social) e l'icona/logo nuovi.
 - La barra è a 5 colonne; il «+» sporge di 30 px, 56×56, con bordo dello stesso colore dello sfondo.
 
 ## Funzioni nuove
@@ -177,9 +180,9 @@ Se una voce manca, nel client implementa la parte grafica con stato vuoto/«in a
 ## Piano
 
 1. **Fondamenta:** `tokens.css` in `main.css`, `tailwind-extend.js` in `tailwind.config.js`, `.btn-primary` con testo scuro, `.card` e raggi nuovi, favicon/icone PWA, `FishLogo` in Topbar/Sidebar/Login. Controlla tutte le schermate: i colori cambiano ovunque.
-2. **Guscio:** nuova barra in basso, Chat dentro Community, sidebar con logo nuovo.
+2. **Guscio:** nuova barra in basso, Chat dentro Social, sidebar con logo nuovo.
 3. **Componenti distintivi:** copia i sei componenti da `vue-starter/`, `AppIcon`, sostituisci `.section-divider` con `TideDivider`.
-4. **Schermate esistenti**, in quest'ordine: Accesso/Registrazione → Home → Uscite/Dettaglio/Nuova uscita → Community/Post/Commenti → Chat → Market → Specie → Statistiche/Classifica → Profilo/Amici/Gruppi/Notifiche.
+4. **Schermate esistenti**, in quest'ordine: Accesso/Registrazione → Home → Uscite/Dettaglio/Nuova uscita → Social/Post/Commenti → Chat → Market → Specie → Statistiche/Classifica → Profilo/Amici/Gruppi/Notifiche.
 5. **Mappamondo** nella Home.
 6. **Percorso venditore** (con le parti server).
 7. **Rifinitura:** tema chiaro, `prefers-reduced-motion`, tastiera e focus visibile, ≥ 44 px, contrasti, schermi 320 px e desktop 1360 px.

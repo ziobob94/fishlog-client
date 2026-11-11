@@ -33,7 +33,7 @@
   },
   "Commenti.dc.html": {
    "h": 844,
-   "title": "Community · commenti",
+   "title": "Social · commenti",
    "w": 390,
    "x": 0,
    "y": 3440
@@ -41,7 +41,7 @@
   "Community.dc.html": {
    "h": 1700,
    "is_interactive": true,
-   "title": "Community · feed",
+   "title": "Social · feed",
    "w": 390,
    "x": 1410,
    "y": 0
@@ -157,7 +157,7 @@
   },
   "NuovoPost.dc.html": {
    "h": 900,
-   "title": "Community · nuovo post",
+   "title": "Social · nuovo post",
    "w": 390,
    "x": 1880,
    "y": 0
@@ -171,7 +171,7 @@
   },
   "ProfiloUtente.dc.html": {
    "h": 1240,
-   "title": "Community · profilo utente",
+   "title": "Social · profilo utente",
    "w": 390,
    "x": 470,
    "y": 3440
@@ -389,13 +389,13 @@
    "y": 6680
   },
   "n2": {
-   "text": "Community: feed tipo Instagram, media a tutta larghezza, uscita collegata come scheda sotto il post.",
+   "text": "Social: feed tipo Instagram, media a tutta larghezza, uscita collegata come scheda sotto il post.",
    "w": 560,
    "x": 1410,
    "y": -120
   },
   "n3": {
-   "text": "Chat: si apre dall'icona messaggi in Community (come i DM di Instagram), non più dalla bottom nav.",
+   "text": "Chat: si apre dall'icona messaggi nei Social (come i DM di Instagram), non più dalla bottom nav.",
    "w": 560,
    "x": 2350,
    "y": -120
@@ -451,7 +451,7 @@
    "y": 8680
   },
   "n12": {
-   "text": "Creare contenuti: il «+» centrale della barra apre «Cosa vuoi condividere?» (post, storia, uscita, annuncio). In Community: fila di storie in alto (anello sabbia/oceano = da vedere, grigio = vista; «La tua storia» col +) e riga «Cosa hai pescato oggi?» per un post veloce. Storie: foto o video con adesivi della pesca (cattura, luogo, acqua e meteo), pubblico Tutti o Solo amici, durano 24 ore; chi guarda può rispondere o mettere un cuore. Nuovo rispetto al codice: servono storie nel server (scadenza a 24 h, visualizzazioni).",
+   "text": "Creare contenuti: il «+» centrale della barra apre «Cosa vuoi condividere?» (post, storia, uscita, annuncio). Nei Social: fila di storie in alto (anello sabbia/oceano = da vedere, grigio = vista; «La tua storia» col +) e riga «Cosa hai pescato oggi?» per un post veloce. Storie: foto o video con adesivi della pesca (cattura, luogo, acqua e meteo), pubblico Tutti o Solo amici, durano 24 ore; chi guarda può rispondere o mettere un cuore. Nuovo rispetto al codice: servono storie nel server (scadenza a 24 h, visualizzazioni).",
    "w": 900,
    "x": 0,
    "y": 10080
