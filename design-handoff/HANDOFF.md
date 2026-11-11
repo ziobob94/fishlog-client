@@ -328,6 +328,16 @@ Obiettivo: dare evidenza al meteo. La Home (`HomeMeteo` mobile, `HomeMeteoDeskto
 - Alba e tramonto sono colonne inserite nell'ora in cui avvengono (icona `sunrise`/`sunset`, etichetta, orario in JetBrains Mono, `role="group"` con `aria-label`). Dati: `daily.sunrise`/`daily.sunset` di Open-Meteo, nel fuso del luogo.
 - Anche l'elenco dei prossimi giorni mostra alba e tramonto (mobile sotto la riga del vento, desktop nella colonna "Alba · tramonto").
 
+### Home: meteo e "Le tue pescate" ad accordion (aggiornamento schermata 64)
+
+Problema visto nell'app: il badge del meteo da chiuso aveva la freccia da sola su una riga e un grande spazio vuoto. Ora le due card sono accordion veri, con 4 combinazioni disegnate (Aperto, Meteo chiuso, Pescate chiuse, Tutto chiuso).
+- **Meteo chiuso** (badge, 76 px): icona, temperatura (JetBrains Mono), "Poco nuvoloso", "Senigallia · 18 km/h da NO", tendenza della pressione, freccia in basso a destra. Offline: al posto della tendenza c'è "Non aggiornato · 13:40".
+- **Meteo aperto**: l'intestazione (luogo, ora, freccia in alto) è un pulsante che chiude la card; sotto restano ora per ora, vento, pressione, onde, pioggia e "Apri meteo e mare".
+- **Le tue pescate**: intestazione con "LE TUE PESCATE" e "6 luoghi sul mappamondo", freccia a destra. Da chiusa mostra una riga di riepilogo ("3 pescate nell'ultima uscita · 09/11"); da aperta mostra il mappamondo con il pulsante "Espandi".
+- Accessibilità: l'intestazione è un `<button>` con `aria-expanded` e `aria-controls`; area di tocco 44 px; Invio e Spazio aprono e chiudono.
+- Movimento: l'altezza si anima con `grid-template-rows: 0fr → 1fr` e i token di `tokens/motion.css`; con `prefers-reduced-motion` il cambio è immediato. Il contenuto chiuso va nascosto (`inert`/`hidden`) per non finire nel focus.
+- Lo stato aperto/chiuso viene ricordato (localStorage), con meteo aperto e pescate aperte come predefinito.
+
 ## Posizione non attivabile nella Home (da correggere nell'app)
 
 Segnalato da una prova sull'app installata: dalla Home non si riesce ad attivare la localizzazione, e la mappa espansa resta grigia. Controlla in quest'ordine:
