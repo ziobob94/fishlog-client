@@ -1797,19 +1797,23 @@
 			"pressure": "Pressione · ultime 6 ore"
 		},
 		"hourly": {
-			"title": "Prossime ore",
-			"range": "Ore da mostrare",
-			"region": "Previsione ora per ora, scorri con le frecce",
-			"legend": "Vento in km/h, la freccia indica dove soffia. Pioggia = probabilità."
+			"title": "Ora per ora",
+			"region": "Previsione ora per ora di {day}, scorri con le frecce",
+			"legend": "Vento in km/h, la freccia indica dove soffia. Pioggia = probabilità.",
+			"days": "Giorno da mostrare",
+			"fromOm": "Da qui: Open-Meteo",
+			"source": "Le prime 48 ore vengono da Google, le successive da Open-Meteo: più lontano nel tempo, meno precise."
 		},
 		"daily": {
-			"title": "Prossimi 7 giorni",
+			"title": "Prossimi 15 giorni",
 			"day": "Giorno",
 			"sky": "Cielo",
 			"temp": "Max / min",
 			"wind": "Vento",
 			"rain": "Pioggia",
-			"wave": "Onda max"
+			"wave": "Onda max",
+			"fromOm": "Da qui: previsioni Open-Meteo",
+			"source": "Dal giorno {n} le previsioni vengono da Open-Meteo (Google arriva a 10 giorni). Oltre una settimana sono indicative."
 		},
 		"denied": {
 			"title": "Posizione non consentita",

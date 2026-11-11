@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import {
   fmt, fmtSigned, MISSING, compass, windInfo, headingTo, pressureState, moonLabel, hhmm, daylight, dayLabel,
-  conditionText, uvLabel, nextTides, tideSummary, normalizeOverview, isPartial, waveSeries,
+  conditionText, uvLabel, nextTides, tideSummary, normalizeOverview, isPartial, waveSeries, groupHoursByDay, firstExtendedIndex,
 } from '../weather.js'
 
 describe('null → «—» (mai 0)', () => {
@@ -105,4 +105,23 @@ describe('onde ora per ora', () => {
     expect(r.points).toHaveLength(3); expect(r.max).toBe(1.2); expect(r.maxTime).toBe('c'); expect(r.maxIndex).toBe(1)
   })
   it('meno di 2 punti: nessun grafico', () => { expect(waveSeries([{ time: 'a', height: 1 }]).points).toEqual([]); expect(waveSeries(null).max).toBeNull() })
+})
+
+describe('ore per giorno e fonte', () => {
+  const rows = [
+    { date: '2026-11-11', hour: 22, source: 'google' }, { date: '2026-11-11', hour: 23, source: 'google' },
+    { date: '2026-11-12', hour: 0, source: 'google' }, { date: '2026-11-13', hour: 0, source: 'open-meteo' }, { date: null, hour: 1 },
+  ]
+  it('raggruppa per data nell\'ordine ricevuto e scarta le righe senza data', () => {
+    const g = groupHoursByDay(rows)
+    expect(g.map(d => [d.date, d.rows.length, d.extended])).toEqual([['2026-11-11', 2, false], ['2026-11-12', 1, false], ['2026-11-13', 1, true]])
+  })
+  it('input non valido → nessun giorno', () => { expect(groupHoursByDay(null)).toEqual([]); expect(groupHoursByDay([])).toEqual([]) })
+  it('prima riga da Open-Meteo', () => { expect(firstExtendedIndex(rows)).toBe(3); expect(firstExtendedIndex([{ source: 'google' }])).toBe(-1) })
+  it('normalizeOverview: data e fonte di ore e giorni, con valori di ripiego', () => {
+    const v = normalizeOverview({ hourly: [{ time: '2026-11-11T15:00', hour: 15 }, { time: 'x', date: '2026-11-12', source: 'open-meteo' }], daily: [{ date: 'd', source: 'open-meteo' }, { date: 'e' }] })
+    expect(v.hourly[0]).toMatchObject({ date: '2026-11-11', source: 'google' })
+    expect(v.hourly[1]).toMatchObject({ date: '2026-11-12', source: 'open-meteo' })
+    expect(v.daily.map(d => d.source)).toEqual(['open-meteo', 'google'])
+  })
 })

@@ -107,3 +107,5 @@
 
 .wx-title-link { color: inherit; text-decoration: none; display: inline-flex; align-items: center; min-height: 44px; }
 .wx-title-link:hover { text-decoration: underline; }
+
+.wx-days-src td { font-size: .72rem; text-align: center; color: rgb(var(--color-muted)); background: rgb(var(--color-surface-2)); font-weight: 600 !important; letter-spacing: .02em; }
