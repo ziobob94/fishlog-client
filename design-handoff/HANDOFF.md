@@ -132,8 +132,17 @@ Prima mancava il punto d'ingresso per un nuovo post. Ora:
 
 Nessun nuovo endpoint per il post (`store.createPost` resta). Da verificare nel server: conteggi uscite/catture/amici sul profilo, elenco «Salvati» (se manca, serve un modello di segnalibri), unicità del nome utente. Le schermate sono solo disegnate, non funzionanti.
 
-### Rinomina: «Social» → «Social»
-Nella barra, nei titoli e nei testi la sezione si chiama **Social**. Cambia solo l'etichetta (chiave i18n, es. `nav.social` → testo «Social»); route (`/feed`), file e nomi dei componenti restano invariati. Le schermate 05, 06, 17, 18 sono ancora intitolate «Social» nei nomi dei file.
+### Rinomina: «Community» → «Social»
+Nella barra, nei titoli e nei testi la sezione si chiama **Social**. Cambia solo l'etichetta (chiave i18n, es. `nav.community` → testo «Social»); route (`/feed`), file e nomi dei componenti restano invariati. Le schermate 05, 06, 17, 18 sono ancora intitolate «Community» nei nomi dei file.
+
+### Tocco sull'avatar: storia o profilo (schermate 05 e 41)
+Regola unica per ogni avatar (componente `UserAvatar.vue`, con `hasStory`):
+- **Se l'utente ha una storia attiva** (anello sabbia/oceano) il tocco la apre (`StoryViewer.vue`, schermata 41); **se non ce l'ha** apre il suo profilo (`/u/:id`, o `/board` se è il mio).
+- **Il mio avatar nel Social** (fila storie e riga «Cosa hai pescato oggi?»): ho una storia → la guardo; non ce l'ho → vado a «La mia bacheca». Il «+» sul bordo è un pulsante a parte (44 px) e aggiunge sempre una storia.
+- **Avatar degli autori nei post**: con anello apre la storia, senza anello il profilo. Il nome dell'autore porta sempre al profilo.
+- **Dentro la storia** (41): toccare avatar o nome in alto porta al profilo dell'autore (`ProfiloUtente`; al proprio `/board`). Chiudere resta la X.
+- In Community (05) il selettore «Anteprima» alterna «Ho una storia / Nessuna storia» per vedere i due casi.
+Servono `hasStory` e `storyUnseen` per utente nelle risposte del feed.
 
 ## Navigazione (cambia)
 
