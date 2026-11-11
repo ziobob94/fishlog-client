@@ -11,7 +11,7 @@
         <div v-if="i === extIdx && i > 0" class="wx-hour wx-hour-src" role="note"><span>{{ t('weather.hourly.fromOm') }}</span></div>
         <div class="wx-hour">
           <span class="wx-num">{{ h.hour == null ? MISSING : String(h.hour).padStart(2, '0') + ':00' }}</span>
-          <WeatherIcon :condition="h.condition" :size="22" />
+          <WeatherIcon :code="rowWmo(h)" :is-day="isDayAt(h.hour, sun?.sunrise, sun?.sunset)" :size="22" /><span class="wx-sr">{{ wmoLabel(rowWmo(h)) }}</span>
           <span class="wx-num" style="font-weight:700">{{ fmt(h.temp) }}°</span>
           <WindArrow v-if="h.windSpeed != null" :speed="h.windSpeed" :deg="h.windDeg" class="wx-hour-wind" />
           <span class="wx-num">{{ fmt(h.windSpeed) }}</span>
@@ -29,9 +29,10 @@
 // la fonte è dichiarata sul giorno e con un separatore nella striscia.
 import { ref, computed, watch, nextTick } from 'vue'
 import { useI18n } from 'vue-i18n'
-import WeatherIcon from './WeatherIcon.vue'
+import WeatherIcon from '../WeatherIcon.vue'
+import { wmoLabel } from '../weather-icons.js'
 import WindArrow from './WindArrow.vue'
-import { fmt, MISSING, dayLabel, groupHoursByDay, firstExtendedIndex } from '../../utils/weather.js'
+import { fmt, MISSING, dayLabel, groupHoursByDay, firstExtendedIndex, rowWmo, isDayAt } from '../../utils/weather.js'
 const props = defineProps({ view: { type: Object, required: true }, today: { type: String, default: '' } })
 const { t } = useI18n()
 const sel = ref(0)
@@ -39,6 +40,7 @@ const strip = ref(null)
 const days = computed(() => groupHoursByDay(props.view.hourly).slice(0, 7))
 const day = computed(() => days.value[Math.min(sel.value, days.value.length - 1)])
 const rows = computed(() => day.value?.rows || [])
+const sun = computed(() => props.view.daily.find(d => d.date === day.value?.date) || null)
 const extIdx = computed(() => firstExtendedIndex(rows.value))
 watch(sel, async () => { await nextTick(); if (strip.value) strip.value.scrollLeft = 0 })
 watch(() => props.view, () => { if (sel.value >= days.value.length) sel.value = 0 })

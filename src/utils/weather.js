@@ -1,6 +1,8 @@
 // Funzioni pure del pannello Meteo e mare: nessun accesso a rete, DOM o store, così sono testabili.
 // Regola dei dati: un valore mancante è sempre «—» (mai 0).
 
+import { wmoLabel } from '../components/weather-icons.js'
+
 export const MISSING = '—'
 export const isNum = v => typeof v === 'number' && Number.isFinite(v)
 
@@ -128,14 +130,14 @@ export function normalizeOverview(raw) {
     tides: m.tides && Array.isArray(m.tides.series) && m.tides.series.length ? m.tides : null,
     dailyWaveMax: Array.isArray(m.dailyWaveMax) ? m.dailyWaveMax : [],
     // altezza e periodo dell'onda ora per ora: servono al grafico (almeno 2 punti con altezza)
-    waves: (Array.isArray(m.waves) ? m.waves : []).map(w => ({ time: w.time ?? null, height: num(w.height), period: num(w.period) })),
+    waves: (Array.isArray(m.waves) ? m.waves : []).map(w => ({ time: w.time ?? null, height: num(w.height), period: num(w.period), seaTemp: num(w.seaTemp) })),
   }
   return {
     location: raw.location || null,
     updatedAt: typeof raw.updatedAt === 'string' ? raw.updatedAt : null,
     degraded: !!raw.degraded,   // il server ha fermato Google (quota): dati da cache o ripiego
     current: {
-      condition: c.condition ?? null, description: c.description ?? null, isDay: typeof c.isDay === 'boolean' ? c.isDay : null,
+      condition: c.condition ?? null, wmo: num(c.wmo), description: c.description ?? null, isDay: typeof c.isDay === 'boolean' ? c.isDay : null,
       temp: num(c.temp), feelsLike: num(c.feelsLike), humidity: num(c.humidity), pressure: num(c.pressure),
       windSpeed: num(c.windSpeed), windGust: num(c.windGust), windDeg: num(c.windDeg),
       cloudCover: num(c.cloudCover), uvIndex: num(c.uvIndex), visibilityKm: num(c.visibilityKm),
@@ -143,12 +145,14 @@ export function normalizeOverview(raw) {
     },
     hourly: (Array.isArray(raw.hourly) ? raw.hourly : []).map(h => ({
       time: h.time ?? null, date: typeof h.date === 'string' ? h.date : (typeof h.time === 'string' ? h.time.slice(0, 10) : null),
-      hour: num(h.hour), source: h.source === 'open-meteo' ? 'open-meteo' : 'google', condition: h.condition ?? null, temp: num(h.temp),
-      precipProbability: num(h.precipProbability), windSpeed: num(h.windSpeed), windDeg: num(h.windDeg),
+      hour: num(h.hour), source: h.source === 'open-meteo' ? 'open-meteo' : 'google', condition: h.condition ?? null, wmo: num(h.wmo), temp: num(h.temp),
+      precipProbability: num(h.precipProbability), precipMm: num(h.precipMm), windSpeed: num(h.windSpeed), windGust: num(h.windGust), windDeg: num(h.windDeg), pressure: num(h.pressure),
     })),
     daily: (Array.isArray(raw.daily) ? raw.daily : []).map(d => ({
-      date: d.date ?? null, source: d.source === 'open-meteo' ? 'open-meteo' : 'google', condition: d.condition ?? null, tempMax: num(d.tempMax), tempMin: num(d.tempMin),
-      precipProbability: num(d.precipProbability), windSpeed: num(d.windSpeed),
+      date: d.date ?? null, source: d.source === 'open-meteo' ? 'open-meteo' : 'google', condition: d.condition ?? null, wmo: num(d.wmo), tempMax: num(d.tempMax), tempMin: num(d.tempMin),
+      precipProbability: num(d.precipProbability), precipSum: num(d.precipSum), windSpeed: num(d.windSpeed), windGust: num(d.windGust),
+      sunrise: d.sunrise ?? null, sunset: d.sunset ?? null, moonPhase: d.moonPhase ?? null,
+      activity: d.activity && num(d.activity.level) != null ? { level: d.activity.level, label: d.activity.label ?? null, score: num(d.activity.score) } : null,
       waveHeightMax: num(marine.dailyWaveMax.find(w => w.date === d.date)?.waveHeightMax),
     })),
     marine,
@@ -193,4 +197,128 @@ export function groupHoursByDay(hourly) {
 // Indice della prima riga che non viene da Google (per il divisore «da qui, Open-Meteo»); -1 se tutte da Google.
 export function firstExtendedIndex(rows) {
   return (Array.isArray(rows) ? rows : []).findIndex(r => r?.source === 'open-meteo')
+}
+
+// ── Icone e testi delle condizioni (codici WMO) ───────────────────────────────
+// Il server dà `wmo`; i dati salvati prima di questa versione hanno solo `condition`: se ne ricava un codice approssimato.
+const CONDITION_WMO = { sole: 0, nuvoloso: 2, coperto: 3, nebbia: 45, pioggia: 63, vento: null }
+export const rowWmo = r => (isNum(r?.wmo) ? r.wmo : (CONDITION_WMO[r?.condition] ?? null))
+// Testo della condizione: la descrizione di Google se c'è, altrimenti l'etichetta del codice WMO.
+export const rowLabel = (r, description) => (description && String(description).trim()) || wmoLabel(rowWmo(r))
+// Giorno o notte per un'ora (0-23) dato alba e tramonto ISO locali; senza dati → giorno.
+export function isDayAt(hour, sunrise, sunset) {
+  const a = minutesOf(sunrise), b = minutesOf(sunset)
+  if (!isNum(hour) || a == null || b == null) return true
+  const m = hour * 60 + 30
+  return m >= a && m < b
+}
+
+// ── Prossimi 7 / 15 giorni ────────────────────────────────────────────────────
+export const DAYS_KEY = 'fishlog.weather.days'
+export const DAY_CHOICES = [7, 15]
+export const LESS_RELIABLE_FROM = 7   // dal giorno 8 (indice 7) la previsione è «meno affidabile» e mancano onde e attività
+export function readDays(storage = typeof localStorage === 'undefined' ? null : localStorage) {
+  try { const v = Number(storage?.getItem(DAYS_KEY)); return DAY_CHOICES.includes(v) ? v : 7 } catch { return 7 }
+}
+export function saveDays(n, storage = typeof localStorage === 'undefined' ? null : localStorage) {
+  try { if (DAY_CHOICES.includes(n)) storage?.setItem(DAYS_KEY, String(n)) } catch { /* localStorage non disponibile */ }
+}
+const nums = a => a.filter(isNum)
+const minOf = a => { const n = nums(a); return n.length ? Math.min(...n) : null }
+const maxOf = a => { const n = nums(a); return n.length ? Math.max(...n) : null }
+// Riepilogo del periodo scelto: minimi, massimi e totali. Un dato che manca in tutti i giorni resta null (mai 0);
+// `rainPartial` dice che nel totale mancano alcuni giorni. L'onda conta solo i giorni entro 7 (poi non c'è il dato).
+export function periodSummary(daily, n = 7) {
+  const rows = (Array.isArray(daily) ? daily : []).slice(0, n)
+  const rain = nums(rows.map(d => d.precipSum))
+  return {
+    count: rows.length,
+    tempMin: minOf(rows.map(d => d.tempMin)),
+    tempMax: maxOf(rows.map(d => d.tempMax)),
+    rainTotal: rain.length ? Number(rain.reduce((a, b) => a + b, 0).toFixed(1)) : null,
+    rainPartial: rain.length > 0 && rain.length < rows.length,
+    rainDays: rows.some(d => isNum(d.precipSum) || isNum(d.precipProbability)) ? rows.filter(d => (isNum(d.precipSum) ? d.precipSum >= 1 : (d.precipProbability ?? 0) >= 50)).length : null,
+    windMax: maxOf(rows.map(d => d.windSpeed)),
+    waveMax: maxOf(rows.slice(0, LESS_RELIABLE_FROM).map(d => d.waveHeightMax)),
+  }
+}
+// Affidabilità del giorno (0 = oggi): alta fino al 3º giorno, media fino al 7º, bassa oltre.
+export const reliability = i => (i <= 2 ? 'high' : i < LESS_RELIABLE_FROM ? 'medium' : 'low')
+// Barre min-max in percentuale della scala del periodo (per il grafico del riepilogo).
+export function tempBars(daily, n = 7) {
+  const rows = (Array.isArray(daily) ? daily : []).slice(0, n)
+  const lo = minOf(rows.map(d => d.tempMin)), hi = maxOf(rows.map(d => d.tempMax))
+  if (lo == null || hi == null) return rows.map(() => null)
+  const span = Math.max(hi - lo, 1)
+  return rows.map(d => (isNum(d.tempMin) && isNum(d.tempMax) ? { from: ((d.tempMin - lo) / span) * 100, to: ((d.tempMax - lo) / span) * 100 } : null))
+}
+
+// ── Dettaglio del giorno ──────────────────────────────────────────────────────
+export const BANDS = [['night', 0, 6], ['morning', 6, 12], ['afternoon', 12, 18], ['evening', 18, 24]]
+const meanOf = a => { const n = nums(a); return n.length ? n.reduce((x, y) => x + y, 0) / n.length : null }
+export const hoursOfDay = (view, date) => (view?.hourly || []).filter(h => h.date === date)
+export const wavesOfDay = (marine, date) => (marine?.waves || []).filter(w => typeof w.time === 'string' && w.time.startsWith(date))
+// Maree del giorno: solo la serie e i massimi/minimi di quella data.
+export function tidesOfDay(marine, date) {
+  const t = marine?.tides
+  if (!t) return null
+  const series = t.series.filter(s => typeof s.time === 'string' && s.time.startsWith(date))
+  if (series.length < 4) return null
+  return { ...t, series, extremes: (t.extremes || []).filter(e => typeof e.time === 'string' && e.time.startsWith(date)) }
+}
+// Quattro fasce con temperatura media, vento massimo, pioggia (probabilità massima) e onda media: null se manca il dato.
+export function dayBands(rows, waves = []) {
+  return BANDS.map(([key, from, to]) => {
+    const r = rows.filter(h => isNum(h.hour) && h.hour >= from && h.hour < to)
+    const w = waves.filter(x => { const h = Number(String(x.time).slice(11, 13)); return h >= from && h < to })
+    const mid = r.find(h => h.hour === from + 3) || r[Math.floor(r.length / 2)]
+    return {
+      key, from, to, wmo: mid ? rowWmo(mid) : null, isNight: key === 'night' || key === 'evening',
+      temp: meanOf(r.map(h => h.temp)), wind: maxOf(r.map(h => h.windSpeed)), windDeg: r.length ? (r.find(h => isNum(h.windDeg))?.windDeg ?? null) : null,
+      rain: maxOf(r.map(h => h.precipProbability)), wave: meanOf(w.map(x => x.height)),
+    }
+  })
+}
+// Pressione del giorno: punti, minimo (con l'ora) e andamento in parole-chiave.
+export function pressureDay(rows) {
+  const pts = rows.filter(h => isNum(h.pressure) && isNum(h.hour)).map(h => ({ hour: h.hour, value: h.pressure }))
+  if (pts.length < 4) return null
+  let mi = 0
+  pts.forEach((p, i) => { if (p.value < pts[mi].value) mi = i })
+  const first = pts[0].value, last = pts[pts.length - 1].value, min = pts[mi].value
+  const down = first - min, up = last - min
+  const shape = down >= 1 && up >= 1 && mi > 0 && mi < pts.length - 1 ? 'fallRise' : last - first <= -1 ? 'falling' : last - first >= 1 ? 'rising' : 'steady'
+  return { points: pts, min, minHour: pts[mi].hour, shape }
+}
+// Le ultime `n` ore a partire da `nowIso` (YYYY-MM-DDTHH:MM): i grafici di mare e maree del pannello restano a 48 h anche se il server dà 7 giorni.
+export function fromNow(series, nowIso, n = 48) {
+  const a = Array.isArray(series) ? series : []
+  if (!nowIso) return a.slice(0, n)
+  const key = String(nowIso).slice(0, 13)
+  const i = a.findIndex(x => String(x.time).slice(0, 13) >= key)
+  return a.slice(Math.max(i, 0), Math.max(i, 0) + n)
+}
+// Il dettaglio è disponibile (orario, mare, pressione, attività) solo entro 7 giorni.
+export const hasHourlyDetail = (view, date) => {
+  const i = (view?.daily || []).findIndex(d => d.date === date)
+  return i >= 0 && i < LESS_RELIABLE_FROM && hoursOfDay(view, date).length >= 6
+}
+
+// ── Luna di un giorno qualsiasi (stessa formula del server, precisione ±~1 giorno) ──
+const SYNODIC = 29.530588853
+const NEW_MOON_REF = Date.UTC(2000, 0, 6, 18, 14)
+const MOON_NAMES = ['luna_nuova', 'luna_crescente', 'primo_quarto', 'gibbosa_crescente', 'luna_piena', 'gibbosa_calante', 'ultimo_quarto', 'luna_calante']
+export function moonOn(date) {
+  const t = Date.parse(`${date}T12:00:00Z`)
+  if (Number.isNaN(t)) return { phase: null, illumination: null }
+  const age = (((t - NEW_MOON_REF) / 86400e3) % SYNODIC + SYNODIC) % SYNODIC
+  const frac = age / SYNODIC
+  return { phase: MOON_NAMES[Math.floor(frac * 8 + 0.5) % 8], illumination: Number(((1 - Math.cos(2 * Math.PI * frac)) / 2).toFixed(2)) }
+}
+// «Venerdì 13 novembre» da 'YYYY-MM-DD'.
+const LONG_DAYS = ['Domenica', 'Lunedì', 'Martedì', 'Mercoledì', 'Giovedì', 'Venerdì', 'Sabato']
+const MONTHS = ['gennaio', 'febbraio', 'marzo', 'aprile', 'maggio', 'giugno', 'luglio', 'agosto', 'settembre', 'ottobre', 'novembre', 'dicembre']
+export function longDate(date) {
+  const d = new Date(`${date}T12:00:00Z`)
+  return Number.isNaN(d.getTime()) ? MISSING : `${LONG_DAYS[d.getUTCDay()]} ${d.getUTCDate()} ${MONTHS[d.getUTCMonth()]}`
 }

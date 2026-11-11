@@ -2,10 +2,10 @@
   <section class="wx-block" aria-labelledby="wx-now-h">
     <h2 id="wx-now-h" class="wx-h">{{ t('weather.now.title') }}</h2>
     <div class="wx-now-top">
-      <WeatherIcon :condition="c.condition" :is-day="c.isDay !== false" :size="44" class="wx-ocean" />
+      <WeatherIcon :code="rowWmo(c)" :is-day="c.isDay !== false" :size="56" class="wx-ocean" />
       <div>
         <p class="wx-big" :aria-label="c.temp == null ? t('weather.missing') : undefined">{{ fmt(c.temp) }}<span class="wx-unit">°C</span></p>
-        <p class="wx-sub" style="margin:4px 0 0">{{ conditionText(c.condition, c.description) }} · {{ t('weather.now.feels') }} <span class="wx-num">{{ fmt(c.feelsLike) }}°</span></p>
+        <p class="wx-sub" style="margin:4px 0 0">{{ rowLabel(c, c.description) }} · {{ t('weather.now.feels') }} <span class="wx-num">{{ fmt(c.feelsLike) }}°</span></p>
       </div>
     </div>
     <dl class="wx-kv" style="margin-top:14px">
@@ -29,9 +29,9 @@
 <script setup>
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import WeatherIcon from './WeatherIcon.vue'
+import WeatherIcon from '../WeatherIcon.vue'
 import WindArrow from './WindArrow.vue'
-import { fmt, fmtSigned, conditionText, uvLabel, pressureState } from '../../utils/weather.js'
+import { fmt, fmtSigned, rowWmo, rowLabel, uvLabel, pressureState } from '../../utils/weather.js'
 const props = defineProps({ view: { type: Object, required: true } })
 const { t } = useI18n()
 const c = computed(() => props.view.current)

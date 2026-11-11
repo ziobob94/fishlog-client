@@ -1497,9 +1497,23 @@
 		"recordMine": "Il tuo record",
 		"recordOther": "Il suo record",
 		"recordStamp": "record",
-		"totals": { "catches": "catture", "species": "specie", "heaviest": "più pesante" },
-		"sort": { "label": "Ordinamento", "weight": "Per peso", "length": "Per lunghezza", "species": "Per specie" },
-		"period": { "label": "Periodo", "all": "Sempre", "30d": "Ultimi 30 giorni", "year": "Anno {year}" },
+		"totals": {
+			"catches": "catture",
+			"species": "specie",
+			"heaviest": "più pesante"
+		},
+		"sort": {
+			"label": "Ordinamento",
+			"weight": "Per peso",
+			"length": "Per lunghezza",
+			"species": "Per specie"
+		},
+		"period": {
+			"label": "Periodo",
+			"all": "Sempre",
+			"30d": "Ultimi 30 giorni",
+			"year": "Anno {year}"
+		},
 		"allSpecies": "Tutte",
 		"speciesFilter": "Filtra per specie",
 		"catchesCount": "{n} cattura | {n} catture",
@@ -1514,7 +1528,11 @@
 			"textOther": "Non ci sono catture visibili per questo periodo.",
 			"cta": "Inizia un'uscita"
 		},
-		"error": { "title": "Non riesco a caricare le catture", "text": "Controlla la connessione e riprova.", "retry": "Riprova" },
+		"error": {
+			"title": "Non riesco a caricare le catture",
+			"text": "Controlla la connessione e riprova.",
+			"retry": "Riprova"
+		},
 		"notFound": "Utente non trovato."
 	},
 	"leaderboard": {
@@ -1852,7 +1870,20 @@
 			"rain": "Pioggia",
 			"wave": "Onda max",
 			"fromOm": "Da qui: previsioni Open-Meteo",
-			"source": "Dal giorno {n} le previsioni vengono da Open-Meteo (Google arriva a 10 giorni). Oltre una settimana sono indicative."
+			"source": "Dal giorno 8 niente onde né attività dei pesci: i dati non sono disponibili e la previsione è meno affidabile.",
+			"titleN": "Prossimi giorni",
+			"choose": "Quanti giorni mostrare",
+			"daysShort": "giorni",
+			"summary": "Riepilogo dei prossimi {n} giorni",
+			"temps": "Minima / massima",
+			"rainTotal": "Pioggia totale",
+			"rainDays": "nessun giorno di pioggia | {n} giorno di pioggia | {n} giorni di pioggia",
+			"partialSum": "alcuni giorni senza dato",
+			"windMax": "Vento massimo",
+			"waveMax": "Onda massima",
+			"first7": "solo primi 7 giorni",
+			"lessReliable": "Da qui meno affidabile",
+			"note": "Pioggia = probabilità. Toccando un giorno si apre il dettaglio."
 		},
 		"denied": {
 			"title": "Posizione non consentita",
@@ -1910,6 +1941,80 @@
 			"windKmh": "km/h",
 			"waveM": "onda m",
 			"rain": "pioggia"
+		},
+		"day": {
+			"backToDays": "Torna ai giorni",
+			"offlineTitle": "Dettaglio non disponibile offline",
+			"offlineText": "Questo giorno non è salvato sul telefono. Torna online per vederlo: i giorni già aperti restano disponibili.",
+			"errorTitle": "Non riesco a caricare il dettaglio",
+			"outsideTitle": "Giorno fuori dalla previsione",
+			"outsideText": "Non abbiamo la previsione per questa data.",
+			"offlineBanner": "Sei offline: dati non aggiornati.",
+			"savedAt": "Dettaglio salvato alle {time}.",
+			"prev": "Giorno prima",
+			"next": "Giorno dopo",
+			"summary": "Riepilogo",
+			"rel": {
+				"high": "Affidabilità alta",
+				"medium": "Affidabilità media",
+				"low": "Affidabilità bassa"
+			},
+			"inDays": "oggi | tra {n} giorno | tra {n} giorni",
+			"sun": "Sole",
+			"ofLight": "di luce",
+			"bands": "Giornata per fasce",
+			"band": {
+				"night": "Notte",
+				"morning": "Mattina",
+				"afternoon": "Pomeriggio",
+				"evening": "Sera"
+			},
+			"tempShort": "Temp.",
+			"bandsNote": "Vento in km/h, onda in metri, pioggia = probabilità.",
+			"tempRain": "Temperatura e pioggia",
+			"legTemp": "Temperatura",
+			"legRain": "Pioggia (mm/h)",
+			"legSun": "Alba e tramonto",
+			"tempAria": "Temperatura ora per ora, da {min} a {max} gradi. Alba alle {rise}, tramonto alle {set}.",
+			"only7": "Il dettaglio orario è disponibile solo per i prossimi 7 giorni.",
+			"seaOnly7": "Altezza dell'onda e correnti sono disponibili solo per i prossimi 7 giorni. Le maree sono una stima e si calcolano per ogni giorno.",
+			"press": {
+				"fallRise": "In calo, poi in aumento",
+				"falling": "In calo",
+				"rising": "In aumento",
+				"steady": "Stabile"
+			},
+			"pressureAria": "Pressione del giorno, minimo {min} hPa alle {hour}",
+			"pressRead": "Lettura indicativa. Minimo di {min} hPa alle {time}. Spesso accompagna un cambio di tempo: è uno spunto, non una previsione.",
+			"waveMaxL": "Onda max",
+			"waveChart": "Altezza dell'onda",
+			"tides": "Maree del giorno",
+			"activity": "Attività dei pesci",
+			"indicative": "Indicativa",
+			"loadingFish": "Calcolo la stima…",
+			"fishUnavailable": "Stima non disponibile ora. Riprova più tardi.",
+			"fishNoData": "Non ci sono abbastanza dati per una stima di questo giorno.",
+			"levelOf": "stima indicativa",
+			"actLeg": "Attività stimata (più alta = più favorevole)",
+			"actAria": "Attività dei pesci stimata ora per ora, livello {label}. Finestre più favorevoli: {windows}.",
+			"windows": "Finestre più favorevoli",
+			"noWindow": "Nessuna finestra spicca in questo giorno.",
+			"weigh": "Cosa pesa nella stima",
+			"factor": {
+				"light": "Luce",
+				"tide": "Marea",
+				"pressure": "Pressione",
+				"wind": "Vento",
+				"waterTemp": "Acqua"
+			},
+			"actDisclaimer": "Stima indicativa, calcolata da luce, marea, pressione, vento e temperatura dell'acqua. Non garantisce né esclude catture: contano anche il tuo luogo e la tua tecnica.",
+			"species": "Pesci più probabili",
+			"yourCatches": "Tue catture qui: {n}.",
+			"noSpecies": "Nessuna specie spicca per questo giorno.",
+			"speciesBasis": "Basata su stagione, temperatura dell'acqua, condizioni del giorno e sulle tue catture: indica cosa è più plausibile, non cosa prenderai.",
+			"speciesSeason": "Per questo giorno la stima è solo stagionale (senza temperatura dell'acqua): indica cosa è più plausibile, non cosa prenderai.",
+			"lightMoon": "Luce e luna",
+			"pressure": "Pressione"
 		}
 	}
 }

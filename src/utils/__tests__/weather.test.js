@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest'
 import {
   fmt, fmtSigned, MISSING, compass, windInfo, headingTo, pressureState, moonLabel, hhmm, daylight, dayLabel,
   conditionText, uvLabel, nextTides, tideSummary, normalizeOverview, isPartial, waveSeries, groupHoursByDay, firstExtendedIndex,
+  rowWmo, rowLabel, isDayAt, periodSummary, tempBars, readDays, saveDays, DAYS_KEY, reliability, hoursOfDay, dayBands, pressureDay, tidesOfDay, fromNow, hasHourlyDetail, moonOn, longDate,
 } from '../weather.js'
 
 describe('null → «—» (mai 0)', () => {
@@ -96,8 +97,8 @@ describe('normalizeOverview', () => {
 
 describe('onde ora per ora', () => {
   it('la serie si normalizza e i valori non numerici diventano null', () => {
-    const v = normalizeOverview({ marine: { available: true, waves: [{ time: 'a', height: 0.5, period: 4 }, { time: 'b', height: 'x', period: null }] } })
-    expect(v.marine.waves).toEqual([{ time: 'a', height: 0.5, period: 4 }, { time: 'b', height: null, period: null }])
+    const v = normalizeOverview({ marine: { available: true, waves: [{ time: 'a', height: 0.5, period: 4, seaTemp: null }, { time: 'b', height: 'x', period: null }] } })
+    expect(v.marine.waves).toEqual([{ time: 'a', height: 0.5, period: 4, seaTemp: null }, { time: 'b', height: null, period: null, seaTemp: null }])
   })
   it('senza onde: lista vuota', () => expect(normalizeOverview({ marine: { available: true } }).marine.waves).toEqual([]))
   it('waveSeries scarta i punti senza altezza e trova il massimo', () => {
@@ -123,5 +124,113 @@ describe('ore per giorno e fonte', () => {
     expect(v.hourly[0]).toMatchObject({ date: '2026-11-11', source: 'google' })
     expect(v.hourly[1]).toMatchObject({ date: '2026-11-12', source: 'open-meteo' })
     expect(v.daily.map(d => d.source)).toEqual(['open-meteo', 'google'])
+  })
+})
+
+
+const mkDays = n => Array.from({ length: n }, (_, i) => ({
+  date: `2026-07-${String(1 + i).padStart(2, '0')}`, tempMin: 15 + i, tempMax: 25 + i, precipSum: i % 2 ? 2 : 0, precipProbability: 20, windSpeed: 10 + i, waveHeightMax: i < 7 ? 0.5 + i / 10 : null,
+}))
+describe('riepilogo del periodo', () => {
+  it('minimi, massimi e totali sui primi n giorni', () => {
+    const s7 = periodSummary(mkDays(15), 7)
+    expect(s7).toMatchObject({ count: 7, tempMin: 15, tempMax: 31, rainTotal: 6, rainDays: 3, windMax: 16 })
+    expect(s7.waveMax).toBeCloseTo(1.1)
+    const s15 = periodSummary(mkDays(15), 15)
+    expect(s15).toMatchObject({ count: 15, tempMin: 15, tempMax: 39, rainTotal: 14, windMax: 24 })
+    expect(s15.waveMax).toBeCloseTo(1.1) // l'onda conta solo i primi 7 giorni
+  })
+  it('dati mancanti restano null, mai 0, e il totale parziale è segnalato', () => {
+    const none = periodSummary([{ date: 'x' }, { date: 'y' }], 7)
+    expect(none).toMatchObject({ tempMin: null, tempMax: null, rainTotal: null, rainDays: null, windMax: null, waveMax: null, rainPartial: false })
+    const part = periodSummary([{ precipSum: 4 }, { precipSum: null }], 7)
+    expect(part.rainTotal).toBe(4); expect(part.rainPartial).toBe(true)
+    expect(periodSummary(null, 7).count).toBe(0)
+  })
+  it('un giorno di pioggia: ≥ 1 mm, oppure probabilità ≥ 50 % se manca la quantità', () => {
+    expect(periodSummary([{ precipSum: 0.4 }, { precipSum: 1 }], 7).rainDays).toBe(1)
+    expect(periodSummary([{ precipProbability: 60 }, { precipProbability: 40 }], 7).rainDays).toBe(1)
+  })
+  it('barre min-max in percentuale', () => {
+    const b = tempBars([{ tempMin: 10, tempMax: 20 }, { tempMin: 15, tempMax: 30 }, {}], 3)
+    expect(b[0]).toEqual({ from: 0, to: 50 }); expect(b[1]).toEqual({ from: 25, to: 100 }); expect(b[2]).toBeNull()
+  })
+  it('affidabilità: alta fino al 3º giorno, media fino al 7º, bassa oltre', () => {
+    expect([0, 2, 3, 6, 7, 14].map(reliability)).toEqual(['high', 'high', 'medium', 'medium', 'low', 'low'])
+  })
+})
+
+describe('selettore 7 / 15 giorni', () => {
+  const mem = () => { const m = new Map(); return { getItem: k => (m.has(k) ? m.get(k) : null), setItem: (k, v) => m.set(k, v) } }
+  it('default 7, si ricorda 15, ignora valori non validi', () => {
+    const st = mem()
+    expect(readDays(st)).toBe(7)
+    saveDays(15, st); expect(st.getItem('fishlog.weather.days')).toBe('15'); expect(DAYS_KEY).toBe('fishlog.weather.days'); expect(readDays(st)).toBe(15)
+    saveDays(9, st); expect(readDays(st)).toBe(15)
+    st.setItem(DAYS_KEY, 'abc'); expect(readDays(st)).toBe(7)
+  })
+  it('localStorage che lancia errori non rompe nulla', () => {
+    const bad = { getItem() { throw new Error('no') }, setItem() { throw new Error('no') } }
+    expect(readDays(bad)).toBe(7); expect(() => saveDays(15, bad)).not.toThrow()
+  })
+})
+
+describe('icone e testi dalle condizioni', () => {
+  it('usa wmo, altrimenti ricava un codice dalla condizione dei dati vecchi', () => {
+    expect(rowWmo({ wmo: 61, condition: 'sole' })).toBe(61)
+    expect(rowWmo({ condition: 'coperto' })).toBe(3)
+    expect(rowWmo({ condition: 'vento' })).toBeNull()
+    expect(rowWmo({})).toBeNull()
+    expect(rowLabel({ wmo: 0 })).toBe('Sereno'); expect(rowLabel({}, 'Soleggiato')).toBe('Soleggiato'); expect(rowLabel({})).toBe('Non disponibile')
+  })
+  it('giorno e notte dall\'ora', () => {
+    expect(isDayAt(12, '2026-07-01T06:00', '2026-07-01T20:00')).toBe(true)
+    expect(isDayAt(23, '2026-07-01T06:00', '2026-07-01T20:00')).toBe(false)
+    expect(isDayAt(3, null, null)).toBe(true)
+  })
+})
+
+describe('dettaglio del giorno', () => {
+  const rows = Array.from({ length: 24 }, (_, h) => ({ date: '2026-07-01', hour: h, temp: 10 + h / 2, windSpeed: h, windDeg: 90, precipProbability: h === 13 ? 80 : 10, wmo: 3, pressure: 1010 + Math.abs(h - 12) * 0.5 }))
+  it('quattro fasce con media, massimo e null se manca il dato', () => {
+    const b = dayBands(rows, [{ time: '2026-07-01T08:00', height: 1 }, { time: '2026-07-01T09:00', height: 2 }])
+    expect(b.map(x => x.key)).toEqual(['night', 'morning', 'afternoon', 'evening'])
+    expect(b[2]).toMatchObject({ rain: 80, wind: 17 })
+    expect(b[1].wave).toBe(1.5); expect(b[0].wave).toBeNull()
+    expect(dayBands([], [])[0]).toMatchObject({ temp: null, wind: null, rain: null, wave: null })
+  })
+  it('pressione: minimo con ora e forma «in calo, poi in aumento»', () => {
+    const p = pressureDay(rows)
+    expect(p.minHour).toBe(12); expect(p.min).toBe(1010); expect(p.shape).toBe('fallRise')
+    expect(pressureDay(rows.slice(0, 3))).toBeNull()
+    expect(pressureDay(rows.map(r => ({ ...r, pressure: null })))).toBeNull()
+  })
+  it('ore, maree e dettaglio disponibili solo entro 7 giorni', () => {
+    const view = { daily: mkDays(10), hourly: [...rows, ...rows.map(r => ({ ...r, date: '2026-07-09' }))] }
+    expect(hoursOfDay(view, '2026-07-01')).toHaveLength(24)
+    expect(hasHourlyDetail(view, '2026-07-01')).toBe(true)
+    expect(hasHourlyDetail(view, '2026-07-09')).toBe(false) // oltre 7 giorni: niente dettaglio anche se ci sono ore
+    expect(hasHourlyDetail(view, '2026-08-30')).toBe(false)
+    const marine = { tides: { series: Array.from({ length: 30 }, (_, i) => ({ time: `2026-07-01T${String(i % 24).padStart(2, '0')}:00`, height: i })), extremes: [{ time: '2026-07-01T06:00', type: 'alta', height: 1 }, { time: '2026-07-02T06:00', type: 'alta', height: 1 }] } }
+    expect(tidesOfDay(marine, '2026-07-01').extremes).toHaveLength(1)
+    expect(tidesOfDay({ tides: null }, '2026-07-01')).toBeNull()
+  })
+  it('fromNow tiene 48 ore a partire da adesso', () => {
+    const s = Array.from({ length: 168 }, (_, i) => ({ time: `2026-07-${String(1 + Math.floor(i / 24)).padStart(2, '0')}T${String(i % 24).padStart(2, '0')}:00` }))
+    const r = fromNow(s, '2026-07-01T10:30', 48)
+    expect(r).toHaveLength(48); expect(r[0].time).toBe('2026-07-01T10:00')
+  })
+  it('luna e data lunga', () => {
+    expect(moonOn('2000-01-06').phase).toBe('luna_nuova'); expect(moonOn('nope').phase).toBeNull()
+    expect(longDate('2026-11-13')).toBe('Venerdì 13 novembre'); expect(longDate('x')).toBe('—')
+  })
+})
+
+describe('normalizeOverview: campi nuovi', () => {
+  it('mancanti → null, attività solo se ha un livello', () => {
+    const v = normalizeOverview({ daily: [{ date: '2026-07-01', wmo: 61, activity: { level: 4, label: 'Buona', score: 0.7 } }, { date: '2026-07-02', activity: null }], hourly: [{ date: '2026-07-01', hour: 1 }] })
+    expect(v.daily[0]).toMatchObject({ wmo: 61, precipSum: null, windGust: null, activity: { level: 4, label: 'Buona' } })
+    expect(v.daily[1].activity).toBeNull(); expect(v.daily[1].wmo).toBeNull()
+    expect(v.hourly[0]).toMatchObject({ pressure: null, precipMm: null, wmo: null })
   })
 })
