@@ -31,7 +31,7 @@ export function useHomeWeather() {
     const sunrise = d.daily?.[0]?.sunrise, sunset = d.daily?.[0]?.sunset
     const press = pressureState(d.fishing?.pressure?.trend, d.fishing?.pressure?.delta3h)
     return {
-      temp: c.temp, feels: c.feelsLike,
+      temp: c.temp, feels: c.feelsLike, max: d.daily?.[0]?.tempMax ?? null, min: d.daily?.[0]?.tempMin ?? null,
       wmo: rowWmo(c), isDay: c.isDay !== false, condition: rowLabel(c, c.description),
       hours: (d.hourly || []).slice(0, 8).map(h => ({
         key: h.time || `${h.date}-${h.hour}`, hour: h.hour, wmo: rowWmo(h), isDay: isDayAt(h.hour, sunrise, sunset),
