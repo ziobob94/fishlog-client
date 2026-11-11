@@ -28,6 +28,7 @@
       :is-edit="true"
       @submit="onSubmit"
       @cancel="onCancelFullForm"
+      @delete="onDelete"
     />
   </div>
 </template>
@@ -64,6 +65,11 @@ function onClosed() {
 function onCancelFullForm() {
   if (store.current?.status === 'ongoing') showFullForm.value = false
   else router.push(`/session/${route.params.id}`)
+}
+
+async function onDelete() {
+  if (!window.confirm(t('sessionForm.menu.deleteConfirm'))) return
+  if (await store.deleteSession(route.params.id)) router.replace('/sessions')
 }
 
 async function onSubmit(payload, pendingPhotosByIndex) {

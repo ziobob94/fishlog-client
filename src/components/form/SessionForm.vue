@@ -1,8 +1,71 @@
 <template>
-  <form @submit.prevent="handleSubmit" class="session-form">
+  <form @submit.prevent="handleSubmit" class="session-form" novalidate>
 
+    <!-- ═══ NUOVA USCITA: solo l'essenziale (luogo, quando, ambiente, tecnica) ═══ -->
+    <div v-if="mode === 'essential'" class="essential">
+      <button type="button" class="detect-card" :disabled="!canAutoFill || autoFilling || gpsLoading" @click="autoFillWeatherAndSea">
+        <span class="detect-text">
+          <strong>{{ gpsLoading ? t('sessionForm.fields.gpsDetecting') : (autoFilling ? t('sessionForm.autoFill.loading') : t('sessionForm.essential.detect')) }}</strong>
+          <small>{{ t('sessionForm.essential.detectSub') }}</small>
+        </span>
+      </button>
+      <p v-if="autoFillMsg" class="autofill-result" :class="autoFillMsg.type">{{ autoFillMsg.text }}</p>
+      <p v-if="geocodeMsg" class="autofill-hint">{{ geocodeMsg }}</p>
+
+      <section>
+        <label class="ess-lab" for="ess-where">{{ t('sessionForm.essential.where') }}</label>
+        <input id="ess-where" v-model="f.location.name" type="text" class="ess-inp" :placeholder="t('sessionForm.fields.locationNamePlaceholder')" :class="{ 'field-missing': !f.location.name }" />
+        <p v-if="f.location.coords.lat && f.location.coords.lng" class="ess-hint">{{ f.location.coords.lat }}°N · {{ f.location.coords.lng }}°E · {{ t('sessionForm.essential.detected') }}</p>
+      </section>
+
+      <section>
+        <span class="ess-lab">{{ t('sessionForm.essential.when') }}</span>
+        <div class="ess-two">
+          <input v-model="f.date" type="date" class="ess-inp" :aria-label="t('sessionForm.fields.dateLabel')" :class="{ 'field-missing': !f.date }" />
+          <input v-model="f.startTime" type="time" class="ess-inp" :aria-label="t('sessionForm.fields.startTimeLabel')" />
+        </div>
+        <label class="ess-switch">
+          <input type="checkbox" v-model="concluded" />
+          <span>{{ t('sessionForm.essential.alreadyDone') }}</span>
+        </label>
+        <div v-if="concluded" class="ess-end">
+          <label class="ess-lab" for="ess-end">{{ t('sessionForm.fields.endTimeLabel') }}</label>
+          <input id="ess-end" v-model="f.endTime" type="time" class="ess-inp" />
+        </div>
+      </section>
+
+      <section>
+        <span class="ess-lab">{{ t('sessionForm.essential.water') }}</span>
+        <div class="ess-chips">
+          <button v-for="w in WATER_TYPES" :key="w.v" type="button" class="ess-chip" :class="{ on: f.waterType === w.v }" :aria-pressed="f.waterType === w.v" @click="f.waterType = f.waterType === w.v ? '' : w.v">{{ w.l }}</button>
+        </div>
+      </section>
+
+      <section>
+        <span class="ess-lab">{{ t('sessionForm.fields.techniqueLabel') }}</span>
+        <div class="ess-chips">
+          <button v-for="t2 in TECHNIQUES" :key="t2.v" type="button" class="ess-chip" :class="{ on: f.technique === t2.v }" :aria-pressed="f.technique === t2.v" @click="f.technique = f.technique === t2.v ? '' : t2.v">{{ t2.l }}</button>
+        </div>
+      </section>
+    </div>
+
+    <!-- ═══ DATI USCITA: elenco di righe → una schermata per sezione ═══ -->
+    <div v-else-if="menuMode && !activeSection" class="data-menu">
+      <button v-for="row in menuRows" :key="row.id" type="button" class="menu-row" @click="openSection(row.id)">
+        <span class="menu-text"><strong>{{ row.title }}</strong><small>{{ row.sub }}</small></span>
+        <span class="menu-status" :class="{ done: row.done }">{{ row.status }}</span>
+        <ChevronRight :size="18" class="menu-go" />
+      </button>
+    </div>
+
+    <div v-else-if="menuMode" class="section-bar">
+      <button type="button" class="link-back" @click="activeSection = null"><ArrowLeft :size="18" /> {{ t('sessionForm.menu.back') }}</button>
+      <h3>{{ sectionLabel(activeSection) }}</h3>
+    </div>
+
+    <div v-show="mode !== 'essential' && (!menuMode || activeSection)" :class="{ 'single-section': menuMode }">
     <!-- BOTTONE AUTO-FILL (sempre visibile, sopra a tutte le sezioni) -->
-    <div class="autofill-bar" v-if="!autofillCollapsed">
+    <div class="autofill-bar" v-if="!autofillCollapsed && showAutofill">
       <div>
         <p class="autofill-title">{{ t('sessionForm.autoFill.title') }}</p>
         <p class="autofill-sub">{{ t('sessionForm.autoFill.subtitle') }}</p>
@@ -14,7 +77,7 @@
         {{ gpsLoading ? t('sessionForm.fields.gpsDetecting') : (autoFilling ? t('sessionForm.autoFill.loading') : t('sessionForm.autoFill.button')) }}
       </button>
     </div>
-    <div v-else class="autofill-bar autofill-bar-collapsed">
+    <div v-else-if="showAutofill" class="autofill-bar autofill-bar-collapsed">
       <span class="autofill-collapsed-btn" role="button" tabindex="0"
         @click="autofillCollapsed = false" @keydown.enter="autofillCollapsed = false">
         {{ t('sessionForm.autoFill.button') }}
@@ -31,7 +94,7 @@
     </div>
 
     <!-- BASE -->
-    <div class="accordion-section">
+    <div class="accordion-section" v-show="sectionVisible('base')">
     <button type="button" class="section-divider accordion-header" :class="{ incomplete: !canLeaveSection('base') }" @click="toggleSection('base')">
       <span>{{ t('sessionForm.sections.base') }}</span>
       <span v-if="!canLeaveSection('base')" class="required-badge" :title="t('sessionForm.requiredToContinue')">*</span>
@@ -81,7 +144,7 @@
     </div>
 
     <!-- LUOGO -->
-    <div class="accordion-section">
+    <div class="accordion-section" v-show="sectionVisible('location')">
     <button type="button" class="section-divider accordion-header" :class="{ incomplete: !canLeaveSection('location') }" @click="toggleSection('location')">
       <span>{{ t('sessionForm.sections.location') }}</span>
       <span v-if="!canLeaveSection('location')" class="required-badge" :title="t('sessionForm.requiredToContinue')">*</span>
@@ -131,7 +194,7 @@
     </div>
 
     <!-- CONDIZIONI ACQUA (adattive) -->
-    <div class="accordion-section">
+    <div class="accordion-section" v-show="sectionVisible('water')">
     <button type="button" class="section-divider accordion-header" @click="toggleSection('water')">
       <span>{{ waterSectionTitle }}</span>
       <span class="chevron" :class="{ open: isOpen('water') }">▸</span>
@@ -213,7 +276,7 @@
     </div>
 
     <!-- METEO -->
-    <div class="accordion-section">
+    <div class="accordion-section" v-show="sectionVisible('weather')">
     <button type="button" class="section-divider accordion-header" @click="toggleSection('weather')">
       <span>{{ t('sessionForm.sections.weather') }}</span>
       <span class="chevron" :class="{ open: isOpen('weather') }">▸</span>
@@ -256,7 +319,7 @@
     </div>
 
     <!-- CATTURE (esca, montatura e lancio sono caratteristiche di ogni cattura) -->
-    <div id="section-catches" class="accordion-section">
+    <div id="section-catches" class="accordion-section" v-show="sectionVisible('catches')">
     <button type="button" class="section-divider accordion-header" @click="toggleSection('catches')">
       <span>{{ t('sessionForm.sections.catches') }}</span>
       <span class="chevron" :class="{ open: isOpen('catches') }">▸</span>
@@ -268,7 +331,7 @@
     </div>
 
     <!-- NOTE -->
-    <div class="accordion-section">
+    <div class="accordion-section" v-show="sectionVisible('notes')">
     <button type="button" class="section-divider accordion-header" @click="toggleSection('notes')">
       <span>{{ t('sessionForm.sections.notes') }}</span>
       <span class="chevron" :class="{ open: isOpen('notes') }">▸</span>
@@ -304,15 +367,24 @@
     </template>
     </div>
 
+    </div>
+
     <!-- AZIONI -->
     <div class="form-actions">
       <div class="form-actions-inner">
-        <button type="button" class="btn btn-ghost" @click="$emit('cancel')">{{ t('common.cancel') }}</button>
-        <button type="submit" class="btn btn-primary" :disabled="saving">
-          <span v-if="saving" class="spinner" style="width:15px;height:15px"></span>
-          {{ saving ? t('sessionForm.saving') : (isEdit ? t('sessionForm.submitEdit') : t('sessionForm.submitCreate')) }}
-        </button>
+        <template v-if="menuMode && activeSection">
+          <button type="button" class="btn btn-primary" @click="activeSection = null">{{ t('sessionForm.menu.done') }}</button>
+        </template>
+        <template v-else>
+          <button type="button" class="btn btn-ghost" @click="$emit('cancel')">{{ t('common.cancel') }}</button>
+          <button type="submit" class="btn btn-primary" :disabled="saving">
+            <span v-if="saving" class="spinner" style="width:15px;height:15px"></span>
+            {{ saving ? t('sessionForm.saving') : (mode === 'essential' ? (concluded ? t('sessionForm.essential.save') : t('sessionForm.essential.start')) : (isEdit ? t('sessionForm.submitEdit') : t('sessionForm.submitCreate'))) }}
+          </button>
+        </template>
       </div>
+      <p v-if="mode === 'essential'" class="ess-foot">{{ t('sessionForm.essential.later') }}</p>
+      <button v-if="menuMode && !activeSection" type="button" class="delete-link" @click="$emit('delete')">{{ t('sessionForm.menu.delete') }}</button>
     </div>
 
   </form>
@@ -320,6 +392,7 @@
 
 <script setup>
   import { ref, computed, watch, onMounted, nextTick } from 'vue'
+  import { ChevronRight, ArrowLeft } from 'lucide-vue-next'
   import { useI18n } from 'vue-i18n'
   import { useGroupStore } from '../../stores/groups.js'
   import { useAuthStore } from '../../stores/auth.js'
@@ -340,9 +413,44 @@
   const props = defineProps({
     initialData: { type: Object, default: null },
     saving: { type: Boolean, default: false },
-    isEdit: { type: Boolean, default: false }
+    isEdit: { type: Boolean, default: false },
+    // 'essential' = nuova uscita (solo luogo/quando/ambiente/tecnica); 'full' = modifica a sezioni
+    mode: { type: String, default: 'full' }
   })
-  const emit = defineEmits(['submit', 'cancel'])
+  const emit = defineEmits(['submit', 'cancel', 'delete'])
+
+  // ─── Nuova uscita essenziale e menu «Dati uscita» ─────────────────────────────
+
+  const concluded = ref(false)
+  const activeSection = ref(null)
+  const menuMode = computed(() => props.isEdit && props.mode !== 'essential')
+
+  function openSection(id) {
+    activeSection.value = id
+    openSections.value = new Set(ALL_SECTIONS)
+    nextTick(() => window.scrollTo({ top: 0 }))
+  }
+  const sectionVisible = id => !menuMode.value || activeSection.value === id
+  function sectionLabel(id) {
+    return id === 'water' ? waterSectionTitle.value : t(`sessionForm.sections.${id}`)
+  }
+  const menuRows = computed(() => {
+    const done = t('sessionForm.menu.filled'), todo = t('sessionForm.menu.toAdd')
+    const hasObj = o => Object.values(o || {}).some(v => v && typeof v === 'object' ? hasObj(v) : (v !== '' && v !== null && v !== undefined && v !== 0))
+    const n = f.value.catches?.length || 0
+    const rows = [
+      { id: 'base', ok: !!f.value.date },
+      { id: 'location', ok: !!f.value.location.name },
+      { id: 'water', ok: hasObj(f.value.sea) },
+      { id: 'weather', ok: hasObj(f.value.weather) },
+      { id: 'catches', ok: n > 0, status: n ? t('sessionForm.menu.catchesCount', { n }, n) : todo },
+      { id: 'notes', ok: !!f.value.notes }
+    ]
+    return rows.map(r => ({
+      id: r.id, title: sectionLabel(r.id), sub: t(`sessionForm.menu.sub.${r.id}`),
+      done: r.ok, status: r.status || (r.ok ? done : todo)
+    }))
+  })
 
   // ─── Costanti ─────────────────────────────────────────────────────────────────
 
@@ -475,6 +583,7 @@
   let geocodeTimer = null
 
   const canAutoFill = computed(() => !!f.value.date)
+  const showAutofill = computed(() => !menuMode.value || ['location', 'water', 'weather'].includes(activeSection.value))
 
   // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -707,6 +816,7 @@
     for (const id of ['base', 'location']) {
       if (!canLeaveSection(id)) {
         const next = new Set(openSections.value); next.add(id); openSections.value = next
+        if (menuMode.value) activeSection.value = id
         toast(SECTION_BLOCKED_MSG[id](), { type: 'warning' })
         nextTick(() => document.querySelector('.field-missing')?.focus())
         return
@@ -715,7 +825,7 @@
     const payload = JSON.parse(JSON.stringify(f.value))
     if (!payload.location.coords?.lat && !payload.location.coords?.lng) delete payload.location.coords
     if (payload.visibility !== 'group') payload.allowedGroups = []
-    emit('submit', payload, catchesRef.value?.pendingPhotosByIndex)
+    emit('submit', payload, catchesRef.value?.pendingPhotosByIndex, { concluded: props.mode === 'essential' && concluded.value })
   }
 </script>
 
@@ -1003,4 +1113,38 @@
     border: 1px solid #5c1a1a;
     color: #f05050;
   }
+
+  /* ── Nuova uscita essenziale ── */
+  .essential { display: flex; flex-direction: column; gap: 1.5rem; }
+  .detect-card { align-items: center; background: rgba(14, 165, 233, .1); border: 1px solid var(--ocean); border-radius: 18px; color: var(--foam); cursor: pointer; display: flex; min-height: 64px; padding: .75rem 1rem; text-align: left; width: 100%; }
+  .detect-card:disabled { opacity: .6; }
+  .detect-text { display: flex; flex-direction: column; gap: .15rem; }
+  .detect-text small { color: var(--text-muted); font-size: .8rem; }
+  .ess-lab { color: var(--text-muted); display: block; font-size: .75rem; font-weight: 800; letter-spacing: .12em; margin-bottom: .5rem; text-transform: uppercase; }
+  .ess-inp { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; color: var(--foam); font-size: 1rem; height: 52px; padding: 0 1rem; width: 100%; box-sizing: border-box; }
+  .ess-inp:focus { border-color: var(--ocean); outline: none; }
+  .ess-hint { color: var(--text-muted); font-size: .8rem; margin-top: .4rem; }
+  .ess-two { display: grid; gap: .6rem; grid-template-columns: 1.3fr 1fr; }
+  .ess-switch { align-items: center; color: var(--foam); display: flex; gap: .7rem; margin-top: .6rem; min-height: 44px; }
+  .ess-switch input { height: 22px; width: 22px; }
+  .ess-end { margin-top: .5rem; }
+  .ess-chips { display: flex; flex-wrap: wrap; gap: .5rem; }
+  .ess-chip { background: var(--surface); border: 1px solid var(--border); border-radius: 22px; color: var(--foam); cursor: pointer; font-weight: 600; min-height: 44px; padding: 0 1rem; }
+  .ess-chip.on { background: var(--ocean); border-color: var(--ocean); color: rgb(var(--color-on-primary)); font-weight: 800; }
+  .ess-foot { color: var(--text-muted); font-size: .8rem; text-align: center; margin: .5rem 0 0; }
+
+  /* ── Dati uscita (menu a righe) ── */
+  .data-menu { display: flex; flex-direction: column; gap: .6rem; }
+  .menu-row { align-items: center; background: var(--surface); border: 1px solid var(--border); border-radius: 14px; color: var(--foam); cursor: pointer; display: flex; gap: .75rem; min-height: 64px; padding: .7rem 1rem; text-align: left; width: 100%; }
+  .menu-row:hover { border-color: var(--ocean); }
+  .menu-text { display: flex; flex: 1; flex-direction: column; gap: .1rem; }
+  .menu-text small { color: var(--text-muted); font-size: .78rem; }
+  .menu-status { color: var(--text-muted); font-size: .8rem; }
+  .menu-status.done { color: var(--success); }
+  .menu-go { color: var(--ocean); }
+  .section-bar { align-items: center; display: flex; flex-direction: column; gap: .25rem; margin-bottom: 1rem; }
+  .section-bar h3 { color: var(--foam); font-size: 1.2rem; margin: 0; }
+  .link-back { align-items: center; align-self: flex-start; background: none; border: none; color: var(--ocean); cursor: pointer; display: inline-flex; font-weight: 600; gap: .3rem; padding: .4rem 0; }
+  .single-section .accordion-header, .single-section .section-desc { display: none; }
+  .delete-link { background: none; border: none; color: var(--danger); cursor: pointer; font-size: .85rem; margin-top: .5rem; padding: .5rem; }
 </style>
