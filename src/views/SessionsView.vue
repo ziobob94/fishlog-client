@@ -17,7 +17,7 @@
     <TideDivider v-if="store.ongoing && historySessions.length">{{ t('home.historyTitle') }}</TideDivider>
 
     <div v-if="infiniteLoading" class="state-center">
-      <div class="spinner"></div>
+      <div class="m-spinner"></div>
     </div>
 
     <div v-else-if="!historySessions.length" class="state-center">

@@ -63,7 +63,7 @@
           >{{ t('chat.filters.groups') }}<span v-if="groupConversationsCount"> {{ groupConversationsCount }}</span></button>
         </div>
 
-        <div v-if="chatStore.loading" class="state-center"><div class="spinner"></div></div>
+        <div v-if="chatStore.loading" class="state-center"><div class="m-spinner"></div></div>
 
         <div v-else-if="!chatStore.conversations.length" class="state-center">
           <div style="font-size:3rem; display:flex; justify-content:center"><MessagesSquare :size="48" /></div>
@@ -132,7 +132,7 @@
       </div>
 
       <div v-if="threadError" class="error-banner"><AlertTriangle :size="16" /> {{ threadError }}</div>
-      <div v-else-if="!conversationId" class="state-center"><div class="spinner"></div></div>
+      <div v-else-if="!conversationId" class="state-center"><div class="m-spinner"></div></div>
       <ChatThread v-else :conversation-id="conversationId" />
     </template>
   </div>

@@ -71,7 +71,7 @@
       <ListingFilters v-if="showFilters" v-model="filters" :categories="store.categories" :show-seller-type="false" @reset="resetFilters" />
 
       <div v-if="listingsInfiniteLoading" class="state-center">
-        <div class="spinner"></div>
+        <div class="m-spinner"></div>
       </div>
 
       <div v-else-if="!store.listings.length" class="market-empty">
@@ -98,7 +98,7 @@
       </div>
 
       <div v-if="shopsInfiniteLoading" class="state-center">
-        <div class="spinner"></div>
+        <div class="m-spinner"></div>
       </div>
 
       <div v-else-if="!store.shops.length" class="market-empty">
@@ -123,7 +123,7 @@
       />
 
       <div v-if="ebayInfiniteLoading" class="state-center">
-        <div class="spinner"></div>
+        <div class="m-spinner"></div>
       </div>
 
       <div v-else-if="!store.external.length" class="market-empty">

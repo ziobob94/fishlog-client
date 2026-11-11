@@ -4,7 +4,7 @@
       <RouterLink to="/species" class="btn btn-ghost btn-sm">{{ t('common.back') }}</RouterLink>
     </div>
 
-    <div v-if="loading && !species" class="state-center"><div class="spinner"></div></div>
+    <div v-if="loading && !species" class="state-center"><div class="m-spinner"></div></div>
 
     <div v-else-if="!species" class="state-center species-not-found">
       <Fish :size="32" />
@@ -82,7 +82,7 @@
           </div>
         </div>
 
-        <div v-if="loading" class="state-center"><div class="spinner"></div></div>
+        <div v-if="loading" class="state-center"><div class="m-spinner"></div></div>
 
         <template v-else>
           <section class="card mt-3">

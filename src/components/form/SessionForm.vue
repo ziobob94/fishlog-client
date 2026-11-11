@@ -4,7 +4,7 @@
     <!-- ═══ NUOVA USCITA: solo l'essenziale (luogo, quando, ambiente, tecnica) ═══ -->
     <div v-if="mode === 'essential'" class="essential">
       <button type="button" class="detect-card" :disabled="!canAutoFill || autoFilling || gpsLoading" @click="autoFillWeatherAndSea">
-        <span class="detect-icon"><span v-if="autoFilling || gpsLoading" class="spinner" style="width:18px;height:18px"></span><RefreshCw v-else-if="hasAutoData" :size="22" /><MapPin v-else :size="22" /></span>
+        <span class="detect-icon"><span v-if="autoFilling || gpsLoading" class="m-spinner" style="width:18px;height:18px"></span><RefreshCw v-else-if="hasAutoData" :size="22" /><MapPin v-else :size="22" /></span>
         <span class="detect-text">
           <strong>{{ gpsLoading ? t('sessionForm.fields.gpsDetecting') : (autoFilling ? t('sessionForm.autoFill.loading') : (hasAutoData ? t('sessionForm.autoFill.recalc') : t('sessionForm.essential.detect'))) }}</strong>
           <small>{{ t('sessionForm.essential.detectSub') }}</small>
@@ -66,7 +66,7 @@
     <!-- ═══ DATI USCITA: elenco di righe → una schermata per sezione ═══ -->
     <div v-else-if="menuMode && !activeSection" class="data-menu">
       <button type="button" class="detect-card" :disabled="!canAutoFill || autoFilling || gpsLoading" @click="autoFillWeatherAndSea">
-        <span class="detect-icon"><span v-if="autoFilling || gpsLoading" class="spinner" style="width:18px;height:18px"></span><RefreshCw v-else-if="hasAutoData" :size="22" /><MapPin v-else :size="22" /></span>
+        <span class="detect-icon"><span v-if="autoFilling || gpsLoading" class="m-spinner" style="width:18px;height:18px"></span><RefreshCw v-else-if="hasAutoData" :size="22" /><MapPin v-else :size="22" /></span>
         <span class="detect-text">
           <strong>{{ gpsLoading ? t('sessionForm.fields.gpsDetecting') : (autoFilling ? t('sessionForm.autoFill.loading') : (hasAutoData ? t('sessionForm.autoFill.recalc') : t('sessionForm.menu.autofill'))) }}</strong>
           <small>{{ t('sessionForm.menu.autofillSub') }}</small>
@@ -98,7 +98,7 @@
       </div>
       <button type="button" class="btn btn-secondary btn-sm"
         :disabled="!canAutoFill || autoFilling || gpsLoading" @click="autoFillWeatherAndSea">
-        <span v-if="autoFilling || gpsLoading" class="spinner" style="width:13px;height:13px"></span>
+        <span v-if="autoFilling || gpsLoading" class="m-spinner" style="width:13px;height:13px"></span>
         <RefreshCw v-else-if="hasAutoData" :size="14" />
         {{ gpsLoading ? t('sessionForm.fields.gpsDetecting') : (autoFilling ? t('sessionForm.autoFill.loading') : (hasAutoData ? t('sessionForm.autoFill.recalc') : t('sessionForm.autoFill.button'))) }}
       </button>
@@ -397,7 +397,7 @@
         <template v-else>
           <button v-if="mode !== 'essential'" type="button" class="btn btn-ghost" @click="$emit('cancel')">{{ t('common.cancel') }}</button>
           <button type="submit" :class="mode === 'essential' ? 'fl-btn1' : 'btn btn-primary'" :disabled="saving">
-            <span v-if="saving" class="spinner" style="width:15px;height:15px"></span>
+            <span v-if="saving" class="m-spinner" style="width:15px;height:15px"></span>
             {{ saving ? t('sessionForm.saving') : (mode === 'essential' ? (concluded ? t('sessionForm.essential.save') : t('sessionForm.essential.start')) : (isEdit ? t('sessionForm.submitEdit') : t('sessionForm.submitCreate'))) }}
           </button>
         </template>

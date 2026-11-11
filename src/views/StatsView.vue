@@ -2,7 +2,7 @@
   <div>
     <PageHeader :title="t('nav.stats')" back />
 
-    <div v-if="loading" class="state-center"><div class="spinner"></div></div>
+    <div v-if="loading" class="state-center"><div class="m-spinner"></div></div>
 
     <template v-else>
       <div class="stats-grid">

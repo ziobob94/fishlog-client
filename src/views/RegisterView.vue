@@ -61,7 +61,7 @@
           </label>
           <div v-if="error" class="error-msg">{{ error }}</div>
           <button type="submit" class="btn btn-primary w-full" :disabled="loading || !acceptTerms">
-            <span v-if="loading" class="spinner" style="width:15px;height:15px"></span>
+            <span v-if="loading" class="m-spinner" style="width:15px;height:15px"></span>
             {{ loading ? t('register.loading') : t('register.submit') }}
           </button>
         </form>

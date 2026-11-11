@@ -47,7 +47,7 @@
         </div>
       </div>
       <div v-else-if="loadingConditions" class="live-empty icon-inline text-muted text-xs">
-        <div class="spinner"></div> {{ t('home.liveConditions.loading') }}
+        <div class="m-spinner"></div> {{ t('home.liveConditions.loading') }}
       </div>
       <div v-else class="live-empty">
         <p class="text-muted text-sm">{{ selectedZone === 'here' ? t('home.liveConditions.enable') : t('home.sea.unavailable') }}</p>

@@ -1,6 +1,6 @@
 <template>
   <div class="viewer" @keydown.esc="close" tabindex="-1" ref="root">
-    <div v-if="loading" class="center"><div class="spinner"></div></div>
+    <div v-if="loading" class="center"><div class="m-spinner"></div></div>
     <div v-else-if="!stories.length" class="center">
       <p>{{ t('stories.noStories') }}</p>
       <button type="button" class="fl-btn2 back" @click="close">{{ t('stories.close') }}</button>
@@ -46,6 +46,7 @@
 </template>
 
 <script setup>
+import { confirmDialog } from '../composables/useConfirm.js'
 import { ref, computed, watch, onMounted, onBeforeUnmount } from 'vue'
 import { useRoute, useRouter, RouterLink } from 'vue-router'
 import { useI18n } from 'vue-i18n'
@@ -140,7 +141,7 @@ async function sendReply() {
 }
 
 async function removeStory() {
-  if (!window.confirm(t('stories.deleteConfirm'))) return
+  if (!(await confirmDialog(t('stories.deleteConfirm')))) return
   await store.remove(current.value._id)
   stories.value.splice(index.value, 1)
   if (!stories.value.length) close(); else if (index.value >= stories.value.length) index.value = stories.value.length - 1

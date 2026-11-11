@@ -4,7 +4,7 @@
       <RouterLink to="/market" class="btn btn-ghost btn-sm">{{ t('common.back') }}</RouterLink>
     </div>
 
-    <div v-if="loading" class="state-center"><div class="spinner"></div></div>
+    <div v-if="loading" class="state-center"><div class="m-spinner"></div></div>
 
     <div v-else-if="!shop" class="state-center">
       <p class="text-muted">{{ t('market.shops.notFound') }}</p>

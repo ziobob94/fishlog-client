@@ -2,7 +2,7 @@
   <div class="catch-page">
     <PageHeader :title="isNew ? t('session.ongoing.newCatch') : t('session.ongoing.editCatch')" back compact />
 
-    <div v-if="!ready" class="state-center"><div class="spinner"></div></div>
+    <div v-if="!ready" class="state-center"><div class="m-spinner"></div></div>
 
     <form v-else class="catch-form" novalidate @submit.prevent="save(false)">
       <div v-if="error" class="error-banner"><AlertTriangle :size="16" /> {{ error }}</div>
@@ -88,7 +88,7 @@
 
       <div v-if="draft.species" class="fl-bar">
         <button type="submit" class="fl-btn1" :disabled="saving">
-          <span v-if="saving" class="spinner" style="width:15px;height:15px"></span>
+          <span v-if="saving" class="m-spinner" style="width:15px;height:15px"></span>
           {{ t('session.ongoing.saveCatch') }}
         </button>
         <button v-if="isNew" type="button" class="bar-link" :disabled="saving" @click="save(true)">{{ t('session.ongoing.saveAndAnother') }}</button>

@@ -1,0 +1,161 @@
+/* Sistema di movimento FishLog — «carta nautica»: calmo, acquatico, mai rimbalzi vistosi.
+   Importare dopo tokens.css:  @import './motion.css';
+   Regole d'oro:
+   1. Si animano solo `transform` e `opacity` (più colori e ombre sui controlli). Mai width, height, top, left, margin: niente layout shift.
+   2. Entrata = decelera (--ease-enter); uscita = accelera (--ease-exit) ed è più corta dell'entrata.
+   3. Nei flussi frequenti nessuna transizione supera --motion-slow (320 ms). I cicli (skeleton, spinner, galleggiante) non sono transizioni.
+   4. Con prefers-reduced-motion (o l'impostazione «Riduci animazioni») sparisce ogni spostamento e scala: resta solo la dissolvenza, ≤ 120 ms. */
+
+:root {
+  /* Durate */
+  --motion-press:   80ms;    /* pressione dei pulsanti */
+  --motion-fast:   120ms;    /* colori di chip/segmented, uscita di toast e menu piccoli, dissolvenze */
+  --motion-base:   200ms;    /* entrata di toast e menu, modali in uscita, fogli in uscita, indicatore del segmented */
+  --motion-slow:   320ms;    /* cambio pagina, foglio in entrata, apertura del dettaglio, like */
+  --motion-loop-skeleton: 1400ms;
+  --motion-loop-spinner:   800ms;
+  --motion-loop-bobber:   2600ms;
+
+  /* Curve */
+  --ease-enter:    cubic-bezier(.2, .8, .2, 1);       /* decelera: ciò che arriva */
+  --ease-exit:     cubic-bezier(.4, 0, 1, 1);         /* accelera: ciò che se ne va */
+  --ease-standard: cubic-bezier(.4, 0, .2, 1);        /* spostamenti dentro la schermata */
+  --ease-spring:   cubic-bezier(.34, 1.18, .64, 1);   /* molla leggera: sforamento ~3 %, solo per like, segnalibro, ritorno dello swipe */
+  --ease-linear:   linear;                            /* solo barre di avanzamento (storie) e rotazioni continue */
+
+  /* Distanze */
+  --dist-xs:   4px;      /* shake di fondo, galleggiamento */
+  --dist-sm:   8px;      /* comparsa delle righe di una lista, uscita dei toast */
+  --dist-md:  16px;      /* entrata di toast e menu */
+  --dist-lg:  24px;      /* cambio pagina (slide breve, non a tutta larghezza) */
+  --dist-sheet: 100%;    /* fogli dal basso: dal bordo dello schermo */
+
+  /* Scale */
+  --scale-press: .97;    /* pulsante premuto */
+  --scale-modal: .96;    /* modale in entrata/uscita */
+  --scale-pop:   1.18;   /* picco del cuore (poi torna a 1) */
+  --scale-story: .94;    /* viewer storie che si chiude con lo swipe */
+
+  /* Altro */
+  --stagger-step: 40ms;  /* ritardo tra le righe di una lista */
+  --stagger-max:   6;    /* oltre la sesta riga entrano tutte insieme */
+  --backdrop-opacity: .62;
+}
+
+/* Movimento ridotto: stessi nomi, valori neutri. Funziona con la preferenza di sistema e con
+   l'impostazione dell'app (<html data-motion="reduce">). `data-motion="full"` la forza spenta. */
+@media (prefers-reduced-motion: reduce) {
+  :root:not([data-motion='full']) { --motion-press: 1ms; --motion-fast: 80ms; --motion-base: 120ms; --motion-slow: 120ms;
+    --dist-xs: 0px; --dist-sm: 0px; --dist-md: 0px; --dist-lg: 0px; --dist-sheet: 0px;
+    --scale-press: 1; --scale-modal: 1; --scale-pop: 1; --scale-story: 1; --stagger-step: 0ms; }
+}
+:root[data-motion='reduce'] { --motion-press: 1ms; --motion-fast: 80ms; --motion-base: 120ms; --motion-slow: 120ms;
+  --dist-xs: 0px; --dist-sm: 0px; --dist-md: 0px; --dist-lg: 0px; --dist-sheet: 0px;
+  --scale-press: 1; --scale-modal: 1; --scale-pop: 1; --scale-story: 1; --stagger-step: 0ms; }
+
+/* ───────── Pulsanti e controlli ───────── */
+.m-press { transition: transform var(--motion-fast) var(--ease-standard), background-color var(--motion-fast) var(--ease-standard); }
+.m-press:active { transform: scale(var(--scale-press)); transition-duration: var(--motion-press); }
+.m-color { transition: background-color var(--motion-fast) var(--ease-standard), border-color var(--motion-fast) var(--ease-standard), color var(--motion-fast) var(--ease-standard); } /* chip, segmented, link */
+.m-indicator { transition: transform var(--motion-base) var(--ease-standard); }                                                                                    /* pillola che scorre nel segmented e nei tab */
+
+/* ───────── Cambio pagina (classi per <Transition name="page-…">) ───────── */
+/* Avanti: la nuova pagina entra da destra, la vecchia sfuma e arretra appena. Indietro: inverso. */
+.page-forward-enter-active, .page-back-enter-active { transition: transform var(--motion-slow) var(--ease-enter), opacity var(--motion-slow) var(--ease-enter); }
+.page-forward-leave-active, .page-back-leave-active { transition: transform var(--motion-base) var(--ease-exit), opacity var(--motion-base) var(--ease-exit); position: absolute; inset: 0; }
+.page-forward-enter-from { transform: translateX(var(--dist-lg)); opacity: 0; }
+.page-forward-leave-to   { transform: translateX(calc(var(--dist-lg) * -.5)); opacity: 0; }
+.page-back-enter-from    { transform: translateX(calc(var(--dist-lg) * -.5)); opacity: 0; }
+.page-back-leave-to      { transform: translateX(var(--dist-lg)); opacity: 0; }
+/* Tra tab della barra in basso: solo dissolvenza incrociata, nessun movimento. */
+.page-tab-enter-active { transition: opacity var(--motion-base) var(--ease-standard); }
+.page-tab-leave-active { transition: opacity var(--motion-fast) var(--ease-standard); position: absolute; inset: 0; }
+.page-tab-enter-from, .page-tab-leave-to { opacity: 0; }
+/* Contenitore delle pagine: senza contain né overflow:hidden (romperebbero position:fixed e sticky). */
+.page-stack { position: relative; overflow-x: clip; }   /* niente contain/overflow:hidden: romperebbero position:fixed e sticky nelle pagine */
+
+/* Apertura del dettaglio da card o griglia (View Transitions API, vedi useViewTransition.js).
+   Sull'elemento condiviso: style="view-transition-name: card-<id>". Senza supporto: cambio pagina «avanti». */
+::view-transition-group(*) { animation-duration: var(--motion-slow); animation-timing-function: var(--ease-standard); }
+::view-transition-old(root), ::view-transition-new(root) { animation-duration: var(--motion-base); }
+
+/* ───────── Fogli dal basso ───────── */
+.sheet-backdrop-enter-active { transition: opacity var(--motion-base) var(--ease-standard); }
+.sheet-backdrop-leave-active { transition: opacity var(--motion-base) var(--ease-standard); }
+.sheet-backdrop-enter-from, .sheet-backdrop-leave-to { opacity: 0; }
+.sheet-enter-active { transition: transform var(--motion-slow) var(--ease-enter); }
+.sheet-leave-active { transition: transform var(--motion-base) var(--ease-exit); }
+.sheet-enter-from, .sheet-leave-to { transform: translateY(var(--dist-sheet)); }
+/* Con movimento ridotto (--dist-sheet: 0) il foglio compare con la sola dissolvenza: */
+@media (prefers-reduced-motion: reduce) { :root:not([data-motion='full']) .sheet-enter-from, :root:not([data-motion='full']) .sheet-leave-to { opacity: 0; } }
+:root[data-motion='reduce'] .sheet-enter-from, :root[data-motion='reduce'] .sheet-leave-to { opacity: 0; }
+.sheet-enter-active, .sheet-leave-active { will-change: transform; }
+.sheet-dragging { transition: none !important; }                                       /* durante lo swipe segue il dito */
+.sheet-snapback { transition: transform var(--motion-base) var(--ease-spring); }       /* se non supera la soglia */
+
+/* Menu a comparsa piccoli (filtro «Per te ▾», selettori): origine in alto, 120 ms */
+.menu-enter-active { transition: transform var(--motion-fast) var(--ease-enter), opacity var(--motion-fast) var(--ease-enter); transform-origin: var(--menu-origin, top left); }
+.menu-leave-active { transition: opacity var(--motion-fast) var(--ease-exit); }
+.menu-enter-from { transform: scale(var(--scale-modal)) translateY(calc(var(--dist-xs) * -1)); opacity: 0; }
+.menu-leave-to { opacity: 0; }
+
+/* ───────── Modali e dialoghi di conferma ───────── */
+.modal-enter-active { transition: transform var(--motion-base) var(--ease-enter), opacity var(--motion-base) var(--ease-enter); }
+.modal-leave-active { transition: transform var(--motion-fast) var(--ease-exit), opacity var(--motion-fast) var(--ease-exit); }
+.modal-enter-from, .modal-leave-to { transform: scale(var(--scale-modal)); opacity: 0; }
+
+/* ───────── Toast ───────── */
+/* Successo/info/avviso entrano dall'alto; i toast con azione (Annulla, Ripristina) dal basso, sopra la barra. */
+.toast-top-enter-active, .toast-bottom-enter-active { transition: transform var(--motion-base) var(--ease-enter), opacity var(--motion-base) var(--ease-enter); }
+.toast-top-leave-active, .toast-bottom-leave-active { transition: transform var(--motion-fast) var(--ease-exit), opacity var(--motion-fast) var(--ease-exit); }
+.toast-top-enter-from    { transform: translateY(calc(var(--dist-md) * -1)); opacity: 0; }
+.toast-top-leave-to      { transform: translateY(calc(var(--dist-sm) * -1)); opacity: 0; }
+.toast-bottom-enter-from { transform: translateY(var(--dist-md)); opacity: 0; }
+.toast-bottom-leave-to   { transform: translateY(var(--dist-sm)); opacity: 0; }
+.toast-move { transition: transform var(--motion-base) var(--ease-standard); }  /* gli altri toast scorrono al loro posto */
+
+/* ───────── Liste ───────── */
+/* Comparsa iniziale: ogni riga ha style="--i: <indice>". Solo al primo caricamento, non negli aggiornamenti né nello scroll infinito. */
+@keyframes m-rise { from { opacity: 0; transform: translateY(var(--dist-sm)); } to { opacity: 1; transform: none; } }
+.stagger > * { animation: m-rise var(--motion-base) var(--ease-enter) both; animation-delay: calc(min(var(--i, 0), var(--stagger-max)) * var(--stagger-step)); }
+/* Riordino di una classifica dal vivo (TransitionGroup name="flip"): le righe scivolano al nuovo posto. */
+.flip-move { transition: transform var(--motion-slow) var(--ease-standard); }
+.flip-enter-active { transition: opacity var(--motion-base) var(--ease-enter); } .flip-enter-from { opacity: 0; }
+.flip-leave-active { position: absolute; transition: opacity var(--motion-fast) var(--ease-exit); } .flip-leave-to { opacity: 0; }
+
+/* ───────── Micro-interazioni ───────── */
+@keyframes m-pop  { 0% { transform: scale(1); } 45% { transform: scale(var(--scale-pop)); } 100% { transform: scale(1); } }
+.m-pop { animation: m-pop var(--motion-slow) var(--ease-spring); }                       /* cuore: 320 ms */
+@keyframes m-pop-s { 0% { transform: scale(1); } 50% { transform: scale(1.12); } 100% { transform: scale(1); } }
+.m-pop-s { animation: m-pop-s var(--motion-base) var(--ease-spring); }                   /* segnalibro: 200 ms */
+@keyframes m-ripple { from { transform: scale(.6); opacity: .45; } to { transform: scale(1.6); opacity: 0; } }
+.m-ripple::after { content: ''; position: absolute; inset: 0; border-radius: 50%; border: 2px solid currentColor; animation: m-ripple var(--motion-slow) var(--ease-enter) both; pointer-events: none; } /* onda attorno al cuore */
+@keyframes m-shake { 0%, 100% { transform: translateX(0); } 20% { transform: translateX(-6px); } 40% { transform: translateX(5px); } 60% { transform: translateX(-3px); } 80% { transform: translateX(2px); } }
+.m-shake { animation: m-shake 280ms var(--ease-standard); }                              /* input in errore: una volta sola */
+@media (prefers-reduced-motion: reduce) { :root:not([data-motion='full']) .m-shake { animation: none; } }
+:root[data-motion='reduce'] .m-shake { animation: none; }
+@keyframes m-pulse { 0%, 100% { opacity: 1; } 50% { opacity: .5; } }
+.m-skeleton { background: rgb(var(--color-surface-2)); border-radius: 14px; animation: m-pulse var(--motion-loop-skeleton) ease-in-out infinite; }
+@keyframes m-spin { to { transform: rotate(360deg); } }
+.m-spinner { width: 18px; height: 18px; border-radius: 50%; border: 3px solid currentColor; border-right-color: transparent; animation: m-spin var(--motion-loop-spinner) linear infinite; }
+@keyframes m-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(6px); } }
+.m-bobber { animation: m-bob var(--motion-loop-bobber) ease-in-out infinite; }
+@keyframes m-ring { to { transform: rotate(360deg); } }
+.m-story-ring-loading { animation: m-ring 1200ms linear infinite; }                     /* anello mentre il viewer carica; si ferma all'apertura */
+.m-story-ring { transition: opacity var(--motion-base) var(--ease-standard); }           /* da «non vista» a «vista»: l'anello sfuma al grigio */
+@keyframes m-progress { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+.m-story-progress { transform-origin: left; animation: m-progress var(--story-ms, 5000ms) var(--ease-linear) both; }  /* durata = durata della storia; in pausa col dito premuto */
+.m-story-progress.paused { animation-play-state: paused; }
+.m-checkmark { stroke-dasharray: 24; stroke-dashoffset: 24; animation: m-draw var(--motion-base) var(--ease-enter) forwards; }  /* spunta del successo */
+@keyframes m-draw { to { stroke-dashoffset: 0; } }
+
+/* Senza movimento: i cicli diventano stati fermi o dissolvenze lente; nessuna rotazione. */
+@media (prefers-reduced-motion: reduce) {
+  :root:not([data-motion='full']) .m-skeleton { animation: none; }
+  :root:not([data-motion='full']) .m-bobber, :root:not([data-motion='full']) .m-story-ring-loading { animation: none; }
+  :root:not([data-motion='full']) .m-spinner { animation: m-pulse 1600ms ease-in-out infinite; border-right-color: currentColor; }
+  :root:not([data-motion='full']) .m-pop, :root:not([data-motion='full']) .m-pop-s, :root:not([data-motion='full']) .m-ripple::after { animation: none; }
+}
+:root[data-motion='reduce'] .m-skeleton, :root[data-motion='reduce'] .m-bobber, :root[data-motion='reduce'] .m-story-ring-loading { animation: none; }
+:root[data-motion='reduce'] .m-spinner { animation: m-pulse 1600ms ease-in-out infinite; border-right-color: currentColor; }
+:root[data-motion='reduce'] .m-pop, :root[data-motion='reduce'] .m-pop-s, :root[data-motion='reduce'] .m-ripple::after { animation: none; }

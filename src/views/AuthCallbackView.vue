@@ -1,7 +1,7 @@
 <template>
   <div class="auth-page">
     <div class="card" style="padding:2rem;text-align:center">
-      <div class="spinner" style="margin:0 auto 1rem"></div>
+      <div class="m-spinner" style="margin:0 auto 1rem"></div>
       <p class="text-muted">{{ message }}</p>
     </div>
   </div>

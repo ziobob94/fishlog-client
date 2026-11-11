@@ -1,8 +1,6 @@
 <template>
-  <Teleport to="body">
-    <div v-if="open" class="sheet-backdrop" @click.self="$emit('close')">
-      <div class="sheet" role="dialog" aria-modal="true" :aria-label="t('profile.menu.title')">
-        <span class="grab" aria-hidden="true"></span>
+  <BottomSheet :model-value="open" :label="t('profile.menu.title')" @update:model-value="v => { if (!v) $emit('close') }">
+    <div class="sheet-inner">
         <div class="sheet-head">
           <h2>{{ t('profile.menu.title') }}</h2>
           <button type="button" class="sheet-x" :aria-label="t('createMenu.close')" @click="$emit('close')"><X :size="22" /></button>
@@ -18,12 +16,12 @@
           <span class="tx"><strong>{{ t('profile.menu.logout') }}</strong><small>{{ t('profile.menu.logoutSub') }}</small></span>
           <ChevronRight :size="20" class="go" />
         </button>
-      </div>
     </div>
-  </Teleport>
+  </BottomSheet>
 </template>
 
 <script setup>
+import BottomSheet from '../motion/BottomSheet.vue'
 import { computed } from 'vue'
 import { RouterLink } from 'vue-router'
 import { useI18n } from 'vue-i18n'
@@ -47,9 +45,7 @@ function logout() { auth.logout(); window.location.assign('/login') }
 </script>
 
 <style scoped>
-.sheet-backdrop { position: fixed; inset: 0; z-index: 300; background: rgba(0, 0, 0, .55); display: flex; align-items: flex-end; justify-content: center; }
-.sheet { width: 100%; max-width: 560px; background: var(--surface); border: 1px solid var(--border); border-bottom: 0; border-radius: 28px 28px 0 0; padding: 10px 16px calc(24px + env(safe-area-inset-bottom)); display: flex; flex-direction: column; gap: 12px; }
-.grab { width: 40px; height: 4px; border-radius: 2px; background: var(--border-light); align-self: center; }
+.sheet-inner { display: flex; flex-direction: column; gap: 12px; }
 .sheet-head { display: flex; align-items: center; justify-content: space-between; margin: 6px 0 4px; }
 .sheet-head h2 { font-size: 22px; font-weight: 800; margin: 0; color: var(--foam); }
 .sheet-x { width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; background: none; border: 0; color: var(--foam); cursor: pointer; }

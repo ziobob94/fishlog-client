@@ -25,7 +25,8 @@
     </PageHeader>
 
     <!-- Un solo scroll verticale: quello del feed (storie e riga di creazione ne fanno parte) -->
-    <div class="feed-scroll">
+    <div class="feed-scroll" data-scroll>
+    <PullToRefresh :refreshing="refreshing" @refresh="doRefresh">
     <StoriesRail />
 
     <div class="compose-row">
@@ -137,7 +138,7 @@
 
     <div class="section-separator"></div>
 
-    <div v-if="infiniteLoading" class="state-center mt-4"><div class="spinner"></div></div>
+    <div v-if="infiniteLoading" class="state-center mt-4"><div class="m-spinner"></div></div>
 
     <div v-else-if="!store.feed.length" class="state-center mt-4">
       <div style="font-size:3rem; display:flex; justify-content:center"><Newspaper :size="48" /></div>
@@ -145,11 +146,12 @@
       <p class="text-muted mt-1">{{ t('posts.feed.empty.text') }}</p>
     </div>
 
-    <div v-else class="posts-list mt-4 -mx-4 sm:mx-0">
+    <StaggerList v-else class="posts-list mt-4 -mx-4 sm:mx-0">
       <PostCard
-        v-for="p in store.feed"
+        v-for="(p, i) in store.feed"
         :key="p._id"
         :post="p"
+        :style="{ '--i': i }"
         @delete="onDelete"
         @close-event="onCloseEvent"
         @respond="onRespond"
@@ -160,7 +162,8 @@
         @attend="onAttend"
       />
       <InfiniteSentinel :active="hasMore" :loading="loadingMore" @trigger="loadMore" />
-    </div>
+    </StaggerList>
+    </PullToRefresh>
     </div>
   </div>
 </template>
@@ -173,11 +176,14 @@ import PageHeader from '../components/PageHeader.vue'
   import { Newspaper, MapPin, Map as MapIcon, X, Filter, ChevronDown, Check, Image as ImageIcon } from 'lucide-vue-next'
   import { toInitials } from '../utils/initials.js'
   import { usePostStore } from '../stores/posts.js'
+  import { useStoryStore } from '../stores/stories.js'
   import { useChatStore } from '../stores/chat.js'
   import AppIcon from '../components/AppIcon.vue'
   import { useAuthStore } from '../stores/auth.js'
   import { useUserStore } from '../stores/users.js'
   import { useInfiniteScroll } from '../composables/useInfiniteScroll.js'
+  import PullToRefresh from '../components/motion/PullToRefresh.vue'
+  import StaggerList from '../components/motion/StaggerList.vue'
   import UserAvatar from '../components/UserAvatar.vue'
   import StoriesRail from '../components/StoriesRail.vue'
   import PostCard from '../components/post/PostCard.vue'
@@ -273,6 +279,9 @@ import PageHeader from '../components/PageHeader.vue'
   )
 
   function reload() { return reset() }
+  const stories = useStoryStore()
+  const refreshing = ref(false)
+  async function doRefresh() { refreshing.value = true; try { await Promise.all([reload(), stories.fetchRail()]) } finally { refreshing.value = false } }
 
   const currentTabLabel = computed(() => t(TABS.find(x => x.id === tab.value)?.label || 'nav.community'))
   const initials = computed(() => toInitials(auth.user?.displayName || auth.user?.email || '?'))

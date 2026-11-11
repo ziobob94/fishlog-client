@@ -3,7 +3,7 @@
 
   <div v-else class="thread">
     <div ref="scrollEl" class="messages-list">
-      <div v-if="chatStore.loading && !chatStore.messages.length" class="state-center"><div class="spinner"></div></div>
+      <div v-if="chatStore.loading && !chatStore.messages.length" class="state-center"><div class="m-spinner"></div></div>
 
       <template v-for="(m, i) in chatStore.messages" :key="m._id">
         <div v-if="showDateSeparator(m, i)" class="date-separator"><span>{{ formatDateSeparator(m.createdAt) }}</span></div>
@@ -112,6 +112,7 @@
 </template>
 
 <script setup>
+import { confirmDialog } from '../../composables/useConfirm.js'
   import { ref, watch, onMounted, onBeforeUnmount, nextTick } from 'vue'
   import { useI18n } from 'vue-i18n'
   import { AlertTriangle, Plus, Image as ImageIcon, SendHorizontal, Mic, MapPin, FileText, Check, CheckCheck, Pencil, Trash2, Ban, X } from 'lucide-vue-next'
@@ -158,7 +159,7 @@
   }
 
   async function removeMessage(messageId) {
-    if (!window.confirm(t('chat.confirmDelete'))) return
+    if (!(await confirmDialog(t('chat.confirmDelete')))) return
     await chatStore.deleteMessage(messageId)
   }
 
