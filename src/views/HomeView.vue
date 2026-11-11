@@ -16,7 +16,6 @@
     <GlobeCard v-model:expanded="globeOpen" />
 
     <!-- Seconda fonte per vento e mare: solo un link esterno. -->
-    <CompareForecast compact class="mb-4" />
 
     <!-- Due scorciatoie (mobile). -->
     <div class="tiles-2 md:hidden">
@@ -56,7 +55,6 @@ import { useSessionStore } from '../stores/sessions.js'
 import GlobeCard from '../components/GlobeCard.vue'
 import { useFriendStore } from '../stores/friends.js'
 import HomeWeatherCard from '../components/weather/HomeWeatherCard.vue'
-import CompareForecast from '../components/weather/CompareForecast.vue'
 import { useMediaQuery } from '../composables/useMediaQuery.js'
 
 const { t } = useI18n()
