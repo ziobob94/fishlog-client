@@ -403,7 +403,7 @@ import PageHeader from '../components/PageHeader.vue'
   }
 
   .post-form-wrap {
-    @apply mt-3 bg-surface border border-border/60 rounded-lg p-3.5;
+    @apply mt-3;
   }
 
   .section-separator {

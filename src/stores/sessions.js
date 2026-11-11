@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import api from '../utils/api.js'
+import { compressAll, compressImage } from '../utils/image.js'
 import router from '../router/index.js'
 import { useOfflineStore } from './offline.js'
 
@@ -185,7 +186,7 @@ export const useSessionStore = defineStore('sessions', () => {
 
   async function uploadMedia(sessionId, files, onProgress) {
     const fd = new FormData()
-    for (const f of files) fd.append('files', f)
+    for (const f of await compressAll(files)) fd.append('files', f)
     try {
       // Niente Content-Type esplicito: senza il boundary generato dal browser
       // per il FormData, il multipart non è più parsabile lato server.
@@ -205,7 +206,7 @@ export const useSessionStore = defineStore('sessions', () => {
   // una volta noti gli _id reali delle catture appena create.
   async function uploadCatchMedia(sessionId, catchId, files) {
     const fd = new FormData()
-    for (const f of files) fd.append('files', f)
+    for (const f of await compressAll(files)) fd.append('files', f)
     try {
       // Niente Content-Type esplicito: senza il boundary generato dal browser
       // per il FormData, il multipart non è più parsabile lato server.

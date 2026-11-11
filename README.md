@@ -22,6 +22,7 @@ npm run dev            # http://localhost:5173
 | Variabile            | Default                    |
 |----------------------|----------------------------|
 | `VITE_API_BASE_URL`  | `http://localhost:3001`    |
+| `VITE_IMAGE_COMPRESS` / `VITE_IMAGE_MAX_SIDE` / `VITE_IMAGE_QUALITY` / `VITE_IMAGE_SKIP_BELOW_KB` | `true` / `1920` / `0.8` / `800` |
 
 ## Pagine
 
