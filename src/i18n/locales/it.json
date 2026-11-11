@@ -655,7 +655,7 @@
 	"sessions": {
 		"since": "dalle {time}",
 		"resume": "Riprendi",
-		"catchesCount": "{n} catture"
+		"catchesCount": "{n} cattura | {n} catture"
 	},
 	"sessionFilters": {
 		"dates": "Date",
@@ -665,6 +665,35 @@
 		"reset": "Reset"
 	},
 	"sessionForm": {
+		"essential": {
+			"detect": "Rileva luogo e meteo",
+			"detectSub": "Usa la tua posizione per compilare luogo, acqua e meteo.",
+			"where": "Dove",
+			"detected": "posizione rilevata",
+			"when": "Quando",
+			"alreadyDone": "Uscita già conclusa",
+			"water": "Dove peschi",
+			"start": "Inizia a pescare",
+			"save": "Salva uscita",
+			"later": "Acqua, meteo e note li aggiungi dopo, quando vuoi."
+		},
+		"menu": {
+			"filled": "Compilato",
+			"toAdd": "Da aggiungere",
+			"catchesCount": "{n} catture",
+			"sub": {
+				"base": "Titolo, data, orari, tecnica, voto",
+				"location": "Luogo, spot, coordinate, mappa",
+				"water": "Mare, onde, marea, colore, temperatura",
+				"weather": "Tempo, vento, pressione, temperatura",
+				"catches": "Pesci catturati e dettagli",
+				"notes": "Visibilità e note"
+			},
+			"back": "Tutte le sezioni",
+			"done": "Fatto",
+			"delete": "Elimina uscita",
+			"deleteConfirm": "Eliminare questa uscita? L'operazione non si può annullare."
+		},
 		"requiredToContinue": "Completa i campi obbligatori per continuare",
 		"blocked": {
 			"base": "Prima di chiudere questa sezione, inserisci la data dell'uscita.",

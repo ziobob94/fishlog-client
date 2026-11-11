@@ -6,7 +6,7 @@
 
     <div v-if="checkingOngoing" class="state-center"><div class="spinner"></div></div>
 
-    <SessionForm v-else :saving="store.loading" @submit="onSubmit" @cancel="router.push('/sessions')" />
+    <SessionForm v-else mode="essential" :saving="store.loading" @submit="onSubmit" @cancel="router.push('/sessions')" />
   </div>
 </template>
 
@@ -39,7 +39,7 @@ onMounted(async () => {
   checkingOngoing.value = false
 })
 
-async function onSubmit(payload, pendingPhotosByIndex) {
+async function onSubmit(payload, pendingPhotosByIndex, { concluded } = {}) {
   const session = await store.createSession(payload)
   if (!session) {
     // Race condition (es. due schede aperte): il server ha rifiutato perché
@@ -53,6 +53,13 @@ async function onSubmit(payload, pendingPhotosByIndex) {
       const catchId = session.catches?.[index]?._id
       if (catchId && files.length) await store.uploadCatchMedia(session._id, catchId, files)
     }
+  }
+
+  // «Uscita già conclusa»: il server crea sempre l'uscita in corso, quindi la si chiude subito.
+  if (concluded) {
+    const closed = await store.updateSession(session._id, { status: 'closed' })
+    router.push(`/session/${(closed || session)._id}`)
+    return
   }
 
   // Un'uscita appena creata è "ongoing": si va sulla scheda dedicata per
