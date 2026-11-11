@@ -1,3 +1,10 @@
+## [1.58.1](https://github.com/ziobob94/fishlog-client/compare/client-v1.58.0...client-v1.58.1) (2026-11-11)
+
+
+### Bug Fixes
+
+* spazio in fondo alla pagina per bottom bar e safe-area, il contenuto non resta coperto ([62ad811](https://github.com/ziobob94/fishlog-client/commit/62ad8110f9c2b331cad029e8d3da3b2bddf0d0ad))
+
 # [1.58.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.57.0...client-v1.58.0) (2026-11-11)
 
 
