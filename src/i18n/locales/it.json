@@ -1040,7 +1040,11 @@
 		"pickOnMap": "Scegli sulla mappa",
 		"useThisPoint": "Usa questo punto",
 		"noGps": "Il dispositivo non fornisce la posizione.",
-		"gpsDenied": "Non riesco a leggere la posizione: controlla i permessi."
+		"gpsDenied": "Non riesco a leggere la posizione: controlla i permessi.",
+		"keyMissing": "Ricerca luoghi non configurata: manca la chiave Google Maps (VITE_GOOGLE_MAPS_KEY).",
+		"keyRejected": "Google ha rifiutato la chiave: controlla che Maps JavaScript, Places e Geocoding siano abilitati, la fatturazione attiva e il dominio consentito.",
+		"loadFailed": "Non riesco a contattare Google Maps, riprova tra poco.",
+		"noResults": "Nessun luogo trovato."
 	},
 	"locationPicker": {
 		"hint": "Cerca un luogo o clicca sulla mappa per impostare le coordinate",

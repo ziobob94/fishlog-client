@@ -59,7 +59,7 @@
         </div>
         <div class="form-group">
           <label for="s-city">{{ t('seller.city') }}</label>
-          <PlaceInput id="s-city" v-model="form.city" required />
+          <PlaceInput id="s-city" mode="city" v-model="form.city" required />
         </div>
         <div class="form-group">
           <label for="s-phone">{{ t('seller.phone') }}</label>
@@ -122,7 +122,7 @@
       </div>
       <div class="form-group">
         <label for="sh-city">{{ t('seller.city') }}</label>
-        <PlaceInput id="sh-city" v-model="shop.city" />
+        <PlaceInput id="sh-city" mode="city" v-model="shop.city" />
       </div>
 
       <fieldset class="checks">

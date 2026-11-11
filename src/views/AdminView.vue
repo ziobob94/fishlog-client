@@ -188,7 +188,7 @@
           </div>
           <div class="form-group">
             <label>{{ t('admin.regulations.fields.region') }}</label>
-            <input v-model="regulationForm.region" type="text" :placeholder="t('admin.regulations.fields.regionPlaceholder')" />
+            <PlaceInput v-model="regulationForm.region" mode="region" :placeholder="t('admin.regulations.fields.regionPlaceholder')" />
           </div>
           <div class="form-group full">
             <label>{{ t('admin.regulations.fields.title') }}</label>
@@ -291,6 +291,7 @@
 </template>
 
 <script setup>
+import PlaceInput from '../components/form/PlaceInput.vue'
 import { confirmDialog } from '../composables/useConfirm.js'
 import { ref, reactive, computed, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'

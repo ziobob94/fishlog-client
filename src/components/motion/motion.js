@@ -52,7 +52,19 @@ export function useSwipeDismiss(el, { onDismiss, onProgress, scrollEl, closeScal
   const dragging = ref(false)
   let startY = 0, lastY = 0, lastT = 0, vy = 0, h = 1, active = false
 
+  // Il gesto di chiusura non parte da aree che gestiscono i propri tocchi (mappe: data-no-sheet-drag)
+  // e si annulla se arriva un secondo dito (pinch/pan a due dita).
+  const pointers = new Set()
+  const cancel = () => {
+    if (!active) return
+    active = false; dragging.value = false
+    if (el.value) { el.value.style.transform = '' }
+    onProgress?.(0)
+  }
   const down = (e) => {
+    pointers.add(e.pointerId)
+    if (pointers.size > 1) { cancel(); return }
+    if (e.target?.closest?.('[data-no-sheet-drag]')) return
     if (scrollEl?.value && scrollEl.value.contains(e.target) && scrollEl.value.scrollTop > 0) return
     active = true; startY = lastY = e.clientY; lastT = e.timeStamp; vy = 0
     h = el.value.getBoundingClientRect().height || 1
@@ -69,7 +81,8 @@ export function useSwipeDismiss(el, { onDismiss, onProgress, scrollEl, closeScal
     el.value.style.transform = `translateY(${dy}px) scale(${s})`
     onProgress?.(p)
   }
-  const up = () => {
+  const up = (e) => {
+    if (e?.pointerId != null) pointers.delete(e.pointerId)
     if (!active) return
     active = false
     if (!dragging.value) return
