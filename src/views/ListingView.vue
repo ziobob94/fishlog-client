@@ -69,6 +69,7 @@
 </template>
 
 <script setup>
+import { confirmDialog } from '../composables/useConfirm.js'
 import { toInitials } from '../utils/initials.js'
 import { ref, computed, onMounted, watch } from 'vue'
 import { RouterLink, useRoute, useRouter } from 'vue-router'
@@ -121,7 +122,7 @@ async function changeStatus() {
 }
 
 async function onDelete() {
-  if (!confirm(t('market.deleteConfirm'))) return
+  if (!(await confirmDialog(t('market.deleteConfirm')))) return
   await store.deleteListing(listing.value._id)
   router.push('/market')
 }

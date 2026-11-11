@@ -62,11 +62,12 @@
       <ChatThread :conversation-id="conversationId" show-sender-names />
     </template>
 
-    <div v-else class="state-center"><div class="spinner"></div></div>
+    <div v-else class="state-center"><div class="m-spinner"></div></div>
   </div>
 </template>
 
 <script setup>
+import { confirmDialog } from '../composables/useConfirm.js'
 import { toInitials } from '../utils/initials.js'
   import { ref, computed, onMounted } from 'vue'
   import { useRoute, useRouter, RouterLink } from 'vue-router'
@@ -139,7 +140,7 @@ return toInitials(n)
   }
 
   async function removeMember(m) {
-    if (!window.confirm(t('chat.group.confirmRemoveMember'))) return
+    if (!(await confirmDialog(t('chat.group.confirmRemoveMember')))) return
     try {
       await chatStore.removeGroupMember(conversationId.value, m._id)
       await loadGroup()
@@ -149,7 +150,7 @@ return toInitials(n)
   }
 
   async function leave() {
-    if (!window.confirm(t('chat.group.confirmLeave'))) return
+    if (!(await confirmDialog(t('chat.group.confirmLeave')))) return
     try {
       await chatStore.removeGroupMember(conversationId.value, auth.user._id)
       router.push('/chat')

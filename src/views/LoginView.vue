@@ -46,7 +46,7 @@
           </p>
           <div v-if="error" class="error-msg">{{ error }}</div>
           <button type="submit" class="btn btn-primary w-full" :disabled="loading">
-            <span v-if="loading" class="spinner" style="width:15px;height:15px"></span>
+            <span v-if="loading" class="m-spinner" style="width:15px;height:15px"></span>
             {{ loading ? t('login.loading') : t('common.login') }}
           </button>
         </form>

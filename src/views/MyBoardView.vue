@@ -14,7 +14,7 @@
 
     <!-- Caricamento: skeleton -->
     <div v-if="infiniteLoading" class="skeleton-grid" role="status" :aria-label="t('common.loading')">
-      <span v-for="n in 9" :key="n" class="skeleton"></span>
+      <span v-for="n in 9" :key="n" class="skeleton m-skeleton"></span>
     </div>
 
     <!-- Errore -->
@@ -119,7 +119,6 @@ onMounted(async () => {
 .tab.on { color: var(--foam); border-bottom-color: var(--ocean); }
 .board :deep(.grid), .skeleton-grid { margin: 0 -1rem; }
 .skeleton-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; }
-.skeleton { aspect-ratio: 1; background: linear-gradient(90deg, var(--surface) 0%, var(--surface-2) 50%, var(--surface) 100%); background-size: 200% 100%; animation: sk 1.4s linear infinite; }
-@keyframes sk { to { background-position: -200% 0; } }
+.skeleton { aspect-ratio: 1; border-radius: 0; }
 @media (min-width: 640px) { .tabs, .board :deep(.grid), .skeleton-grid { margin-left: -1.5rem; margin-right: -1.5rem; } }
 </style>

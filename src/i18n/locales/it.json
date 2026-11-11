@@ -1331,7 +1331,12 @@
 			"title": "Aspetto",
 			"hint": "Scegli come vuoi vedere l'app",
 			"light": "Chiaro",
-			"dark": "Scuro"
+			"dark": "Scuro",
+			"motion": "Riduci animazioni",
+			"motionAuto": "Auto",
+			"motionYes": "Sì",
+			"motionNo": "No",
+			"motionHint": "Auto segue l'impostazione del telefono. Con \"Sì\" le schermate si dissolvono soltanto."
 		},
 		"privacy": {
 			"title": "Privacy",

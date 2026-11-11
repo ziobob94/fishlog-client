@@ -2,7 +2,7 @@
   <div class="close-page">
     <PageHeader :title="t('session.ongoing.close')" back compact />
 
-    <div v-if="!session" class="state-center"><div class="spinner"></div></div>
+    <div v-if="!session" class="state-center"><div class="m-spinner"></div></div>
 
     <div v-else class="close-form">
       <div v-if="error" class="error-banner"><AlertTriangle :size="16" /> {{ error }}</div>
@@ -49,7 +49,7 @@
 
       <div class="fl-bar">
         <button type="button" class="fl-btn1" :disabled="closing" @click="closeSession">
-          <span v-if="closing" class="spinner" style="width:15px;height:15px"></span>
+          <span v-if="closing" class="m-spinner" style="width:15px;height:15px"></span>
           {{ t('session.ongoing.close') }}
         </button>
         <button type="button" class="link-btn" @click="router.replace(`/session/${route.params.id}/edit`)">{{ t('session.ongoing.keepFishing') }}</button>

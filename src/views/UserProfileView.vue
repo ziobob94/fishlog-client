@@ -2,7 +2,7 @@
   <div>
     <PageHeader :title="user?.displayName || t('nav.profile')" back />
 
-    <div v-if="loading" class="state-center"><div class="spinner"></div></div>
+    <div v-if="loading" class="state-center"><div class="m-spinner"></div></div>
 
     <div v-else-if="!user" class="state-center">
       <p class="text-muted">{{ t('friends.profile.notFound') }}</p>
@@ -67,6 +67,7 @@
 </template>
 
 <script setup>
+import { confirmDialog } from '../composables/useConfirm.js'
 import { toInitials } from '../utils/initials.js'
 import PageHeader from '../components/PageHeader.vue'
 import TideDivider from '../components/TideDivider.vue'
@@ -144,7 +145,7 @@ async function onAccept() {
 }
 
 async function onRemove() {
-  if (!window.confirm(t('friends.actions.confirmRemove', { name: user.value?.displayName || user.value?.email }))) return
+  if (!(await confirmDialog(t('friends.actions.confirmRemove', { name: user.value?.displayName || user.value?.email })))) return
   acting.value = true
   await friendStore.removeFriend(route.params.id)
   status.value = 'none'

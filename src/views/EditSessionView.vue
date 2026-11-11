@@ -6,7 +6,7 @@
     </PageHeader>
 
     <div v-if="store.loading && !store.current" class="state-center">
-      <div class="spinner"></div>
+      <div class="m-spinner"></div>
     </div>
 
     <div v-else-if="error" class="error-banner" style="display:inline-flex;align-items:center;gap:.4rem"><AlertTriangle :size="16" /> {{ error }}</div>
@@ -33,6 +33,7 @@
 </template>
 
 <script setup>
+import { confirmDialog } from '../composables/useConfirm.js'
 import PageHeader from '../components/PageHeader.vue'
 import { computed, ref, onMounted } from 'vue'
 import { useRouter, useRoute, RouterLink } from 'vue-router'
@@ -68,7 +69,7 @@ function onCancelFullForm() {
 }
 
 async function onDelete() {
-  if (!window.confirm(t('sessionForm.menu.deleteConfirm'))) return
+  if (!(await confirmDialog(t('sessionForm.menu.deleteConfirm')))) return
   if (await store.deleteSession(route.params.id)) router.replace('/sessions')
 }
 

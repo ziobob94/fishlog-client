@@ -4,7 +4,7 @@
 
     <div v-if="error" class="error-banner" style="display:inline-flex;align-items:center;gap:.4rem"><AlertTriangle :size="16" /> {{ error }}</div>
 
-    <div v-if="checkingOngoing" class="state-center"><div class="spinner"></div></div>
+    <div v-if="checkingOngoing" class="state-center"><div class="m-spinner"></div></div>
 
     <SessionForm v-else mode="essential" :saving="store.loading" @submit="onSubmit" @cancel="router.push('/sessions')" />
   </div>

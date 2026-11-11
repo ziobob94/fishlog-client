@@ -40,7 +40,7 @@
       <p class="fl-hint">{{ t('stories.ttlHint') }}</p>
       <p v-if="store.error" class="err" role="alert">{{ store.error }}</p>
       <button type="button" class="fl-btn1" :disabled="publishing || !canPublish" @click="publish">
-        <span v-if="publishing" class="spinner" style="width:15px;height:15px"></span>
+        <span v-if="publishing" class="m-spinner" style="width:15px;height:15px"></span>
         {{ publishing ? t('stories.publishing') : t('stories.publish') }}
       </button>
       <button type="button" class="redo" @click="reset">{{ t('stories.redo') }}</button>

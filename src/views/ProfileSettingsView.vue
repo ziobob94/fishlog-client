@@ -40,7 +40,7 @@
 
       <div class="fl-bar">
         <button type="submit" class="fl-btn1" :disabled="saving">
-          <span v-if="saving" class="spinner" style="width:15px;height:15px"></span>
+          <span v-if="saving" class="m-spinner" style="width:15px;height:15px"></span>
           {{ saving ? t('profile.account.saving') : t('profile.settings.save') }}
         </button>
         <button type="button" class="link-btn" @click="router.back()">{{ t('common.cancel') }}</button>

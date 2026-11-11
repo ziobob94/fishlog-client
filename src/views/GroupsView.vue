@@ -2,7 +2,7 @@
   <div>
     <PageHeader :title="t('nav.groups')" back />
 
-    <div v-if="store.loading" class="state-center"><div class="spinner"></div></div>
+    <div v-if="store.loading" class="state-center"><div class="m-spinner"></div></div>
 
     <div v-else-if="!store.groups.length" class="state-center">
       <div style="font-size:3rem; display:flex; justify-content:center"><Users :size="48" /></div>

@@ -9,7 +9,7 @@
       >{{ t(`leaderboard.periods.${p}`) }}</button>
     </div>
 
-    <div v-if="loading" class="state-center"><div class="spinner"></div></div>
+    <div v-if="loading" class="state-center"><div class="m-spinner"></div></div>
 
     <p v-else-if="!rows.length" class="text-muted text-sm py-6 text-center">{{ t('leaderboard.empty') }}</p>
 

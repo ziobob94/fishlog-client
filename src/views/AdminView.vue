@@ -17,7 +17,7 @@
         <input v-model="userSearch" type="search" :placeholder="t('admin.users.searchPlaceholder')" style="max-width:280px" @input="debouncedSearchUsers" />
       </div>
 
-      <div v-if="pagination.loading.value" class="state-center"><div class="spinner"></div></div>
+      <div v-if="pagination.loading.value" class="state-center"><div class="m-spinner"></div></div>
       <div v-else class="table-scroll">
         <table class="admin-table">
           <thead>
@@ -73,7 +73,7 @@
         </label>
       </div>
 
-      <div v-if="loadingSessions" class="state-center"><div class="spinner"></div></div>
+      <div v-if="loadingSessions" class="state-center"><div class="m-spinner"></div></div>
       <div v-else class="table-scroll">
         <table class="admin-table">
           <thead>
@@ -102,7 +102,7 @@
 
     <!-- NEGOZI -->
     <div v-if="tab === 'shops'">
-      <div v-if="loadingShops" class="state-center"><div class="spinner"></div></div>
+      <div v-if="loadingShops" class="state-center"><div class="m-spinner"></div></div>
 
       <div v-else-if="!pendingShops.length" class="state-center">
         <p class="text-muted">{{ t('admin.shops.empty') }}</p>
@@ -141,7 +141,7 @@
     <div v-if="tab === 'config'">
       <p class="text-muted text-sm mb-3">{{ t('admin.config.intro') }}</p>
 
-      <div v-if="loadingConfig" class="state-center"><div class="spinner"></div></div>
+      <div v-if="loadingConfig" class="state-center"><div class="m-spinner"></div></div>
       <template v-else>
         <section v-for="group in configGroups" :key="group.name" class="card mb-3">
           <h3>{{ group.name }}</h3>
@@ -238,7 +238,7 @@
         style="max-width:280px" class="mb-3" @input="debouncedSearchRegulations"
       />
 
-      <div v-if="loadingRegulations" class="state-center"><div class="spinner"></div></div>
+      <div v-if="loadingRegulations" class="state-center"><div class="m-spinner"></div></div>
       <div v-else-if="!regulations.length" class="state-center"><p class="text-muted">{{ t('admin.regulations.empty') }}</p></div>
       <div v-else class="table-scroll">
         <table class="admin-table">
@@ -291,6 +291,7 @@
 </template>
 
 <script setup>
+import { confirmDialog } from '../composables/useConfirm.js'
 import { ref, reactive, computed, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useAuthStore } from '../stores/auth.js'
@@ -464,7 +465,7 @@ async function saveRegulation() {
 }
 
 async function deleteRegulation(r) {
-  if (!window.confirm(t('admin.regulations.confirmDelete'))) return
+  if (!(await confirmDialog(t('admin.regulations.confirmDelete')))) return
   await api.delete(`/regulations/admin/${r._id}`)
   regulations.value = regulations.value.filter(x => x._id !== r._id)
 }

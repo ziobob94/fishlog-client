@@ -4,7 +4,7 @@
       <button v-if="store.unreadCount" type="button" class="link-btn" @click="store.markAllRead()">{{ t('notifications.markAllRead') }}</button>
     </PageHeader>
 
-    <div v-if="store.loading && !store.items.length" class="state-center"><div class="spinner"></div></div>
+    <div v-if="store.loading && !store.items.length" class="state-center"><div class="m-spinner"></div></div>
 
     <div v-else-if="!store.items.length" class="state-center">
       <Bobber :size="56" />

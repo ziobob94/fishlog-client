@@ -46,9 +46,7 @@
     </div>
 
     <div class="action-row">
-      <button type="button" class="act-btn" :class="{ liked: isLiked }" :aria-pressed="isLiked" :aria-label="t('posts.like')" @click="$emit('like', post)">
-        <Heart :size="24" :fill="isLiked ? 'currentColor' : 'none'" />
-      </button>
+      <LikeButton :liked="isLiked" @toggle="$emit('like', post)" />
       <button v-if="post.type !== 'event'" type="button" class="act-btn" :aria-label="t('posts.comment')" @click="showComments = !showComments">
         <MessageCircle :size="24" />
       </button>
@@ -257,6 +255,7 @@
 
 <script setup>
   import UserAvatar from '../UserAvatar.vue'
+  import LikeButton from '../motion/LikeButton.vue'
 import { toInitials } from '../../utils/initials.js'
 import RulerFrame from '../RulerFrame.vue'
 import AppIcon from '../AppIcon.vue'

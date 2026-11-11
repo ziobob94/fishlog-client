@@ -8,6 +8,8 @@ import { useThemeStore } from './stores/theme.js'
 import App from './App.vue'
 import i18n from './i18n/index.js'
 import './assets/main.css'
+import './assets/motion.css'
+import { initMotion } from './components/motion/motion.js'
 import { setupFormA11y } from './utils/formA11y.js'
 import { setupFormValidation } from './utils/formValidation.js'
 
@@ -24,6 +26,7 @@ auth.initAuth()
 setupGuards(router)
 
 useThemeStore().init()
+initMotion()
 
 // Carica la coda offline da IndexedDB e prova subito a sincronizzarla
 useOfflineStore().init()

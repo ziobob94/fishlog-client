@@ -73,7 +73,7 @@
     <section class="section-block">
       <h2 class="section-label">{{ t('friends.list.title') }}<template v-if="friendStore.friends.length"> · {{ friendStore.friends.length }}</template></h2>
 
-      <div v-if="friendStore.loading" class="state-center"><div class="spinner"></div></div>
+      <div v-if="friendStore.loading" class="state-center"><div class="m-spinner"></div></div>
 
       <div v-else-if="!friendStore.friends.length" class="state-center">
         <div style="font-size:3rem; display:flex; justify-content:center"><Users :size="48" /></div>
@@ -102,6 +102,7 @@
 </template>
 
 <script setup>
+import { confirmDialog } from '../composables/useConfirm.js'
 import { toInitials } from '../utils/initials.js'
 import PageHeader from '../components/PageHeader.vue'
 import AppIcon from '../components/AppIcon.vue'
@@ -176,7 +177,7 @@ async function cancel(r) {
 }
 
 async function removeFriend(f) {
-  if (!window.confirm(t('friends.actions.confirmRemove', { name: f.displayName || f.email }))) return
+  if (!(await confirmDialog(t('friends.actions.confirmRemove', { name: f.displayName || f.email })))) return
   await friendStore.removeFriend(f._id)
 }
 </script>
