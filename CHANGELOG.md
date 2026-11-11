@@ -1,3 +1,10 @@
+# [1.52.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.51.1...client-v1.52.0) (2026-11-11)
+
+
+### Features
+
+* numeri del profilo cliccabili e pagina classifica catture ([e537631](https://github.com/ziobob94/fishlog-client/commit/e537631061787c46eca6d5f85ef9a1724271cc95))
+
 ## [1.51.1](https://github.com/ziobob94/fishlog-client/compare/client-v1.51.0...client-v1.51.1) (2026-11-11)
 
 
