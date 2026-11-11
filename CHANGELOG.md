@@ -1,3 +1,11 @@
+## [1.54.1](https://github.com/ziobob94/fishlog-client/compare/client-v1.54.0...client-v1.54.1) (2026-11-11)
+
+
+### Bug Fixes
+
+* barra di navigazione inferiore più compatta (altezza e safe-area) ([f8ddd92](https://github.com/ziobob94/fishlog-client/commit/f8ddd92eac2fb647f3733a903ca8546c7b008ac0))
+* riduce lo spazio vuoto sotto la topbar su mobile ([6438494](https://github.com/ziobob94/fishlog-client/commit/643849499eca7705c7a0a098387fce09a97591cd))
+
 # [1.54.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.53.0...client-v1.54.0) (2026-11-11)
 
 
