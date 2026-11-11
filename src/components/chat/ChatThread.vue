@@ -338,6 +338,8 @@ import { confirmDialog } from '../../composables/useConfirm.js'
 
   .messages-list {
     @apply flex-1 min-h-0 overflow-y-auto flex flex-col gap-1.5 pr-1;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
   }
 
   .date-separator {
