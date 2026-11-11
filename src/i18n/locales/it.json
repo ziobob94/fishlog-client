@@ -33,7 +33,7 @@
 		"groups": "Gruppi",
 		"friends": "Amici",
 		"feed": "Bacheca",
-		"board": "La mia bacheca",
+		"board": "Il mio profilo",
 		"market": "Market",
 		"myListings": "I miei annunci",
 		"chat": "Chat",
@@ -516,7 +516,7 @@
 					"text": "Post ed eventi della community e dei tuoi gruppi"
 				},
 				"board": {
-					"title": "La mia bacheca",
+					"title": "Il mio profilo",
 					"text": "I tuoi post ed eventi, pubblici, di gruppo o privati"
 				},
 				"groups": {
