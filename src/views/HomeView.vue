@@ -1,7 +1,7 @@
 <template>
   <div class="home">
     <!-- Meteo in evidenza: scheda grande (barra sopra il mappamondo quando, da desktop, lo si espande). -->
-    <HomeWeatherCard :variant="globeOpen ? 'card' : 'bar'" class="mb-4" />
+    <HomeWeatherCard :variant="globeOpen && isDesktop ? 'bar' : 'card'" class="mb-4" />
 
     <!-- Uscita in corso (mobile): riprendi con un tocco. -->
     <RouterLink v-if="sessions.ongoing" :to="{ path: `/session/${sessions.ongoing._id}/edit`, hash: '#section-catches' }" class="ongoing-panel md:hidden">
@@ -55,11 +55,13 @@ import { useSessionStore } from '../stores/sessions.js'
 import GlobeCard from '../components/GlobeCard.vue'
 import { useFriendStore } from '../stores/friends.js'
 import HomeWeatherCard from '../components/weather/HomeWeatherCard.vue'
+import { useMediaQuery } from '../composables/useMediaQuery.js'
 
 const { t } = useI18n()
 const friends = useFriendStore()
 const sessions = useSessionStore()
 const globeOpen = ref(false)                    // mappamondo espanso (si riparte sempre dal compatto)
+const isDesktop = useMediaQuery('(min-width: 768px)')
 
 // Badge numerico per box con contatori "da leggere/gestire" (gruppi: in sospeso).
 function badgeCount(key) {
