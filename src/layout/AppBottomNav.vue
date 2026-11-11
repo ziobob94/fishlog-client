@@ -8,9 +8,10 @@
       <AppIcon name="uscite" :size="22" />
       <span>{{ t('nav.sessions') }}</span>
     </RouterLink>
-    <RouterLink :to="newSessionTarget" class="bottom-nav-item bottom-nav-plus" :aria-label="sessions.ongoing ? t('nav.ongoingSession') : t('nav.newSession')">
-      <span class="bottom-nav-plus-btn"><AppIcon name="nuova-uscita" :size="26" stroke="2.5" /></span>
-    </RouterLink>
+    <button type="button" class="bottom-nav-item bottom-nav-plus" :aria-label="t('createMenu.title')" aria-haspopup="dialog" @click="onPlus">
+      <span class="bottom-nav-plus-btn"><Plus :size="28" :stroke-width="2.6" /></span>
+    </button>
+    <CreateSheet :open="sheetOpen" @close="sheetOpen = false" />
     <RouterLink to="/feed" class="bottom-nav-item" :class="{ 'router-link-active': isCommunity }">
       <AppIcon name="community" :size="22" />
       <span>{{ t('nav.community') }}</span>
@@ -24,8 +25,10 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
-import { RouterLink, useRoute } from 'vue-router'
+import { computed, ref } from 'vue'
+import { RouterLink, useRoute, useRouter } from 'vue-router'
+import { Plus } from 'lucide-vue-next'
+import CreateSheet from '../components/CreateSheet.vue'
 import { useI18n } from 'vue-i18n'
 import AppIcon from '../components/AppIcon.vue'
 import { usePostStore } from '../stores/posts.js'
@@ -37,6 +40,14 @@ const posts = usePostStore()
 const chat  = useChatStore()
 const sessions = useSessionStore()
 const route = useRoute()
+const router = useRouter()
+const sheetOpen = ref(false)
+
+// In Community il «+» crea subito un post; altrove apre il foglio «Crea».
+function onPlus() {
+  if (route.path === '/feed') { router.push({ path: '/feed', query: { compose: '1' } }); return }
+  sheetOpen.value = true
+}
 
 // Community raggruppa feed, bacheca, chat, gruppi e amici
 const isCommunity = computed(() => /^\/(feed|board|chat|groups|friends|users)/.test(route.path))
@@ -66,7 +77,7 @@ const newSessionTarget = computed(() =>
   @apply text-ocean-text;
 }
 
-.bottom-nav-plus { @apply overflow-visible; }
+.bottom-nav-plus { @apply overflow-visible bg-transparent border-none cursor-pointer; }
 .bottom-nav-plus-btn {
   @apply flex items-center justify-center w-14 h-14 rounded-full bg-ocean text-on-primary border-4 border-ink;
   margin-top: -30px;

@@ -6,7 +6,7 @@
     <button v-else-if="toggleSidebar" type="button" class="ph-btn ph-menu" :aria-label="t('nav.menu')" @click="toggleSidebar">
       <Menu :size="20" />
     </button>
-    <h1 class="ph-title" :class="{ 'ph-title-sub': back }">{{ title }}</h1>
+    <h1 class="ph-title" :class="{ 'ph-title-sub': back }"><slot name="title">{{ title }}</slot></h1>
     <div class="ph-actions">
       <slot />
       <RouterLink v-if="bell" to="/notifications" class="ph-btn ph-bell" :aria-label="t('notifications.title')">
@@ -53,10 +53,11 @@ function goBack() {
 .page-header-sticky { top: env(safe-area-inset-top); @apply sticky z-30 bg-ink py-3 mb-0 border-b border-border; }
 /* Intestazione compatta del flusso uscita (mockup: 64px, titolo 18/800, riga sotto) */
 .page-header-compact { @apply -mx-4 sm:-mx-6 -mt-6 sm:-mt-8 mb-5 px-2 gap-2 border-b border-border bg-ink; min-height: 64px; position: sticky; top: env(safe-area-inset-top); z-index: 30; }
-.page-header-compact .ph-title { font-family: var(--font-sans); font-size: 18px; font-weight: 800; letter-spacing: -.02em; }
+.page-header-compact .ph-title { font-size: 18px; font-weight: 800; letter-spacing: -.02em; }
 .page-header-compact .ph-back { @apply w-11 h-11 ml-0; }
 .ph-title { @apply text-2xl leading-tight font-bold text-foam flex-1 min-w-0 truncate; }
 .ph-title-sub { @apply text-xl; }
+.ph-title:has(.tab-title-wrap) { overflow: visible; }
 .ph-actions { @apply flex items-center gap-1.5 ml-auto shrink-0; }
 .ph-btn {
   @apply relative flex items-center justify-center w-9 h-9 shrink-0 rounded-xl text-foam bg-surface border border-border cursor-pointer no-underline;

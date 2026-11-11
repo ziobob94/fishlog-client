@@ -1,6 +1,18 @@
 <template>
   <div>
-    <PageHeader :title="t('nav.community')" bell>
+    <PageHeader :title="currentTabLabel" bell>
+      <template #title>
+        <div ref="tabMenuWrap" class="tab-title-wrap">
+          <button type="button" class="tab-title" :aria-expanded="tabMenuOpen" aria-haspopup="menu" @click="tabMenuOpen = !tabMenuOpen">
+            {{ currentTabLabel }} <ChevronDown :size="20" :class="{ flip: tabMenuOpen }" />
+          </button>
+          <div v-if="tabMenuOpen" class="tab-menu" role="menu">
+            <button v-for="tb in TABS" :key="tb.id" type="button" role="menuitemradio" :aria-checked="tab === tb.id" class="tab-menu-item" :class="{ on: tab === tb.id }" @click="pickTab(tb.id)">
+              {{ t(tb.label) }}<Check v-if="tab === tb.id" :size="18" />
+            </button>
+          </div>
+        </div>
+      </template>
       <RouterLink to="/chat" class="ph-icon" :title="t('nav.chat')" :aria-label="t('nav.chat')">
         <AppIcon name="invia" :size="16" />
         <span v-if="chat.unreadCount" class="ph-count">{{ chat.unreadCount }}</span>
@@ -12,13 +24,11 @@
       ><Filter :size="16" /></button>
     </PageHeader>
 
-    <div class="chips" role="tablist">
-      <button
-        v-for="tb in TABS" :key="tb.id"
-        type="button" role="tab" :aria-selected="tab === tb.id"
-        class="chip" :class="{ active: tab === tb.id }" @click="setTab(tb.id)"
-      >{{ t(tb.label) }}</button>
-    </div>
+    <button v-if="!showForm" type="button" class="compose-row" @click="showForm = true">
+      <span class="compose-avatar"><img v-if="auth.user?.avatar" :src="auth.user.avatar" alt="" /><template v-else>{{ initials }}</template></span>
+      <span class="compose-text">{{ t('posts.composePrompt') }}</span>
+      <ImageIcon :size="22" class="compose-ic" />
+    </button>
 
     <template v-if="showForm">
       <div class="post-form-wrap">
@@ -156,10 +166,11 @@
 
 <script setup>
 import PageHeader from '../components/PageHeader.vue'
-  import { computed, onMounted, reactive, ref, watch } from 'vue'
+  import { computed, onMounted, onBeforeUnmount, reactive, ref, watch } from 'vue'
   import { useI18n } from 'vue-i18n'
   import { useRoute, useRouter } from 'vue-router'
-  import { Newspaper, MapPin, Map as MapIcon, X, Filter } from 'lucide-vue-next'
+  import { Newspaper, MapPin, Map as MapIcon, X, Filter, ChevronDown, Check, Image as ImageIcon } from 'lucide-vue-next'
+  import { toInitials } from '../utils/initials.js'
   import { usePostStore } from '../stores/posts.js'
   import { useChatStore } from '../stores/chat.js'
   import AppIcon from '../components/AppIcon.vue'
@@ -188,6 +199,8 @@ import PageHeader from '../components/PageHeader.vue'
   ]
   const tab = ref('post')
   const showForm = ref(false)
+  const tabMenuOpen = ref(false)
+  const tabMenuWrap = ref(null)
   const showFilters = ref(false)
   const filters = reactive({
     visibility: '',
@@ -259,6 +272,13 @@ import PageHeader from '../components/PageHeader.vue'
   )
 
   function reload() { return reset() }
+
+  const currentTabLabel = computed(() => t(TABS.find(x => x.id === tab.value)?.label || 'nav.community'))
+  const initials = computed(() => toInitials(auth.user?.displayName || auth.user?.email || '?'))
+  function pickTab(id) { tabMenuOpen.value = false; setTab(id) }
+  function onDocClick(e) { if (tabMenuOpen.value && tabMenuWrap.value && !tabMenuWrap.value.contains(e.target)) tabMenuOpen.value = false }
+  onMounted(() => document.addEventListener('click', onDocClick))
+  onBeforeUnmount(() => document.removeEventListener('click', onDocClick))
 
   function setTab(value) {
     tab.value = value
@@ -351,6 +371,19 @@ import PageHeader from '../components/PageHeader.vue'
     @apply flex flex-col gap-5;
   }
 
+  .tab-title-wrap { position: relative; display: inline-block; }
+  .tab-title { display: inline-flex; align-items: center; gap: 6px; background: none; border: 0; color: inherit; font: inherit; letter-spacing: inherit; cursor: pointer; padding: 0; min-height: 44px; }
+  .tab-title svg { color: rgb(var(--color-ocean-text)); transition: transform .15s; }
+  .tab-title svg.flip { transform: rotate(180deg); }
+  .tab-menu { position: absolute; left: 0; top: calc(100% + 4px); z-index: 120; min-width: 200px; padding: 6px; background: var(--surface); border: 1px solid var(--border-light); border-radius: 16px; box-shadow: 0 12px 30px rgba(0,0,0,.3); }
+  .tab-menu-item { display: flex; align-items: center; justify-content: space-between; gap: 12px; width: 100%; min-height: 44px; padding: 0 12px; background: none; border: 0; border-radius: 12px; color: var(--foam); font-family: var(--font-sans); font-size: 15px; font-weight: 600; cursor: pointer; text-align: left; }
+  .tab-menu-item:hover { background: var(--surface-2); }
+  .tab-menu-item.on { color: rgb(var(--color-ocean-text)); font-weight: 800; }
+  .compose-row { display: flex; align-items: center; gap: 12px; width: 100%; min-height: 56px; margin-bottom: 16px; padding: 8px 14px; background: var(--surface); border: 1px solid var(--border); border-radius: 20px; color: var(--text-muted); cursor: pointer; text-align: left; font-size: 15px; }
+  .compose-avatar { width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--ocean); background: var(--ocean-glow); color: rgb(var(--color-ocean-text)); font-size: 12px; font-weight: 800; display: flex; align-items: center; justify-content: center; overflow: hidden; flex: none; }
+  .compose-avatar img { width: 100%; height: 100%; object-fit: cover; }
+  .compose-text { flex: 1; }
+  .compose-ic { color: rgb(var(--color-ocean-text)); }
   .chips { @apply flex gap-1.5 overflow-x-auto pb-1 mb-2; scrollbar-width: none; }
   .chips::-webkit-scrollbar { display: none; }
   .chip {
