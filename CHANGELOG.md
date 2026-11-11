@@ -1,3 +1,11 @@
+## [1.54.2](https://github.com/ziobob94/fishlog-client/compare/client-v1.54.1...client-v1.54.2) (2026-11-11)
+
+
+### Bug Fixes
+
+* **chat:** blocca lo scroll del documento nelle viste a scroll interno ([3b4e5de](https://github.com/ziobob94/fishlog-client/commit/3b4e5de7f19e1b16b01804c5b960a2af87fc018a))
+* **chat:** vincola l'altezza delle viste fullHeight così scorre solo la lista messaggi ([4f3225b](https://github.com/ziobob94/fishlog-client/commit/4f3225b7c99f308dff4acf580f12fe6f586cef73))
+
 ## [1.54.1](https://github.com/ziobob94/fishlog-client/compare/client-v1.54.0...client-v1.54.1) (2026-11-11)
 
 
