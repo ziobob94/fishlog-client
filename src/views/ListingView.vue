@@ -1,5 +1,5 @@
 <template>
-  <div v-if="listing" class="listing-view">
+  <div v-if="listing" class="listing-view" :class="{ 'has-cta': !isOwner }">
     <div class="gallery">
       <img v-if="activeMedia" :src="activeMedia.url" class="gallery-main" :alt="listing.title" />
       <div v-else class="gallery-placeholder"><Package :size="56" /></div>
@@ -11,6 +11,26 @@
           :aria-label="t('market.photo')" @click="activeMedia = m"
         ></button>
       </div>
+    </div>
+
+    <div class="photo-actions">
+      <template v-if="isOwner">
+        <RouterLink :to="`/market/${listing._id}/edit`" class="icon-act" :aria-label="t('common.edit')" :title="t('common.edit')">
+          <Pencil :size="20" />
+        </RouterLink>
+        <label class="status-pick" :title="t('market.status.label')">
+          <span class="status-dot" :class="`dot-${statusModel}`" aria-hidden="true"></span>
+          <select v-model="statusModel" :aria-label="t('market.status.label')" @change="changeStatus">
+            <option value="active">{{ t('market.status.active') }}</option>
+            <option value="reserved">{{ t('market.status.reserved') }}</option>
+            <option value="sold">{{ t('market.status.sold') }}</option>
+          </select>
+        </label>
+        <button type="button" class="icon-act icon-danger" :aria-label="t('common.delete')" :title="t('common.delete')" @click="onDelete">
+          <Trash2 :size="20" />
+        </button>
+      </template>
+      <button type="button" class="icon-act" :aria-label="t('market.share')" :title="t('market.share')" @click="share"><Send :size="20" /></button>
     </div>
 
     <div class="info">
@@ -43,29 +63,10 @@
         <ChevronRight :size="18" class="text-muted" />
       </RouterLink>
 
-      <div class="cta-bar">
-        <template v-if="isOwner">
-          <RouterLink :to="`/market/${listing._id}/edit`" class="icon-act" :aria-label="t('common.edit')" :title="t('common.edit')">
-            <Pencil :size="20" />
-          </RouterLink>
-          <label class="status-pick" :title="t('market.status.label')">
-            <span class="status-dot" :class="`dot-${statusModel}`" aria-hidden="true"></span>
-            <select v-model="statusModel" :aria-label="t('market.status.label')" @change="changeStatus">
-              <option value="active">{{ t('market.status.active') }}</option>
-              <option value="reserved">{{ t('market.status.reserved') }}</option>
-              <option value="sold">{{ t('market.status.sold') }}</option>
-            </select>
-          </label>
-          <button type="button" class="icon-act icon-danger" :aria-label="t('common.delete')" :title="t('common.delete')" @click="onDelete">
-            <Trash2 :size="20" />
-          </button>
-        </template>
-        <template v-else>
-          <RouterLink :to="`/chat/${listing.seller._id}`" class="btn btn-primary cta-main">
-            <MessageCircle :size="16" /> {{ t('market.contactSeller') }}
-          </RouterLink>
-          <button type="button" class="icon-act" :aria-label="t('market.share')" :title="t('market.share')" @click="share"><Send :size="20" /></button>
-        </template>
+      <div v-if="!isOwner" class="cta-bar">
+        <RouterLink :to="`/chat/${listing.seller._id}`" class="btn btn-primary cta-main">
+          <MessageCircle :size="16" /> {{ t('market.contactSeller') }}
+        </RouterLink>
       </div>
     </div>
   </div>
@@ -141,8 +142,11 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-.listing-view { @apply flex flex-col gap-0 pb-28; }
-@media (min-width: 720px) { .listing-view { @apply grid gap-6 pb-4; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); } }
+.listing-view { @apply flex flex-col gap-0; padding-bottom: calc(var(--bottom-nav-h) + 1.5rem + env(safe-area-inset-bottom)); }
+.listing-view.has-cta { padding-bottom: calc(var(--bottom-nav-h) + 6rem + env(safe-area-inset-bottom)); }
+.photo-actions { @apply flex items-center justify-end gap-2 mt-3; }
+.photo-actions .status-pick { flex: 0 1 auto; min-width: 150px; }
+@media (min-width: 720px) { .listing-view { @apply grid gap-x-6 gap-y-0 pb-4; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); } .listing-view .info { grid-column: 2; grid-row: 1 / span 2; } .photo-actions { grid-column: 1; align-self: start; } }
 
 .gallery { @apply relative; }
 .gallery-main { @apply w-full aspect-[4/3] object-cover rounded-xl bg-surface-2; }
