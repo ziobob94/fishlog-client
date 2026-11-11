@@ -1874,6 +1874,10 @@
 			"region": "Previsione ora per ora di {day}, scorri con le frecce",
 			"legend": "Vento in km/h, la freccia indica dove soffia. Pioggia = probabilità.",
 			"days": "Giorno da mostrare",
+			"span": "Ore da mostrare",
+			"regionAll": "Previsione ora per ora delle prossime {n} ore, scorri con le frecce",
+			"sunrise": "Alba",
+			"sunset": "Tramonto",
 			"fromOm": "Da qui: Open-Meteo",
 			"source": "Le prime 48 ore vengono da Google, le successive da Open-Meteo: più lontano nel tempo, meno precise."
 		},
