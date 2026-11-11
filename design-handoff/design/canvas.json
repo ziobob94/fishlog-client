@@ -351,6 +351,134 @@
    "w": 390,
    "x": 2350,
    "y": 11300
+  },
+  "GareElenco.dc.html": {
+   "h": 840,
+   "is_interactive": true,
+   "title": "48 · Gare · elenco (scuro)",
+   "w": 390,
+   "x": 0,
+   "y": 12700
+  },
+  "GareElenco-chiaro.dc.html": {
+   "h": 840,
+   "is_interactive": true,
+   "title": "48 · Gare · elenco (chiaro)",
+   "w": 390,
+   "x": 470,
+   "y": 12700
+  },
+  "GareCampionato.dc.html": {
+   "h": 947,
+   "is_interactive": true,
+   "title": "49 · Campionato (scuro)",
+   "w": 390,
+   "x": 960,
+   "y": 12700
+  },
+  "GareCampionato-chiaro.dc.html": {
+   "h": 947,
+   "is_interactive": true,
+   "title": "49 · Campionato (chiaro)",
+   "w": 390,
+   "x": 1430,
+   "y": 12700
+  },
+  "GaraDettaglio.dc.html": {
+   "h": 905,
+   "is_interactive": true,
+   "title": "50 · Gara (scuro)",
+   "w": 390,
+   "x": 1920,
+   "y": 12700
+  },
+  "GaraDettaglio-chiaro.dc.html": {
+   "h": 905,
+   "is_interactive": true,
+   "title": "50 · Gara (chiaro)",
+   "w": 390,
+   "x": 2390,
+   "y": 12700
+  },
+  "GaraInserimento.dc.html": {
+   "h": 1248,
+   "is_interactive": true,
+   "title": "51 · Inserimento giudice (scuro)",
+   "w": 390,
+   "x": 2880,
+   "y": 12700
+  },
+  "GaraInserimento-chiaro.dc.html": {
+   "h": 1248,
+   "is_interactive": true,
+   "title": "51 · Inserimento giudice (chiaro)",
+   "w": 390,
+   "x": 3350,
+   "y": 12700
+  },
+  "GareTabella.dc.html": {
+   "h": 1242,
+   "is_interactive": true,
+   "title": "52 · Tabella lunghezza-peso (scuro)",
+   "w": 390,
+   "x": 3840,
+   "y": 12700
+  },
+  "GareTabella-chiaro.dc.html": {
+   "h": 1242,
+   "is_interactive": true,
+   "title": "52 · Tabella lunghezza-peso (chiaro)",
+   "w": 390,
+   "x": 4310,
+   "y": 12700
+  },
+  "GareRegole.dc.html": {
+   "h": 2199,
+   "is_interactive": true,
+   "title": "53 · Regole (scuro)",
+   "w": 390,
+   "x": 4800,
+   "y": 12700
+  },
+  "GareRegole-chiaro.dc.html": {
+   "h": 2199,
+   "is_interactive": true,
+   "title": "53 · Regole (chiaro)",
+   "w": 390,
+   "x": 5270,
+   "y": 12700
+  },
+  "GareClassificaPubblica.dc.html": {
+   "h": 1152,
+   "is_interactive": true,
+   "title": "54 · Classifica pubblica (scuro)",
+   "w": 390,
+   "x": 5760,
+   "y": 12700
+  },
+  "GareClassificaPubblica-chiaro.dc.html": {
+   "h": 1152,
+   "is_interactive": true,
+   "title": "54 · Classifica pubblica (chiaro)",
+   "w": 390,
+   "x": 6230,
+   "y": 12700
+  },
+  "GareIscritti.dc.html": {
+   "h": 863,
+   "is_interactive": true,
+   "title": "55 · Iscritti e squadre (scuro)",
+   "w": 390,
+   "x": 6720,
+   "y": 12700
+  },
+  "GareIscritti-chiaro.dc.html": {
+   "h": 863,
+   "is_interactive": true,
+   "title": "55 · Iscritti e squadre (chiaro)",
+   "w": 390,
+   "x": 7190,
+   "y": 12700
   }
  },
  "createdOnFiles": {
@@ -373,7 +501,9 @@
   "n10",
   "n11",
   "n12",
-  "n13"
+  "n13",
+  "n14",
+  "n15"
  ],
  "notes": {
   "n1": {
@@ -461,6 +591,18 @@
    "w": 900,
    "x": 0,
    "y": 11180
+  },
+  "n14": {
+   "text": "Modulo Gare: da approvare prima di implementare. Le 8 schermate sono in coppia scuro (sinistra) e chiaro (destra); ogni mockup ha il selettore «Anteprima» per gli stati. Il giudice inserisce, i partecipanti vedono soltanto; la classifica pubblica si apre da un link senza account. Regole di default (tutte configurabili per campionato): classifica di gara a peso totale, punti = piazzamento; generale = somma dei piazzamenti (meno è meglio) con 1 scarto dalla 4ª prova; cappotto = partecipanti + 1; pari merito = media dei posti; spareggio per numero di catture e poi pesce più grande. Font: Fraunces solo titoli di pagina e card, Manrope per testi e valori, JetBrains Mono per ogni numero (cm, kg, punti, posizioni). Nel tema chiaro il pulsante primario usa ocean-dark: il bianco su ocean chiaro arriva solo a 4,2:1.",
+   "w": 1100,
+   "x": 0,
+   "y": 12540
+  },
+  "n15": {
+   "text": "Da decidere: 1) dove entra «Gare» nell'app (la barra ha già 5 voci: proposta, scheda in Home e voce nel menù del profilo); 2) classifica a squadre: somma dei piazzamenti dei componenti o peso totale della squadra (disegnato: peso totale, punti = piazzamento di squadra); 3) un pesce sotto taglia si registra ma non conta (disegnato così); 4) catture offline: coda sul telefono, conflitti risolti dal giudice.",
+   "w": 1100,
+   "x": 1160,
+   "y": 12540
   }
  },
  "order": [
@@ -510,7 +652,23 @@
   "NuovoPostStati.dc.html",
   "NuovaStoriaStati.dc.html",
   "MenuProfilo.dc.html",
-  "ImpostazioniProfilo.dc.html"
+  "ImpostazioniProfilo.dc.html",
+  "GareElenco.dc.html",
+  "GareElenco-chiaro.dc.html",
+  "GareCampionato.dc.html",
+  "GareCampionato-chiaro.dc.html",
+  "GaraDettaglio.dc.html",
+  "GaraDettaglio-chiaro.dc.html",
+  "GaraInserimento.dc.html",
+  "GaraInserimento-chiaro.dc.html",
+  "GareTabella.dc.html",
+  "GareTabella-chiaro.dc.html",
+  "GareRegole.dc.html",
+  "GareRegole-chiaro.dc.html",
+  "GareClassificaPubblica.dc.html",
+  "GareClassificaPubblica-chiaro.dc.html",
+  "GareIscritti.dc.html",
+  "GareIscritti-chiaro.dc.html"
  ],
  "pages": [],
  "title": "FishLog – Restyling"

@@ -144,6 +144,45 @@ Regola unica per ogni avatar (componente `UserAvatar.vue`, con `hasStory`):
 - In Community (05) il selettore «Anteprima» alterna «Ho una storia / Nessuna storia» per vedere i due casi.
 Servono `hasStory` e `storyUnseen` per utente nelle risposte del feed.
 
+## Modulo Gare (schermate 48-55, riga y=12700 del canvas) — DA APPROVARE PRIMA DI IMPLEMENTARE
+Ogni schermata ha un foglio scuro (`NN-Nome.png`) e uno chiaro (`NN-Nome-chiaro.png`) con tutti gli stati affiancati, numerati. Nel canvas le coppie scuro/chiaro sono affiancate e ogni mockup ha il selettore «Anteprima».
+
+**Scelte già prese:** il giudice inserisce i risultati e i partecipanti li vedono soltanto; classifiche pubbliche con link senza account; gare singole e a squadre; gare con rilascio (solo lunghezza, peso stimato dalla tabella) e con pesatura (peso misurato); tabella lunghezza-peso per specie importata da CSV e modificabile.
+
+**Regole di default (tutte configurabili per campionato):** classifica di gara a peso totale, punti = piazzamento; generale = somma dei piazzamenti (meno è meglio) con 1 scarto dalla 4ª prova (si scarta il risultato peggiore, a parità l'ultimo); cappotto = piazzamento pari a partecipanti + 1; pari merito = media dei posti; spareggio per numero di catture e poi pesce più grande (se restano pari: media dei posti); taglia minima configurabile per specie (sotto taglia: si registra ma non conta).
+
+| # | Schermata | Vue (proposta) | Stati disegnati |
+|---|---|---|---|
+| 48 | Elenco campionati e creazione | `ChampionshipsView.vue` | Miei · Partecipo · Pubblici · Vuoto · Caricamento (Bobber) · Offline · Nuovo campionato (nome, formato singolo/squadre/entrambi, modalità predefinita, classifica pubblica) |
+| 49 | Dettaglio campionato (tab Classifica · Gare · Iscritti · Regole) | `ChampionshipView.vue`, `StandingsTable.vue` | Classifica generale con scarto evidenziato, cappotto (C) e pari merito · Gare · Iscritti · Regole · Senza gare · Caricamento · Offline |
+| 50 | Dettaglio gara | `RaceView.vue` | In corso (rilascio, provvisoria) · Chiusa · Cappotto (`StampBadge` dedicato) · Pari merito · Spiegazione del pari merito · Caricamento · Offline |
+| 51 | Inserimento rapido del giudice | `JudgeEntryView.vue` | Rilascio (cm → peso stimato subito) · Pesatura (kg) · Tabella mancante · Sotto taglia · Correzione/annullo · Annullata con «Ripristina» · Offline (coda sul telefono) |
+| 52 | Tabella lunghezza-peso | `WeightTableView.vue` | Panoramica con avviso specie senza tabella · Modifica (righe cm→kg, anteprima con curva) · Importa CSV (righe valide/errori) · Senza tabella · Caricamento · Offline |
+| 53 | Impostazioni regole | `RulesView.vue` | Default · Modificato (barra «modifiche non salvate») · Sola lettura (non organizzatore) · Errore (scarti > prove) · Caricamento · Offline |
+| 54 | Classifica pubblica condivisibile | `PublicStandingsView.vue`, route senza login | Individuale · Squadre · Condividi (link, QR) · Caricamento · Offline (dati salvati) · Link non valido |
+| 55 | Iscritti, squadre e ruoli | `MembersView.vue` | Iscritti · Squadre · Cambia ruolo (Partecipante/Giudice/Organizzatore, rimuovi) · Vuoto · Caricamento · Offline |
+
+**Componenti riusati:** `StampBadge` (cappotto: titolo, posto, «posto»), `TideDivider` (sezioni), `Bobber` (caricamento e vuoti), `RulerFrame` (foto delle catture con il metro), `AppIcon`. `Bobber` ha i colori fissi: nel tema chiaro il corpo va con `var(--color-foam)` e un contorno scuro, come nei mockup.
+
+**Nuovi componenti:** `StandingsTable.vue` (colonne P1…Pn e totale), `ScartoCell.vue` (barrato, bordo tratteggiato sabbia, `aria-label` «scarto»), `PositionBadge.vue` (numero sempre visibile, anche il pari merito «5,5»), `LengthStepper.vue` (− / + da 56 px, campo mono grande), `EstimatedWeightCard.vue`, `OfflineBanner.vue`, `UndoSnackbar.vue`, `RolePicker.vue`.
+
+**Font:** Fraunces solo per titoli di pagina e di card; Manrope per testi, etichette e valori; JetBrains Mono (`font-mono`) per **ogni numero**: cm, kg, punti, posizioni, conteggi, date e ore.
+
+**Accessibilità:** contrasto ≥ 4,5:1 verificato su tutti gli abbinamenti dei due temi (scuro min 5,5:1, chiaro min 4,6:1); tocco ≥ 44 px; la posizione è sempre un numero (mai solo colore o medaglia); scarto, cappotto e pari merito hanno anche un'etichetta di testo e una legenda; `role="status"` sui caricamenti, `role="alert"` su errori e avvisi; `aria-selected`/`aria-checked` su tab, segmentati e radio; `prefers-reduced-motion` ferma Bobber, skeleton e spinner.
+
+**Tema chiaro: due correzioni ai token (già in `tokens/tokens.css`).** Il bianco sul pulsante primario con `ocean` chiaro (`#0382c3`) arriva solo a 4,2:1: nel chiaro il riempimento primario usa `ocean-dark` (`#0369a1`, 5,9:1), nuova variabile `--color-ocean-fill`. Il testo sabbia chiaro `#b45309` scende a 4,4:1 sulle superfici secondarie: ora `#92400e` (≥ 6:1).
+
+**Calcolo (da testare con casi di prova):**
+- Punti di gara = piazzamento (pari merito: media dei posti occupati). Cappotto = partecipanti + 1.
+- Generale = somma dei piazzamenti, meno gli scarti: dalla prova n. 4 si scartano i peggiori (`scarti` per campionato, `dallaProva`).
+- Spareggio ordinato e configurabile; solo se tutti i criteri sono pari si usa la media dei posti.
+- Peso stimato (rilascio) = interpolazione lineare tra le due righe della tabella della specie; fuori tabella o specie senza tabella → cattura «da completare», non conta in classifica finché manca il peso.
+- Squadre: disegnato come peso totale dei componenti, punti = piazzamento di squadra, con lo stesso scarto. Da confermare.
+
+**Backend da verificare in `fishlog-server`:** modelli `Championship` (formato, modalità, regole, slug pubblico), `Race` (data, luogo, tipo rilascio/pesatura, stato), `Entry` (iscritto, ruolo, squadra), `Team`, `CatchRecord` (gara, iscritto, specie, cm, kg misurato o stimato, foto, annullata, inserita da, timestamp), `WeightTable` (specie, righe cm→kg, fonte). Endpoint pubblico di sola lettura per la classifica (senza login, con cache). Ruoli verificati lato server: solo il giudice scrive catture, solo l'organizzatore cambia regole e ruoli. Inserimenti offline: coda locale (IndexedDB) con invio all'arrivo della rete e id idempotente.
+
+**Da decidere:** 1) dove entra «Gare» (la barra ha già 5 voci: proposta, scheda in Home e voce nel menù del profilo); 2) classifica a squadre (vedi sopra); 3) un pesce sotto taglia si registra ma non conta; 4) come si risolvono i conflitti di inserimento offline tra due giudici.
+
 ## Navigazione (cambia)
 
 - **Mobile, barra in basso:** Home · Uscite · **+** (tasto centrale grande, azione «Nuova uscita») · Social · Market. Oggi è Home, Uscite, Feed, Market, Chat.

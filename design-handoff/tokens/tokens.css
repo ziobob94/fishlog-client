@@ -26,6 +26,7 @@
   --color-success-text: 134 239 172;/* #86efac */
   --color-on-primary: 11 22 35;     /* #0b1623 TESTO sul pulsante primario (non più bianco) */
   --color-sea-deep: 16 48 77;       /* #10304d fondi con isobate e mappamondo */
+  --color-ocean-fill: 14 165 233;   /* fondo del pulsante primario (nel chiaro vedi sotto) */
 
   /* Firma: angolo meno arrotondato in basso a sinistra sulle card principali */
   --radius-signature: 24px 24px 24px 8px;
@@ -34,7 +35,8 @@
 /* Il tema chiaro resta quello attuale; aggiungere solo le varianti testo: */
 :root[data-theme='light'] {
   --color-ocean-text: 3 105 161;
-  --color-sand-text: 180 83 9;      /* #b45309 */
+  --color-sand-text: 146 64 14;     /* #92400e (era #b45309: 4,4:1 sulle superfici secondarie) */
+  --color-ocean-fill: 3 105 161;    /* #0369a1 fondo del pulsante primario nel chiaro (bianco 5,9:1) */
   --color-danger-text: 185 28 28;
   --color-success-text: 21 128 61;
   --color-on-primary: 255 255 255;
