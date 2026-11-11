@@ -30,6 +30,7 @@ export default createRouter({
     { path: '/termini',        name: 'terms',          component: () => import('../views/legal/TermsView.vue'),   meta: { public: true } },
     { path: '/cookie-policy',  name: 'cookie-policy',  component: () => import('../views/legal/CookieView.vue'),  meta: { public: true } },
     { path: '/',               name: 'home',          component: () => import('../views/HomeView.vue'), meta: { tab: true } },
+    { path: '/meteo',          name: 'weather',       component: () => import('../views/WeatherPage.vue'), meta: { ownHeader: true } },
     { path: '/sessions',       name: 'sessions',      component: () => import('../views/SessionsView.vue'), meta: { ownHeader: true, tab: true } },
     { path: '/new',            name: 'new-session',   component: () => import('../views/NewSessionView.vue'), meta: { ownHeader: true } },
     { path: '/session/:id',    name: 'session',       component: () => import('../views/SessionView.vue'), meta: { ownHeader: true } },
