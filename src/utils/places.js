@@ -125,3 +125,8 @@ export async function reverseLabel(lat, lng) { return (await reverseGeocode(lat,
 
 // ── Mappa ─────────────────────────────────────────────────────────────────────
 export async function loadMap() { return (await lib('maps')) }
+
+// Chiave i18n dell'avviso da mostrare quando Google non è utilizzabile ('' se tutto ok).
+// Nessun ripiego silenzioso su altri provider: la chiave mancante o rifiutata va resa visibile.
+export const placesErrorKey = () => (!KEY || placesStatus.error === 'missing') ? 'placeInput.keyMissing'
+  : ({ rejected: 'placeInput.keyRejected', load: 'placeInput.loadFailed' }[placesStatus.error] || '')
