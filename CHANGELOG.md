@@ -1,3 +1,10 @@
+# [1.47.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.46.1...client-v1.47.0) (2026-11-11)
+
+
+### Features
+
+* errori di Google Maps diagnosticabili (chiave, referrer, API, fatturazione, script bloccato, timeout) in UI e console ([26f94f7](https://github.com/ziobob94/fishlog-client/commit/26f94f706405dade638941da78765becf31638fb))
+
 ## [1.46.1](https://github.com/ziobob94/fishlog-client/compare/client-v1.46.0...client-v1.46.1) (2026-11-11)
 
 
