@@ -1,3 +1,10 @@
+# [1.48.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.47.2...client-v1.48.0) (2026-11-11)
+
+
+### Features
+
+* meteo di uscita e Home dal server (/api/weather) invece di Open-Meteo diretto ([4cddd44](https://github.com/ziobob94/fishlog-client/commit/4cddd4418c03f4a5d71b2e724fd829abcb7e9123))
+
 ## [1.47.2](https://github.com/ziobob94/fishlog-client/compare/client-v1.47.1...client-v1.47.2) (2026-11-11)
 
 
