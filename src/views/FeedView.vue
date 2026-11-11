@@ -24,6 +24,8 @@
       ><Filter :size="16" /></button>
     </PageHeader>
 
+    <StoriesRail />
+
     <button v-if="!showForm" type="button" class="compose-row" @click="showForm = true">
       <span class="compose-avatar"><img v-if="auth.user?.avatar" :src="auth.user.avatar" alt="" /><template v-else>{{ initials }}</template></span>
       <span class="compose-text">{{ t('posts.composePrompt') }}</span>
@@ -178,6 +180,7 @@ import PageHeader from '../components/PageHeader.vue'
   import { useUserStore } from '../stores/users.js'
   import { useInfiniteScroll } from '../composables/useInfiniteScroll.js'
   import PostForm from '../components/post/PostForm.vue'
+  import StoriesRail from '../components/StoriesRail.vue'
   import PostCard from '../components/post/PostCard.vue'
   import LocationPicker from '../components/form/LocationPicker.vue'
   import InfiniteSentinel from '../components/InfiniteSentinel.vue'
