@@ -1,3 +1,10 @@
+# [1.43.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.42.1...client-v1.43.0) (2026-11-11)
+
+
+### Features
+
+* input luogo unico con suggerimenti, posizione e scelta su mappa; nomi in italiano/latino ([f0edccf](https://github.com/ziobob94/fishlog-client/commit/f0edccfc02f5e2316b326d0c34f358494c98b263))
+
 ## [1.42.1](https://github.com/ziobob94/fishlog-client/compare/client-v1.42.0...client-v1.42.1) (2026-11-11)
 
 
