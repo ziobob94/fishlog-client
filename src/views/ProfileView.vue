@@ -116,6 +116,16 @@
         <button class="btn btn-primary btn-sm mt-2" :disabled="savingAccount" @click="saveAccount">
           {{ t('common.save') }}
         </button>
+        <div class="notification-row mt-4">
+          <div>
+            <strong>{{ t('profile.privacy.marketMessages') }}</strong>
+            <p class="text-muted text-sm">{{ t('profile.privacy.marketMessagesHint') }}</p>
+          </div>
+          <label class="switch">
+            <input type="checkbox" v-model="marketMessages" :aria-label="t('profile.privacy.marketMessages')" @change="saveMarketMessages" />
+            <span class="switch-track"></span>
+          </label>
+        </div>
       </section>
 
       <!-- Negozio / Market -->
@@ -306,6 +316,11 @@ return toInitials(name)
 // ── account ──
 const displayName = ref(auth.user?.displayName || '')
 const defaultVisibility = ref(auth.user?.defaultVisibility || 'public')
+const marketMessages = ref(auth.user?.marketMessagesFromStrangers !== false)
+async function saveMarketMessages() {
+  try { await auth.updateProfile({ marketMessagesFromStrangers: marketMessages.value }) }
+  catch { marketMessages.value = !marketMessages.value; accountError.value = t('common.error') }
+}
 const savingAccount = ref(false)
 const accountError  = ref('')
 const accountSaved  = ref(false)

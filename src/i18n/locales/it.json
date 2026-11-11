@@ -1186,6 +1186,14 @@
 		}
 	},
 	"market": {
+		"visibility": {
+			"all": "Tutti",
+			"friends": "Amici",
+			"groups": "Gruppi",
+			"allHint": "Visibile a tutti. Chi non è tuo amico può scriverti, se lo permetti in Privacy.",
+			"friendsHint": "Solo i tuoi amici vedono l'annuncio.",
+			"groupsHint": "Solo i membri dei gruppi scelti vedono l'annuncio."
+		},
 		"view": {
 			"label": "Come vedere gli elenchi",
 			"grid": "Griglia",
@@ -1245,6 +1253,7 @@
 			"unverified": "Negozio (in verifica)"
 		},
 		"status": {
+			"label": "Stato dell'annuncio",
 			"active": "Disponibile",
 			"reserved": "Prenotato",
 			"sold": "Venduto",
@@ -1270,6 +1279,10 @@
 			"price": "Prezzo (€)",
 			"location": "Zona",
 			"locationPlaceholder": "Es. Genova",
+			"whoCanSee": "Chi può vedere l'annuncio",
+			"chooseGroups": "Scegli i gruppi",
+			"noGroups": "Non fai ancora parte di nessun gruppo.",
+			"groupRequired": "Scegli almeno un gruppo.",
 			"photos": "Foto",
 			"cover": "Copertina",
 			"add": "Aggiungi",
@@ -1340,6 +1353,8 @@
 		},
 		"privacy": {
 			"title": "Privacy",
+			"marketMessages": "Messaggi dal Market",
+			"marketMessagesHint": "Chi non è tuo amico può scriverti a proposito dei tuoi annunci pubblici.",
 			"defaultVisibilityLabel": "Visibilità di default",
 			"hint": "Usata come preselezione quando crei una nuova uscita o un nuovo post"
 		},
