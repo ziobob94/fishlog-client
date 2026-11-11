@@ -559,6 +559,14 @@
    "w": 390,
    "x": 2470,
    "y": 18000
+  },
+  "CattureClassifica.dc.html": {
+   "h": 1135,
+   "is_interactive": true,
+   "title": "61 · Profilo · classifica delle catture",
+   "w": 390,
+   "x": 2820,
+   "y": 11300
   }
  },
  "createdOnFiles": {
@@ -669,7 +677,7 @@
    "y": 10080
   },
   "n13": {
-   "text": "Profilo = La mia bacheca, in stile Instagram: toccando il proprio profilo si apre la bacheca (avatar con anello storia, uscite/catture/amici, bio, «Modifica profilo», tab Post · Uscite · Salvati, griglia a 3 colonne). Le impostazioni NON sono più lì: stanno nel menù (icona in alto a destra): Impostazioni profilo, Privacy, Notifiche, Esci. Il «+» apre il menù Crea come ovunque: Post/Evento e Storia hanno pagine dedicate (44, 45) e chiudendo si torna alla bacheca. Stati: con post, vuota (invito al primo post), caricamento, errore; impostazioni con errore «nome in uso» e salvataggio. Font: Fraunces solo su titoli di pagina e di card; Manrope per etichette, valori e testi; JetBrains Mono solo per numeri, coordinate e misure.",
+   "text": "Profilo = La mia bacheca, in stile Instagram: toccando il proprio profilo si apre la bacheca (avatar con anello storia, uscite/catture/amici, bio, «Modifica profilo», tab Post · Uscite · Salvati, griglia a 3 colonne). Le impostazioni NON sono più lì: stanno nel menù (icona in alto a destra): Impostazioni profilo, Privacy, Notifiche, Esci. Il «+» apre il menù Crea come ovunque: Post/Evento e Storia hanno pagine dedicate (44, 45) e chiudendo si torna alla bacheca. Stati: con post, vuota (invito al primo post), caricamento, errore; impostazioni con errore «nome in uso» e salvataggio. Font: Fraunces solo su titoli di pagina e di card; Manrope per etichette, valori e testi; JetBrains Mono solo per numeri, coordinate e misure. Dal profilo (anche di altri utenti) i tre numeri sono tasti: «uscite» apre l'elenco delle uscite, «amici» l'elenco degli amici, «catture» la classifica delle catture dell'utente (61): per peso, per lunghezza, per specie (record e numero di catture), con filtro per specie e periodo; stati vuoto, caricamento ed errore.",
    "w": 900,
    "x": 0,
    "y": 11180
@@ -772,7 +780,8 @@
   "MeteoHome.dc.html",
   "MeteoHome-chiaro.dc.html",
   "MeteoComponenti.dc.html",
-  "MeteoComponenti-chiaro.dc.html"
+  "MeteoComponenti-chiaro.dc.html",
+  "CattureClassifica.dc.html"
  ],
  "pages": [],
  "title": "FishLog – Restyling"

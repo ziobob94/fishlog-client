@@ -283,6 +283,19 @@ Con `prefers-reduced-motion` (o «Riduci animazioni» in app): nessuno spostamen
 - Backend (da verificare): endpoint proxy `GET /weather?lat&lon` che unisce previsioni e dati marini (onde, swell, temperatura mare, corrente) e restituisce `null` per i campi mancanti; maree calcolate lato server (stima). Suggerimenti luogo con Google Places, chiave solo lato server.
 - Da decidere: fonte dati meteo/mare, copertura Adriatico, limiti di richieste, riga neutra o blocco nascosto per «senza mare».
 
+## Numeri del profilo cliccabili e classifica catture (schermata 61)
+
+Nel profilo (La mia bacheca, `Bacheca`, e profilo di un altro utente, `ProfiloUtente`) i tre numeri sono **link** (`<a>` / `RouterLink`, area ≥ 52 px, stato premuto e focus visibile, `aria-label="18 uscite: apri l'elenco"`):
+
+| Numero | Destinazione | Note |
+|---|---|---|
+| uscite | elenco delle uscite dell'utente (`Uscite`) | per un altro utente solo le uscite pubbliche |
+| amici | elenco degli amici (`Amici`) | |
+| catture | **classifica delle catture** (`CattureClassifica`, nuova) | per un altro utente, solo se il profilo lo permette |
+
+`CattureClassifica` (screenshot `61-Catture-classifica.png`, solo scuro come il resto del profilo): titolo «Le mie catture» / «Catture di giorgio.r», sottotitolo «Classifica personale», filtro periodo «Sempre» (anche anno e ultimi 30 giorni). In cima il **record** (StampBadge) con pesce più pesante e i totali (catture, specie, peso massimo). Tre ordinamenti: **per peso**, **per lunghezza** (stessa lista, il valore grande cambia) e **per specie** (record e numero di catture di ogni specie; tocco = solo quella specie). Filtro per specie con chip. Ogni riga è un link al dettaglio della cattura, con posizione in numero, foto, specie, luogo e data. Stati: con dati, nessuna cattura (invito a iniziare un'uscita), caricamento (scheletri), errore con «Riprova», catture di un amico.
+Backend (da verificare): `GET /users/:id/catches?sort=weight|length|species&species=&period=&page=` con totali e record; rispettare la privacy del profilo.
+
 ## Navigazione (cambia)
 
 - **Mobile, barra in basso:** Home · Uscite · **+** (tasto centrale grande, azione «Nuova uscita») · Social · Market. Oggi è Home, Uscite, Feed, Market, Chat.
