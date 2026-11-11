@@ -1,3 +1,10 @@
+# [1.41.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.40.0...client-v1.41.0) (2026-11-11)
+
+
+### Features
+
+* sistema di movimento (token, transizioni di pagina, toast, fogli, dialoghi, like, pull to refresh) ([478a3de](https://github.com/ziobob94/fishlog-client/commit/478a3de9189541b2124fa7f16dd421f208557625))
+
 # [1.40.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.39.1...client-v1.40.0) (2026-11-11)
 
 
