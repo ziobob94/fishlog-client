@@ -1,3 +1,12 @@
+# [1.57.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.56.0...client-v1.57.0) (2026-11-11)
+
+
+### Features
+
+* scheda meteo Home ad accordion, mappamondo come in origine ([25213cc](https://github.com/ziobob94/fishlog-client/commit/25213cce48a8612e9aae8e2e94966480479984c9))
+* scheda meteo Home completa solo a mappamondo espanso, altrimenti compatta ([a2f38b0](https://github.com/ziobob94/fishlog-client/commit/a2f38b0afdfe5da85367b514700b930de2a75b5e))
+* tasto «Aggiorna» nella scheda meteo della Home ([bfa1bc0](https://github.com/ziobob94/fishlog-client/commit/bfa1bc0632b7821f9842c5b81089c63464de23ff))
+
 # [1.56.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.55.1...client-v1.56.0) (2026-11-11)
 
 
