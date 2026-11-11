@@ -1,3 +1,10 @@
+## [1.46.1](https://github.com/ziobob94/fishlog-client/compare/client-v1.46.0...client-v1.46.1) (2026-11-11)
+
+
+### Bug Fixes
+
+* azioni dell'annuncio compatte e allineate a destra, pill di stato senza freccia sovrapposta ([e397dd9](https://github.com/ziobob94/fishlog-client/commit/e397dd9a17060583d40ec7d1cceb24a27fd4f787))
+
 # [1.46.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.45.0...client-v1.46.0) (2026-11-11)
 
 
