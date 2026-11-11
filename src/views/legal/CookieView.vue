@@ -49,7 +49,7 @@
 .legal-card  { @apply max-w-2xl w-full p-6 sm:p-8; }
 .legal-card h1 { @apply text-2xl font-extrabold mb-1; }
 .legal-updated { @apply text-muted text-xs mb-4; }
-.legal-card h2 { @apply text-base font-bold mt-6 mb-2 text-foam; }
+.legal-card h2 { font-family: var(--font-sans); @apply text-base font-bold mt-6 mb-2 text-foam; }
 .legal-card p  { @apply text-sm leading-relaxed mb-3 text-muted; }
 .legal-card ul { @apply list-disc pl-5 text-sm leading-relaxed mb-3 text-muted; }
 .legal-card li { @apply mb-1.5; }

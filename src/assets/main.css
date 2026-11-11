@@ -1,10 +1,13 @@
-@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700;9..144,800&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
+  --font-display: 'Fraunces', Georgia, serif;
+  --font-sans: 'Manrope', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
   --ocean-glow: rgba(14, 165, 233, 0.14);
 
   /* Dark theme (default) */
@@ -94,7 +97,7 @@
   html { font-size: 18px; overflow-x: clip; }
 
   body {
-    @apply bg-ink text-foam font-display antialiased min-h-screen;
+    @apply bg-ink text-foam font-sans antialiased min-h-screen;
     /* clip (non hidden): hidden fa di body un contenitore di scroll e rompe i sticky (top bar) */
     overflow-x: clip;
   }
@@ -104,6 +107,8 @@
   ::-webkit-scrollbar-thumb { @apply bg-border-light rounded; }
 
   h1, h2, h3, h4 { @apply font-bold tracking-tight leading-tight; }
+  /* Fraunces solo su titoli grandi (h1, h2 da 20px in su), mai su etichette piccole */
+  h1, h2 { font-family: var(--font-display); letter-spacing: -.01em; }
   h1 { font-size: clamp(1.7rem, 4vw, 2.6rem); }
   h2 { font-size: clamp(1.2rem, 3vw, 1.7rem); }
 
@@ -111,7 +116,7 @@
   a:hover { @apply text-sand-text; }
 
   input, textarea, select {
-    @apply w-full min-w-0 bg-surface-2 border border-border rounded-xl text-foam font-display text-sm
+    @apply w-full min-w-0 bg-surface-2 border border-border rounded-xl text-foam font-sans text-sm
            px-3 py-2 outline-none transition-all duration-200;
   }
   input:not([type='checkbox']):not([type='radio']):not([type='range']):not([type='file']), select { min-height: 44px; }
@@ -183,7 +188,7 @@
 @layer components {
   .btn {
     @apply inline-flex items-center justify-center gap-1.5 px-4 py-2
-           rounded-sm font-display text-sm font-semibold min-h-[44px]
+           rounded-sm font-sans text-sm font-semibold min-h-[44px]
            border-0 cursor-pointer transition-all duration-200 whitespace-nowrap;
   }
   .btn-primary   { @apply bg-ocean text-on-primary hover:bg-ocean-dark hover:-translate-y-px; }
@@ -307,3 +312,6 @@ textarea.fl-inp { min-height: 96px; resize: none; line-height: 1.45; padding: 14
 .fl-switch::after { content: ''; position: absolute; top: 4px; left: 4px; width: 24px; height: 24px; border-radius: 50%; background: #fff; transition: left .15s; }
 .fl-switch.on::after { left: 24px; }
 .fl-iconbtn { width: 44px; height: 44px; border-radius: 14px; border: 1px solid var(--border); background: var(--surface); color: var(--foam); display: flex; align-items: center; justify-content: center; flex: none; cursor: pointer; text-decoration: none; }
+
+/* Etichette di sezione: mai Fraunces (solo titoli da 20px in su) */
+.section-label { font-family: var(--font-sans); }

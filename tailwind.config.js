@@ -26,7 +26,8 @@ export default {
         'sea-deep':     'rgb(var(--color-sea-deep) / <alpha-value>)',
       },
       fontFamily: {
-        display: ['Manrope', 'sans-serif'],
+        display: ['Fraunces', 'Georgia', 'serif'],
+        sans:    ['Manrope', 'system-ui', 'sans-serif'],
         mono:    ['JetBrains Mono', 'monospace'],
       },
       borderRadius: {
