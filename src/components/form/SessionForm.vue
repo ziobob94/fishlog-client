@@ -409,6 +409,7 @@
   import { storeToRefs } from 'pinia'
   import LocationPicker from './LocationPicker.vue'
   import PlaceInput from './PlaceInput.vue'
+  import api from '../../utils/api.js'
   import { reverseGeocode, geocodeText } from '../../utils/places.js'
   import CatchesSection from './CatchesSection.vue'
   import FieldInfo from '../FieldInfo.vue'
@@ -607,18 +608,6 @@
 
   // ─── Helpers ──────────────────────────────────────────────────────────────────
 
-  function wmoToCondition(code, windSpeed) {
-    if (windSpeed >= 30) return 'vento'
-    if (code === 0) return 'sole'
-    if (code <= 2) return 'nuvoloso'
-    if (code === 3) return 'coperto'
-    if (code === 45 || code === 48) return 'nebbia'
-    if (code >= 51 && code <= 82) return 'pioggia'
-    if (code >= 85 && code <= 86) return 'pioggia'
-    if (code >= 95) return 'pioggia'
-    return 'nuvoloso'
-  }
-
   function degToWindName(deg) {
     if (deg == null) return ''
     const dirs = [
@@ -764,53 +753,28 @@
 
     autoFilling.value = true
 
-    const today = new Date().toISOString().split('T')[0]
-    const weatherBase = date < today
-      ? 'https://archive-api.open-meteo.com/v1/archive'
-      : 'https://api.open-meteo.com/v1/forecast'
-
     try {
       const isSaltwater = f.value.waterType === 'mare'
-      const [weatherRes, marineRes] = await Promise.allSettled([
-        fetch(`${weatherBase}?latitude=${lat}&longitude=${lng}&start_date=${date}&end_date=${date}&daily=weather_code,temperature_2m_max,temperature_2m_min,wind_speed_10m_max,wind_direction_10m_dominant&hourly=surface_pressure,relative_humidity_2m&timezone=auto`).then(r => r.json()),
-        isSaltwater
-          ? fetch(`https://marine-api.open-meteo.com/v1/marine?latitude=${lat}&longitude=${lng}&start_date=${date}&end_date=${date}&daily=wave_height_max,wave_period_max&timezone=auto`).then(r => r.json())
-          : Promise.resolve(null),
-      ])
+      const hour = Math.min(23, Math.max(0, parseInt(String(f.value.startTime || '12').split(':')[0], 10) || 12))
+      // Meteo da Google (server), mare e ripiego da Open-Meteo: /api/weather/day
+      const { data: w } = await api.get('/weather/day', { params: { lat, lng, date, hour, marine: isSaltwater ? 1 : 0 } })
 
       const filled = []
 
-      if (weatherRes.status === 'fulfilled' && weatherRes.value?.daily) {
-        const d = weatherRes.value.daily
-        const h = weatherRes.value.hourly
-        const code = d.weather_code?.[0]
-        const tMax = d.temperature_2m_max?.[0]
-        const tMin = d.temperature_2m_min?.[0]
-        const windSpeed = d.wind_speed_10m_max?.[0]
-        const windDeg = d.wind_direction_10m_dominant?.[0]
-        const hour = Math.min(23, Math.max(0, parseInt(String(f.value.startTime || '12').split(':')[0], 10) || 12))
-        const pressure = h?.surface_pressure?.[hour]
+      if (w.condition != null) { f.value.weather.condition = w.condition; filled.push(t('sessionForm.autoFill.filledFields.condition')) }
+      if (w.tempAir != null) { f.value.weather.tempAir = w.tempAir; filled.push(t('sessionForm.autoFill.filledFields.temperature')) }
+      if (w.windSpeed != null) { f.value.weather.windSpeed = Math.round(w.windSpeed); filled.push(t('sessionForm.autoFill.filledFields.wind')) }
+      if (w.windDeg != null) { f.value.weather.windDirection = degToWindName(w.windDeg); filled.push(t('sessionForm.autoFill.filledFields.windDirection')) }
+      if (w.pressure != null) { f.value.weather.pressure = Math.round(w.pressure); filled.push(t('sessionForm.autoFill.filledFields.pressure')) }
 
-        if (code != null) { f.value.weather.condition = wmoToCondition(code, windSpeed); filled.push(t('sessionForm.autoFill.filledFields.condition')) }
-        if (tMax != null && tMin != null) { f.value.weather.tempAir = Math.round((tMax + tMin) / 2); filled.push(t('sessionForm.autoFill.filledFields.temperature')) }
-        if (windSpeed != null) { f.value.weather.windSpeed = Math.round(windSpeed); filled.push(t('sessionForm.autoFill.filledFields.wind')) }
-        if (windDeg != null) { f.value.weather.windDirection = degToWindName(windDeg); filled.push(t('sessionForm.autoFill.filledFields.windDirection')) }
-        if (pressure != null) { f.value.weather.pressure = Math.round(pressure); filled.push(t('sessionForm.autoFill.filledFields.pressure')) }
+      if (isSaltwater && w.waveHeight != null) {
+        f.value.sea.seaState = waveHeightToSeaState(w.waveHeight)
+        f.value.sea.waveHeight = `${w.waveHeight.toFixed(1)}m`
+        filled.push(t('sessionForm.autoFill.filledFields.seaState'), t('sessionForm.autoFill.filledFields.waveHeight'))
       }
-
-      if (isSaltwater && marineRes.status === 'fulfilled' && marineRes.value?.daily) {
-        const m = marineRes.value.daily
-        const waveH = m.wave_height_max?.[0]
-        const wavePeriod = m.wave_period_max?.[0]
-        if (waveH != null) {
-          f.value.sea.seaState = waveHeightToSeaState(waveH)
-          f.value.sea.waveHeight = `${waveH.toFixed(1)}m`
-          filled.push(t('sessionForm.autoFill.filledFields.seaState'), t('sessionForm.autoFill.filledFields.waveHeight'))
-        }
-        if (wavePeriod != null) {
-          f.value.sea.wavePeriod = `${Math.round(wavePeriod)}s`
-          filled.push(t('sessionForm.autoFill.filledFields.wavePeriod'))
-        }
+      if (isSaltwater && w.wavePeriod != null) {
+        f.value.sea.wavePeriod = `${Math.round(w.wavePeriod)}s`
+        filled.push(t('sessionForm.autoFill.filledFields.wavePeriod'))
       }
 
       autoFillMsg.value = filled.length
