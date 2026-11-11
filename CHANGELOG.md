@@ -1,3 +1,10 @@
+## [1.42.1](https://github.com/ziobob94/fishlog-client/compare/client-v1.42.0...client-v1.42.1) (2026-11-11)
+
+
+### Bug Fixes
+
+* le pagine a tutta larghezza non vengono più tagliate ai bordi (contenitore delle transizioni) ([a2189fe](https://github.com/ziobob94/fishlog-client/commit/a2189fe7cc10c9b1c48302d9dfa3d0c6ffb9ec82))
+
 # [1.42.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.41.1...client-v1.42.0) (2026-11-11)
 
 
