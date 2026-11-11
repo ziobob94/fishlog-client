@@ -1,3 +1,10 @@
+## [1.55.1](https://github.com/ziobob94/fishlog-client/compare/client-v1.55.0...client-v1.55.1) (2026-11-11)
+
+
+### Bug Fixes
+
+* posizione attivabile dalla Home e mappamondo espanso a tutto schermo ([ddbb0ba](https://github.com/ziobob94/fishlog-client/commit/ddbb0ba879ef2d149c045228d13b8b749309ffa2))
+
 # [1.55.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.54.4...client-v1.55.0) (2026-11-11)
 
 
