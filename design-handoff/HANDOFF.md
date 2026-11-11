@@ -321,6 +321,22 @@ Obiettivo: dare evidenza al meteo. La Home (`HomeMeteo` mobile, `HomeMeteoDeskto
 - Il globo vero resta il componente `Globe` (3D): nei mockup è un disegno. Sul compatto va fermo (nessuna rotazione continua) per risparmiare batteria; si anima solo da espanso.
 - Stati: compatto, espanso, caricamento (scheletri), offline (banner + «Non aggiornato · dati delle 13:40»), senza luogo («Scegli un luogo», globo senza punto azzurro), errore meteo con «Riprova».
 
+### Ora per ora continuo, alba e tramonto (aggiornamento schermate 56, 57)
+
+- Niente tab per giorno e niente buchi: una sola striscia scorrevole di 24/48 ore che parte dall'ora corrente (oggi alle 21 non si vedono solo 3 ore).
+- Tra un giorno e l'altro c'è un divisore: colonna stretta con bordo ambra a sinistra e destra, nome del giorno e numero (`role="separator"`, `aria-label="Giovedì 12 novembre"`).
+- Alba e tramonto sono colonne inserite nell'ora in cui avvengono (icona `sunrise`/`sunset`, etichetta, orario in JetBrains Mono, `role="group"` con `aria-label`). Dati: `daily.sunrise`/`daily.sunset` di Open-Meteo, nel fuso del luogo.
+- Anche l'elenco dei prossimi giorni mostra alba e tramonto (mobile sotto la riga del vento, desktop nella colonna "Alba · tramonto").
+
+## Posizione non attivabile nella Home (da correggere nell'app)
+
+Segnalato da una prova sull'app installata: dalla Home non si riesce ad attivare la localizzazione, e la mappa espansa resta grigia. Controlla in quest'ordine:
+1. `navigator.geolocation.getCurrentPosition` va chiamato solo dopo un tocco dell'utente (pulsante "Attiva la posizione"), mai al caricamento: su iOS, nella PWA aggiunta alla Home, altrimenti non compare il permesso.
+2. Se la scelta è già "Nega", il browser non richiede di nuovo: mostra lo stato "Posizione non attiva" con i passaggi per riattivarla (Impostazioni del telefono, poi Safari/Chrome o l'app, poi Posizione) e il pulsante "Scegli un luogo a mano". Leggi `navigator.permissions.query({name:'geolocation'})` dove esiste.
+3. Servizio sotto HTTPS e senza `Permissions-Policy: geolocation=()` nelle intestazioni (anche del reverse proxy o del service worker).
+4. Mappa grigia: crea la mappa con il contenitore già visibile e, all'apertura dell'espanso, ridimensionala (`google.maps.event.trigger(map,'resize')` e poi `setCenter`). Verifica anche la chiave Google Maps (restrizioni sul dominio della PWA) e mostra uno stato "Mappa non caricata" con "Riprova" invece del grigio.
+5. L'espanso mobile deve coprire tutto lo schermo (`position:fixed; inset:0; height:100dvh`, sopra la barra in alto, con `env(safe-area-inset-*)`): non deve far intravedere la card meteo tagliata sotto.
+
 ## Confronto con 3bmeteo (pagina Meteo)
 Nelle schermate 56, 57 e 62 c'è il blocco **«Confronta le previsioni»** (pill «Consigliato»): per la pesca si consiglia di guardare anche 3bmeteo come seconda fonte, soprattutto per vento e mare; se le due fonti concordano ci si può fidare di più. Pulsante «Apri 3bmeteo per Senigallia» (link esterno: `target="_blank" rel="noopener noreferrer"`, testo nascosto «si apre in una nuova scheda»), con nota «FishLog non è collegato a 3bmeteo e non ne mostra i dati; i nostri dati arrivano da Open-Meteo». Offline: pulsante disattivato «Serve la connessione». Nel dettaglio del giorno e nella Home c'è la versione compatta in una riga.
 - Solo un **link**: nessun dato, widget, iframe, scraping né logo di 3bmeteo dentro FishLog (condizioni d'uso e marchio). Il link va alla pagina della località se l'indirizzo è noto (da verificare), altrimenti alla home.

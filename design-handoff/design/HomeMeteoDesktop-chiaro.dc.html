@@ -96,7 +96,11 @@ body{margin:0;font-family:'Manrope',system-ui,sans-serif;background:#111c2c}
 .hr:focus-visible{outline:2px solid var(--oct);outline-offset:2px}
 .hc{flex:none;width:62px;display:flex;flex-direction:column;align-items:center;gap:7px;padding:12px 0;border-right:1px solid var(--bd);font-size:13px}
 .hc.now{background:var(--hi)}
-.hc.day{width:44px;writing-mode:vertical-rl;transform:rotate(180deg);justify-content:center;font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--snt);padding:0;gap:0}
+.hc.day{width:52px;justify-content:flex-start;gap:6px;padding:12px 0;background:var(--deep);border-left:2px solid var(--snt);border-right:2px solid var(--snt);color:var(--snt);font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;text-align:center}
+.hc.day .dd{font-family:'JetBrains Mono',monospace;font-size:20px;letter-spacing:0;color:var(--fg)}
+.hc.sun{width:66px;background:transparent;border-right:1px dashed var(--sn);border-left:1px dashed var(--sn);justify-content:center;color:var(--sn)}
+.hc.sun b{font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:700;color:var(--fg)}
+.hc.sun span{font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase}
 .dr{display:grid;align-items:center;gap:8px;padding:10px 0;border-top:1px solid var(--bd);min-height:64px}
 .dr:first-child{border-top:0}
 .note{display:flex;gap:10px;align-items:flex-start;border-radius:16px;padding:12px 14px;background:var(--deep);border:1px solid var(--bd);font-size:14px;line-height:1.45;color:var(--fg2)}
