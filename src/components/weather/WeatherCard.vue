@@ -1,7 +1,7 @@
 <template>
   <section class="wx-block wx-card" :aria-label="t('weather.card.label')">
     <div class="wx-bar-row">
-      <h2 class="wx-h" style="margin:0">{{ t('weather.card.title') }}</h2>
+      <h2 class="wx-h" style="margin:0"><RouterLink to="/meteo" class="wx-title-link">{{ t('weather.card.title') }}</RouterLink></h2>
       <span v-if="store.place && label" class="wx-upd">{{ label }}</span>
     </div>
 
@@ -26,7 +26,7 @@
       </div>
     </template>
 
-    <RouterLink v-if="store.place" to="/meteo" class="wx-link">{{ t('weather.card.open') }} <ArrowRight :size="16" aria-hidden="true" /></RouterLink>
+    <RouterLink to="/meteo" class="wx-link">{{ t('weather.card.open') }} <ArrowRight :size="16" aria-hidden="true" /></RouterLink>
   </section>
 </template>
 

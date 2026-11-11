@@ -57,7 +57,7 @@
 import { useI18n } from 'vue-i18n'
 import {
   Fish, Users, ShoppingBag, UserCircle, UserPlus, BarChart3,
-  Trophy, CalendarDays, ArrowRight
+  Trophy, CalendarDays, ArrowRight, CloudSun
 } from 'lucide-vue-next'
 import AppIcon from '../components/AppIcon.vue'
 import { useSessionStore } from '../stores/sessions.js'
@@ -83,6 +83,7 @@ const stories = [
 ]
 
 const quickLinks = [
+  { key: 'weather',     to: '/meteo',      icon: CloudSun },
   { key: 'sessions',    to: '/sessions',   icon: Fish },
   { key: 'stats',       to: '/stats',      icon: BarChart3 },
   { key: 'leaderboard', to: '/classifica', icon: Trophy },

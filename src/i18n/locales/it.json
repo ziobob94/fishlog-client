@@ -474,6 +474,7 @@
 		},
 		"quick": {
 			"title": "Accessi rapidi",
+			"weather": "Meteo e mare",
 			"sessions": "Uscite",
 			"stats": "Statistiche",
 			"leaderboard": "Classifica",
