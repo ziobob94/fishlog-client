@@ -1,3 +1,10 @@
+## [1.51.1](https://github.com/ziobob94/fishlog-client/compare/client-v1.51.0...client-v1.51.1) (2026-11-11)
+
+
+### Bug Fixes
+
+* le animazioni tornano su mobile con l'impostazione «Animazioni complete» ([30e999a](https://github.com/ziobob94/fishlog-client/commit/30e999ac7b1d89cc00a764cc004db2345a03ebe4))
+
 # [1.51.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.50.0...client-v1.51.0) (2026-11-11)
 
 
