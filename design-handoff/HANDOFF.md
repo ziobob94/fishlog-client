@@ -22,7 +22,7 @@ Leggi questo file per primo. Descrive il restyling dell'interfaccia di `fishlog-
 
 ## Linguaggio visivo («carta nautica»)
 
-### Font (regola attuale, dalle schermate 42-45)
+### Font (regola attuale, dalle schermate 42-47)
 - **Fraunces** (serif, 700-800, `letter-spacing: -.01em`): **solo titoli di pagina e titoli di card** (es. «La mia bacheca», «Nuovo post», «Prima spigola dell'autunno»). Classe `font-display` in Tailwind.
 - **Manrope**: etichette, valori, testi corrente, bottoni, chip, navigazione e la parola «FishLog» del logo.
 - **JetBrains Mono**: **solo** numeri, coordinate e misure (conteggi, date/ore, «52 cm», percentuali). Classe `font-mono`.
@@ -118,17 +118,19 @@ Prima mancava il punto d'ingresso per un nuovo post. Ora:
 
 **Backend da aggiungere** (`fishlog-server`): modello `Story` (autore, media, adesivi, pubblico, `expiresAt` = +24 h con indice TTL), elenco storie degli amici raggruppate per autore con flag «vista», registrazione delle visualizzazioni, risposta alla storia come messaggio chat. Upload media come per le catture.
 
-### La mia bacheca: creare contenuti (schermate 42-45, riga y=11300 del canvas)
-**Decisione:** in `/board` la creazione usa **le stesse pagine dedicate di Community** (nuovo post/evento, nuova storia), non una variante: il form inline di `MyBoardView.vue` sparisce. Una sola implementazione, un solo comportamento. Cambiano solo l'ingresso e il ritorno: il «+» della barra apre il foglio Crea (come ovunque tranne Community), chiudere o pubblicare riporta a `/board`, e l'anello con «+» sull'avatar apre direttamente la storia. Nel foglio Crea è stata aggiunta la voce **Evento**, perché `PostForm.vue` ha il tipo post/evento.
+### Profilo e bacheca personale (schermate 42-47, riga y=11300 del canvas)
+**Decisione:** il profilo è la bacheca personale, in stile Instagram (`/board`, `MyBoardView.vue` riscritta). Toccando il proprio avatar o nome in Community si apre lì. Le **impostazioni non stanno più nel profilo**: si raggiungono dal menù (icona in alto a destra). La creazione usa **le stesse pagine dedicate di Community** (nuovo post/evento, nuova storia, schermate 39-41), non una variante: il form inline di `MyBoardView.vue` sparisce. Cambia solo l'ingresso (il «+» della barra apre il foglio Crea; l'anello con «+» sull'avatar apre direttamente la storia) e il ritorno (chiudere o pubblicare riporta a `/board`). Nel foglio Crea c'è anche **Evento**, perché `PostForm.vue` ha il tipo post/evento.
 
 | # | Schermata | Codice | Stati / note |
 |---|---|---|---|
-| 42 | La mia bacheca | `MyBoardView.vue` (`/board`), `PostCard.vue` | Con post · Vuota · Caricamento (skeleton, `role=status`) · Errore (`role=alert`, «Riprova»). Filtro Tutti/Post/Eventi, conteggi in mono. Si toglie `PostForm` inline |
-| 43 | Menù Crea da bacheca | foglio Crea (come 39) | Post e Evento → 44, Storia → 45, Uscita, Annuncio. Aggiunta voce «Evento» anche al foglio 39 |
-| 44 | Nuovo post / evento | `PostForm.vue` ripensato come pagina (`/post/new`) | Vuoto · Compilato · Invio (pulsante «Pubblico…», avanzamento foto) · Errore di rete · Da correggere (`bodyRequired`, nome evento). Visibilità Pubblico/Gruppo/Solo io (`groupRequired` se Gruppo) |
-| 45 | Nuova storia | `StoryComposer.vue` (come 40) | Fotocamera · Senza permesso (scegli dalla galleria) · Modifica (adesivo cattura, Tutti/Solo amici) · Invio (%) · Errore (Riprova / Elimina) |
+| 42 | La mia bacheca (profilo) | `MyBoardView.vue` (`/board`), nuovo `ProfileHeader.vue`, `PostGrid.vue` | Header: avatar con anello storia (sabbia/oceano; tratteggiato con «+» se non c'è), nome utente come titolo, menù in alto a destra; statistiche uscite / catture / amici (mono), nome, bio, luogo con coordinate (mono), «Modifica profilo». Tab **Post · Uscite · Salvati**; griglia 3 colonne quadrata (video con durata, più foto con icona). Stati: con post · vuota (invito «Crea il primo post») · caricamento (skeleton, `role=status`) · errore (`role=alert`, «Riprova»). Toccando un tassello si apre il dettaglio del post (`PostCard.vue` in pagina, non disegnato) |
+| 43 | Menù Crea da bacheca | foglio Crea (come 39) | Post e Evento → 44, Storia → 45, Uscita, Annuncio. Voce «Evento» aggiunta anche al foglio 39 |
+| 44 | Nuovo post / evento | `PostForm.vue` come pagina (`/post/new`) | Vuoto · Compilato · Invio (avanzamento foto) · Errore di rete · Da correggere (`bodyRequired`, nome evento). Visibilità Pubblico/Gruppo/Solo io (`groupRequired`) |
+| 45 | Nuova storia | `StoryComposer.vue` (come 40) | Fotocamera · Senza permesso · Modifica (adesivo cattura, Tutti/Solo amici) · Invio (%) · Errore (Riprova / Elimina) |
+| 46 | Menù del profilo | nuovo `ProfileMenu.vue` (foglio dal basso) | Impostazioni profilo, Privacy, Notifiche, Esci (in rosso → logout e `/login`). Privacy e Notifiche portano alla pagina 47 nel disegno; nel codice possono essere sezioni o route separate (`/settings/privacy`, `/settings/notifications`) |
+| 47 | Impostazioni profilo | nuovo `ProfileSettingsView.vue` | Foto, nome, nome utente, bio (max 150, contatore mono), luogo. Stati: modifica · nome utente già in uso (errore sul campo, `aria-invalid`) · salvataggio. Va tolto da qui qualsiasi accesso alle impostazioni dal profilo |
 
-Nessun nuovo endpoint rispetto a 39-41: `store.createPost` resta quello della bacheca. Le schermate sono solo disegnate, non funzionanti.
+Nessun nuovo endpoint per il post (`store.createPost` resta). Da verificare nel server: conteggi uscite/catture/amici sul profilo, elenco «Salvati» (se manca, serve un modello di segnalibri), unicità del nome utente. Le schermate sono solo disegnate, non funzionanti.
 
 ## Navigazione (cambia)
 

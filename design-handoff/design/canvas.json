@@ -305,9 +305,9 @@
    "y": 10200
   },
   "Bacheca.dc.html": {
-   "h": 1320,
+   "h": 1200,
    "is_interactive": true,
-   "title": "La mia bacheca",
+   "title": "La mia bacheca · profilo",
    "w": 390,
    "x": 0,
    "y": 11300
@@ -334,6 +334,22 @@
    "title": "Nuova storia · stati",
    "w": 390,
    "x": 1410,
+   "y": 11300
+  },
+  "MenuProfilo.dc.html": {
+   "h": 844,
+   "is_interactive": false,
+   "title": "Profilo · menù",
+   "w": 390,
+   "x": 1880,
+   "y": 11300
+  },
+  "ImpostazioniProfilo.dc.html": {
+   "h": 1040,
+   "is_interactive": true,
+   "title": "Profilo · impostazioni",
+   "w": 390,
+   "x": 2350,
    "y": 11300
   }
  },
@@ -441,7 +457,7 @@
    "y": 10080
   },
   "n13": {
-   "text": "La mia bacheca: stesse pagine dedicate di Community (Nuovo post, Nuova storia), niente più form inline. Cambiano solo l'ingresso (il «+» della bacheca apre «Cosa vuoi condividere?», e l'anello con + sull'avatar apre la storia) e dove si torna (chiudendo si resta in «La mia bacheca»). Nel menù Crea compare anche «Evento», perché il PostForm reale ha il tipo post/evento. Stati disegnati: bacheca con post, vuota, caricamento, errore; nuovo post vuoto, compilato, invio, errore di rete, da correggere; storia con fotocamera, senza permesso, modifica, invio, errore. Provali dal selettore «Anteprima». Font: Fraunces solo su titoli di pagina e card, Manrope per etichette, valori e testi, JetBrains Mono solo per numeri, coordinate e misure.",
+   "text": "Profilo = La mia bacheca, in stile Instagram: toccando il proprio profilo si apre la bacheca (avatar con anello storia, uscite/catture/amici, bio, «Modifica profilo», tab Post · Uscite · Salvati, griglia a 3 colonne). Le impostazioni NON sono più lì: stanno nel menù (icona in alto a destra): Impostazioni profilo, Privacy, Notifiche, Esci. Il «+» apre il menù Crea come ovunque: Post/Evento e Storia hanno pagine dedicate (44, 45) e chiudendo si torna alla bacheca. Stati: con post, vuota (invito al primo post), caricamento, errore; impostazioni con errore «nome in uso» e salvataggio. Font: Fraunces solo su titoli di pagina e di card; Manrope per etichette, valori e testi; JetBrains Mono solo per numeri, coordinate e misure.",
    "w": 900,
    "x": 0,
    "y": 11180
@@ -492,7 +508,9 @@
   "Bacheca.dc.html",
   "CreaBacheca.dc.html",
   "NuovoPostStati.dc.html",
-  "NuovaStoriaStati.dc.html"
+  "NuovaStoriaStati.dc.html",
+  "MenuProfilo.dc.html",
+  "ImpostazioniProfilo.dc.html"
  ],
  "pages": [],
  "title": "FishLog – Restyling"

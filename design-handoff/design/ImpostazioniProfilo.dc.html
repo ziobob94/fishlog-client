@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<title>FishLog Impostazioni profilo</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700;9..144,800&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+body{margin:0;font-family:'Manrope',system-ui,sans-serif;background:#111c2c;color:#f1f5f9}
+.i{fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+button,input,textarea,select{font-family:inherit}
+button{cursor:pointer}
+a{color:inherit;text-decoration:none}
+.lab{display:block;margin:0 0 8px;font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#9db0c8}
+.inp{width:100%;box-sizing:border-box;height:52px;border-radius:14px;border:1px solid #33486a;background:#1a293d;color:#f1f5f9;font-size:16px;padding:0 16px;outline:none}
+.inp:focus{border-color:#0ea5e9}
+.mono{font-family:'JetBrains Mono',monospace}
+.chip{flex:none;min-height:44px;padding:0 16px;border-radius:22px;border:1px solid #33486a;background:#1a293d;color:#cbd5e1;font-weight:600;font-size:15px}
+.chip.on{border-color:#0ea5e9;background:#0ea5e9;color:#0b1623;font-weight:800}
+.btn1{min-height:54px;border-radius:16px;background:#0ea5e9;color:#0b1623;font-weight:800;font-size:16px;display:flex;align-items:center;justify-content:center;gap:8px;border:0;width:100%;box-sizing:border-box}
+.btn2{min-height:48px;border-radius:14px;background:transparent;color:#cbd5e1;border:1px solid #46617f;font-weight:700;font-size:15px;display:flex;align-items:center;justify-content:center;gap:8px;width:100%;box-sizing:border-box}
+.bar{padding:12px 16px 20px;background:#1a293d;border-top:1px solid #33486a;display:flex;flex-direction:column;gap:8px}
+.iconbtn{width:44px;height:44px;border-radius:14px;border:1px solid #33486a;background:#1a293d;color:#f1f5f9;display:flex;align-items:center;justify-content:center;flex:none}
+.card{background:#1a293d;border:1px solid #33486a;border-radius:20px;padding:16px;box-sizing:border-box}
+.hint{margin:6px 0 0;font-size:13px;color:#9db0c8}
+.seg{display:grid;gap:8px}
+.seg button{min-height:44px;border-radius:12px;font-size:14px;font-weight:700}
+h1,.disp{font-family:'Fraunces',Georgia,serif;font-optical-sizing:auto}
+.chips::-webkit-scrollbar{display:none}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.55}}
+@media (prefers-reduced-motion:no-preference){.sk{animation:pulse 1.4s ease-in-out infinite}}
+@keyframes spin{to{transform:rotate(360deg)}}
+.spin{width:18px;height:18px;border-radius:50%;border:3px solid currentColor;border-right-color:transparent;display:inline-block}
+@media (prefers-reduced-motion:no-preference){.spin{animation:spin .8s linear infinite}}
+.fld{width:100%;box-sizing:border-box;min-height:52px;border-radius:14px;border:1px solid #33486a;background:#1a293d;color:#f1f5f9;font-size:16px;padding:0 16px;outline:none}
+.fld.err{border-color:#f87171}
+.errm{margin:6px 0 0;font-size:13px;color:#fca5a5;font-weight:600}
+.tab{flex:1;min-height:48px;border:0;background:transparent;display:flex;align-items:center;justify-content:center;gap:6px;font-size:13px;font-weight:700;border-bottom:2px solid transparent}
+.tile{position:relative;aspect-ratio:1/1;border:0;padding:0;display:flex;align-items:center;justify-content:center;color:rgba(241,245,249,.35)}
+</style>
+</helmet>
+<div style="width:390px;height:1040px;box-sizing:border-box;background:#111c2c;display:flex;flex-direction:column;overflow:hidden">
+  <header style="display:flex;align-items:center;gap:8px;padding:8px 16px 8px 8px;min-height:64px;box-sizing:border-box;border-bottom:1px solid #33486a"><a href="MenuProfilo.dc.html" aria-label="Indietro" style="width:44px;height:44px;display:flex;align-items:center;justify-content:center"><svg class="i" viewBox="0 0 24 24" style="width:22px;height:22px;" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></a><h1 style="margin:0;font-size:22px;font-weight:800;letter-spacing:-.01em;flex:1">Impostazioni profilo</h1></header>
+  <div role="tablist" aria-label="Anteprima stato" class="chips" style="display:flex;gap:8px;overflow-x:auto;padding:10px 16px;background:#0b1623;border-top:1px dashed #46617f;scrollbar-width:none"><span style="flex:none;align-self:center;font-size:12px;font-weight:700;color:#9db0c8;letter-spacing:.08em;text-transform:uppercase">Anteprima</span><sc-for list="{{states}}" as="st" hint-placeholder-count="4"><button role="tab" aria-selected="{{st.on}}" onClick="{{st.tap}}" style="flex:none;min-height:44px;padding:0 14px;border-radius:22px;border:1px solid {{st.bd}};background:{{st.bg}};color:{{st.fg}};font-weight:700;font-size:13px">{{st.label}}</button></sc-for></div>
+  <main style="flex:1;overflow:hidden;padding:20px 16px 0;display:flex;flex-direction:column;gap:18px">
+    <div style="display:flex;align-items:center;gap:16px"><span style="width:88px;height:88px;border-radius:50%;background:#10304d;border:1px solid #46617f;color:#7dd3fc;font-weight:800;font-size:26px;display:flex;align-items:center;justify-content:center">MC</span><div style="display:flex;flex-direction:column;gap:6px"><button class="btn2" style="width:auto;min-height:44px;padding:0 18px"><svg class="i" viewBox="0 0 24 24" style="width:20px;height:20px;" aria-hidden="true"><path d="M4 8.5A2.5 2.5 0 0 1 6.5 6h1.2l1.1-1.6A1.5 1.5 0 0 1 10 3.8h4a1.5 1.5 0 0 1 1.2.6L16.3 6h1.2A2.5 2.5 0 0 1 20 8.5v8a2.5 2.5 0 0 1-2.5 2.5h-11A2.5 2.5 0 0 1 4 16.5ZM15.2 12.5a3.2 3.2 0 1 1-6.4 0 3.2 3.2 0 0 1 6.4 0Z"/></svg>Cambia foto</button><span class="hint" style="margin:0">JPG o PNG, fino a <span class="mono">5</span> MB</span></div></div>
+    <div><label class="lab" for="n">Nome</label><input id="n" class="fld" value="Mauro Ciccullo" autocomplete="name"></div>
+    <div><label class="lab" for="u">Nome utente</label><input id="u" class="fld {{uc}}" value="{{uval}}" autocomplete="username" aria-invalid="{{uinv}}" aria-describedby="uh">
+      <sc-if value="{{uerr}}" hint-placeholder-val="{{ false }}"><p id="uh" class="errm" role="alert">Questo nome utente è già in uso. Prova «{{uval}}_94».</p></sc-if>
+      <sc-if value="{{uok}}" hint-placeholder-val="{{ true }}"><p id="uh" class="hint">Lo vedono tutti, anche fuori dagli amici.</p></sc-if></div>
+    <div><label class="lab" for="b">Bio</label><textarea id="b" rows="3" class="fld" style="min-height:92px;padding:12px 16px;resize:none;line-height:1.45" maxlength="150">Spinning da molo e surfcasting. Adriatico, quasi sempre all'alba.</textarea><p class="hint" style="text-align:right"><span class="mono">62</span> / <span class="mono">150</span></p></div>
+    <div><label class="lab" for="l">Luogo</label><input id="l" class="fld" value="Senigallia" autocomplete="address-level2"><p class="hint">Mostrato sotto il nome, con le coordinate della tua zona.</p></div>
+  </main>
+  <div class="bar"><sc-if value="{{saving}}" hint-placeholder-val="{{ false }}"><button class="btn1" disabled style="opacity:.8"><span class="spin" aria-hidden="true"></span>Salvo…</button></sc-if><sc-if value="{{idle}}" hint-placeholder-val="{{ true }}"><a href="Bacheca.dc.html" class="btn1">Salva modifiche</a></sc-if><a href="Bacheca.dc.html" class="btn2" style="border:0;min-height:44px;color:#7dd3fc">Annulla</a></div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":1040}}'>
+class Component extends DCLogic {
+constructor(props) { super(props); this.state = { s: 0 }; }
+renderVals() {
+  const s = this.state;
+  const LABELS = ['Modifica', 'Nome in uso', 'Salvataggio'];
+  return {
+    states: LABELS.map((label, i) => s.s === i ? { label, on: true, bg: '#0ea5e9', fg: '#0b1623', bd: '#0ea5e9', tap: () => this.setState({ s: i }) } : { label, on: false, bg: '#1a293d', fg: '#cbd5e1', bd: '#46617f', tap: () => this.setState({ s: i }) }),
+    uval: s.s === 1 ? 'pescatore' : 'mauro.c', uc: s.s === 1 ? 'err' : '', uinv: s.s === 1,
+    uerr: s.s === 1, uok: s.s !== 1, saving: s.s === 2, idle: s.s !== 2
+  };
+}
+}
+</script>
+</body>
+</html>
