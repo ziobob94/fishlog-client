@@ -1,3 +1,16 @@
+# [1.56.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.55.1...client-v1.56.0) (2026-11-11)
+
+
+### Bug Fixes
+
+* pesci probabili, con soli dati di stagione niente «Molto probabile» ([55b897b](https://github.com/ziobob94/fishlog-client/commit/55b897bf2f47d13ca71c261eb9141194d95ee194))
+
+
+### Features
+
+* «Confronta con 3bmeteo» una sola volta, in fondo alla pagina Meteo ([541aa73](https://github.com/ziobob94/fishlog-client/commit/541aa730e3fa58ef2fddc8b3db79670bb4781cfe))
+* meteo ora per ora continuo con alba e tramonto, fix dettaglio di oggi ([d8866cc](https://github.com/ziobob94/fishlog-client/commit/d8866ccfd410c5594846509e4822dbeb833de652))
+
 ## [1.55.1](https://github.com/ziobob94/fishlog-client/compare/client-v1.55.0...client-v1.55.1) (2026-11-11)
 
 
