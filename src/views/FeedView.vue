@@ -14,7 +14,7 @@
         </div>
       </template>
       <RouterLink to="/chat" class="ph-icon" :title="t('nav.chat')" :aria-label="t('nav.chat')">
-        <AppIcon name="invia" :size="16" />
+        <MessageCircle :size="16" />
         <span v-if="chat.unreadCount" class="ph-count">{{ chat.unreadCount }}</span>
       </RouterLink>
       <button
@@ -173,12 +173,11 @@ import PageHeader from '../components/PageHeader.vue'
   import { computed, onMounted, onBeforeUnmount, reactive, ref, watch } from 'vue'
   import { useI18n } from 'vue-i18n'
   import { useRoute, useRouter } from 'vue-router'
-  import { Newspaper, MapPin, Map as MapIcon, X, Filter, ChevronDown, Check, Image as ImageIcon } from 'lucide-vue-next'
+  import { MessageCircle, Newspaper, MapPin, Map as MapIcon, X, Filter, ChevronDown, Check, Image as ImageIcon } from 'lucide-vue-next'
   import { toInitials } from '../utils/initials.js'
   import { usePostStore } from '../stores/posts.js'
   import { useStoryStore } from '../stores/stories.js'
   import { useChatStore } from '../stores/chat.js'
-  import AppIcon from '../components/AppIcon.vue'
   import { useAuthStore } from '../stores/auth.js'
   import { useUserStore } from '../stores/users.js'
   import { useInfiniteScroll } from '../composables/useInfiniteScroll.js'

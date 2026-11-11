@@ -59,7 +59,7 @@
         </template>
         <template v-else>
           <RouterLink :to="`/chat/${listing.seller._id}`" class="btn btn-primary cta-main">
-            <MessagesSquare :size="16" /> {{ t('market.contactSeller') }}
+            <MessageCircle :size="16" /> {{ t('market.contactSeller') }}
           </RouterLink>
           <button type="button" class="round-btn round-btn-lg" :aria-label="t('market.share')" @click="share"><Send :size="18" /></button>
         </template>
@@ -74,7 +74,7 @@ import { toInitials } from '../utils/initials.js'
 import { ref, computed, onMounted, watch } from 'vue'
 import { RouterLink, useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { Package, MapPin, Check, ChevronRight, ArrowLeft, Send, Pencil, Trash2, MessagesSquare } from 'lucide-vue-next'
+import { Package, MapPin, Check, ChevronRight, ArrowLeft, Send, Pencil, Trash2, MessageCircle } from 'lucide-vue-next'
 import { useMarketStore } from '../stores/market.js'
 import { useAuthStore } from '../stores/auth.js'
 
