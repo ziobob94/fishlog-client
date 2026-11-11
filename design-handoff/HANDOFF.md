@@ -23,10 +23,10 @@ Leggi questo file per primo. Descrive il restyling dell'interfaccia di `fishlog-
 ## Linguaggio visivo («carta nautica»)
 
 ### Font (aggiornato)
-- **Fraunces** (serif, 700-800, `letter-spacing: -.01em`): solo titoli grandi, cioè h1 e testi ≥ 20 px in grassetto (es. «Guarda il mare prima di uscire», «Bentornato», titoli delle schermate-hub). Classe `font-display` in Tailwind.
+- **Fraunces** (serif, 700-800, `letter-spacing: -.01em`): tutti i **titoli**: titoli di pagina (anche quelli piccoli da 18 px nelle schermate interne), titoli di scheda/riga (15-19 px in grassetto 800, es. «Spigola», «Alba al molo», «Rilevazione luogo e meteo») e i valori in evidenza delle schede. Classe `font-display` in Tailwind.
 - **Manrope**: testi, bottoni, etichette, navigazione, e anche la parola «FishLog» del logo (il logo non cambia).
 - **JetBrains Mono**: numeri, misure, coordinate.
-- Mai Fraunces sotto i 20 px né sulle etichette maiuscole piccole.
+- Mai Fraunces su bottoni, chip, navigazione, etichette maiuscole piccole e testo corrente.
 - Carica da Google Fonts: `Fraunces:opsz,wght@9..144,600;9..144,700;9..144,800`. Token in `tokens/tokens.css`.
 
 Identità invariata (oceano + sabbia), più gerarchia e una firma riconoscibile.

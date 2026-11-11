@@ -18,7 +18,7 @@ export default {
 
 // Tipografia: aggiungi in theme.extend.fontFamily
 // fontFamily: {
-//   display: ['Fraunces', 'Georgia', 'serif'],   // titoli grandi (≥20 px, peso 700-800), mai sotto i 20 px
+//   display: ['Fraunces', 'Georgia', 'serif'],   // tutti i titoli (peso 700-800); mai su bottoni, chip, nav, testo corrente
 //   sans: ['Manrope', 'system-ui', 'sans-serif'], // testi e interfaccia
 //   mono: ['JetBrains Mono', 'monospace']         // numeri, coordinate, misure
 // }
