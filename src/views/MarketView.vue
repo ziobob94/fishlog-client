@@ -67,6 +67,8 @@
 
     <!-- Tab Annunci: solo venditori privati, le vetrine dei negozi hanno una
          tab propria per non mescolare due modi diversi di sfogliare. -->
+    <Transition name="tab-swap" mode="out-in">
+    <div :key="tab">
     <template v-if="tab === 'listings'">
       <ListingFilters v-if="showFilters" v-model="filters" :categories="store.categories" :show-seller-type="false" @reset="resetFilters" />
 
@@ -142,6 +144,8 @@
         {{ t('market.external.adminError', { error: store.externalError }) }}
       </p>
     </template>
+    </div>
+    </Transition>
   </div>
 </template>
 

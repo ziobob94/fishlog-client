@@ -1193,6 +1193,7 @@
 		}
 	},
 	"market": {
+		"viewsCount": "{n} visualizzazioni | {n} visualizzazione | {n} visualizzazioni",
 		"visibility": {
 			"all": "Tutti",
 			"friends": "Amici",
