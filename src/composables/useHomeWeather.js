@@ -1,5 +1,5 @@
 // Dati meteo per la Home (scheda grande, barra e striscia del mappamondo): stessa fonte e stessa cache della pagina Meteo.
-// La posizione si chiede solo dalla pagina /meteo; qui si usa se il permesso è già concesso. Se il dato in cache è recente non parte nessuna richiesta.
+// Il permesso si chiede solo al tocco su «Attiva la posizione» (o dalla pagina /meteo); all'avvio si usa solo se è già concesso. Se il dato in cache è recente non parte nessuna richiesta.
 import { computed, onMounted } from 'vue'
 import { useWeatherStore } from '../stores/weather.js'
 import { useOnline } from './useOnline.js'
@@ -56,8 +56,17 @@ export function useHomeWeather({ autoload = true } = {}) {
     const p = store.place
     if (p && !p.name) { try { store.setName(await reverseLabel(p.lat, p.lng)) } catch { /* resta «La tua posizione» */ } }
   }
+  // Solo dal tocco su «Attiva la posizione»: è l'unico punto della Home che chiede il permesso.
+  const activating = computed(() => store.status === 'loading' && !store.place)
+  const denied = computed(() => store.status === 'denied' && !store.place)
+  async function activate() {
+    if (!(await store.useHere())) return
+    await store.load({ force: true })
+    const p = store.place
+    if (p && !p.name) { try { store.setName(await reverseLabel(p.lat, p.lng)) } catch { /* resta «La tua posizione» */ } }
+  }
   const retry = () => { store.clearFlags(); return store.load({ force: true }) }
   if (autoload) onMounted(init)
 
-  return { store, state, offline, summary, placeName, savedLabel, retry }
+  return { activate, activating, denied, store, state, offline, summary, placeName, savedLabel, retry }
 }

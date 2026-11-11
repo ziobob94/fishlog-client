@@ -9,7 +9,6 @@
       :aria-modal="isDialog ? 'true' : undefined"
       :aria-labelledby="isDialog ? titleId : undefined"
       :aria-label="isDialog ? undefined : (expanded ? t('home.globe.expandedAria') : t('home.globe.compactAria'))"
-      :style="isDialog ? { '--globe-top': `${topInset}px` } : undefined"
       @keydown="onKeydown"
     >
       <!-- Mobile espanso: intestazione con maniglia, titolo e «Riduci» -->
@@ -30,12 +29,35 @@
 
       <div :id="stageId" ref="stage" class="globe-stage">
         <div ref="mapEl" class="globe-map" role="region" :aria-label="ariaLabel" :aria-hidden="expanded ? undefined : 'true'"></div>
-        <div v-if="mapError" class="globe-fallback">{{ mapError }} <button type="button" class="globe-retry" @click="retryMap">{{ t('common.retry') }}</button></div>
+        <!-- Mappa non caricata: chiave/referrer rifiutati, rete assente o tessere che non arrivano -->
+        <div v-if="mapError" class="globe-state" role="alert">
+          <Globe :size="28" aria-hidden="true" />
+          <strong>{{ t('home.globe.mapNotLoaded') }}</strong>
+          <span class="globe-state-text">{{ mapError }}</span>
+          <button type="button" class="globe-pill-btn m-press" @click="retryMap"><RefreshCw :size="18" aria-hidden="true" /> {{ t('home.globe.locRetry') }}</button>
+        </div>
+
+        <!-- Posizione non attiva: permesso negato o posizione non disponibile -->
+        <div v-if="geoState === 'denied' || geoState === 'unavailable'" class="globe-loc" role="alert">
+          <button type="button" class="globe-popup-close" :aria-label="t('common.close')" @click="geoState = ''"><AppIcon name="chiudi" :size="18" /></button>
+          <strong class="globe-loc-title"><MapPinOff :size="18" aria-hidden="true" /> {{ t('home.globe.noPosition') }}</strong>
+          <p>{{ geoState === 'denied' ? t('home.globe.locDeniedText') : t('home.globe.locUnavailableText') }}</p>
+          <ol v-if="geoState === 'denied'" class="globe-loc-steps">
+            <li v-for="n in 3" :key="n">{{ t(`weather.help.${platform}.s${n}`) }}</li>
+          </ol>
+          <div class="globe-loc-actions">
+            <button v-if="geoState === 'unavailable'" type="button" class="globe-pill-btn m-press" @click="activateLocation">{{ t('home.globe.locRetry') }}</button>
+            <RouterLink :to="{ path: '/meteo', query: { modo: 'cerca' } }" class="globe-pill-btn m-press globe-loc-link"><Search :size="18" aria-hidden="true" /> {{ t('home.globe.pickPlace') }}</RouterLink>
+          </div>
+        </div>
 
         <!-- Compatto e desktop espanso: etichette in alto a sinistra e tasto Espandi / Riduci -->
         <template v-if="!isDialog">
           <div class="globe-pills">
-            <span class="globe-pill globe-pill-me"><AppIcon name="luogo" :size="14" /> {{ meActive ? t('home.globe.here') : t('home.globe.noPosition') }}</span>
+            <span v-if="meActive" class="globe-pill globe-pill-me"><AppIcon name="luogo" :size="14" /> {{ t('home.globe.here') }}</span>
+            <button v-else type="button" class="globe-pill globe-pill-me globe-pill-act m-press" :disabled="geoState === 'asking'" @click="activateLocation">
+              <AppIcon name="luogo" :size="14" /> {{ geoState === 'asking' ? t('home.globe.locating') : t('home.globe.activate') }}
+            </button>
             <span class="globe-pill globe-pill-spot">{{ t('home.globe.spots', { n: spots.length }, spots.length) }}</span>
           </div>
           <button ref="expandBtn" type="button" class="globe-expand m-press" :aria-expanded="expanded ? 'true' : 'false'" :aria-controls="stageId" @click="setExpanded(!expanded)">
@@ -50,7 +72,7 @@
           <button type="button" class="globe-btn" :aria-label="t('globe.zoomOut')" @click="zoomBy(1 / 1.3)">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14" /></svg>
           </button>
-          <button type="button" class="globe-btn" :aria-label="t('globe.myPosition')" :title="t('globe.myPosition')" @click="goToMe"><AppIcon name="luogo" :size="20" /></button>
+          <button type="button" class="globe-btn" :aria-label="t('globe.myPosition')" :title="t('globe.myPosition')" @click="activateLocation"><AppIcon name="luogo" :size="20" /></button>
           <button type="button" class="globe-btn" :aria-label="t('globe.layer')" :title="t('globe.layer')" :aria-pressed="basemap === 'sat'" @click="toggleBasemap"><Layers :size="20" /></button>
           <button type="button" class="globe-btn" :aria-label="t('globe.showCatches')" :title="t('globe.showCatches')" :disabled="!spots.length" @click="showAll"><AppIcon name="uscite" :size="20" /></button>
         </div>
@@ -68,8 +90,6 @@
           </ul>
         </div>
       </div>
-
-      <p v-if="geoError && expanded" class="globe-error" role="alert">{{ geoError }}</p>
 
       <!-- Solo espanso: legenda, alternativa testuale al globo e (mobile) striscia meteo -->
       <div v-if="expanded" class="globe-below globe-fade">
@@ -98,7 +118,7 @@
 import { ref, computed, onMounted, onBeforeUnmount, watch, nextTick } from 'vue'
 import { RouterLink } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { Layers, Maximize2, Minimize2 } from 'lucide-vue-next'
+import { Layers, Maximize2, Minimize2, MapPinOff, Globe, RefreshCw, Search } from 'lucide-vue-next'
 import api from '../utils/api.js'
 import AppIcon from './AppIcon.vue'
 import HomeWeatherStrip from './weather/HomeWeatherStrip.vue'
@@ -125,7 +145,6 @@ const weather = useWeatherStore()
 const card = ref(null)
 const expandBtn = ref(null)
 const collapseBtn = ref(null)
-const topInset = ref(60)
 const zone = ref('here')
 
 // Zone di mare (centro e zoom); «La mia posizione» usa il GPS e chiede il permesso solo al tocco.
@@ -141,7 +160,13 @@ const spots = ref([])
 const loading = ref(true)
 const selected = ref(null)
 const me = ref(null)
-const geoError = ref('')
+// '' | 'asking' | 'denied' | 'unavailable'. Il permesso si chiede solo da activateLocation(), cioè da un tocco.
+const geoState = ref('')
+const platform = (() => {
+  const ua = typeof navigator === 'undefined' ? '' : navigator.userAgent || ''
+  if (/iPhone|iPad|iPod/i.test(ua) || (/Macintosh/i.test(ua) && navigator.maxTouchPoints > 1)) return 'ios'
+  return /Android/i.test(ua) ? 'android' : 'desktop'
+})()
 const mapError = ref('')
 const reduceMotion = ref(false)
 const mapEl = ref(null)
@@ -163,6 +188,9 @@ const markerLabel = m => m.items.length > 1
 let map = null
 let meMarker = null
 let spotMarkers = []
+let lastCenter = null
+let resizeObs = null
+let tilesTimer = null
 
 const cssRgb = (v, fb) => { try { const x = getComputedStyle(document.documentElement).getPropertyValue(v).trim(); return x ? `rgb(${x.split(/[ ,]+/).join(',')})` : fb } catch { return fb } }
 const svgUrl = (svg) => 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(svg)
@@ -226,26 +254,37 @@ function showAll() {
   g.event.addListenerOnce(map, 'idle', () => { if (map.getZoom() > 8) map.setZoom(8) })
 }
 
-function goToMe() {
-  geoError.value = ''
+// Tocco su «Attiva la posizione» / «Vai alla mia posizione». Con il permesso già negato non si richiama il browser
+// (iOS e Chrome non ripropongono la richiesta): si mostrano subito i passaggi per riattivarlo.
+async function activateLocation() {
+  if (geoState.value === 'asking') return
   zone.value = 'here'
-  if (me.value) { fly(me.value, 8); return }
-  if (!navigator.geolocation) { geoError.value = t('globe.geoUnavailable'); return }
+  selected.value = null
+  if (me.value) { geoState.value = ''; fly(me.value, 8); return }
+  if (!navigator.geolocation) { geoState.value = 'unavailable'; return }
+  try {
+    const p = await navigator.permissions?.query({ name: 'geolocation' })
+    if (p?.state === 'denied') { geoState.value = 'denied'; return }
+  } catch { /* Permissions API assente (Safari più vecchi): si chiede direttamente */ }
+  geoState.value = 'asking'
   navigator.geolocation.getCurrentPosition(
     (pos) => {
+      geoState.value = ''
       me.value = { lat: pos.coords.latitude, lng: pos.coords.longitude }
       setMeMarker()
       fly(me.value, 8)
+      // La Home mostra il meteo di questo luogo.
+      if (!weather.place) { weather.setPlace({ name: '', lat: me.value.lat, lng: me.value.lng, mode: 'here' }); weather.load().catch(() => {}) }
     },
-    () => { geoError.value = t('globe.geoDenied') },
-    { timeout: 8000 }
+    (err) => { geoState.value = err?.code === 1 ? 'denied' : 'unavailable' },
+    { timeout: 15000, maximumAge: 60000 }
   )
 }
 
 function pickZone(z) {
-  if (z.key === 'here') { goToMe(); return }
+  if (z.key === 'here') { activateLocation(); return }
   zone.value = z.key
-  geoError.value = ''
+  geoState.value = ''
   if (map) { map.panTo(z.center); map.setZoom(z.zoom) }
 }
 
@@ -258,10 +297,18 @@ watch(basemap, () => map?.setMapTypeId(mapType()))
 
 // Compatto = fermo (nessun gesto, la pagina scorre); espanso = interattivo (a tutto schermo: un dito basta, altrimenti due dita).
 const gesture = () => (!expanded.value ? 'none' : isDialog.value ? 'greedy' : 'cooperative')
+// Dopo ogni cambio di dimensione il contenitore ha misure nuove: senza resize + setCenter la mappa resta grigia o fuori centro.
+function resizeMap() {
+  const g = window.google?.maps
+  if (!map || !g) return
+  const c = lastCenter || map.getCenter()
+  g.event.trigger(map, 'resize')
+  if (c) map.setCenter(c)
+}
 function applyMapMode() {
   if (!map) return
   map.setOptions({ gestureHandling: gesture(), keyboardShortcuts: false })
-  window.google?.maps?.event.trigger(map, 'resize')
+  resizeMap()
   if (!expanded.value) selected.value = null
   if (me.value && zone.value === 'here' && expanded.value) fly(me.value, 8)
   else if (spots.value.length) showAll()
@@ -276,14 +323,20 @@ async function initMap() {
       disableDefaultUI: true, clickableIcons: false, keyboardShortcuts: false,
       gestureHandling: gesture(), tilt: 0, rotateControl: false
     })
-    map.addListener('idle', refreshMarkers)
-    window.google.maps.event.addListenerOnce(map, 'tilesloaded', () => { refreshMarkers(); setMeMarker(); showAll() })
+    map.addListener('idle', () => { lastCenter = map.getCenter(); refreshMarkers() })
+    // Se le tessere non arrivano entro 12 s (grigio) si mostra lo stato «Mappa non caricata» con «Riprova».
+    clearTimeout(tilesTimer)
+    tilesTimer = setTimeout(() => { if (!mapError.value) mapError.value = t('home.globe.mapNotLoadedText') }, 12000)
+    window.google.maps.event.addListenerOnce(map, 'tilesloaded', () => { clearTimeout(tilesTimer); mapError.value = ''; refreshMarkers(); setMeMarker(); showAll() })
+    resizeObs?.disconnect()
+    if (typeof ResizeObserver !== 'undefined') { resizeObs = new ResizeObserver(() => resizeMap()); resizeObs.observe(mapEl.value) }
   } catch (e) {
     reportMapError(e)
-    mapError.value = placesMessage(t) || t('globe.mapError')
+    clearTimeout(tilesTimer)
+    mapError.value = placesMessage(t) || t('home.globe.mapNotLoadedText')
   }
 }
-function retryMap() { resetPlaces(); mapError.value = ''; map = null; initMap() }
+function retryMap() { resetPlaces(); mapError.value = ''; clearTimeout(tilesTimer); resizeObs?.disconnect(); map = null; lastCenter = null; initMap() }
 watch(() => [placesStatus.error, placesStatus.code], () => { if (placesStatus.error) mapError.value = placesMessage(t) })
 
 // ── Espandi / Riduci ──────────────────────────────────────────────────────────
@@ -293,7 +346,6 @@ async function setExpanded(open, { animate = true } = {}) {
   if (open === expanded.value) return
   const root = document.documentElement
   const update = async () => {
-    if (open) topInset.value = Math.round(document.querySelector('header')?.getBoundingClientRect().bottom || 60)
     expanded.value = open
     await nextTick()
     applyMapMode()
@@ -353,6 +405,7 @@ onMounted(async () => {
 onBeforeUnmount(() => {
   if (isDialog.value) document.body.style.overflow = prevOverflow
   document.documentElement.classList.remove('globe-closing')
+  clearTimeout(tilesTimer); resizeObs?.disconnect()
   spotMarkers.forEach(m => m.setMap(null)); meMarker?.setMap(null); map = null
 })
 </script>
@@ -373,16 +426,29 @@ onBeforeUnmount(() => {
 .is-compact .globe-stage { height: 100%; }
 .is-compact .globe-map { pointer-events: none; }   /* il globo compatto è fermo: la pagina scorre anche sopra */
 .globe-map { @apply absolute inset-0; }
-.globe-fallback { @apply absolute inset-x-3 bottom-3 rounded-lg bg-surface/95 border border-border p-3 text-sm text-muted; }
+.globe-state {
+  @apply absolute inset-0 z-10 flex flex-col items-center justify-center gap-2 p-4 text-center text-foam;
+  background: rgb(var(--color-ink) / .92);
+}
+.globe-state-text { @apply text-sm text-muted; max-width: 32ch; }
+.globe-pill-act { @apply cursor-pointer min-h-[44px] px-4; }
+.globe-pill-act:disabled { @apply opacity-70 cursor-wait; }
+.globe-loc { @apply absolute left-3 right-3 bottom-3 z-20 rounded-xl bg-surface border border-border p-4 pr-12 text-sm; max-height: 70%; overflow-y: auto; }
+.globe-loc p { @apply m-0 mt-1 text-muted; }
+.globe-loc-title { @apply inline-flex items-center gap-2 text-foam; }
+.globe-loc-steps { @apply my-2 pl-5 text-foam; }
+.globe-loc-actions { @apply flex flex-wrap gap-2 mt-3; }
+.globe-loc-link { @apply no-underline; }
 
 /* Desktop espanso: regione da 700 px nell'area principale. */
 .globe-card.is-expanded:not(.is-dialog) .globe-stage { height: 700px; }
 .globe-card.is-expanded:not(.is-dialog) { border-radius: 24px 24px 24px 8px; }
 
-/* Mobile espanso: dialog a tutta altezza sotto la barra in alto e sopra la barra in basso (z-index sotto entrambe). */
+/* Mobile espanso: a tutto schermo, sopra la barra in alto e quella in basso. Le aree sicure (notch, barra di Home) restano libere
+   con il padding; 100dvh evita che la barra degli indirizzi del browser tagli il fondo. */
 .globe-card.is-dialog {
-  position: fixed; left: 0; right: 0; z-index: 90; border-radius: 0; border-width: 0; display: flex; flex-direction: column;
-  top: var(--globe-top, 60px); bottom: calc(var(--bottom-nav-h) + env(safe-area-inset-bottom));
+  position: fixed; inset: 0; height: 100vh; height: 100dvh; z-index: 120; border-radius: 0; border-width: 0; display: flex; flex-direction: column;
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
   background: rgb(var(--color-ink)); touch-action: pan-y;
 }
 .is-dialog .globe-stage { flex: 1; min-height: 0; }
@@ -427,7 +493,6 @@ onBeforeUnmount(() => {
 .globe-fade { animation: globe-fade var(--motion-base) var(--ease-standard) both; }
 @keyframes globe-fade { from { opacity: 0; } to { opacity: 1; } }
 
-.globe-retry { @apply mt-2 block font-semibold text-ocean-text bg-transparent border-none p-0 cursor-pointer; }
 .globe-popup { @apply absolute left-2 right-2 bottom-2 z-10 rounded-lg bg-surface border border-border p-3 pr-12; }
 .globe-popup-close { @apply absolute right-1 top-1 w-11 h-11 flex items-center justify-center bg-transparent border-none text-muted cursor-pointer; }
 .globe-popup-list { @apply list-none flex flex-col gap-1 max-h-40 overflow-y-auto; }
@@ -440,8 +505,6 @@ onBeforeUnmount(() => {
 .dot { @apply inline-block w-3 h-3 rounded-full; }
 .dot-me { @apply bg-ocean; box-shadow: 0 0 0 2px #fff; }
 .dot-spot { @apply bg-sand; }
-.globe-error { @apply text-danger-text text-sm px-4 py-2; }
-.is-dialog .globe-error { @apply px-4 py-1; }
 
 .globe-list { @apply mt-3 text-sm; }
 .globe-list summary { @apply cursor-pointer min-h-[44px] flex items-center text-ocean-text font-semibold; }
