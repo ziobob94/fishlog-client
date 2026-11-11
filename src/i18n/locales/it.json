@@ -554,8 +554,9 @@
 		},
 		"weather": {
 			"updatedAt": "aggiornato alle {time}",
-			"expand": "Mostra il meteo completo",
-			"collapse": "Riduci il meteo",
+			"expandLabel": "Meteo a {place}: mostra il riepilogo completo",
+			"collapse": "Meteo: riduci",
+			"windFrom": "vento da {dir}",
 			"refreshOffline": "Sei offline: l'aggiornamento non è disponibile",
 			"refreshWait": "Meteo appena aggiornato: riprova tra qualche secondo",
 			"refreshFailed": "Aggiornamento non riuscito: restano i dati di prima. Riprova tra poco.",
@@ -580,7 +581,13 @@
 			"locDeniedText": "FishLog non può usare la posizione di questo dispositivo. Riattivala così:",
 			"locUnavailableText": "Non riesco a leggere la posizione adesso. Controlla il GPS e che il segnale sia buono, poi riprova.",
 			"locRetry": "Riprova",
-			"pickPlace": "Scegli un luogo a mano"
+			"pickPlace": "Scegli un luogo a mano",
+			"expand": "Espandi",
+			"shrink": "Riduci",
+			"summary": "Nessuna pescata | 1 pescata | {n} pescate",
+			"last": "ultima uscita {date}",
+			"toggleOpen": "Le tue pescate: nascondi il mappamondo",
+			"toggleClosed": "Le tue pescate: mostra il mappamondo"
 		}
 	},
 	"session": {

@@ -1,9 +1,23 @@
 <template>
   <section class="globe-card rounded-signature" :aria-label="t('globe.title')">
-    <p class="globe-eyebrow">{{ t('globe.eyebrow') }}</p>
-    <h2 class="globe-title">{{ t('globe.count', { n: spots.length }, spots.length) }}</h2>
+    <!-- Intestazione dell'accordion: l'unico <button>, area di tocco 44 px. Da chiusa resta solo questa e la riga di riepilogo. -->
+    <h2 class="globe-head-h">
+      <button type="button" class="globe-head m-press" :aria-expanded="open ? 'true' : 'false'" :aria-controls="bodyId" @click="toggle">
+        <span class="globe-head-txt">
+          <span class="globe-eyebrow">{{ t('globe.eyebrow') }}</span>
+          <span class="globe-title">{{ t('globe.count', { n: spots.length }, spots.length) }}</span>
+          <span v-if="!open" class="globe-sum">{{ summary }}</span>
+        </span>
+        <ChevronDown :size="20" aria-hidden="true" class="globe-chev" :class="{ 'is-open': open }" />
+      </button>
+    </h2>
 
-    <div ref="stage" class="globe-stage">
+    <div :id="bodyId" class="globe-body m-collapse" :class="{ 'is-open': open }" :inert="!open || undefined">
+    <div class="m-collapse-in">
+    <div ref="stage" :id="stageId" class="globe-stage" :class="{ 'is-expanded': expanded }">
+      <button type="button" class="globe-expand m-press" :aria-expanded="expanded ? 'true' : 'false'" :aria-controls="stageId" @click="expanded = !expanded">
+        <component :is="expanded ? Minimize2 : Maximize2" :size="18" aria-hidden="true" /> {{ expanded ? t('home.globe.shrink') : t('home.globe.expand') }}
+      </button>
       <div ref="mapEl" class="globe-map" role="region" :aria-label="ariaLabel"></div>
       <div v-if="mapError" class="globe-fallback">{{ mapError }} <button type="button" class="globe-retry" @click="retryMap">{{ t('common.retry') }}</button></div>
 
@@ -62,6 +76,8 @@
       </ul>
     </details>
     <p v-else-if="!loading" class="text-muted text-sm mt-3">{{ t('globe.empty') }}</p>
+    </div>
+    </div>
   </section>
 </template>
 
@@ -69,8 +85,9 @@
 import { ref, computed, onMounted, onBeforeUnmount, watch } from 'vue'
 import { RouterLink } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { Layers, MapPinOff, Search } from 'lucide-vue-next'
+import { Layers, MapPinOff, Search, ChevronDown, Maximize2, Minimize2 } from 'lucide-vue-next'
 import api from '../utils/api.js'
+import { useAccordion } from '../composables/useAccordion.js'
 import AppIcon from './AppIcon.vue'
 import { useWeatherStore } from '../stores/weather.js'
 import { loadMap, placesStatus, placesMessage, reportMapError, resetPlaces } from '../utils/places.js'
@@ -80,6 +97,13 @@ const weather = useWeatherStore()
 
 // Mappa Google Maps JS (satellite con etichette / stradale), caricata solo qui; vedi utils/places.js.
 
+// Accordion: parte aperto e ricorda la scelta sul dispositivo. «Espandi» ingrandisce solo il riquadro della mappa (non si ricorda).
+const { open, toggle } = useAccordion('fishlog.homeGlobeOpen', true)
+const expanded = ref(false)
+const uid = Math.random().toString(36).slice(2, 8)
+const bodyId = `globe-b-${uid}`, stageId = `globe-s-${uid}`
+const sessionsCount = ref(0)
+const lastDate = ref(null)
 const spots = ref([])
 const loading = ref(true)
 const selected = ref(null)
@@ -102,6 +126,10 @@ function readBasemap() {
   try { return localStorage.getItem('fishlog_basemap') === 'map' ? 'map' : 'sat' } catch { return 'sat' }
 }
 
+const summary = computed(() => {
+  const n = t('home.globe.summary', { n: sessionsCount.value }, sessionsCount.value)
+  return lastDate.value ? `${n} · ${t('home.globe.last', { date: fmtDate(lastDate.value) })}` : n
+})
 const ariaLabel = computed(() => t('globe.aria', { n: spots.value.length }, spots.value.length))
 const fmtDate = d => new Date(d).toLocaleDateString('it-IT', { day: '2-digit', month: 'short', year: 'numeric' })
 const markerLabel = m => m.items.length > 1
@@ -229,9 +257,12 @@ onMounted(async () => {
   const forced = document.documentElement.getAttribute('data-motion')
   reduceMotion.value = forced === 'reduce' ? true : forced === 'full' ? false : !!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
   if (!import.meta.env.VITE_GOOGLE_MAPS_KEY) mapError.value = t('placeInput.keyMissing')
-  initMap()
+  if (open.value) initMap()
   try {
     const { data } = await api.get('/sessions', { params: { mine: true, limit: 200 } })
+    const all = data.data || []
+    sessionsCount.value = all.length
+    lastDate.value = all.reduce((m, x) => (x.date && (!m || new Date(x.date) > new Date(m)) ? x.date : m), null)
     spots.value = (data.data || []).filter(s =>
       typeof s.location?.coords?.lat === 'number' && typeof s.location?.coords?.lng === 'number')
     refreshMarkers()
@@ -239,13 +270,32 @@ onMounted(async () => {
   } catch { /* la mappa resta senza segnaposto */ }
   finally { loading.value = false }
 })
-onBeforeUnmount(() => { spotMarkers.forEach(m => m.setMap(null)); meMarker?.setMap(null); map = null })
+// La mappa si crea alla prima apertura (in un contenitore chiuso non ha dimensioni); ogni cambio di misura (apertura, «Espandi») la riadatta.
+watch(open, v => { if (v && !map && mapEl.value) initMap() })
+let resizeObs = null
+onMounted(() => {
+  if (typeof ResizeObserver === 'undefined' || !stage.value) return
+  resizeObs = new ResizeObserver(() => { if (map && window.google?.maps && stage.value.clientHeight) window.google.maps.event.trigger(map, 'resize') })
+  resizeObs.observe(stage.value)
+})
+onBeforeUnmount(() => { resizeObs?.disconnect(); spotMarkers.forEach(m => m.setMap(null)); meMarker?.setMap(null); map = null })
 </script>
 
 <style scoped>
 .globe-card { @apply bg-surface border border-border/60 p-4 mb-6; }
+.globe-head-h { @apply m-0; font: inherit; }
+.globe-head { @apply flex w-full items-center justify-between gap-3 min-h-[44px] bg-transparent border-none p-0 text-left text-foam cursor-pointer rounded-lg; font: inherit; }
+.globe-head:focus-visible { outline: 2px solid rgb(var(--color-ocean-text)); outline-offset: 4px; }
+.globe-head-txt { @apply flex flex-col min-w-0; }
 .globe-eyebrow { @apply text-xs font-bold uppercase text-ocean-text; letter-spacing: 0.14em; }
-.globe-title { @apply text-xl mt-1 mb-3; }
+.globe-title { @apply text-xl mt-1 font-display font-bold; }
+.globe-sum { @apply text-sm text-muted mt-0.5; }
+.globe-chev { @apply flex-none; transition: transform var(--motion-base) var(--ease-standard); }
+.globe-chev.is-open { transform: rotate(180deg); }
+.globe-body { @apply mt-3; }
+.globe-stage.is-expanded { height: min(80vh, 680px); max-width: none; }
+.globe-expand { @apply absolute right-2 top-2 z-10 inline-flex items-center gap-2 min-h-[44px] px-3 rounded-full border border-border-light bg-surface/95 text-foam font-bold text-sm cursor-pointer; }
+.globe-expand:focus-visible { outline: 2px solid rgb(var(--color-ocean-text)); outline-offset: 2px; }
 .globe-stage { @apply relative rounded-xl overflow-hidden mx-auto; max-width: 560px; height: 380px; background: rgb(var(--color-ink)); }
 .globe-map { @apply absolute inset-0; }
 .globe-fallback { @apply absolute inset-x-3 bottom-3 rounded-lg bg-surface/95 border border-border p-3 text-sm text-muted; }
