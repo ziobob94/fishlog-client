@@ -429,12 +429,6 @@
 		"newSession": "Nuova uscita",
 		"ongoingTitle": "In corso",
 		"historyTitle": "Storico",
-		"hero": {
-			"eyebrow": "Pesca sportiva in Italia",
-			"title": "Guarda il mare prima di uscire",
-			"subtitle": "Condizioni in tempo reale, schede specie con normativa e fonti citate, e il tuo diario di pesca, tutto in un posto.",
-			"searchSpecies": "Cerca una specie"
-		},
 		"zones": {
 			"title": "Scegli la zona",
 			"items": {
@@ -445,11 +439,6 @@
 				"ionian": "Ionio",
 				"sicily": "Canale di Sicilia"
 			}
-		},
-		"sea": {
-			"title": "Oggi in mare",
-			"updated": "Aggiornato alle {time}",
-			"unavailable": "Dati non disponibili per questa zona in questo momento."
 		},
 		"stories": {
 			"community": {
@@ -562,6 +551,34 @@
 					"text": "Le statistiche delle tue uscite e catture"
 				}
 			}
+		},
+		"weather": {
+			"updatedAt": "aggiornato alle {time}",
+			"feels": "percepita {n}°",
+			"next": "Prossime ore",
+			"period": "periodo {n} s",
+			"expectedMm": "attesa {mm} mm",
+			"gust": "raffiche {n}",
+			"offlineBanner": "Sei offline: dati non aggiornati.",
+			"staleLabel": "Non aggiornato · {time}",
+			"noPlaceTitle": "Scegli un luogo",
+			"noPlaceText": "Per vedere vento, onde e pressione vicino a te serve la posizione, oppure un luogo che scegli tu.",
+			"search": "Cerca un luogo",
+			"errorHint": "Il servizio non risponde.",
+			"stripLabel": "Meteo di oggi: apri meteo e mare",
+			"barLabel": "Meteo di oggi"
+		},
+		"globe": {
+			"expand": "Espandi",
+			"collapse": "Riduci",
+			"title": "Mappamondo",
+			"here": "La mia posizione",
+			"spots": "nessuna pescata | 1 pescata | {n} pescate",
+			"noPosition": "Posizione non attiva",
+			"zones": "Zone di mare",
+			"expandedAria": "Mappamondo espanso",
+			"handle": "Trascina verso il basso per ridurre",
+			"compactAria": "Mappamondo compatto"
 		}
 	},
 	"session": {
@@ -2015,6 +2032,23 @@
 			"speciesSeason": "Per questo giorno la stima è solo stagionale (senza temperatura dell'acqua): indica cosa è più plausibile, non cosa prenderai.",
 			"lightMoon": "Luce e luna",
 			"pressure": "Pressione"
+		},
+		"compare": {
+			"title": "Confronta le previsioni",
+			"badge": "Consigliato",
+			"lead": "Per la pesca ti consigliamo di guardare anche",
+			"brand": "3bmeteo",
+			"praise": "molto apprezzato per vento e mare",
+			"reason": "Due fonti insieme danno un quadro più sicuro: se concordano puoi fidarti di più, se no, aspetta e ricontrolla.",
+			"cta": "Apri 3bmeteo",
+			"newTab": "(si apre in una nuova scheda)",
+			"offline": "Serve la connessione",
+			"hint": "Link esterno. FishLog non è collegato a 3bmeteo e non ne mostra i dati. I nostri dati arrivano da Open-Meteo.",
+			"compactTitle": "Confronta con 3bmeteo",
+			"compactText": "Utile per vento e mare, soprattutto se esci in barca o da scogliera.",
+			"compactOpen": "Apri",
+			"compactOffline": "Offline",
+			"compactOfflineLabel": "Serve la connessione per aprire 3bmeteo"
 		}
 	}
 }

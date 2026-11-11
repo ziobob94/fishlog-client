@@ -1,18 +1,7 @@
 <template>
   <div class="home">
-    <!-- Hero: una promessa chiara e due azioni, prima di tutto il resto. -->
-    <section class="hero">
-      <IsobathBg />
-      <p class="eyebrow">{{ t('home.hero.eyebrow') }}</p>
-      <h1>{{ t('home.hero.title') }}</h1>
-      <p class="hero-sub">{{ t('home.hero.subtitle') }}</p>
-      <div class="hero-actions">
-        <RouterLink to="/new" class="btn btn-primary">{{ t('home.newSession') }}</RouterLink>
-        <RouterLink to="/species" class="btn btn-secondary">{{ t('home.hero.searchSpecies') }}</RouterLink>
-      </div>
-    </section>
-
-    <GlobeCard />
+    <!-- Meteo in evidenza: scheda grande (barra sopra il mappamondo quando, da desktop, lo si espande). -->
+    <HomeWeatherCard :variant="globeOpen && isDesktop ? 'bar' : 'card'" class="mb-4" />
 
     <!-- Uscita in corso (mobile): riprendi con un tocco. -->
     <RouterLink v-if="sessions.ongoing" :to="{ path: `/session/${sessions.ongoing._id}/edit`, hash: '#section-catches' }" class="ongoing-panel md:hidden">
@@ -24,8 +13,10 @@
       <span class="btn-sand">{{ t('sessions.resume') }}</span>
     </RouterLink>
 
-    <!-- Meteo e mare: scheda compatta, il dettaglio è in /meteo. -->
-    <WeatherCard class="mb-4" />
+    <GlobeCard v-model:expanded="globeOpen" />
+
+    <!-- Seconda fonte per vento e mare: solo un link esterno. -->
+    <CompareForecast compact class="mb-4" />
 
     <!-- Due scorciatoie (mobile). -->
     <div class="tiles-2 md:hidden">
@@ -54,6 +45,7 @@
 </template>
 
 <script setup>
+import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import {
   Fish, Users, ShoppingBag, UserCircle, UserPlus, BarChart3,
@@ -62,13 +54,16 @@ import {
 import AppIcon from '../components/AppIcon.vue'
 import { useSessionStore } from '../stores/sessions.js'
 import GlobeCard from '../components/GlobeCard.vue'
-import IsobathBg from '../components/IsobathBg.vue'
 import { useFriendStore } from '../stores/friends.js'
-import WeatherCard from '../components/weather/WeatherCard.vue'
+import HomeWeatherCard from '../components/weather/HomeWeatherCard.vue'
+import CompareForecast from '../components/weather/CompareForecast.vue'
+import { useMediaQuery } from '../composables/useMediaQuery.js'
 
 const { t } = useI18n()
 const friends = useFriendStore()
 const sessions = useSessionStore()
+const globeOpen = ref(false)                    // mappamondo espanso (si riparte sempre dal compatto)
+const isDesktop = useMediaQuery('(min-width: 768px)')
 
 // Badge numerico per box con contatori "da leggere/gestire" (gruppi: in sospeso).
 function badgeCount(key) {
@@ -94,20 +89,6 @@ const quickLinks = [
 
 <style scoped>
 .icon-inline { @apply inline-flex items-center gap-1.5; }
-.eyebrow { @apply text-xs font-bold uppercase text-sand-text; letter-spacing: 0.14em; }
-.section-label { @apply text-xs font-bold uppercase tracking-widest text-muted mb-2; font-size: 0.72rem; }
-
-.hero {
-  @apply relative overflow-hidden rounded-xl border border-border/60 px-5 py-8 mb-5 text-left bg-sea-deep;
-}
-
-.hero h1 { @apply mt-1; }
-.hero > *:not(svg) { @apply relative; }
-.hero-sub { @apply text-muted text-sm max-w-xl mt-2; }
-.hero-actions { @apply flex flex-wrap gap-2 mt-4; }
-
-
-
 
 .story-grid { @apply grid gap-4 mb-8; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
 .story { @apply flex flex-col items-start gap-2 rounded-signature border border-border/60 bg-surface p-5; }
@@ -137,8 +118,4 @@ const quickLinks = [
          text-xs font-semibold text-muted no-underline transition-colors duration-200;
 }
 .quick-link:hover { @apply border-ocean text-foam; }
-@media (max-width: 767px) {
-  .hero { @apply -mx-4 -mt-4 rounded-none border-0 py-6; border-radius: 0 0 24px 24px; }
-  .hero-sub, .hero-actions { display: none; }
-}
 </style>

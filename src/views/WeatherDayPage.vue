@@ -176,6 +176,9 @@
             </div>
           </div>
         </section>
+
+        <!-- Seconda fonte: versione compatta -->
+        <div :style="{ '--i': 9 }"><CompareForecast compact /></div>
       </StaggerList>
       <DayNav :prev="prev" :next="next" bottom />
       <p class="wx-note">{{ t('weather.disclaimer') }}</p>
@@ -194,6 +197,7 @@ import PageHeader from '../components/PageHeader.vue'
 import StaggerList from '../components/motion/StaggerList.vue'
 import WeatherIcon from '../components/WeatherIcon.vue'
 import { wmoLabel } from '../components/weather-icons.js'
+import CompareForecast from '../components/weather/CompareForecast.vue'
 import WeatherSkeleton from '../components/weather/WeatherSkeleton.vue'
 import WindArrow from '../components/weather/WindArrow.vue'
 import MoonIcon from '../components/weather/MoonIcon.vue'
