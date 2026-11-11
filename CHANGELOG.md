@@ -1,3 +1,10 @@
+# [1.53.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.52.0...client-v1.53.0) (2026-11-11)
+
+
+### Features
+
+* diagnostica animazioni in Profilo (impostazioni, preferenza di sistema, prova di transizione CSS, build) ([a76ca99](https://github.com/ziobob94/fishlog-client/commit/a76ca995ec592ea0f4373b931a183141e8d92bf4))
+
 # [1.52.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.51.1...client-v1.52.0) (2026-11-11)
 
 
