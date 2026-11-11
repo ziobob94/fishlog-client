@@ -19,7 +19,8 @@
 		"hidePassword": "Nascondi password",
 		"close": "Chiudi",
 		"fileTooLarge": "Il file è troppo grande. Scegli una foto più piccola o un video più corto.",
-		"uploadTimeout": "Caricamento troppo lento. Controlla la connessione e riprova."
+		"uploadTimeout": "Caricamento troppo lento. Controlla la connessione e riprova.",
+		"retry": "Riprova"
 	},
 	"nav": {
 		"mainNavigation": "Navigazione principale",
@@ -74,7 +75,9 @@
 		"listingSub": "Vendi o scambia attrezzatura",
 		"close": "Chiudi",
 		"story": "Storia",
-		"storySub": "Sparisce dopo 24 ore"
+		"storySub": "Sparisce dopo 24 ore",
+		"event": "Evento",
+		"eventSub": "Organizza un'uscita con altri pescatori"
 	},
 	"admin": {
 		"tabs": {
@@ -1095,7 +1098,7 @@
 			"linkedHint": "Luogo, specie e misure della cattura vengono mostrati sul post. Le coordinate esatte restano nascoste.",
 			"featuredCatch": "Cattura in evidenza",
 			"noCatch": "Nessuna",
-			"whoCanSee": "Chi può vederlo",
+			"whoCanSee": "Chi lo vede",
 			"typePost": "Post",
 			"typeEvent": "Evento",
 			"titlePlaceholder": "Titolo (es. Cerco compagni di pesca)",
@@ -1106,8 +1109,15 @@
 			"bodyRequired": "Scrivi il testo del post",
 			"groupRequired": "Seleziona un gruppo",
 			"pageTitle": "Nuovo post",
-			"bodyLabel": "Testo",
-			"chooseGroup": "Scegli un gruppo"
+			"bodyLabel": "Cosa vuoi raccontare?",
+			"chooseGroup": "Scegli un gruppo",
+			"mediaLabel": "Foto e video",
+			"eventName": "Nome evento",
+			"eventDesc": "Descrizione",
+			"eventDate": "Data e ora",
+			"onlyMe": "Solo io",
+			"eventNameRequired": "Dai un nome all'evento",
+			"savingPct": "Pubblico… {n}%"
 		},
 		"tabs": {
 			"posts": "Post",
@@ -1154,7 +1164,16 @@
 			"empty": {
 				"title": "Nessun post",
 				"text": "Pubblica il tuo primo post o evento"
-			}
+			},
+			"statPosts": "post",
+			"statEvents": "eventi",
+			"statFriends": "amici",
+			"filter": "Filtra",
+			"filterAll": "Tutti",
+			"filterPosts": "Post",
+			"filterEvents": "Eventi",
+			"errorTitle": "Non riesco a caricare la bacheca",
+			"errorText": "Controlla la connessione e riprova."
 		},
 		"composePrompt": "Cosa hai pescato oggi?"
 	},
