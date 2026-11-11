@@ -1,6 +1,6 @@
 <template>
   <div>
-    <PageHeader :title="t('nav.sessions')" bell />
+    <PageHeader :title="t('nav.sessions')" bell sticky />
 
     <SessionFilters v-model="filters" @reset="resetFilters" />
 
