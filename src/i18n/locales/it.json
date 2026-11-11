@@ -1035,6 +1035,13 @@
 		"reportSend": "Invia segnalazione",
 		"reportSent": "Segnalazione inviata, grazie!"
 	},
+	"placeInput": {
+		"useMyPosition": "Usa la mia posizione",
+		"pickOnMap": "Scegli sulla mappa",
+		"useThisPoint": "Usa questo punto",
+		"noGps": "Il dispositivo non fornisce la posizione.",
+		"gpsDenied": "Non riesco a leggere la posizione: controlla i permessi."
+	},
 	"locationPicker": {
 		"hint": "Cerca un luogo o clicca sulla mappa per impostare le coordinate",
 		"namePlaceholder": "Cerca un luogo...",

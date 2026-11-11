@@ -59,7 +59,7 @@
         </div>
         <div class="form-group">
           <label for="s-city">{{ t('seller.city') }}</label>
-          <input id="s-city" v-model="form.city" type="text" required autocomplete="address-level2" />
+          <PlaceInput id="s-city" v-model="form.city" required />
         </div>
         <div class="form-group">
           <label for="s-phone">{{ t('seller.phone') }}</label>
@@ -122,7 +122,7 @@
       </div>
       <div class="form-group">
         <label for="sh-city">{{ t('seller.city') }}</label>
-        <input id="sh-city" v-model="shop.city" type="text" />
+        <PlaceInput id="sh-city" v-model="shop.city" />
       </div>
 
       <fieldset class="checks">
@@ -157,6 +157,7 @@
 </template>
 
 <script setup>
+import PlaceInput from '../components/form/PlaceInput.vue'
 import PageHeader from '../components/PageHeader.vue'
 import { ref, computed } from 'vue'
 import { RouterLink, useRouter } from 'vue-router'

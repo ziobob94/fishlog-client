@@ -10,13 +10,12 @@
       <option value="privato">{{ t('market.sellerType.privato') }}</option>
       <option value="negozio">{{ t('market.sellerType.negozio') }}</option>
     </select>
-    <input
+    <PlaceInput
       v-if="showLocation"
-      :value="modelValue.location"
-      type="text"
+      :model-value="modelValue.location"
       :placeholder="t('market.filters.locationPlaceholder')"
-      class="sm:flex-1 sm:min-w-[120px] sm:max-w-[160px]"
-      @input="update('location', $event.target.value)"
+      class="col-span-2 sm:col-span-1 sm:flex-1 sm:min-w-[180px]"
+      @update:model-value="v => update('location', v)"
     />
     <div class="col-span-2 sm:col-span-1 flex items-center gap-2">
       <input
@@ -42,6 +41,7 @@
 </template>
 
 <script setup>
+import PlaceInput from '../form/PlaceInput.vue'
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { X } from 'lucide-vue-next'

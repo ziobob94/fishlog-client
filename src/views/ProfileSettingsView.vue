@@ -32,7 +32,7 @@
 
       <div>
         <label class="fl-lab" for="ps-loc">{{ t('profile.settings.location') }}</label>
-        <input id="ps-loc" v-model="form.location" class="fl-inp" type="text" autocomplete="address-level2" />
+        <PlaceInput id="ps-loc" v-model="form.location" @pick="p => picked = p" />
         <p class="fl-hint">{{ t('profile.settings.locationHint') }}</p>
       </div>
 
@@ -50,6 +50,7 @@
 </template>
 
 <script setup>
+import PlaceInput from '../components/form/PlaceInput.vue'
 import { computed, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
@@ -89,10 +90,11 @@ async function onPhoto(e) {
 }
 
 // Coordinate della zona (facoltative): ricerca best-effort del luogo scritto
+const picked = ref(null)
 async function geocode(name) {
   if (!name) return {}
   try {
-    const r = await fetch(`https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&q=${encodeURIComponent(name)}`, { headers: { 'Accept-Language': 'it' } })
+    const r = await fetch(`https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&accept-language=it,en&q=${encodeURIComponent(name)}`, { headers: { 'Accept-Language': 'it,en' } })
     const [hit] = await r.json()
     return hit ? { lat: Number(hit.lat), lng: Number(hit.lon) } : {}
   } catch { return {} }
@@ -104,7 +106,8 @@ async function save() {
   try {
     const name = form.location.trim()
     const prev = auth.user?.location
-    const coords = name && name === prev?.name && prev.lat != null ? { lat: prev.lat, lng: prev.lng } : await geocode(name)
+    const coords = name && name === picked.value?.name && picked.value.lat != null ? { lat: picked.value.lat, lng: picked.value.lng }
+      : name && name === prev?.name && prev.lat != null ? { lat: prev.lat, lng: prev.lng } : await geocode(name)
     await auth.updateProfile({ displayName: form.displayName.trim(), username: form.username.trim(), bio: form.bio, location: { name, ...coords } })
     router.replace('/board')
   } catch (e) {
