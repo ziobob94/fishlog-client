@@ -64,12 +64,12 @@ const newSessionTarget = computed(() =>
   @apply fixed bottom-0 inset-x-0 z-[150] grid grid-cols-5 items-stretch
          bg-surface border-t border-border md:hidden;
   min-height: var(--bottom-nav-h);
-  padding-bottom: env(safe-area-inset-bottom);
+  padding-bottom: max(calc(env(safe-area-inset-bottom) - 12px), 0px);
 }
 
 .bottom-nav-item {
   @apply relative flex flex-col items-center justify-center gap-0.5
-         min-h-[44px] py-2 text-muted text-[0.68rem] font-semibold no-underline transition-colors duration-200;
+         min-h-[44px] py-1.5 text-muted text-[0.68rem] font-semibold no-underline transition-colors duration-200;
 }
 
 .bottom-nav-item.router-link-active {

@@ -88,7 +88,7 @@
   /* Altezza della bottom nav mobile (AppBottomNav.vue, sotto i 768px):
      unico riferimento condiviso da chi deve lasciarle spazio sopra
      (ToastContainer, LocalStorageNotice, padding di App.vue). */
-  --bottom-nav-h: 4rem;
+  --bottom-nav-h: 3.25rem;
 }
 
 @layer base {
