@@ -25,7 +25,7 @@
 <script setup>
 import { ref, onMounted, onUnmounted, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { searchPlaceOptions, resolveOption, reverseGeocode, loadMap, placesStatus } from '../../utils/places.js'
+import { searchPlaceOptions, resolveOption, reverseGeocode, loadMap, placesStatus, placesMessage, reportMapError } from '../../utils/places.js'
 import { useThemeStore } from '../../stores/theme.js'
 
 // Selettore luogo: cerca per nome oppure tocca la mappa per impostare le coordinate.
@@ -98,8 +98,9 @@ onMounted(async () => {
       const p = await reverseGeocode(lat, lng)
       if (p) { if (props.name !== undefined) emit('update:name', p.name); emit('place', p) }
     })
-  } catch {
-    error.value = placesStatus.error === 'missing' ? t('placeInput.keyMissing') : placesStatus.error === 'rejected' ? t('placeInput.keyRejected') : t('locationPicker.mapError')
+  } catch (e) {
+    reportMapError(e)
+    error.value = placesMessage(t) || t('locationPicker.mapError')
   }
 })
 
@@ -107,7 +108,7 @@ watch(() => [props.lat, props.lng], ([lat, lng]) => {
   if (!map || !lat || !lng) return
   setPosition(lat, lng)
 })
-watch(() => placesStatus.error, (e) => { if (e === 'rejected') error.value = t('placeInput.keyRejected') })
+watch(() => [placesStatus.error, placesStatus.code], () => { if (placesStatus.error) error.value = placesMessage(t) })
 
 onUnmounted(() => { clearTimeout(searchTimer); map = null; marker = null })
 </script>

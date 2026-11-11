@@ -40,7 +40,7 @@ import { useI18n } from 'vue-i18n'
 import { MapPin, LocateFixed, Map as MapIcon } from 'lucide-vue-next'
 import BottomSheet from '../motion/BottomSheet.vue'
 import LocationPicker from './LocationPicker.vue'
-import { searchPlaceOptions, resolveOption, reverseGeocode, placesStatus, hasGoogleKey } from '../../utils/places.js'
+import { searchPlaceOptions, resolveOption, reverseGeocode, placesStatus, placesMessage, hasGoogleKey } from '../../utils/places.js'
 
 const { t } = useI18n()
 const props = defineProps({
@@ -61,7 +61,7 @@ const locating = ref(false)
 const msg = ref('')
 const mapOpen = ref(false)
 const draft = reactive({ name: '', lat: null, lng: null, place: null })
-const statusMsg = computed(() => !hasGoogleKey() ? t('placeInput.keyMissing') : placesStatus.error ? t(`placeInput.${{ missing: 'keyMissing', rejected: 'keyRejected', load: 'loadFailed' }[placesStatus.error]}`) : '')
+const statusMsg = computed(() => !hasGoogleKey() ? t('placeInput.keyMissing') : placesStatus.error ? placesMessage(t) : '')
 let timer = null
 const inp = ref(null)
 const dropUp = ref(false)

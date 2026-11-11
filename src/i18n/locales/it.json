@@ -1043,6 +1043,13 @@
 		"gpsDenied": "Non riesco a leggere la posizione: controlla i permessi.",
 		"keyMissing": "Google Maps non è configurato: manca la chiave VITE_GOOGLE_MAPS_KEY (dopo averla aggiunta serve rifare il build del client).",
 		"keyRejected": "Google ha rifiutato la chiave: controlla che Maps JavaScript, Places e Geocoding siano abilitati, la fatturazione attiva e il dominio consentito.",
+		"errReferer": "Google rifiuta questo dominio ({origin}): aggiungilo ai referrer HTTP consentiti della chiave (es. {origin}/*) nella Google Cloud Console.",
+		"errApi": "Una delle API non è abilitata o la chiave non può usarla: abilita Maps JavaScript API, Places API (New) e Geocoding API e consentile nelle restrizioni della chiave.",
+		"errBilling": "La fatturazione del progetto Google non è attiva (o la quota è esaurita): attivala nella Cloud Console.",
+		"errInvalid": "La chiave Google non è valida o è scaduta: controlla VITE_GOOGLE_MAPS_KEY e rifai il build.",
+		"errBlocked": "Lo script di Google Maps è bloccato (rete, ad-blocker o Content-Security-Policy del server): consenti maps.googleapis.com e maps.gstatic.com.",
+		"errTimeout": "Google Maps non risponde: controlla la connessione e riprova.",
+		"errInit": "Errore imprevisto nel caricamento di Google Maps: ",
 		"loadFailed": "Non riesco a contattare Google Maps, riprova tra poco.",
 		"noResults": "Nessun luogo trovato."
 	},
