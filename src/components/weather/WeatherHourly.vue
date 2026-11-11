@@ -1,57 +1,74 @@
 <template>
   <section class="wx-block" aria-labelledby="wx-hr-h">
-    <h2 id="wx-hr-h" class="wx-h">{{ t('weather.hourly.title') }}</h2>
-    <div class="wx-chips wx-daychips" role="group" :aria-label="t('weather.hourly.days')">
-      <button v-for="(d, i) in days" :key="d.date" type="button" class="wx-chip m-color" :aria-pressed="sel === i" :class="{ 'wx-chip-on': sel === i }" @click="sel = i">
-        {{ dayLabel(d.date, today) }}<span class="wx-num wx-chip-n"> {{ d.date.slice(8) }}</span>
-      </button>
+    <div class="wx-dy-head">
+      <h2 id="wx-hr-h" class="wx-h" style="margin:0">{{ t('weather.hourly.title') }}</h2>
+      <div class="wx-seg" role="radiogroup" :aria-label="t('weather.hourly.span')" @keydown="onKey">
+        <button v-for="n in SPANS" :key="n" :ref="el => (btns[n] = el)" type="button" role="radio" class="m-press"
+          :aria-checked="span === n" :tabindex="span === n ? 0 : -1" @click="span = n">{{ n }} h</button>
+      </div>
     </div>
-    <div ref="strip" class="wx-hours" role="region" tabindex="0" :aria-label="t('weather.hourly.region', { day: dayLabel(day?.date, today) })">
-      <template v-for="(h, i) in rows" :key="h.time || i">
-        <div v-if="i === extIdx && i > 0" class="wx-hour wx-hour-src" role="note"><span>{{ t('weather.hourly.fromOm') }}</span></div>
-        <div class="wx-hour">
-          <span class="wx-num">{{ h.hour == null ? MISSING : String(h.hour).padStart(2, '0') + ':00' }}</span>
-          <WeatherIcon :code="rowWmo(h)" :is-day="isDayAt(h.hour, sun?.sunrise, sun?.sunset)" :size="22" /><span class="wx-sr">{{ wmoLabel(rowWmo(h)) }}</span>
-          <span class="wx-num" style="font-weight:700">{{ fmt(h.temp) }}°</span>
-          <WindArrow v-if="h.windSpeed != null" :speed="h.windSpeed" :deg="h.windDeg" class="wx-hour-wind" />
-          <span class="wx-num">{{ fmt(h.windSpeed) }}</span>
-          <span class="wx-num wx-muted">{{ fmt(h.precipProbability) }}%</span>
+    <div class="wx-hours" role="region" tabindex="0" :aria-label="t('weather.hourly.regionAll', { n: span })">
+      <template v-for="it in items" :key="it.key">
+        <div v-if="it.type === 'day'" class="wx-hour wx-hour-day" role="note">
+          <span class="wx-hday">{{ dayLabel(it.date, today) }}</span>
+          <span class="wx-num wx-hdnum">{{ it.date.slice(8) }}</span>
+        </div>
+        <div v-else-if="it.type === 'sunrise' || it.type === 'sunset'" class="wx-hour wx-hour-sun">
+          <Sunrise v-if="it.type === 'sunrise'" :size="22" aria-hidden="true" /><Sunset v-else :size="22" aria-hidden="true" />
+          <span class="wx-hsun">{{ t('weather.hourly.' + it.type) }}</span>
+          <span class="wx-num" style="font-weight:700">{{ it.time }}</span>
+        </div>
+        <div v-else class="wx-hour">
+          <span class="wx-num">{{ String(it.row.hour).padStart(2, '0') }}:00</span>
+          <WeatherIcon :code="rowWmo(it.row)" :is-day="isDayAt(it.row.hour, sunOf(it.row.date)?.sunrise, sunOf(it.row.date)?.sunset)" :size="22" /><span class="wx-sr">{{ wmoLabel(rowWmo(it.row)) }}</span>
+          <span class="wx-num" style="font-weight:700">{{ fmt(it.row.temp) }}°</span>
+          <WindArrow v-if="it.row.windSpeed != null" :speed="it.row.windSpeed" :deg="it.row.windDeg" class="wx-hour-wind" />
+          <span class="wx-num">{{ fmt(it.row.windSpeed) }}</span>
+          <span class="wx-num wx-muted">{{ fmt(it.row.precipProbability) }}%</span>
         </div>
       </template>
     </div>
     <p class="wx-note">{{ t('weather.hourly.legend') }}</p>
-    <p v-if="day?.extended" class="wx-note">{{ t('weather.hourly.source') }}</p>
+    <p v-if="hasExt" class="wx-note">{{ t('weather.hourly.source') }}</p>
   </section>
 </template>
 
 <script setup>
-// Un giorno alla volta (fino a 7), con scorrimento orizzontale da tastiera. Le prime 48 ore vengono da Google, le successive da Open-Meteo:
-// la fonte è dichiarata sul giorno e con un separatore nella striscia.
-import { ref, computed, watch, nextTick } from 'vue'
+// Una sola striscia continua dall'ora corrente (24 o 48 ore), senza schede per giorno. Tra un giorno e l'altro c'è una colonna con nome e
+// numero del giorno; alba e tramonto sono colonne inserite all'ora in cui avvengono (orari locali del luogo).
+import { ref, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { Sunrise, Sunset } from 'lucide-vue-next'
 import WeatherIcon from '../WeatherIcon.vue'
 import { wmoLabel } from '../weather-icons.js'
 import WindArrow from './WindArrow.vue'
-import { fmt, MISSING, dayLabel, groupHoursByDay, firstExtendedIndex, rowWmo, isDayAt } from '../../utils/weather.js'
+import { fmt, dayLabel, buildHourStream, rowWmo, isDayAt } from '../../utils/weather.js'
 const props = defineProps({ view: { type: Object, required: true }, today: { type: String, default: '' } })
 const { t } = useI18n()
-const sel = ref(0)
-const strip = ref(null)
-const days = computed(() => groupHoursByDay(props.view.hourly).slice(0, 7))
-const day = computed(() => days.value[Math.min(sel.value, days.value.length - 1)])
-const rows = computed(() => day.value?.rows || [])
-const sun = computed(() => props.view.daily.find(d => d.date === day.value?.date) || null)
-const extIdx = computed(() => firstExtendedIndex(rows.value))
-watch(sel, async () => { await nextTick(); if (strip.value) strip.value.scrollLeft = 0 })
-watch(() => props.view, () => { if (sel.value >= days.value.length) sel.value = 0 })
+const SPANS = [24, 48]
+const span = ref(24)
+const btns = {}
+const items = computed(() => buildHourStream(props.view, span.value))
+const hasExt = computed(() => items.value.some(i => i.type === 'hour' && i.row.source === 'open-meteo'))
+const sunOf = date => props.view.daily.find(d => d.date === date) || null
+function onKey(e) {
+  const i = SPANS.indexOf(span.value)
+  const next = e.key === 'ArrowRight' || e.key === 'ArrowDown' ? SPANS[Math.min(i + 1, SPANS.length - 1)] : e.key === 'ArrowLeft' || e.key === 'ArrowUp' ? SPANS[Math.max(i - 1, 0)] : null
+  if (next == null) return
+  e.preventDefault(); span.value = next; btns[next]?.focus()
+}
 </script>
 
 <style scoped>
 .wx-hour-wind :deep(.wx-wind-tx) { display: none; }
 .wx-hour-wind :deep(svg) { width: 18px; height: 18px; }
-.wx-daychips { flex-wrap: nowrap; overflow-x: auto; padding-bottom: 8px; margin-bottom: 4px; }
-.wx-daychips .wx-chip { flex: none; }
-.wx-chip-on { background: rgb(var(--color-ocean)); border-color: rgb(var(--color-ocean)); color: rgb(var(--color-on-primary)); }
-.wx-chip-n { opacity: .75; font-size: .75rem; }
-.wx-hour-src { width: 92px; align-content: center; font-size: .7rem; color: rgb(var(--color-muted)); background: transparent; border: 1px dashed rgb(var(--color-border)); }
+.wx-dy-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 12px; }
+.wx-seg button[aria-checked='true'] { background: rgb(var(--color-ocean)); color: rgb(var(--color-on-primary)); }
+.wx-hour-day { width: 52px; align-content: center; gap: 2px; background: transparent; border: 1px dashed rgb(var(--color-border)); }
+.wx-hday { font-size: .7rem; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: rgb(var(--color-muted)); }
+.wx-hdnum { font-size: 1.1rem; font-weight: 700; }
+.wx-hour-sun { background: rgb(var(--color-surface-2)); border: 1px solid rgb(var(--color-sand-text)); color: rgb(var(--color-sand-text)); align-content: center; }
+.wx-hsun { font-size: .7rem; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; }
+@media (prefers-reduced-motion: no-preference) { .wx-hour-sun { animation: wx-sun-in var(--dur-base, .24s) var(--ease-out, ease-out) both; } }
+@keyframes wx-sun-in { from { opacity: 0; transform: translateY(4px); } }
 </style>

@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest'
 import {
   fmt, fmtSigned, MISSING, compass, windInfo, headingTo, pressureState, moonLabel, hhmm, daylight, dayLabel,
   conditionText, uvLabel, nextTides, tideSummary, normalizeOverview, isPartial, waveSeries, groupHoursByDay, firstExtendedIndex,
-  rowWmo, rowLabel, isDayAt, periodSummary, tempBars, readDays, saveDays, DAYS_KEY, reliability, hoursOfDay, dayBands, pressureDay, tidesOfDay, fromNow, hasHourlyDetail, moonOn, longDate,
+  rowWmo, rowLabel, isDayAt, periodSummary, tempBars, readDays, saveDays, DAYS_KEY, reliability, hoursOfDay, dayBands, pressureDay, tidesOfDay, fromNow, hasHourlyDetail, buildHourStream, moonOn, longDate,
 } from '../weather.js'
 
 describe('null → «—» (mai 0)', () => {
@@ -232,5 +232,22 @@ describe('normalizeOverview: campi nuovi', () => {
     expect(v.daily[0]).toMatchObject({ wmo: 61, precipSum: null, windGust: null, activity: { level: 4, label: 'Buona' } })
     expect(v.daily[1].activity).toBeNull(); expect(v.daily[1].wmo).toBeNull()
     expect(v.hourly[0]).toMatchObject({ pressure: null, precipMm: null, wmo: null })
+  })
+})
+
+describe('striscia oraria continua', () => {
+  const hr = (date, hour) => ({ date, hour, time: `${date}T${String(hour).padStart(2, '0')}:00` })
+  const view = {
+    hourly: [hr('2026-11-11', 22), hr('2026-11-11', 23), hr('2026-11-12', 0), hr('2026-11-12', 1), hr('2026-11-12', 6), hr('2026-11-12', 7)],
+    daily: [{ date: '2026-11-12', sunrise: '2026-11-12T06:48', sunset: '2026-11-12T16:55' }],
+  }
+  it('divisori di giorno e alba all\'ora giusta', () => {
+    const s = buildHourStream(view, 48).map(x => x.type === 'hour' ? x.row.hour : x.type)
+    expect(s).toEqual(['day', 22, 23, 'day', 0, 1, 6, 'sunrise', 7])
+  })
+  it('limita a n ore e il dettaglio di oggi resta con poche ore', () => {
+    expect(buildHourStream(view, 2).filter(x => x.type === 'hour')).toHaveLength(2)
+    const v = { daily: [{ date: '2026-11-11' }], hourly: [hr('2026-11-11', 20), hr('2026-11-11', 21), hr('2026-11-11', 22), hr('2026-11-11', 23)] }
+    expect(hasHourlyDetail(v, '2026-11-11')).toBe(true)
   })
 })
