@@ -25,7 +25,7 @@
 	"nav": {
 		"mainNavigation": "Navigazione principale",
 		"menu": "Apri il menu",
-		"community": "Community",
+		"community": "Social",
 		"home": "Home",
 		"sessions": "Uscite",
 		"newSession": "Nuova uscita",
@@ -54,7 +54,7 @@
 		"unlock": "Sblocca",
 		"sections": {
 			"fishing": "Pesca",
-			"community": "Community",
+			"community": "Social",
 			"account": "Account"
 		}
 	},
@@ -445,9 +445,9 @@
 		},
 		"stories": {
 			"community": {
-				"title": "Community",
+				"title": "Social",
 				"text": "Racconta le tue uscite, confrontati con gli altri pescatori e scala la classifica.",
-				"cta": "Vai alla community"
+				"cta": "Vai al Social"
 			},
 			"market": {
 				"title": "Market",
@@ -496,7 +496,7 @@
 			"comingSoon": "Prossimamente",
 			"groups": {
 				"diary": "Il tuo diario",
-				"community": "Community",
+				"community": "Social",
 				"more": "Altro"
 			},
 			"sections": {
@@ -506,7 +506,7 @@
 				},
 				"leaderboard": {
 					"title": "Classifica",
-					"text": "I pescatori più attivi della community"
+					"text": "I pescatori più attivi del Social"
 				},
 				"sessions": {
 					"title": "Uscite",
@@ -514,7 +514,7 @@
 				},
 				"feed": {
 					"title": "Bacheca generale",
-					"text": "Post ed eventi della community e dei tuoi gruppi"
+					"text": "Post ed eventi del Social e dei tuoi gruppi"
 				},
 				"board": {
 					"title": "Il mio profilo",
