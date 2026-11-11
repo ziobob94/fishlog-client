@@ -1041,7 +1041,7 @@
 		"useThisPoint": "Usa questo punto",
 		"noGps": "Il dispositivo non fornisce la posizione.",
 		"gpsDenied": "Non riesco a leggere la posizione: controlla i permessi.",
-		"keyMissing": "Ricerca luoghi non configurata: manca la chiave Google Maps (VITE_GOOGLE_MAPS_KEY).",
+		"keyMissing": "Google Maps non è configurato: manca la chiave VITE_GOOGLE_MAPS_KEY (dopo averla aggiunta serve rifare il build del client).",
 		"keyRejected": "Google ha rifiutato la chiave: controlla che Maps JavaScript, Places e Geocoding siano abilitati, la fatturazione attiva e il dominio consentito.",
 		"loadFailed": "Non riesco a contattare Google Maps, riprova tra poco.",
 		"noResults": "Nessun luogo trovato."
@@ -1625,7 +1625,7 @@
 		"count": "Nessun luogo sul mappamondo | 1 luogo sul mappamondo | {n} luoghi sul mappamondo",
 		"you": "Tu sei qui",
 		"catchesLegend": "Pescate",
-		"dragHint": "Trascina per ruotare, due dita per muovere",
+		"dragHint": "Due dita per muovere la mappa",
 		"layer": "Satellite / mappa",
 		"tilesError": "Non riesco a caricare le immagini della mappa.",
 		"mapError": "Non riesco a caricare la mappa.",

@@ -1,39 +1,40 @@
 <template>
-  <div ref="mapEl" class="map-display"></div>
+  <div class="map-wrap">
+    <div ref="mapEl" class="map-display"></div>
+    <p v-if="err" class="map-err" role="alert">{{ err }}</p>
+  </div>
 </template>
 
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue'
-import { buildStyle, readBasemap, COOP_LOCALE, loadMapLibre } from '../utils/mapStyle.js'
-import { useThemeStore } from '../stores/theme.js'
+import { useI18n } from 'vue-i18n'
+import { loadMap, placesErrorKey } from '../utils/places.js'
 
-// Mappa di dettaglio con segnaposto (MapLibre, caricata solo quando serve).
+// Mappa di dettaglio con segnaposto (Google Maps, caricata solo quando serve).
+const { t } = useI18n()
 const props = defineProps({
   lat: { type: Number, required: true },
   lng: { type: Number, required: true },
 })
 
-const theme = useThemeStore()
 const mapEl = ref(null)
+const err = ref('')
 let map = null
 
 onMounted(async () => {
+  if (!import.meta.env.VITE_GOOGLE_MAPS_KEY) { err.value = t('placeInput.keyMissing'); return }
   try {
-    const maplibre = await loadMapLibre()
-    map = new maplibre.Map({
-      container: mapEl.value,
-      style: buildStyle({ basemap: readBasemap(), dark: theme.mode !== 'light' }),
-      center: [props.lng, props.lat], zoom: 12,
-      cooperativeGestures: true, locale: COOP_LOCALE,
-      dragRotate: false, pitchWithRotate: false, touchPitch: false
+    const { Map } = await loadMap()
+    const pos = { lat: props.lat, lng: props.lng }
+    map = new Map(mapEl.value, {
+      center: pos, zoom: 12, mapTypeId: 'hybrid', gestureHandling: 'cooperative',
+      zoomControl: true, mapTypeControl: false, streetViewControl: false, fullscreenControl: false, clickableIcons: false
     })
-    map.touchZoomRotate.disableRotation()
-    map.addControl(new maplibre.NavigationControl({ showCompass: false }), 'top-right')
-    new maplibre.Marker({ color: '#f59e0b' }).setLngLat([props.lng, props.lat]).addTo(map)
-  } catch { /* la mappa resta vuota */ }
+    new window.google.maps.Marker({ position: pos, map })
+  } catch { err.value = t(placesErrorKey() || 'globe.mapError') }
 })
 
-onUnmounted(() => { map?.remove(); map = null })
+onUnmounted(() => { map = null })
 </script>
 
 <style scoped>
@@ -45,4 +46,5 @@ onUnmounted(() => { map?.remove(); map = null })
   border: 1px solid rgb(var(--color-border));
   background: rgb(var(--color-surface-2));
 }
+.map-err { margin-top: 6px; font-size: 13px; color: rgb(var(--color-danger-text, 248 113 113)); }
 </style>
