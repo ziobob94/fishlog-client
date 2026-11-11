@@ -194,7 +194,8 @@ function retryMap() { resetPlaces(); mapError.value = ''; map = null; initMap() 
 watch(() => [placesStatus.error, placesStatus.code], () => { if (placesStatus.error) mapError.value = placesMessage(t) })
 
 onMounted(async () => {
-  reduceMotion.value = !!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
+  const forced = document.documentElement.getAttribute('data-motion')
+  reduceMotion.value = forced === 'reduce' ? true : forced === 'full' ? false : !!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
   if (!import.meta.env.VITE_GOOGLE_MAPS_KEY) mapError.value = t('placeInput.keyMissing')
   initMap()
   try {
