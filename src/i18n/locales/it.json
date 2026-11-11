@@ -718,7 +718,17 @@
 			"statLabels": {
 				"time": "Orario",
 				"catches": "Catture",
-				"best": "Migliore"
+				"best": "Migliore",
+				"bestCm": "Migliore",
+				"duration": "Durata"
+			},
+			"photoWord": "foto",
+			"conditions": "Condizioni",
+			"speciesCard": "Scheda specie",
+			"conditionLabels": {
+				"tide": "Marea",
+				"wind": "Vento",
+				"waterAir": "Acqua / Aria"
 			}
 		}
 	},
