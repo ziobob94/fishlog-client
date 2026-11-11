@@ -1,6 +1,6 @@
 <template>
   <div>
-    <PageHeader :title="t('market.title')">
+    <PageHeader :title="t('market.title')" sticky>
       <RouterLink to="/market/new" class="btn btn-primary btn-sm"><Plus :size="16" /> {{ t('market.sell') }}</RouterLink>
     </PageHeader>
 
