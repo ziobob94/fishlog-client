@@ -32,7 +32,7 @@ const sessions = useSessionStore()
 
 // Foglio «Crea» (schermata 39): post, storia, uscita, annuncio.
 const options = computed(() => [
-  { key: 'post', tone: 'ocean', icon: ImageIcon, title: t('createMenu.post'), sub: t('createMenu.postSub'), to: { path: '/feed', query: { compose: '1' } } },
+  { key: 'post', tone: 'ocean', icon: ImageIcon, title: t('createMenu.post'), sub: t('createMenu.postSub'), to: '/post/new' },
   { key: 'story', tone: 'sand', icon: Camera, title: t('createMenu.story'), sub: t('createMenu.storySub'), to: '/story/new' },
   { key: 'session', tone: 'green', icon: Fish, title: t('createMenu.session'),
     sub: sessions.ongoing ? t('createMenu.resumeSession') : t('createMenu.sessionSub'),

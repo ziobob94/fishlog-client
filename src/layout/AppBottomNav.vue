@@ -43,9 +43,8 @@ const route = useRoute()
 const router = useRouter()
 const sheetOpen = ref(false)
 
-// In Community il «+» crea subito un post; altrove apre il foglio «Crea».
+// Il «+» apre il foglio «Crea» in tutte le pagine.
 function onPlus() {
-  if (route.path === '/feed') { router.push({ path: '/feed', query: { compose: '1' } }); return }
   sheetOpen.value = true
 }
 
