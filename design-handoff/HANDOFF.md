@@ -110,7 +110,7 @@ Prima mancava il punto d'ingresso per un nuovo post. Ora:
 
 | # | Schermata | Codice | Note |
 |---|---|---|---|
-| 39 | Crea (foglio dal basso) | nuovo, apre da «+» della barra | Post, Storia, Uscita, Annuncio. Il «+» non porta più direttamente a `PostForm.vue` |
+| 39 | Crea (foglio dal basso) | nuovo, apre da «+» della barra (tranne in Community, dove il «+» crea subito un post) | Post, Storia, Uscita, Annuncio. Il «+» non porta più direttamente a `PostForm.vue` |
 | 05 | Community · feed | `FeedView.vue` | Il filtro (Per te / Amici / Gruppi / Eventi) non è più una fila di chip: è il titolo della pagina con freccia («Per te ▾») che apre un menu. In alto: fila storie (`StoriesRail.vue`, nuovo) e riga «Cosa hai pescato oggi?» che apre il form del post |
 | 40 | Storia · crea | nuovo `StoryComposer.vue` | Foto/video, adesivi della pesca (cattura, luogo, acqua e meteo), pubblico Tutti / Solo amici, scade dopo 24 ore |
 | 41 | Storia · guarda | nuovo `StoryViewer.vue` | Barre di avanzamento, risposta in chat, cuore. L'adesivo cattura apre il dettaglio uscita |
@@ -120,7 +120,7 @@ Prima mancava il punto d'ingresso per un nuovo post. Ora:
 ## Navigazione (cambia)
 
 - **Mobile, barra in basso:** Home · Uscite · **+** (tasto centrale grande, azione «Nuova uscita») · Community · Market. Oggi è Home, Uscite, Feed, Market, Chat.
-- **Il «+» centrale** apre il foglio «Crea» (post, storia, uscita, annuncio). **Chat esce dalla barra:** si apre dall'icona messaggi (con badge) nell'intestazione di Community, come i DM di Instagram. Mantieni il badge dei non letti.
+- **Il «+» centrale** apre il foglio «Crea» (post, storia, uscita, annuncio); **solo in Community** porta direttamente al nuovo post (la storia si crea da «La tua storia»). **Chat esce dalla barra:** si apre dall'icona messaggi (con badge) nell'intestazione di Community, come i DM di Instagram. Mantieni il badge dei non letti.
 - **Desktop:** la sidebar resta, con le stesse voci raggruppate (Pesca, Community) e l'icona/logo nuovi.
 - La barra è a 5 colonne; il «+» sporge di 30 px, 56×56, con bordo dello stesso colore dello sfondo.
 
