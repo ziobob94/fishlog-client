@@ -1,37 +1,8 @@
 <template>
   <div>
-    <PageHeader :title="t('nav.profile')" back />
-
-    <div class="identity">
-      <div class="avatar-wrap">
-        <img v-if="auth.user?.avatar" :src="auth.user.avatar" class="avatar" alt="" />
-        <span v-else class="avatar-placeholder">{{ initials }}</span>
-        <input ref="fileInput" type="file" accept="image/jpeg,image/png,image/webp" class="hidden" @change="onAvatarChange" />
-        <button type="button" class="avatar-edit" :disabled="uploadingAvatar" :aria-label="t('profile.account.changeAvatar')" @click="fileInput.click()">
-          <Pencil :size="16" />
-        </button>
-      </div>
-      <div class="identity-text">
-        <p class="identity-name">{{ auth.user?.displayName || auth.user?.email }}</p>
-        <p v-if="auth.user?.displayName" class="identity-email">{{ auth.user?.email }}</p>
-      </div>
-    </div>
+    <PageHeader :title="t('profile.settingsTitle')" back />
 
     <div class="profile-grid">
-      <!-- Account -->
-      <section class="card">
-        <h3>{{ t('profile.account.title') }}</h3>
-        <div class="form-group">
-          <label for="pf-name">{{ t('profile.account.nameLabel') }}</label>
-          <input id="pf-name" v-model="displayName" type="text" />
-        </div>
-        <p v-if="accountError" class="error-msg mt-2">{{ accountError }}</p>
-        <p v-if="accountSaved" class="success-msg mt-2">{{ t('common.save') }} ✓</p>
-        <button class="btn btn-primary w-full mt-3" :disabled="savingAccount" @click="saveAccount">
-          {{ savingAccount ? t('profile.account.saving') : t('common.save') }}
-        </button>
-      </section>
-
       <!-- Credenziali -->
       <section class="card">
         <h3>{{ t('profile.credentials.title') }}</h3>
@@ -89,7 +60,7 @@
       </section>
 
       <!-- Notifiche -->
-      <section class="card">
+      <section id="notifications" class="card">
         <h3>{{ t('profile.notifications.title') }}</h3>
         <p class="text-muted text-sm mb-3">{{ t('profile.notifications.hint') }}</p>
 
@@ -123,7 +94,7 @@
       </section>
 
       <!-- Privacy -->
-      <section class="card">
+      <section id="privacy" class="card">
         <h3>{{ t('profile.privacy.title') }}</h3>
         <div class="form-group">
           <label>{{ t('profile.privacy.defaultVisibilityLabel') }}</label>
@@ -285,7 +256,7 @@
 import { toInitials } from '../utils/initials.js'
 import PageHeader from '../components/PageHeader.vue'
 import { ref, computed, onMounted } from 'vue'
-import { useRouter, RouterLink } from 'vue-router'
+import { useRouter, useRoute, RouterLink } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { Sun, Moon, Pencil, ChevronRight } from 'lucide-vue-next'
 import { useAuthStore } from '../stores/auth.js'
@@ -301,10 +272,14 @@ const features = useFeaturesStore()
 const theme = useThemeStore()
 const market = useMarketStore()
 const router = useRouter()
+const route = useRoute()
 function doLogout() { auth.logout(); window.location.assign('/login') }
 
 onMounted(() => {
   if (!market.categories.length) market.fetchCategories()
+  // Privacy / Notifiche dal menù del profilo portano direttamente alla sezione
+  const sec = route.query.section
+  if (sec) setTimeout(() => document.getElementById(String(sec))?.scrollIntoView({ block: 'start', behavior: 'smooth' }), 150)
 })
 
 const initials = computed(() => {
@@ -324,7 +299,7 @@ async function saveAccount() {
   accountSaved.value = false
   savingAccount.value = true
   try {
-    await auth.updateProfile({ displayName: displayName.value, defaultVisibility: defaultVisibility.value })
+    await auth.updateProfile({ defaultVisibility: defaultVisibility.value })
     accountSaved.value = true
     setTimeout(() => accountSaved.value = false, 2000)
   } catch (e) {

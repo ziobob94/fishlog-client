@@ -1175,7 +1175,11 @@
 			"errorTitle": "Non riesco a caricare la bacheca",
 			"errorText": "Controlla la connessione e riprova."
 		},
-		"composePrompt": "Cosa hai pescato oggi?"
+		"composePrompt": "Cosa hai pescato oggi?",
+		"detail": {
+			"title": "Post",
+			"notFound": "Post non trovato"
+		}
 	},
 	"market": {
 		"view": {
@@ -1359,6 +1363,58 @@
 			"text": "Azione irreversibile: verranno eliminati account, uscite e post.",
 			"deleteAccount": "Elimina il mio account",
 			"confirm": "Sei sicuro? L'operazione non è reversibile."
+		},
+		"settingsTitle": "Impostazioni",
+		"menu": {
+			"title": "Menu",
+			"edit": "Impostazioni profilo",
+			"editSub": "Nome, foto, bio, luogo",
+			"privacy": "Privacy",
+			"privacySub": "Chi vede post, storie e uscite",
+			"notifications": "Notifiche",
+			"notificationsSub": "Cosa vuoi ricevere",
+			"logout": "Esci",
+			"logoutSub": "Torna alla schermata di accesso"
+		},
+		"board": {
+			"sessions": "uscite",
+			"catches": "catture",
+			"friends": "amici",
+			"edit": "Modifica profilo",
+			"share": "Condividi profilo",
+			"linkCopied": "Link copiato",
+			"tabPosts": "Post",
+			"tabSessions": "Uscite",
+			"tabSaved": "Salvati",
+			"createFirst": "Crea il primo post",
+			"empty": {
+				"posts": {
+					"title": "Nessun post",
+					"text": "Condividi la tua prima cattura o pescata."
+				},
+				"sessions": {
+					"title": "Nessuna uscita",
+					"text": "Le tue uscite di pesca compariranno qui."
+				},
+				"saved": {
+					"title": "Nessun post salvato",
+					"text": "Salva i post che vuoi ritrovare: li vedi solo tu."
+				}
+			}
+		},
+		"settings": {
+			"title": "Impostazioni profilo",
+			"changePhoto": "Cambia foto",
+			"photoHint": "JPG o PNG, fino a 5 MB",
+			"photoTooBig": "La foto supera i 5 MB",
+			"name": "Nome",
+			"username": "Nome utente",
+			"usernameHint": "Lo vedono tutti, anche fuori dagli amici.",
+			"usernameFormat": "3-30 caratteri: lettere, numeri, punto e trattino basso",
+			"bio": "Bio",
+			"location": "Luogo",
+			"locationHint": "Mostrato sotto il nome, con le coordinate della tua zona.",
+			"save": "Salva modifiche"
 		}
 	},
 	"stats": {
