@@ -1,11 +1,11 @@
 <template>
   <div class="rail" role="list" :aria-label="t('stories.rail')">
     <!-- La tua storia -->
-    <RouterLink :to="own ? `/stories/${meId}` : '/story/new'" class="item" role="listitem" :aria-label="t('stories.yours')">
+    <RouterLink :to="own ? `/stories/${meId}` : '/board'" class="item" role="listitem" :aria-label="t('stories.yours')">
       <span class="ring" :class="{ dashed: !own, seen: own?.seen }">
         <span class="avatar"><img v-if="auth.user?.avatar" :src="auth.user.avatar" alt="" /><template v-else>{{ initials }}</template></span>
         <RouterLink v-if="own" to="/story/new" class="plus" :aria-label="t('stories.new')" @click.stop><Plus :size="16" :stroke-width="2.6" /></RouterLink>
-        <span v-else class="plus" aria-hidden="true"><Plus :size="16" :stroke-width="2.6" /></span>
+        <RouterLink v-else to="/story/new" class="plus" :aria-label="t('stories.new')" @click.stop><Plus :size="16" :stroke-width="2.6" /></RouterLink>
       </span>
       <span class="name your">{{ t('stories.yours') }}</span>
     </RouterLink>

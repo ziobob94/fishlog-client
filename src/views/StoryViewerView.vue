@@ -20,8 +20,8 @@
       </div>
 
       <header class="top">
-        <span class="avatar"><img v-if="author?.avatar" :src="author.avatar" alt="" /><template v-else>{{ toInitials(author?.displayName || '?') }}</template></span>
-        <span class="who"><strong>{{ author?.displayName }}</strong><small>{{ ago(current.createdAt) }}<template v-if="place"> · {{ place }}</template></small></span>
+        <RouterLink :to="profileTo" class="avatar" :aria-label="author?.displayName" @click="paused = true"><img v-if="author?.avatar" :src="author.avatar" alt="" /><template v-else>{{ toInitials(author?.displayName || '?') }}</template></RouterLink>
+        <span class="who"><RouterLink :to="profileTo" class="who-name"><strong>{{ author?.displayName }}</strong></RouterLink><small>{{ ago(current.createdAt) }}<template v-if="place"> · {{ place }}</template></small></span>
         <button v-if="isOwn" type="button" class="icon" :aria-label="t('stories.delete')" @click="removeStory"><Trash2 :size="20" /></button>
         <button type="button" class="icon" :aria-label="t('stories.close')" @click="close"><X :size="24" /></button>
       </header>
@@ -47,7 +47,7 @@
 
 <script setup>
 import { ref, computed, watch, onMounted, onBeforeUnmount } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { useRoute, useRouter, RouterLink } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { X, Heart, Send, Trash2, Eye } from 'lucide-vue-next'
 import api from '../utils/api.js'
@@ -67,6 +67,7 @@ const { toast } = useToast()
 const DURATION = 5000
 const loading = ref(true)
 const author = ref(null)
+const profileTo = computed(() => isOwn.value ? '/board' : `/users/${author.value?._id || ''}`)
 const stories = ref([])
 const index = ref(0)
 const progress = ref(0)
@@ -160,6 +161,7 @@ async function removeStory() {
 .avatar { width: 44px; height: 44px; border-radius: 50%; border: 2px solid rgb(var(--color-sand-text)); background: var(--ocean-glow); color: rgb(var(--color-ocean-text)); font-weight: 800; font-size: 14px; display: flex; align-items: center; justify-content: center; overflow: hidden; flex: none; }
 .avatar img { width: 100%; height: 100%; object-fit: cover; }
 .who { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.who-name { color: inherit; text-decoration: none; }
 .who strong { font-size: 16px; font-weight: 700; }
 .who small { font-size: 13px; opacity: .8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .icon { width: 44px; height: 44px; background: none; border: 0; color: #fff; display: flex; align-items: center; justify-content: center; cursor: pointer; flex: none; }

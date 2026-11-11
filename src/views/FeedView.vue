@@ -28,11 +28,13 @@
     <div class="feed-scroll">
     <StoriesRail />
 
-    <button type="button" class="compose-row" @click="openCompose">
-      <span class="compose-avatar"><img v-if="auth.user?.avatar" :src="auth.user.avatar" alt="" /><template v-else>{{ initials }}</template></span>
-      <span class="compose-text">{{ t('posts.composePrompt') }}</span>
-      <ImageIcon :size="22" class="compose-ic" />
-    </button>
+    <div class="compose-row">
+      <UserAvatar :user="auth.user" :size="36" />
+      <button type="button" class="compose-btn" @click="openCompose">
+        <span class="compose-text">{{ t('posts.composePrompt') }}</span>
+        <ImageIcon :size="22" class="compose-ic" />
+      </button>
+    </div>
 
 
     <div v-if="showFilters" class="filters-panel">
@@ -176,6 +178,7 @@ import PageHeader from '../components/PageHeader.vue'
   import { useAuthStore } from '../stores/auth.js'
   import { useUserStore } from '../stores/users.js'
   import { useInfiniteScroll } from '../composables/useInfiniteScroll.js'
+  import UserAvatar from '../components/UserAvatar.vue'
   import StoriesRail from '../components/StoriesRail.vue'
   import PostCard from '../components/post/PostCard.vue'
   import LocationPicker from '../components/form/LocationPicker.vue'
@@ -383,7 +386,8 @@ import PageHeader from '../components/PageHeader.vue'
   .tab-menu-item { display: flex; align-items: center; justify-content: space-between; gap: 12px; width: 100%; min-height: 44px; padding: 0 12px; background: none; border: 0; border-radius: 12px; color: var(--foam); font-family: var(--font-sans); font-size: 15px; font-weight: 600; cursor: pointer; text-align: left; }
   .tab-menu-item:hover { background: var(--surface-2); }
   .tab-menu-item.on { color: rgb(var(--color-ocean-text)); font-weight: 800; }
-  .compose-row { display: flex; align-items: center; gap: 12px; width: 100%; min-height: 56px; margin-bottom: 16px; padding: 8px 14px; background: var(--surface); border: 1px solid var(--border); border-radius: 20px; color: var(--text-muted); cursor: pointer; text-align: left; font-size: 15px; }
+  .compose-row { display: flex; align-items: center; gap: 12px; width: 100%; min-height: 56px; margin-bottom: 16px; padding: 8px 14px; background: var(--surface); border: 1px solid var(--border); border-radius: 20px; color: var(--text-muted); font-size: 15px; }
+  .compose-btn { flex: 1; display: flex; align-items: center; gap: 12px; min-height: 44px; background: none; border: 0; color: inherit; cursor: pointer; text-align: left; font: inherit; }
   .compose-avatar { width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--ocean); background: var(--ocean-glow); color: rgb(var(--color-ocean-text)); font-size: 12px; font-weight: 800; display: flex; align-items: center; justify-content: center; overflow: hidden; flex: none; }
   .compose-avatar img { width: 100%; height: 100%; object-fit: cover; }
   .compose-text { flex: 1; }
