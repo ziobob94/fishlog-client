@@ -142,11 +142,12 @@ export function normalizeOverview(raw) {
       precipProbability: num(c.precipProbability), precipMm: num(c.precipMm),
     },
     hourly: (Array.isArray(raw.hourly) ? raw.hourly : []).map(h => ({
-      time: h.time ?? null, hour: num(h.hour), condition: h.condition ?? null, temp: num(h.temp),
+      time: h.time ?? null, date: typeof h.date === 'string' ? h.date : (typeof h.time === 'string' ? h.time.slice(0, 10) : null),
+      hour: num(h.hour), source: h.source === 'open-meteo' ? 'open-meteo' : 'google', condition: h.condition ?? null, temp: num(h.temp),
       precipProbability: num(h.precipProbability), windSpeed: num(h.windSpeed), windDeg: num(h.windDeg),
     })),
     daily: (Array.isArray(raw.daily) ? raw.daily : []).map(d => ({
-      date: d.date ?? null, condition: d.condition ?? null, tempMax: num(d.tempMax), tempMin: num(d.tempMin),
+      date: d.date ?? null, source: d.source === 'open-meteo' ? 'open-meteo' : 'google', condition: d.condition ?? null, tempMax: num(d.tempMax), tempMin: num(d.tempMin),
       precipProbability: num(d.precipProbability), windSpeed: num(d.windSpeed),
       waveHeightMax: num(marine.dailyWaveMax.find(w => w.date === d.date)?.waveHeightMax),
     })),
@@ -173,4 +174,23 @@ export function waveSeries(waves) {
   let maxIndex = 0
   pts.forEach((p, i) => { if (p.height > pts[maxIndex].height) maxIndex = i })
   return { points: pts, max: pts[maxIndex].height, maxTime: pts[maxIndex].time, maxIndex }
+}
+
+// ── Ore raggruppate per giorno ────────────────────────────────────────────────
+// Il server dà fino a 168 ore con `date` locale: qui si raggruppano per giorno, nell'ordine ricevuto.
+// `extended` è true se il giorno contiene ore da Open-Meteo (oltre le prime 48 ore di Google).
+export function groupHoursByDay(hourly) {
+  const days = []
+  for (const h of Array.isArray(hourly) ? hourly : []) {
+    if (!h?.date) continue
+    let d = days[days.length - 1]
+    if (!d || d.date !== h.date) { d = { date: h.date, rows: [], extended: false }; days.push(d) }
+    d.rows.push(h)
+    if (h.source === 'open-meteo') d.extended = true
+  }
+  return days
+}
+// Indice della prima riga che non viene da Google (per il divisore «da qui, Open-Meteo»); -1 se tutte da Google.
+export function firstExtendedIndex(rows) {
+  return (Array.isArray(rows) ? rows : []).findIndex(r => r?.source === 'open-meteo')
 }

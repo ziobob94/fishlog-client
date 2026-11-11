@@ -8,24 +8,30 @@
           <tr><th scope="col">{{ t('weather.daily.day') }}</th><th scope="col">{{ t('weather.daily.sky') }}</th><th scope="col">{{ t('weather.daily.temp') }}</th><th scope="col">{{ t('weather.daily.wind') }}</th><th scope="col">{{ t('weather.daily.rain') }}</th><th v-if="view.marine.available" scope="col">{{ t('weather.daily.wave') }}</th></tr>
         </thead>
         <tbody>
-          <tr v-for="d in view.daily" :key="d.date">
-            <td>{{ dayLabel(d.date, today) }}</td>
+          <template v-for="(d, i) in view.daily" :key="d.date">
+          <tr v-if="i === extIdx && i > 0" class="wx-days-src"><td :colspan="view.marine.available ? 6 : 5">{{ t('weather.daily.fromOm') }}</td></tr>
+          <tr>
+            <td>{{ dayLabel(d.date, today) }} <span class="wx-num wx-muted" style="font-weight:500">{{ d.date ? d.date.slice(8) : "" }}</span></td>
             <td><span class="wx-cond"><WeatherIcon :condition="d.condition" :size="20" /> <span class="wx-muted wx-cond-t">{{ conditionLabel(d.condition) }}</span><span class="wx-sr">{{ conditionLabel(d.condition) }}</span></span></td>
             <td><span class="wx-num">{{ fmt(d.tempMax) }}°</span> <span class="wx-num wx-muted">{{ fmt(d.tempMin) }}°</span></td>
             <td><span class="wx-num">{{ fmt(d.windSpeed) }}</span> <small class="wx-muted">km/h</small></td>
             <td><span class="wx-num">{{ fmt(d.precipProbability) }}</span><small class="wx-muted">%</small></td>
             <td v-if="view.marine.available"><span class="wx-num">{{ fmt(d.waveHeightMax, 1) }}</span> <small class="wx-muted">m</small></td>
           </tr>
+          </template>
         </tbody>
       </table>
     </div>
+    <p v-if="extIdx > 0" class="wx-note">{{ t('weather.daily.source', { n: extIdx + 1 }) }}</p>
   </section>
 </template>
 
 <script setup>
 import { useI18n } from 'vue-i18n'
 import WeatherIcon from './WeatherIcon.vue'
-import { fmt, dayLabel, conditionLabel } from '../../utils/weather.js'
-defineProps({ view: { type: Object, required: true }, today: { type: String, default: '' } })
+import { computed } from 'vue'
+import { fmt, dayLabel, conditionLabel, firstExtendedIndex } from '../../utils/weather.js'
+const props = defineProps({ view: { type: Object, required: true }, today: { type: String, default: '' } })
+const extIdx = computed(() => firstExtendedIndex(props.view.daily))
 const { t } = useI18n()
 </script>
