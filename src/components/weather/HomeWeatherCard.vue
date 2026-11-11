@@ -35,9 +35,11 @@
     <template v-else>
       <p v-if="offline" class="hw-banner" role="status"><WifiOff :size="16" aria-hidden="true" /> {{ t('home.weather.offlineBanner') }}</p>
       <div class="hw-top">
-        <h2 class="hw-place"><MapPin :size="16" aria-hidden="true" /> <RouterLink to="/meteo" class="hw-place-link">{{ place }}</RouterLink></h2>
-        <span v-if="offline" class="hw-stale wx-num">{{ t('home.weather.staleLabel', { time: savedLabel }) }}</span>
-        <span v-else class="hw-upd">{{ t('home.weather.updatedAt', { time: savedLabel }) }}</span>
+        <div class="hw-head">
+          <h2 class="hw-place"><MapPin :size="16" aria-hidden="true" /> <RouterLink to="/meteo" class="hw-place-link">{{ place }}</RouterLink></h2>
+          <span v-if="offline" class="hw-stale wx-num">{{ t('home.weather.staleLabel', { time: savedLabel }) }}</span>
+          <span v-else class="hw-upd">{{ t('home.weather.updatedAt', { time: savedLabel }) }}</span>
+        </div>
         <button type="button" class="hw-refresh m-press" :aria-disabled="refreshDisabled || undefined" :aria-label="refreshLabel" :title="refreshLabel" @click="refresh">
           <span v-if="refreshing" class="m-spinner" style="width:14px;height:14px" aria-hidden="true"></span><RefreshCw v-else :size="16" aria-hidden="true" />
         </button>
@@ -49,8 +51,11 @@
       </div>
 
       <div v-show="!open" class="hw-sum">
-        <WeatherIcon :code="s.wmo" :is-day="s.isDay" :size="32" class="hw-ico" />
-        <span class="hw-temp-s wx-num">{{ fmt(s.temp) }}°</span>
+        <WeatherIcon :code="s.wmo" :is-day="s.isDay" :size="44" class="hw-ico" />
+        <div class="hw-sum-main">
+          <span class="hw-temp-s wx-num">{{ fmt(s.temp) }}°</span>
+          <span class="hw-sum-cond">{{ s.condition }}<template v-if="s.max != null && s.min != null"> · <span class="wx-num">{{ fmt(s.max) }}°/{{ fmt(s.min) }}°</span></template></span>
+        </div>
         <span class="hw-sum-wind"><WeatherIcon name="vento" :size="16" plain /> <span class="wx-num">{{ fmt(s.wind.speed) }}</span> km/h<template v-if="s.wind.info.from">{{ ' ' + s.wind.info.abbr }}</template></span>
       </div>
       <div id="hw-more" class="hw-more" :class="{ 'is-open': open }" :inert="!open || undefined">
@@ -133,25 +138,27 @@ const refreshLabel = computed(() => refreshing.value ? t('weather.refreshing') :
 </script>
 
 <style scoped>
-.hw-card { display: grid; gap: 14px; padding: 16px; border-radius: 24px 24px 24px 8px; background: rgb(var(--color-surface)); border: 1px solid rgb(var(--color-border)); min-width: 0; }
-.hw-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
-.hw-place { margin: 0; display: inline-flex; align-items: center; gap: 6px; font-family: var(--font-sans); font-weight: 800; font-size: 1rem; color: rgb(var(--color-ocean-text)); min-width: 0; }
-.hw-place-link { color: rgb(var(--color-foam)); text-decoration: none; min-height: 44px; display: inline-flex; align-items: center; overflow-wrap: anywhere; }
+.hw-card { display: grid; gap: 12px; padding: 12px 16px 14px; border-radius: 24px 24px 24px 8px; background: rgb(var(--color-surface)); border: 1px solid rgb(var(--color-border)); min-width: 0; }
+.hw-top { display: flex; align-items: center; gap: 2px; flex-wrap: wrap; }
+.hw-head { flex: 1 1 0; min-width: 0; display: grid; gap: 0; }
+.hw-place { margin: 0; overflow: hidden; display: flex; align-items: center; gap: 6px; font-family: var(--font-sans); font-weight: 800; font-size: 1rem; color: rgb(var(--color-ocean-text)); min-width: 0; }
+.hw-place-link { color: rgb(var(--color-foam)); text-decoration: none; min-height: 44px; display: inline-flex; align-items: center; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .hw-place-link:hover { text-decoration: underline; }
-.hw-refresh { min-width: 44px; min-height: 44px; margin: -8px -10px -8px 0; border-radius: 12px; display: inline-flex; align-items: center; justify-content: center; background: none; border: 0; color: rgb(var(--color-foam)); cursor: pointer; }
+.hw-refresh { min-width: 44px; min-height: 44px; margin: 0; border-radius: 12px; display: inline-flex; align-items: center; justify-content: center; background: none; border: 0; color: rgb(var(--color-foam)); cursor: pointer; }
 .hw-refresh[aria-disabled='true'] { opacity: .55; cursor: not-allowed; }
 .hw-refresh:focus-visible { outline: 2px solid rgb(var(--color-ocean-text)); outline-offset: 2px; }
-.hw-sum { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
-.hw-sum-wind { display: inline-flex; align-items: center; gap: 4px; font-size: .85rem; color: rgb(var(--color-muted)); }
-.hw-toggle { margin-left: 0 !important; }
+.hw-sum { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 16px; background: rgb(var(--color-surface-2)); }
+.hw-sum-main { display: grid; min-width: 0; flex: 1; line-height: 1.1; }
+.hw-sum-cond { font-size: .82rem; font-weight: 600; color: rgb(var(--color-muted)); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.hw-sum-wind { display: inline-flex; align-items: center; gap: 4px; flex: none; font-size: .88rem; font-weight: 700; padding: 6px 10px; border-radius: 999px; background: rgb(var(--color-surface)); border: 1px solid rgb(var(--color-border)); color: rgb(var(--color-foam)); }
 .hw-chev { transition: transform var(--motion-base) var(--ease-standard); }
 .hw-chev.is-open { transform: rotate(180deg); }
-.hw-more { display: grid; grid-template-rows: 0fr; visibility: hidden; margin-top: -14px; transition: grid-template-rows var(--motion-slow) var(--ease-exit), margin-top var(--motion-slow) var(--ease-exit), visibility 0s linear var(--motion-slow); }
+.hw-more { display: grid; grid-template-rows: 0fr; visibility: hidden; margin-top: -12px; transition: grid-template-rows var(--motion-slow) var(--ease-exit), margin-top var(--motion-slow) var(--ease-exit), visibility 0s linear var(--motion-slow); }
 .hw-more.is-open { grid-template-rows: 1fr; visibility: visible; margin-top: 0; transition: grid-template-rows var(--motion-slow) var(--ease-enter), margin-top var(--motion-slow) var(--ease-enter), visibility 0s; }
 .hw-more-in { overflow: hidden; min-height: 0; display: grid; gap: 14px; }
-.hw-temp-s { font-size: 1.5rem; font-weight: 700; color: rgb(var(--color-foam)); }
-.hw-upd { font-size: .8rem; color: rgb(var(--color-muted)); }
-.hw-stale { font-size: .75rem; font-weight: 700; padding: 3px 10px; border-radius: 999px; border: 1px solid rgb(var(--color-sand-text)); color: rgb(var(--color-sand-text)); }
+.hw-temp-s { font-size: 2.25rem; font-weight: 700; letter-spacing: -.02em; line-height: 1; color: rgb(var(--color-foam)); }
+.hw-upd { font-size: .75rem; margin-top: -8px; color: rgb(var(--color-muted)); }
+.hw-stale { justify-self: start; margin-top: -4px; font-size: .75rem; font-weight: 700; padding: 3px 10px; border-radius: 999px; border: 1px solid rgb(var(--color-sand-text)); color: rgb(var(--color-sand-text)); }
 .hw-banner { display: flex; align-items: center; gap: 8px; margin: 0; padding: 10px 14px; border-radius: 14px; border: 1px solid rgb(var(--color-sand-text)); background: rgb(var(--color-sand) / .12); color: rgb(var(--color-foam)); font-size: .88rem; font-weight: 600; }
 .hw-banner-err { flex-basis: 100%; }
 .hw-banner svg { color: rgb(var(--color-sand-text)); flex: none; }
