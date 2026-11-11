@@ -8,6 +8,9 @@ export default {
     'on-primary':   'rgb(var(--color-on-primary) / <alpha-value>)',
     'sea-deep':     'rgb(var(--color-sea-deep) / <alpha-value>)',
   },
+  // Movimento: vedi tokens/motion.css. Le variabili CSS sono la fonte; qui solo gli alias per le utility.
+  transitionDuration: { press: 'var(--motion-press)', fast: 'var(--motion-fast)', base: 'var(--motion-base)', slow: 'var(--motion-slow)' },
+  transitionTimingFunction: { enter: 'var(--ease-enter)', exit: 'var(--ease-exit)', standard: 'var(--ease-standard)', spring: 'var(--ease-spring)' },
   borderRadius: {
     sm: '12px',      // era 8px: pulsanti e input
     lg: '20px',      // era 14px: card

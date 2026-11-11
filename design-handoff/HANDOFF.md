@@ -10,7 +10,7 @@ Leggi questo file per primo. Descrive il restyling dell'interfaccia di `fishlog-
 | `design/` | Sorgenti del design (`*.dc.html`, `canvas.json`) e `support.js`. Per vederli interattivi: `cd design && python3 -m http.server 8080`, poi apri `http://localhost:8080/Main.dc.html`. Servono per leggere misure, colori e testi esatti. Non vanno copiati nel progetto. |
 | `tokens/` | `tokens.css` (variabili CSS) e `tailwind-extend.js` (estensione del tema). |
 | `assets/` | Logo (`logo-mark.svg`, `logo-mark-light.svg`, `favicon.svg`), icone app PNG 192/512, `icons-list.json`. |
-| `vue-starter/` | Componenti Vue pronti da copiare in `src/components/`: `FishLogo`, `AppIcon` + `icons.js`, `IsobathBg`, `TideDivider`, `RulerFrame`, `StampBadge`, `Bobber`. |
+| `vue-starter/` | Componenti Vue pronti da copiare in `src/components/`: `FishLogo`, `AppIcon` + `icons.js`, `IsobathBg`, `TideDivider`, `RulerFrame`, `StampBadge`, `Bobber`; in `vue-starter/motion/` gli esempi del sistema di movimento. |
 
 ## Regole importanti
 
@@ -182,6 +182,65 @@ Ogni schermata ha un foglio scuro (`NN-Nome.png`) e uno chiaro (`NN-Nome-chiaro.
 **Backend da verificare in `fishlog-server`:** modelli `Championship` (formato, modalità, regole, slug pubblico), `Race` (data, luogo, tipo rilascio/pesatura, stato), `Entry` (iscritto, ruolo, squadra), `Team`, `CatchRecord` (gara, iscritto, specie, cm, kg misurato o stimato, foto, annullata, inserita da, timestamp), `WeightTable` (specie, righe cm→kg, fonte). Endpoint pubblico di sola lettura per la classifica (senza login, con cache). Ruoli verificati lato server: solo il giudice scrive catture, solo l'organizzatore cambia regole e ruoli. Inserimenti offline: coda locale (IndexedDB) con invio all'arrivo della rete e id idempotente.
 
 **Da decidere:** 1) dove entra «Gare» (la barra ha già 5 voci: proposta, scheda in Home e voce nel menù del profilo); 2) classifica a squadre (vedi sopra); 3) un pesce sotto taglia si registra ma non conta; 4) come si risolvono i conflitti di inserimento offline tra due giudici.
+
+## Movimento (animazioni e transizioni) — vale per tutta l'app
+
+Stile: calmo e acquatico, come un'onda lunga. Mai rimbalzi: la «molla» è appena accennata (sovraelongazione ≈ 3 %). I valori sono token in `tokens/motion.css` (importare da `tokens.css`; alias Tailwind `duration-fast|base|slow`, `ease-enter|exit|standard|spring` in `tailwind-extend.js`). Gli esempi Vue sono in `vue-starter/motion/`.
+
+### Token
+| Token | Valore | Uso |
+|---|---|---|
+| `--motion-press` | 80 ms | pressione di pulsanti e righe |
+| `--motion-fast` | 120 ms | cambi di colore, chip, uscite di dialoghi e toast |
+| `--motion-base` | 200 ms | tab, segmented, uscite di pagina e foglio, entrata toast/dialogo, stagger |
+| `--motion-slow` | 320 ms | entrata di pagina e foglio, espansione dettaglio, cuore, FLIP classifica |
+| Cicli | skeleton 1400 · spinner 800 · galleggiante 2600 ms | animazioni continue (non sono transizioni, esenti dal tetto) |
+| `--ease-enter` | `cubic-bezier(.2,.8,.2,1)` | tutto ciò che entra (decelera) |
+| `--ease-exit` | `cubic-bezier(.4,0,1,1)` | tutto ciò che esce (accelera) |
+| `--ease-standard` | `cubic-bezier(.4,0,.2,1)` | spostamenti che restano sullo schermo |
+| `--ease-spring` | `cubic-bezier(.34,1.18,.64,1)` | solo cuore, ritorno del foglio, «+» |
+| Distanze | 4 · 8 · 16 · 24 px · 100 % (fogli) | `--dist-xs/sm/md/lg/sheet` |
+| Scale | press .97 · modale .96 · pop 1.18 · viewer storie .94 | |
+| Stagger | 40 ms a riga, massimo 6 righe | `--stagger-step`, `--stagger-max` |
+
+Regole: si animano **solo `transform` e `opacity`** (più colore/fill, che non spostano nulla) → nessun layout shift; l'uscita è sempre più corta dell'entrata; nei flussi frequenti niente sopra i 320 ms (tetto assoluto 400 ms); spazio per errori e toast riservato in anticipo.
+
+### Elemento per elemento
+| Elemento | Durata | Easing | Proprietà |
+|---|---|---|---|
+| Pagina avanti | entra 320, esce 200 | enter / exit | nuova: `translateX(24px→0)` + opacity; vecchia: opacity → 0 (resta in posizione, absolute) |
+| Pagina indietro | entra 320, esce 200 | enter / exit | inversa: nuova `translateX(-24px→0)`, vecchia esce verso destra 24 px |
+| Tab della barra | 200 | standard | solo opacity, incrociata, nessuno spostamento |
+| Dettaglio da card/griglia | 320 | enter | View Transition: la foto si espande (`view-transition-name`); senza API → «pagina avanti» |
+| Foglio dal basso (Crea, profilo, filtri, selettori) | entra 320, esce 200 | enter / exit | `translateY(100%→0)`; sfondo opacity 0→.62 in 200; swipe giù: segue il dito, chiude oltre il 25 % di altezza o 0,5 px/ms, altrimenti torna su 200 ms spring |
+| Menù contestuale (⋯) | entra 200, esce 120 | enter / exit | opacity + `translateY(-8px→0)` + scale .96→1, origine all'ancora |
+| Modale / conferma | entra 200, esce 120 | enter / exit | scale .96→1 + opacity; sfondo come foglio |
+| Toast | entra 200, esce 120 | enter / exit | opacity + `translateY(∓16px→0)`; dall'alto = successo/info/avviso, dal basso = con azione («Annulla») sopra la barra |
+| Toast: vita | — | — | successo/info 4 s, avviso 6 s, errore 8 s o fisso; in pausa con tocco/hover/focus; max 3; errore `role="alert"` |
+| Pulsante premuto | 80 giù, 120 su | standard | scale .97 (+ colore) |
+| Cuore / like | 320 | spring | pop 1→1.18→1 + onda che si espande e sfuma; togliere il like: solo colore 120 ms |
+| Segnalibro | 200 | spring | scale .9→1 + fill 120 ms |
+| Chip selezionato | 120 | standard | background, border, color |
+| Segmented control | 200 | standard | indicatore `translateX`, testo colore 120 |
+| Input in errore | 280, una volta | standard | `translateX` ±6 px (3 oscillazioni) + bordo rosso 120; messaggio con riga già riservata |
+| Skeleton | ciclo 1400 | linear | riflesso `translateX(-100%→100%)`; ridotto: statico |
+| Spinner | ciclo 800 | linear | `rotate`; ridotto: pulsazione opacity |
+| Pull to refresh | trascinamento 1:1 con resistenza .5; ritorno 200 | standard | `translateY` max 72 px, soglia 64; galleggiante con ciclo 2600 ms finché carica |
+| Liste (primo caricamento) | 200 + 40 ms × riga (max 6) | enter | opacity + `translateY(8px→0)`; non si ripete su refresh o scroll infinito |
+| Anello storia | non vista→vista 200; caricamento ciclo 1200 | standard / linear | colore anello; `rotate` durante il caricamento |
+| Viewer storie | barra: durata della storia | linear | `scaleX(0→1)`; tenere premuto = pausa; swipe giù chiude (scale .94 + opacity), tocco a lati = prec./succ. con sola opacity 120 |
+| «+» nella barra | 200 | spring | `rotate(0→45°)` quando Crea è aperto |
+| Classifica live (Gare) | 320 | standard | FLIP: `translateY` delle righe che cambiano posto |
+| Cambio tema chiaro/scuro | 200 | standard | background-color, color, border-color |
+
+### Accessibilità
+- `prefers-reduced-motion: reduce` (e impostazione in app *Profilo → Impostazioni → «Riduci animazioni»: Auto / Sì / No*, attributo `data-motion` su `<html>`) azzera distanze e scale, porta le durate a ≤ 120 ms: pagine, fogli, dialoghi e toast restano **solo dissolvenza**; scuotimento, pop, ripple, stagger e FLIP spariscono; skeleton fermo, spinner → pulsazione; pull to refresh senza trascinamento; la barra delle storie avanza a scatti di 1 s.
+- Lo stato non è mai solo movimento o colore: ogni toast ha icona e testo, l'errore ha messaggio e bordo.
+- Tutti i bersagli ≥ 44 px, focus riportato all'elemento che ha aperto foglio/dialogo alla chiusura, `Esc` chiude.
+
+### File
+`tokens/motion.css` · `vue-starter/motion/`: `motion.js` (`initMotion`, `useReducedMotion`, `useSwipeDismiss`), `PageTransition.vue`, `BottomSheet.vue`, `ModalDialog.vue`, `ToastHost.vue` + `useToast.js`, `StaggerList.vue`, `vShake.js`, `LikeButton.vue`, `PullToRefresh.vue`, `useViewTransition.js`. Compilano con `@vue/compiler-sfc`; non sono ancora provati su dispositivo reale: nell'implementazione verificare swipe e pull su iOS Safari.
+Nota: i nomi `--color-*-text` vengono da `tokens.css`; l'attuale `src/assets/main.css` non li ha ancora (si aggiungono con il restyling dei token).
 
 ## Navigazione (cambia)
 

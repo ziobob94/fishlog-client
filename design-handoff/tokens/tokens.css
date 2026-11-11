@@ -1,3 +1,4 @@
+/* Movimento (durate, curve, distanze, riduzione): @import './motion.css'; */
 /* Token del nuovo design FishLog. Sostituiscono i valori del tema scuro in src/assets/main.css.
    Stesso formato del repo: triplette RGB usate da tailwind.config.js (rgb(var(--x) / <alpha-value>)). */
 :root {
