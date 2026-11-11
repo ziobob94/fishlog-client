@@ -16,7 +16,7 @@
     <div class="photo-actions">
       <template v-if="isOwner">
         <RouterLink :to="`/market/${listing._id}/edit`" class="icon-act" :aria-label="t('common.edit')" :title="t('common.edit')">
-          <Pencil :size="20" />
+          <Pencil :size="17" />
         </RouterLink>
         <label class="status-pick" :title="t('market.status.label')">
           <span class="status-dot" :class="`dot-${statusModel}`" aria-hidden="true"></span>
@@ -27,10 +27,10 @@
           </select>
         </label>
         <button type="button" class="icon-act icon-danger" :aria-label="t('common.delete')" :title="t('common.delete')" @click="onDelete">
-          <Trash2 :size="20" />
+          <Trash2 :size="17" />
         </button>
       </template>
-      <button type="button" class="icon-act" :aria-label="t('market.share')" :title="t('market.share')" @click="share"><Send :size="20" /></button>
+      <button type="button" class="icon-act" :aria-label="t('market.share')" :title="t('market.share')" @click="share"><Send :size="17" /></button>
     </div>
 
     <div class="info">
@@ -145,8 +145,8 @@ onMounted(async () => {
 <style scoped>
 .listing-view { @apply flex flex-col gap-0; padding-bottom: calc(var(--bottom-nav-h) + 1.5rem + env(safe-area-inset-bottom)); }
 .listing-view.has-cta { padding-bottom: calc(var(--bottom-nav-h) + 6rem + env(safe-area-inset-bottom)); }
-.photo-actions { @apply flex items-center justify-end gap-2 mt-3; }
-.photo-actions .status-pick { flex: 0 1 auto; min-width: 150px; }
+.photo-actions { @apply flex items-center justify-end gap-1.5 mt-3; }
+.photo-actions .status-pick { flex: 0 0 auto; min-width: 0; }
 @media (min-width: 720px) { .listing-view { @apply grid gap-x-6 gap-y-0 pb-4; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); } .listing-view .info { grid-column: 2; grid-row: 1 / span 2; } .photo-actions { grid-column: 1; align-self: start; } }
 
 .gallery { @apply relative; }
@@ -190,10 +190,10 @@ onMounted(async () => {
   }
 }
 .cta-main { @apply flex-1 min-h-[48px]; }
-.icon-act { @apply flex items-center justify-center shrink-0 w-12 h-12 rounded-xl border border-border-light bg-surface-2 text-foam no-underline cursor-pointer; }
+.icon-act { @apply flex items-center justify-center shrink-0 w-10 h-10 rounded-xl border border-border-light bg-surface-2 text-foam no-underline cursor-pointer; }
 .icon-danger { @apply text-danger-text; border-color: rgb(var(--color-danger) / .6); }
-.status-pick { @apply relative flex items-center flex-1 min-w-0 h-12 rounded-xl border border-border-light bg-surface-2; }
-.status-pick select { @apply w-full h-full bg-transparent border-0 text-foam font-semibold pl-8 pr-2; min-height: 48px; }
+.status-pick { @apply relative flex items-center shrink-0 h-10 rounded-full border border-border-light bg-surface-2; }
+.status-pick select { @apply h-full bg-transparent border-0 text-foam font-semibold text-sm pl-7 pr-3; min-height: 40px; appearance: none; -webkit-appearance: none; background-image: none; border-radius: 9999px; }
 .status-dot { @apply absolute left-3 top-1/2 -translate-y-1/2 w-2.5 h-2.5 rounded-full pointer-events-none; }
 .dot-active { background: rgb(var(--color-success)); } .dot-reserved { background: rgb(var(--color-sand)); } .dot-sold { background: rgb(var(--color-danger)); }
 </style>
