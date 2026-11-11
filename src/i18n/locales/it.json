@@ -1440,8 +1440,8 @@
 		},
 		"formula": "+10 per uscita pubblica, +3 per cattura registrata, +5 se l'uscita ha foto o video. Conta solo quello che è già visibile a tutti.",
 		"empty": "Nessuna uscita pubblica in questo periodo",
-		"sessionsCount": "{n} uscite",
-		"catchesCount": "{n} catture",
+		"sessionsCount": "{n} uscita | {n} uscite",
+		"catchesCount": "{n} cattura | {n} catture",
 		"you": "Tu"
 	},
 	"species": {
