@@ -30,7 +30,7 @@ defineEmits(['close'])
 const { t } = useI18n()
 const sessions = useSessionStore()
 const route = useRoute()
-// Da La mia bacheca, dopo la creazione si torna alla bacheca
+// Da Il mio profilo, dopo la creazione si torna alla bacheca
 const from = computed(() => route.path === '/board' ? { from: 'board' } : {})
 
 // Foglio «Crea» (schermata 39): post, storia, uscita, annuncio.

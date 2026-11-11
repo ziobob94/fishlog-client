@@ -23,7 +23,7 @@ const router = useRouter()
 const store = usePostStore()
 const st = ref({ saving: false, progress: 0 })
 
-// Dopo la pubblicazione si torna da dove si è partiti (Community o La mia bacheca).
+// Dopo la pubblicazione si torna da dove si è partiti (Community o Il mio profilo).
 function onCreated() { router.replace(route.query.from === 'board' ? '/board' : '/feed') }
 </script>
 
