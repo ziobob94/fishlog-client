@@ -165,6 +165,7 @@ import ListingFilters      from '../components/market/ListingFilters.vue'
 import ExternalListingCard from '../components/market/ExternalListingCard.vue'
 import ShopCard            from '../components/market/ShopCard.vue'
 import InfiniteSentinel    from '../components/InfiniteSentinel.vue'
+import { reverseGeocode } from '../utils/places.js'
 
 const { t } = useI18n()
 const { view } = useListView()
@@ -269,10 +270,9 @@ function detectZip() {
   navigator.geolocation.getCurrentPosition(async (pos) => {
     try {
       const { latitude, longitude } = pos.coords
-      const res = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json&accept-language=it,en`)
-      const data = await res.json()
-      if (data.address?.postcode) {
-        zip.value = data.address.postcode
+      const p = await reverseGeocode(latitude, longitude)
+      if (p?.postalCode) {
+        zip.value = p.postalCode
         if (store.external.length) ebayReset()
       }
     } catch { /* nessun blocco: la ricerca esterna funziona anche senza zip */ }

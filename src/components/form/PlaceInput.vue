@@ -19,12 +19,12 @@
       </button>
       <button type="button" class="place-btn" :aria-label="t('placeInput.pickOnMap')" :title="t('placeInput.pickOnMap')" @click="mapOpen = true"><MapIcon :size="20" /></button>
     </div>
-    <p v-if="msg" class="fl-hint place-msg" role="status">{{ msg }}</p>
+    <p v-if="msg || statusMsg" class="fl-hint place-msg" :class="{ 'fl-error': !!statusMsg }" role="status">{{ statusMsg || msg }}</p>
 
     <BottomSheet v-model="mapOpen" :label="t('placeInput.pickOnMap')">
       <div class="map-sheet">
         <h2 class="map-title">{{ t('placeInput.pickOnMap') }}</h2>
-        <LocationPicker v-if="mapOpen" :lat="lat" :lng="lng" :name="draft.name" @update:name="v => draft.name = v" @update:lat="v => draft.lat = v" @update:lng="v => draft.lng = v" />
+        <LocationPicker v-if="mapOpen" greedy :lat="lat" :lng="lng" :name="draft.name" @update:name="v => draft.name = v" @update:lat="v => draft.lat = v" @update:lng="v => draft.lng = v" @place="p => draft.place = p" />
         <button type="button" class="fl-btn1 m-press" :disabled="!draft.lat || !draft.lng" @click="confirmMap">{{ t('placeInput.useThisPoint') }}</button>
       </div>
     </BottomSheet>
@@ -35,12 +35,12 @@
 // Input luogo unico: suggerimenti mentre si digita, «usa la mia posizione» e scelta sulla
 // mappa (pin al tocco + nome dal reverse geocoding). Nomi in italiano con ripiego in inglese
 // (mai nella scrittura locale, es. giapponese). Aggiorna nome e coordinate insieme.
-import { ref, reactive, onBeforeUnmount } from 'vue'
+import { ref, reactive, computed, watch, onBeforeUnmount } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { MapPin, LocateFixed, Map as MapIcon } from 'lucide-vue-next'
 import BottomSheet from '../motion/BottomSheet.vue'
 import LocationPicker from './LocationPicker.vue'
-import { searchPlaceOptions, reverseLabel } from '../../utils/places.js'
+import { searchPlaceOptions, resolveOption, reverseGeocode, placesStatus, hasGoogleKey } from '../../utils/places.js'
 
 const { t } = useI18n()
 const props = defineProps({
@@ -50,16 +50,18 @@ const props = defineProps({
   id: { type: String, default: undefined },
   placeholder: { type: String, default: '' },
   invalid: Boolean,
-  required: Boolean
+  required: Boolean,
+  mode: { type: String, default: 'place' }   // 'city': nel campo va il comune; 'region': la regione/area, non il locale/punto di interesse
 })
-const emit = defineEmits(['update:modelValue', 'update:lat', 'update:lng', 'pick'])
+const emit = defineEmits(['update:modelValue', 'update:lat', 'update:lng', 'pick', 'place'])
 
 const open = ref(false)
 const options = ref([])
 const locating = ref(false)
 const msg = ref('')
 const mapOpen = ref(false)
-const draft = reactive({ name: '', lat: null, lng: null })
+const draft = reactive({ name: '', lat: null, lng: null, place: null })
+const statusMsg = computed(() => !hasGoogleKey() ? t('placeInput.keyMissing') : placesStatus.error ? t(`placeInput.${{ missing: 'keyMissing', rejected: 'keyRejected', load: 'loadFailed' }[placesStatus.error]}`) : '')
 let timer = null
 const inp = ref(null)
 const dropUp = ref(false)
@@ -70,10 +72,14 @@ function measure() {
   dropUp.value = vh - r.bottom < 300 && r.top > 300 - 120
 }
 
-function set(name, lat, lng) {
+// p = luogo completo {name, city, province, region, country, postalCode, lat, lng}
+function set(p) {
+  const name = (props.mode === 'city' ? (p.city || p.name) : props.mode === 'region' ? (p.region || p.name) : p.name) || ''
+  const { lat, lng } = p
   emit('update:modelValue', name)
   if (lat != null && lng != null) { emit('update:lat', parseFloat(Number(lat).toFixed(6))); emit('update:lng', parseFloat(Number(lng).toFixed(6))) }
-  emit('pick', { name, lat, lng })
+  emit('pick', { ...p, name, lat, lng })
+  emit('place', { ...p, name, lat, lng })
 }
 
 function onInput(e) {
@@ -85,11 +91,15 @@ function onInput(e) {
   clearTimeout(timer)
   if (q.trim().length < 3) { options.value = []; return }
   timer = setTimeout(async () => {
-    const r = await searchPlaceOptions(q.trim())
+    const r = await searchPlaceOptions(q.trim(), { kind: props.mode })
     if (inp.value && inp.value.value.trim() === q.trim()) options.value = r
   }, 400)
 }
-function pick(o) { clearTimeout(timer); set(o.name, o.lat, o.lng); options.value = []; open.value = false }
+async function pick(o) {
+  clearTimeout(timer); options.value = []; open.value = false
+  const p = await resolveOption(o)
+  if (p) set(p)
+}
 function closeSoon() { setTimeout(() => { open.value = false }, 150) }
 
 function locate() {
@@ -97,19 +107,19 @@ function locate() {
   locating.value = true; msg.value = ''
   navigator.geolocation.getCurrentPosition(async (pos) => {
     const { latitude, longitude } = pos.coords
-    const label = await reverseLabel(latitude, longitude)
-    set(label || '', latitude, longitude)
+    const p = await reverseGeocode(latitude, longitude)
+    if (p) set(p); else msg.value = t('placeInput.noResults')
     locating.value = false
   }, () => { locating.value = false; msg.value = t('placeInput.gpsDenied') }, { timeout: 10000, enableHighAccuracy: true })
 }
 
-function confirmMap() {
-  set(draft.name || props.modelValue, draft.lat, draft.lng)
+async function confirmMap() {
+  const p = draft.place && draft.place.lat === draft.lat ? draft.place : await reverseGeocode(draft.lat, draft.lng)
+  set({ ...(p || {}), name: p?.name || draft.name || props.modelValue, lat: draft.lat, lng: draft.lng })
   mapOpen.value = false
 }
 
-import { watch } from 'vue'
-watch(mapOpen, (o) => { if (o) { draft.name = props.modelValue; draft.lat = props.lat; draft.lng = props.lng } })
+watch(mapOpen, (o) => { if (o) { draft.name = props.modelValue; draft.lat = props.lat; draft.lng = props.lng; draft.place = null } })
 onBeforeUnmount(() => clearTimeout(timer))
 </script>
 

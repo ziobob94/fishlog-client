@@ -32,7 +32,7 @@
 
       <div>
         <label class="fl-lab" for="ps-loc">{{ t('profile.settings.location') }}</label>
-        <PlaceInput id="ps-loc" v-model="form.location" @pick="p => picked = p" />
+        <PlaceInput id="ps-loc" mode="city" v-model="form.location" @pick="p => picked = p" />
         <p class="fl-hint">{{ t('profile.settings.locationHint') }}</p>
       </div>
 
@@ -51,6 +51,7 @@
 
 <script setup>
 import PlaceInput from '../components/form/PlaceInput.vue'
+import { geocodeText } from '../utils/places.js'
 import { computed, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
@@ -93,11 +94,8 @@ async function onPhoto(e) {
 const picked = ref(null)
 async function geocode(name) {
   if (!name) return {}
-  try {
-    const r = await fetch(`https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&accept-language=it,en&q=${encodeURIComponent(name)}`, { headers: { 'Accept-Language': 'it,en' } })
-    const [hit] = await r.json()
-    return hit ? { lat: Number(hit.lat), lng: Number(hit.lon) } : {}
-  } catch { return {} }
+  const r = await geocodeText(name)
+  return r ? { lat: r.lat, lng: r.lng } : {}
 }
 
 async function save() {
