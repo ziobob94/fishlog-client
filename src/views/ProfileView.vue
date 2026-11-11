@@ -41,43 +41,43 @@
           {{ t('profile.credentials.disabled') }}
         </p>
 
-        <div v-if="features.passwordAuthEnabled && auth.user?.hasPassword" class="credential-block">
+        <form v-if="features.passwordAuthEnabled && auth.user?.hasPassword" class="credential-block" @submit.prevent="savePassword">
           <h4>{{ t('profile.credentials.passwordTitle') }}</h4>
           <div class="form-group">
             <label>{{ t('profile.credentials.currentPassword') }}</label>
-            <PasswordInput v-model="pwForm.currentPassword" />
+            <PasswordInput v-model="pwForm.currentPassword" required />
           </div>
           <div class="form-group mt-1">
             <label>{{ t('profile.credentials.newPassword') }}</label>
-            <PasswordInput v-model="pwForm.newPassword" />
+            <PasswordInput v-model="pwForm.newPassword" required />
           </div>
           <p v-if="pwError" class="error-msg mt-1">{{ pwError }}</p>
           <p v-if="pwSaved" class="success-msg mt-1">{{ t('profile.credentials.passwordUpdated') }}</p>
-          <button class="btn btn-secondary btn-sm mt-2" :disabled="savingPw" @click="savePassword">
+          <button type="submit" class="btn btn-secondary btn-sm mt-2" :disabled="savingPw">
             {{ savingPw ? t('profile.account.saving') : t('profile.credentials.changePassword') }}
           </button>
-        </div>
+        </form>
         <p v-else-if="features.passwordAuthEnabled" class="text-muted text-sm">{{ t('profile.credentials.oauthOnly') }}</p>
 
-        <div v-if="features.passwordAuthEnabled" class="credential-block mt-3">
+        <form v-if="features.passwordAuthEnabled" class="credential-block mt-3" @submit.prevent="saveEmail">
           <h4>{{ t('profile.credentials.emailTitle') }}</h4>
           <p v-if="auth.user?.pendingEmail" class="success-msg mb-2">
             {{ t('profile.credentials.pendingEmail', { email: auth.user.pendingEmail }) }}
           </p>
           <div class="form-group">
             <label>{{ t('profile.credentials.newEmail') }}</label>
-            <input v-model="emailForm.newEmail" type="email" :placeholder="auth.user?.email" />
+            <input v-model="emailForm.newEmail" type="email" required :placeholder="auth.user?.email" />
           </div>
           <div v-if="auth.user?.hasPassword" class="form-group mt-1">
             <label>{{ t('profile.credentials.currentPassword') }}</label>
-            <PasswordInput v-model="emailForm.currentPassword" />
+            <PasswordInput v-model="emailForm.currentPassword" required />
           </div>
           <p v-if="emailError" class="error-msg mt-1">{{ emailError }}</p>
           <p v-if="emailSaved" class="success-msg mt-1">{{ t('profile.credentials.emailPending') }}</p>
-          <button class="btn btn-secondary btn-sm mt-2" :disabled="savingEmail" @click="saveEmail">
+          <button type="submit" class="btn btn-secondary btn-sm mt-2" :disabled="savingEmail">
             {{ savingEmail ? t('profile.account.saving') : t('profile.credentials.changeEmail') }}
           </button>
-        </div>
+        </form>
 
         <div v-if="auth.user?.providers?.google || auth.user?.providers?.facebook" class="credential-block mt-3">
           <h4>{{ t('profile.credentials.linkedProviders') }}</h4>

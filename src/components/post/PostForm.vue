@@ -1,5 +1,5 @@
 <template>
-  <div class="post-form">
+  <form class="post-form" @submit.prevent="submit">
     <div class="segmented" role="radiogroup" :aria-label="t('posts.form.typePost')">
       <button type="button" role="radio" :aria-checked="form.type === 'post'" class="seg-opt" :class="{ active: form.type === 'post' }" @click="form.type = 'post'">{{ t('posts.form.typePost') }}</button>
       <button type="button" role="radio" :aria-checked="form.type === 'event'" class="seg-opt" :class="{ active: form.type === 'event' }" @click="form.type = 'event'">{{ t('posts.form.typeEvent') }}</button>
@@ -12,8 +12,11 @@
       :placeholder="t('posts.form.titlePlaceholder')"
     />
 
+    <label for="post-body" class="field-label">{{ t('posts.form.bodyLabel') }}</label>
     <textarea
+      id="post-body"
       v-model="form.body"
+      required
       rows="3"
       :placeholder="t('posts.form.bodyPlaceholder')"
     />
@@ -83,14 +86,18 @@
     <div class="segmented" role="radiogroup" :aria-label="t('posts.form.whoCanSee')">
       <button v-for="v in ['public', 'group', 'private']" :key="v" type="button" role="radio" :aria-checked="form.visibility === v" class="seg-opt" :class="{ active: form.visibility === v }" @click="form.visibility = v">{{ t(`posts.visibility.${v}`) }}</button>
     </div>
-    <select v-if="form.visibility === 'group'" v-model="form.allowedGroups[0]" class="fl-inp" :aria-label="t('posts.visibility.group')">
-      <option v-for="g in groups" :key="g._id" :value="g._id">{{ g.name }}</option>
-    </select>
-    <button type="button" class="fl-btn1 publish" :disabled="saving" @click="submit">
+    <template v-if="form.visibility === 'group'">
+      <label for="post-group" class="field-label">{{ t('posts.visibility.group') }}</label>
+      <select id="post-group" v-model="form.allowedGroups[0]" class="fl-inp" required>
+        <option value="" disabled>{{ t('posts.form.chooseGroup') }}</option>
+        <option v-for="g in groups" :key="g._id" :value="g._id">{{ g.name }}</option>
+      </select>
+    </template>
+    <button type="submit" class="fl-btn1 publish" :disabled="saving">
       {{ saving ? t('posts.form.saving') : t('posts.form.submit') }}
     </button>
     <p v-if="error" class="error-msg">{{ error }}</p>
-  </div>
+  </form>
 </template>
 
 <script setup>
@@ -103,6 +110,7 @@ import { useAuthStore } from '../../stores/auth.js'
 import LocationPicker from '../form/LocationPicker.vue'
 import api from '../../utils/api.js'
 import { compressAll, uploadErrorMessage } from '../../utils/image.js'
+import { showError, focusFirstInvalid } from '../../utils/formValidation.js'
 
 const emit = defineEmits(['created'])
 const props = defineProps({
@@ -185,7 +193,11 @@ function clearPendingFiles() {
 
 async function submit() {
   error.value = ''
-  if (!form.value.body.trim()) { error.value = t('posts.form.bodyRequired'); return }
+  if (!form.value.body.trim()) {
+    const el = document.getElementById('post-body')
+    if (el) { showError(el, t('posts.form.bodyRequired')); focusFirstInvalid(el.closest('form')) } else error.value = t('posts.form.bodyRequired')
+    return
+  }
   if (form.value.visibility === 'group' && !form.value.allowedGroups[0]) {
     error.value = t('posts.form.groupRequired'); return
   }
