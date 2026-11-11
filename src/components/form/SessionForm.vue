@@ -14,9 +14,9 @@
       <p v-if="geocodeMsg" class="autofill-hint">{{ geocodeMsg }}</p>
 
       <section>
-        <label class="fl-lab" for="ess-where">{{ t('sessionForm.essential.where') }}</label>
+        <label class="fl-lab" for="ess-where">{{ t('sessionForm.essential.where') }} <span class="req" :title="t('sessionForm.essential.required')">*</span></label>
         <div class="where-wrap">
-          <input id="ess-where" v-model="f.location.name" type="text" class="fl-inp" autocomplete="off" @input="onWhereInput" @focus="whereOpen = true" @blur="closeWhereSoon" :placeholder="t('sessionForm.fields.locationNamePlaceholder')" />
+          <input id="ess-where" v-model="f.location.name" type="text" class="fl-inp" :class="{ 'fl-err': essErr.where }" :aria-invalid="essErr.where" aria-describedby="ess-where-err" aria-required="true" autocomplete="off" @input="onWhereInput" @focus="whereOpen = true" @blur="closeWhereSoon" :placeholder="t('sessionForm.fields.locationNamePlaceholder')" />
           <ul v-if="whereOpen && whereOptions.length" class="where-list" role="listbox">
             <li v-for="(o, i) in whereOptions" :key="i" role="option">
               <button type="button" class="where-opt" @mousedown.prevent @click="pickPlace(o)">
@@ -26,15 +26,17 @@
             </li>
           </ul>
         </div>
+        <p v-if="essErr.where" id="ess-where-err" class="fl-error" role="alert">{{ t('sessionForm.essential.whereRequired') }}</p>
         <p v-if="f.location.coords.lat && f.location.coords.lng" class="fl-hint fl-mono">{{ f.location.coords.lat }}°N · {{ f.location.coords.lng }}°E · {{ t('sessionForm.essential.detected') }}</p>
       </section>
 
       <section>
-        <span class="fl-lab">{{ t('sessionForm.essential.when') }}</span>
+        <span class="fl-lab">{{ t('sessionForm.essential.when') }} <span class="req" :title="t('sessionForm.essential.required')">*</span></span>
         <div class="ess-two">
-          <input v-model="f.date" type="date" v-ph="'gg/mm/aaaa'" class="fl-inp" :aria-label="t('sessionForm.fields.dateLabel')" />
+          <input id="ess-date" v-model="f.date" type="date" v-ph="'gg/mm/aaaa'" class="fl-inp" :class="{ 'fl-err': essErr.date }" :aria-label="t('sessionForm.fields.dateLabel')" />
           <input v-model="f.startTime" type="time" v-ph="'--:--'" class="fl-inp" :aria-label="t('sessionForm.fields.startTimeLabel')" />
         </div>
+        <p v-if="essErr.date" class="fl-error" role="alert">{{ t('sessionForm.essential.dateRequired') }}</p>
         <div class="ess-switch">
           <span>{{ t('sessionForm.essential.alreadyDone') }}</span>
           <button type="button" class="fl-switch" :class="{ on: concluded }" role="switch" :aria-checked="concluded" :aria-label="t('sessionForm.essential.alreadyDone')" @click="concluded = !concluded"></button>
@@ -885,11 +887,21 @@
   }, { immediate: true })
 
   const catchesRef = ref(null)
+  const essErr = ref({ where: false, date: false })
+  watch(() => f.value.location.name, v => { if (v?.trim()) essErr.value.where = false })
+  watch(() => f.value.date, v => { if (v) essErr.value.date = false })
 
   function handleSubmit() {
     // Campo obbligatorio vuoto: apre la sezione e porta lì l'utente, con
     // messaggio chiaro (altrimenti il browser non può evidenziare un campo
     // nascosto in una sezione chiusa e l'invio sembra non fare nulla).
+    if (props.mode === 'essential') {
+      essErr.value = { where: !f.value.location.name?.trim(), date: !f.value.date }
+      if (essErr.value.where || essErr.value.date) {
+        nextTick(() => document.getElementById(essErr.value.where ? 'ess-where' : 'ess-date')?.focus())
+        return
+      }
+    }
     for (const id of ['base', 'location']) {
       if (!canLeaveSection(id)) {
         const next = new Set(openSections.value); next.add(id); openSections.value = next
@@ -1212,6 +1224,8 @@
   .where-tx { display: flex; flex-direction: column; min-width: 0; }
   .where-tx strong { font-size: 15px; font-weight: 700; }
   .where-tx small { font-size: 12px; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .req { color: var(--danger); margin-left: 2px; }
+  .fl-error { margin: 6px 0 0; font-size: 13px; font-weight: 600; color: var(--danger); }
   .essential .field-missing { border-color: var(--border); }
   .ess-foot { color: var(--text-muted); font-size: 12px; text-align: center; margin: 0; padding: 0 1rem 12px; }
   .fl-inp[type="date"], .fl-inp[type="time"] { display: flex; align-items: center; text-align: left; -webkit-appearance: none; appearance: none; }

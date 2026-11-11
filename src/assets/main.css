@@ -287,6 +287,7 @@ body::before {
   background: var(--surface); color: var(--foam); font-size: 16px; line-height: 1.5; padding: .8rem 1rem; outline: none;
 }
 .fl-inp:focus { border-color: var(--ocean); box-shadow: none; }
+.fl-inp.fl-err, .fl-inp.fl-err:focus { border-color: var(--danger); }
 textarea.fl-inp { min-height: 96px; resize: none; line-height: 1.45; padding: 14px 16px; }
 .fl-card { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 16px; box-sizing: border-box; }
 .fl-chip {
