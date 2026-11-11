@@ -9,7 +9,8 @@ import { reactive } from 'vue'
 const KEY = import.meta.env.VITE_GOOGLE_MAPS_KEY
 export const GEO_LANG = 'it'
 
-// error: '' | 'missing' | 'rejected' (chiave/API/fatturazione/referrer) | 'blocked' (script bloccato da rete, CSP o ad-blocker)
+// error: '' | 'missing' | 'rejected' (chiave/API/fatturazione/referrer, da gm_authFailure) | 'empty' (script eseguito ma senza API: tipico di referrer/API non consentiti)
+//        | 'blocked' (script non raggiungibile: rete, CSP o ad-blocker)
 //        | 'timeout' | 'init' (errore imprevisto). code = codice Google (es. RefererNotAllowedMapError), detail = messaggio grezzo.
 export const placesStatus = reactive({ error: '', code: '', detail: '' })
 export const hasGoogleKey = () => !!KEY
@@ -30,26 +31,45 @@ function watchConsole() {
   }
 }
 
+// Singleton: una sola promise condivisa e un solo tag <script data-fishlog-maps>. Il bootstrap di Google
+// aggiunge poi i suoi tag (common.js, util.js…): per questo document.querySelectorAll('script[src*=maps]')
+// ne conta più di uno, ma i nostri restano uno solo (vedi fishlogMapsDebug).
 let loading = null
+function ready() {
+  // caricamento riuscito: azzera eventuali errori transitori registrati prima
+  if (placesStatus.error !== 'rejected') { placesStatus.error = ''; placesStatus.detail = '' }
+  return window.google
+}
 export function loadGoogle() {
   if (!KEY) { placesStatus.error = 'missing'; return Promise.reject(new Error('missing-key')) }
-  if (window.google?.maps?.importLibrary) return Promise.resolve(window.google)
+  if (window.google?.maps?.importLibrary) return Promise.resolve(ready())
   if (loading) return loading
   window.gm_authFailure = () => fail('rejected', 'gm_authFailure', placesStatus.code)
   watchConsole()
-  document.addEventListener('securitypolicyviolation', (e) => { if (/google|gstatic/.test(e.blockedURI || '')) fail('blocked', `CSP: ${e.violatedDirective}`) })
+  if (!window.__fishlogCspWatch) {
+    window.__fishlogCspWatch = true
+    document.addEventListener('securitypolicyviolation', (e) => { if (/google|gstatic/.test(e.blockedURI || '')) fail('blocked', `CSP: ${e.violatedDirective}`) })
+  }
   loading = new Promise((resolve, reject) => {
+    // un eventuale tag fallito in un tentativo precedente va rimosso prima di riprovare
+    document.querySelectorAll('script[data-fishlog-maps]').forEach(n => n.remove())
+    let done = false
+    const finish = (ok, err) => { if (done) return; done = true; clearTimeout(timer); clearInterval(poll); if (ok) resolve(ready()); else { loading = null; document.querySelectorAll('script[data-fishlog-maps]').forEach(n => n.remove()); reject(err) } }
+    const timer = setTimeout(() => { if (!placesStatus.error) fail('timeout', 'script non caricato in 15 s'); finish(false, new Error('timeout')) }, 15000)
+    let loadedAt = 0
+    // callback di Google: arriva quando l'API è pronta (con loading=async importLibrary compare solo da qui)
+    window.__fishlogMapsReady = () => { if (window.google?.maps?.importLibrary) finish(true) }
+    const poll = setInterval(() => {
+      if (window.google?.maps?.importLibrary) return finish(true)
+      // script eseguito ma nessuna API dopo 4 s: Google non l'ha fornita (chiave con referrer/API non consentiti) o l'ha bloccata un'estensione
+      if (loadedAt && Date.now() - loadedAt > 4000) { if (placesStatus.error !== 'rejected') fail('empty', 'script caricato ma Google Maps non disponibile'); finish(false, new Error(placesStatus.error || 'empty')) }
+    }, 200)
     const s = document.createElement('script')
-    s.src = `https://maps.googleapis.com/maps/api/js?key=${encodeURIComponent(KEY)}&v=weekly&language=${GEO_LANG}&loading=async&libraries=places`
+    s.dataset.fishlogMaps = '1'
+    s.src = `https://maps.googleapis.com/maps/api/js?key=${encodeURIComponent(KEY)}&v=weekly&language=${GEO_LANG}&loading=async&libraries=places&callback=__fishlogMapsReady`
     s.async = true
-    const timer = setTimeout(() => { loading = null; fail('timeout', 'script non caricato in 15 s'); reject(new Error('timeout')) }, 15000)
-    s.onload = () => {
-      clearTimeout(timer)
-      // script "caricato" ma vuoto (ad-blocker, proxy, CSP): google non esiste
-      if (!window.google?.maps?.importLibrary) { loading = null; fail('blocked', 'script caricato ma Google Maps non disponibile'); reject(new Error('blocked')); return }
-      resolve(window.google)
-    }
-    s.onerror = () => { clearTimeout(timer); loading = null; fail('blocked', 'script non raggiungibile (rete, CSP o ad-blocker)'); reject(new Error('blocked')) }
+    s.onload = () => { loadedAt = Date.now(); if (window.google?.maps?.importLibrary) finish(true) }
+    s.onerror = () => { fail('blocked', 'script non raggiungibile (rete, CSP o ad-blocker)'); finish(false, new Error('blocked')) }
     document.head.appendChild(s)
   })
   return loading
@@ -71,6 +91,7 @@ export function placesMessage(t) {
       if (/Invalid|Missing|Expired/i.test(c)) return t('placeInput.errInvalid') + tail
       return t('placeInput.keyRejected') + tail
     }
+    case 'empty': return t('placeInput.errEmpty', { origin: location.origin })
     case 'blocked': return t('placeInput.errBlocked') + tail
     case 'timeout': return t('placeInput.errTimeout')
     case 'init': return t('placeInput.errInit') + tail
@@ -78,7 +99,7 @@ export function placesMessage(t) {
   }
 }
 // debug da console: window.fishlogMapsDebug()
-if (typeof window !== 'undefined') window.fishlogMapsDebug = () => ({ keyPresent: !!KEY, keyPrefix: KEY ? KEY.slice(0, 6) + '…' : '', origin: location.origin, status: { ...placesStatus }, googleLoaded: !!window.google?.maps, scriptTags: document.querySelectorAll('script[src*="maps.googleapis.com"]').length })
+if (typeof window !== 'undefined') window.fishlogMapsDebug = () => ({ keyPresent: !!KEY, keyPrefix: KEY ? KEY.slice(0, 6) + '…' : '', origin: location.origin, status: { ...placesStatus }, googleLoaded: !!window.google?.maps, ourScriptTags: document.querySelectorAll('script[data-fishlog-maps]').length, googleScriptTags: document.querySelectorAll('script[src*="maps.googleapis.com"]').length, importLibrary: !!window.google?.maps?.importLibrary })
 
 async function lib(name) {
   const g = await loadGoogle()
