@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import {
   fmt, fmtSigned, MISSING, compass, windInfo, headingTo, pressureState, moonLabel, hhmm, daylight, dayLabel,
-  conditionText, uvLabel, nextTides, tideSummary, normalizeOverview, isPartial,
+  conditionText, uvLabel, nextTides, tideSummary, normalizeOverview, isPartial, waveSeries,
 } from '../weather.js'
 
 describe('null → «—» (mai 0)', () => {
@@ -92,4 +92,17 @@ describe('normalizeOverview', () => {
   })
   it('maree senza serie → null', () => expect(normalizeOverview({ marine: { available: true, tides: { series: [] } } }).marine.tides).toBeNull())
   it('dati completi non sono parziali', () => expect(isPartial(normalizeOverview({ current: { temp: 1, windSpeed: 2, pressure: 1000, humidity: 50 } }))).toBe(false))
+})
+
+describe('onde ora per ora', () => {
+  it('la serie si normalizza e i valori non numerici diventano null', () => {
+    const v = normalizeOverview({ marine: { available: true, waves: [{ time: 'a', height: 0.5, period: 4 }, { time: 'b', height: 'x', period: null }] } })
+    expect(v.marine.waves).toEqual([{ time: 'a', height: 0.5, period: 4 }, { time: 'b', height: null, period: null }])
+  })
+  it('senza onde: lista vuota', () => expect(normalizeOverview({ marine: { available: true } }).marine.waves).toEqual([]))
+  it('waveSeries scarta i punti senza altezza e trova il massimo', () => {
+    const r = waveSeries([{ time: 'a', height: 0.5 }, { time: 'b', height: null }, { time: 'c', height: 1.2 }, { time: 'd', height: 0 }])
+    expect(r.points).toHaveLength(3); expect(r.max).toBe(1.2); expect(r.maxTime).toBe('c'); expect(r.maxIndex).toBe(1)
+  })
+  it('meno di 2 punti: nessun grafico', () => { expect(waveSeries([{ time: 'a', height: 1 }]).points).toEqual([]); expect(waveSeries(null).max).toBeNull() })
 })

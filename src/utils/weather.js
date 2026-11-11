@@ -127,6 +127,8 @@ export function normalizeOverview(raw) {
     seaTemp: num(m.seaTemp), currentSpeed: num(m.currentSpeed), currentDeg: num(m.currentDeg),
     tides: m.tides && Array.isArray(m.tides.series) && m.tides.series.length ? m.tides : null,
     dailyWaveMax: Array.isArray(m.dailyWaveMax) ? m.dailyWaveMax : [],
+    // altezza e periodo dell'onda ora per ora: servono al grafico (almeno 2 punti con altezza)
+    waves: (Array.isArray(m.waves) ? m.waves : []).map(w => ({ time: w.time ?? null, height: num(w.height), period: num(w.period) })),
   }
   return {
     location: raw.location || null,
@@ -162,4 +164,13 @@ export function isPartial(view) {
   if (!view) return false
   const c = view.current
   return [c.temp, c.windSpeed, c.pressure, c.humidity].some(v => v == null)
+}
+
+// Serie dell'onda per il grafico: solo i punti con altezza; vuota se ce ne sono meno di 2. Restituisce anche massimo e istante del massimo.
+export function waveSeries(waves) {
+  const pts = (Array.isArray(waves) ? waves : []).filter(w => isNum(w?.height))
+  if (pts.length < 2) return { points: [], max: null, maxTime: null, maxIndex: -1 }
+  let maxIndex = 0
+  pts.forEach((p, i) => { if (p.height > pts[maxIndex].height) maxIndex = i })
+  return { points: pts, max: pts[maxIndex].height, maxTime: pts[maxIndex].time, maxIndex }
 }

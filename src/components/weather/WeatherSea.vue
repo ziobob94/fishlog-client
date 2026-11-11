@@ -14,11 +14,16 @@
         <div v-if="m.currentSpeed != null"><dt>{{ t('weather.sea.current') }}</dt>
           <dd><span class="wx-num">{{ fmt(m.currentSpeed, 1) }}</span> <small>km/h<template v-if="heading"> · {{ t('weather.sea.toward') }} {{ heading }}</template></small></dd></div>
       </dl>
+      <template v-if="waves.points.length">
+        <h3 class="wx-h" style="font-size:1rem;margin:16px 0 6px">{{ t('weather.sea.waves') }}</h3>
+        <WaveChart :waves="m.waves" />
+      </template>
       <template v-if="m.tides">
         <h3 class="wx-h" style="font-size:1rem;margin:16px 0 6px">{{ t('weather.sea.tides') }}</h3>
         <TideChart :tides="m.tides" :now-iso="nowIso" />
         <p class="wx-note">{{ t('weather.sea.tideNote') }}</p>
       </template>
+      <p v-else class="wx-note">{{ t('weather.sea.noTides') }}</p>
     </template>
     <p v-else class="wx-muted" style="margin:0">{{ t('weather.sea.none') }}</p>
   </section>
@@ -29,10 +34,12 @@
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import TideChart from './TideChart.vue'
-import { fmt, compass } from '../../utils/weather.js'
+import WaveChart from './WaveChart.vue'
+import { fmt, compass, waveSeries } from '../../utils/weather.js'
 const props = defineProps({ view: { type: Object, required: true }, nowIso: { type: String, default: null } })
 const { t } = useI18n()
 const m = computed(() => props.view.marine)
+const waves = computed(() => waveSeries(m.value.waves))
 const waveFrom = computed(() => compass(m.value.waveDeg))
 const swellFrom = computed(() => compass(m.value.swellDeg))
 // La corrente si indica verso dove va (convenzione oceanografica): 180° = «verso S».
