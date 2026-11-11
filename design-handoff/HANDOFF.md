@@ -309,6 +309,23 @@ Nel profilo (La mia bacheca, `Bacheca`, e profilo di un altro utente, `ProfiloUt
 `CattureClassifica` (screenshot `61-Catture-classifica.png`, solo scuro come il resto del profilo): titolo «Le mie catture» / «Catture di giorgio.r», sottotitolo «Classifica personale», filtro periodo «Sempre» (anche anno e ultimi 30 giorni). In cima il **record** (StampBadge) con pesce più pesante e i totali (catture, specie, peso massimo). Tre ordinamenti: **per peso**, **per lunghezza** (stessa lista, il valore grande cambia) e **per specie** (record e numero di catture di ogni specie; tocco = solo quella specie). Filtro per specie con chip. Ogni riga è un link al dettaglio della cattura, con posizione in numero, foto, specie, luogo e data. Stati: con dati, nessuna cattura (invito a iniziare un'uscita), caricamento (scheletri), errore con «Riprova», catture di un amico.
 Backend (da verificare): `GET /users/:id/catches?sort=weight|length|species&species=&period=&page=` con totali e record; rispettare la privacy del profilo.
 
+## Home: meteo in evidenza e mappamondo espandibile (schermate 64-65)
+
+Obiettivo: dare evidenza al meteo. La Home (`HomeMeteo` mobile, `HomeMeteoDesktop` desktop, scuro e chiaro) diventa: barra in alto → **scheda meteo grande** (luogo, temperatura e condizione, prossime 5 ore, vento, pressione con tendenza, onde, pioggia, link «Apri meteo e mare») → uscita in corso, se c'è → **mappamondo compatto** → «Confronta con 3bmeteo». La scheda grande sostituisce «Oggi in mare» e il titolo «Guarda il mare prima di uscire» (i dati sono gli stessi, ora dalla stessa fonte della pagina Meteo).
+
+**Mappamondo espandibile**
+- Compatto (default a ogni apertura): altezza ~196 px su mobile, 220 px su desktop; mostra una calotta del globo con la posizione e le pescate, due pill («La mia posizione», «3 pescate») e il tasto **Espandi** (44 px, `aria-expanded="false"`, `aria-controls`).
+- Espanso, mobile: finestra a tutto schermo (`role="dialog" aria-modal="true"`) sotto la barra in alto e sopra la barra in basso; titolo «Mappamondo», tasto **Riduci**, chip delle zone (La mia posizione, Adriatico, Tirreno, Mar Ligure, Ionio), controlli a destra (zoom, la mia posizione, le mie pescate) e in basso una **striscia meteo** (temperatura, vento, onde, pressione) che porta alla pagina Meteo. Chiusura: Riduci, `Esc`, swipe verso il basso sulla maniglia; il focus torna sul tasto Espandi.
+- Espanso, desktop: il mappamondo occupa l'area principale (700 px) e il meteo si riduce a una **barra** sopra, sempre visibile.
+- Movimento: espansione 320 ms `--ease-enter` (View Transition sull'elemento `globe`, fallback «pagina avanti»), riduzione 200 ms `--ease-exit`; chip e controlli compaiono in 200 ms (opacity). Con `prefers-reduced-motion`: sola dissolvenza ≤ 120 ms. Nessun layout shift: il globo espanso è un overlay, la pagina sotto non si sposta.
+- Il globo vero resta il componente `Globe` (3D): nei mockup è un disegno. Sul compatto va fermo (nessuna rotazione continua) per risparmiare batteria; si anima solo da espanso.
+- Stati: compatto, espanso, caricamento (scheletri), offline (banner + «Non aggiornato · dati delle 13:40»), senza luogo («Scegli un luogo», globo senza punto azzurro), errore meteo con «Riprova».
+
+## Confronto con 3bmeteo (pagina Meteo)
+Nelle schermate 56, 57 e 62 c'è il blocco **«Confronta le previsioni»** (pill «Consigliato»): per la pesca si consiglia di guardare anche 3bmeteo come seconda fonte, soprattutto per vento e mare; se le due fonti concordano ci si può fidare di più. Pulsante «Apri 3bmeteo per Senigallia» (link esterno: `target="_blank" rel="noopener noreferrer"`, testo nascosto «si apre in una nuova scheda»), con nota «FishLog non è collegato a 3bmeteo e non ne mostra i dati; i nostri dati arrivano da Open-Meteo». Offline: pulsante disattivato «Serve la connessione». Nel dettaglio del giorno e nella Home c'è la versione compatta in una riga.
+- Solo un **link**: nessun dato, widget, iframe, scraping né logo di 3bmeteo dentro FishLog (condizioni d'uso e marchio). Il link va alla pagina della località se l'indirizzo è noto (da verificare), altrimenti alla home.
+- Il giudizio «molto apprezzato per vento e mare» è una scelta editoriale: da confermare che il testo sia accettabile per chi gestisce il marchio.
+
 ## Navigazione (cambia)
 
 - **Mobile, barra in basso:** Home · Uscite · **+** (tasto centrale grande, azione «Nuova uscita») · Social · Market. Oggi è Home, Uscite, Feed, Market, Chat.

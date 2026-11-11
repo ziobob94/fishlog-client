@@ -481,7 +481,7 @@
    "y": 12700
   },
   "MeteoMobile.dc.html": {
-   "h": 4481,
+   "h": 4800,
    "is_interactive": true,
    "title": "56 · Meteo e mare · mobile (scuro)",
    "w": 390,
@@ -489,7 +489,7 @@
    "y": 14900
   },
   "MeteoMobile-chiaro.dc.html": {
-   "h": 4481,
+   "h": 4800,
    "is_interactive": true,
    "title": "56 · Meteo e mare · mobile (chiaro)",
    "w": 390,
@@ -497,7 +497,7 @@
    "y": 14900
   },
   "MeteoDesktop.dc.html": {
-   "h": 2996,
+   "h": 3229,
    "is_interactive": true,
    "title": "57 · Meteo e mare · desktop (scuro)",
    "w": 1200,
@@ -505,7 +505,7 @@
    "y": 14900
   },
   "MeteoDesktop-chiaro.dc.html": {
-   "h": 2996,
+   "h": 3229,
    "is_interactive": true,
    "title": "57 · Meteo e mare · desktop (chiaro)",
    "w": 1200,
@@ -569,7 +569,7 @@
    "y": 11300
   },
   "MeteoGiorno.dc.html": {
-   "h": 4590,
+   "h": 4695,
    "is_interactive": true,
    "title": "62 · Meteo · dettaglio giorno (scuro)",
    "w": 390,
@@ -577,7 +577,7 @@
    "y": 19900
   },
   "MeteoGiorno-chiaro.dc.html": {
-   "h": 4590,
+   "h": 4695,
    "is_interactive": true,
    "title": "62 · Meteo · dettaglio giorno (chiaro)",
    "w": 390,
@@ -599,6 +599,38 @@
    "w": 1200,
    "x": 5280,
    "y": 19900
+  },
+  "HomeMeteo.dc.html": {
+   "h": 1156,
+   "is_interactive": true,
+   "title": "64 · Home · meteo in evidenza, mappamondo espandibile (scuro)",
+   "w": 390,
+   "x": 0,
+   "y": 24800
+  },
+  "HomeMeteo-chiaro.dc.html": {
+   "h": 1156,
+   "is_interactive": true,
+   "title": "64 · Home · meteo in evidenza, mappamondo espandibile (chiaro)",
+   "w": 390,
+   "x": 470,
+   "y": 24800
+  },
+  "HomeMeteoDesktop.dc.html": {
+   "h": 977,
+   "is_interactive": true,
+   "title": "65 · Home · meteo e mappamondo (desktop) (scuro)",
+   "w": 1200,
+   "x": 1000,
+   "y": 24800
+  },
+  "HomeMeteoDesktop-chiaro.dc.html": {
+   "h": 977,
+   "is_interactive": true,
+   "title": "65 · Home · meteo e mappamondo (desktop) (chiaro)",
+   "w": 1200,
+   "x": 2280,
+   "y": 24800
   }
  },
  "createdOnFiles": {
@@ -626,7 +658,8 @@
   "n15",
   "n16",
   "n17",
-  "n18"
+  "n18",
+  "n19"
  ],
  "notes": {
   "n1": {
@@ -744,6 +777,12 @@
    "w": 1000,
    "x": 2000,
    "y": 14700
+  },
+  "n19": {
+   "text": "Home: il meteo passa in primo piano e il mappamondo diventa espandibile. Di default il mappamondo è compatto (una calotta con posizione e pescate) con il tasto «Espandi»; espanso occupa lo schermo (su mobile come finestra a tutto schermo, con «Riduci», chip delle zone, controlli e una striscia meteo sempre visibile; su desktop occupa l'area principale e il meteo resta in una barra sopra). La scheda grande del meteo sostituisce «Oggi in mare» e il titolo «Guarda il mare prima di uscire». Le vecchie board 'Home · mobile' e 'Home · desktop' restano come riferimento ma sono superate da 64 e 65. Nella pagina Meteo (56, 57, 62) c'è anche «Confronta le previsioni»: consiglio di aprire 3bmeteo come seconda fonte (link esterno, nessun dato né logo di 3bmeteo dentro FishLog).",
+   "w": 1000,
+   "x": 0,
+   "y": 24600
   }
  },
  "order": [
@@ -824,7 +863,11 @@
   "MeteoGiorno.dc.html",
   "MeteoGiorno-chiaro.dc.html",
   "MeteoIcone.dc.html",
-  "MeteoIcone-chiaro.dc.html"
+  "MeteoIcone-chiaro.dc.html",
+  "HomeMeteo.dc.html",
+  "HomeMeteo-chiaro.dc.html",
+  "HomeMeteoDesktop.dc.html",
+  "HomeMeteoDesktop-chiaro.dc.html"
  ],
  "pages": [],
  "title": "FishLog – Restyling"
