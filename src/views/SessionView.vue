@@ -27,13 +27,13 @@
         <RouterLink v-if="isOwner" :to="`/session/${session._id}/edit`" class="hero-btn hero-edit" :aria-label="t('groups.editAction')"><Pencil :size="18" /></RouterLink>
         <span v-if="media.length" class="fl-mono hero-count">{{ slideIndex + 1 }}/{{ media.length }} {{ t('session.view.photoWord') }}</span>
         <div class="hero-ticks" aria-hidden="true"></div>
+        <StampBadge v-if="session.record" class="d-stamp" title="RECORD" :value="session.record.lengthCm" unit="cm" :size="80" />
         <div class="hero-major" aria-hidden="true"></div>
       </section>
 
       <div class="d-body">
-        <StampBadge v-if="session.record" class="d-stamp" title="RECORD" :value="session.record.lengthCm" :unit="`cm · ${(session.record.species || '').toLowerCase()}`" :size="92" />
         <div class="d-meta">
-          <span class="fl-mono d-date">{{ fmtShort(session.date) }}</span>
+          <span class="d-date">{{ fmtShort(session.date) }}</span>
           <span v-if="session.technique" class="badge badge-ocean">{{ session.technique }}</span>
           <span v-if="session.visibility !== 'private'" class="badge badge-sand">{{ visibilityLabel(session.visibility) }}</span>
           <span v-if="session.rating" class="stars" :aria-label="`${session.rating}/5`">{{ '★'.repeat(session.rating) }}</span>
@@ -307,11 +307,11 @@ async function doDelete() {
 .hero-major { position: absolute; left: 12px; right: 12px; bottom: 10px; height: 18px; pointer-events: none; background: repeating-linear-gradient(90deg, rgb(var(--color-sand-text)) 0 2px, transparent 2px 50px); }
 
 .d-body { position: relative; padding: 16px 16px 8.5rem; display: flex; flex-direction: column; gap: 14px; }
-.d-stamp { position: absolute; right: 16px; top: 12px; transform: rotate(8deg); }
+.d-stamp { position: absolute; right: 18px; bottom: 36px; z-index: 2; background: rgb(var(--color-ink) / .55); }
 .d-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
 .d-date { font-size: 13px; color: var(--text-muted); }
 .stars { color: rgb(var(--color-sand-text)); letter-spacing: 2px; }
-.d-title { font-size: 30px; line-height: 1.1; margin: 0; color: var(--foam); padding-right: 100px; }
+.d-title { font-size: 30px; line-height: 1.1; margin: 0; color: var(--foam); }
 .d-place { display: flex; align-items: center; gap: 6px; font-size: 15px; color: var(--text-muted); margin: 0; }
 .coords-pill { align-self: flex-start; border: 1px solid rgb(var(--color-ocean-text) / .4); border-radius: 999px; padding: 4px 12px; font-size: 12px; color: rgb(var(--color-ocean-text)); margin: 0; }
 
@@ -327,14 +327,14 @@ async function doDelete() {
 .cond-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
 .cond { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 12px 14px; display: flex; flex-direction: column; gap: 4px; min-width: 0; }
 .c-lab { font-size: 13px; color: var(--text-muted); }
-.c-val { font-family: var(--font-display); font-size: 16px; font-weight: 800; letter-spacing: -.01em; color: var(--foam); overflow-wrap: anywhere; }
+.c-val { font-size: 16px; font-weight: 700; color: var(--foam); overflow-wrap: anywhere; }
 
 .catch-list { display: flex; flex-direction: column; gap: 10px; }
 .catch { background: var(--surface); border: 1px solid var(--border); border-radius: 18px; }
 .catch-head { display: flex; align-items: center; gap: 12px; width: 100%; padding: 12px 14px; background: none; border: 0; color: var(--foam); text-align: left; cursor: pointer; min-height: 64px; }
 .time-chip { flex: none; background: rgba(14, 165, 233, .16); color: rgb(var(--color-ocean-text)); border-radius: 10px; padding: 8px 8px; font-size: 13px; }
 .catch-main { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
-.catch-name { font-family: var(--font-display); font-size: 17px; font-weight: 800; letter-spacing: -.01em; }
+.catch-name { font-size: 16px; font-weight: 700; }
 .catch-sum { font-size: 13px; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .chev { color: var(--text-muted); flex: none; transition: transform .15s; }
 .catch.open .chev, .chev.flip { transform: rotate(180deg); }

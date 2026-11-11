@@ -160,7 +160,7 @@ async function removeStory() {
 .avatar { width: 44px; height: 44px; border-radius: 50%; border: 2px solid rgb(var(--color-sand-text)); background: var(--ocean-glow); color: rgb(var(--color-ocean-text)); font-weight: 800; font-size: 14px; display: flex; align-items: center; justify-content: center; overflow: hidden; flex: none; }
 .avatar img { width: 100%; height: 100%; object-fit: cover; }
 .who { flex: 1; min-width: 0; display: flex; flex-direction: column; }
-.who strong { font-family: var(--font-display); font-size: 17px; font-weight: 800; letter-spacing: -.01em; }
+.who strong { font-size: 16px; font-weight: 700; }
 .who small { font-size: 13px; opacity: .8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .icon { width: 44px; height: 44px; background: none; border: 0; color: #fff; display: flex; align-items: center; justify-content: center; cursor: pointer; flex: none; }
 .icon:disabled { opacity: .4; }
