@@ -1,11 +1,13 @@
 // Dati meteo per la Home (scheda grande, barra e striscia del mappamondo): stessa fonte e stessa cache della pagina Meteo.
 // Il permesso si chiede solo al tocco su «Attiva la posizione» (o dalla pagina /meteo); all'avvio si usa solo se è già concesso. Se il dato in cache è recente non parte nessuna richiesta.
-import { computed, onMounted } from 'vue'
+import { computed, ref, onMounted, onBeforeUnmount } from 'vue'
 import { useWeatherStore } from '../stores/weather.js'
 import { useOnline } from './useOnline.js'
 import { reverseLabel } from '../utils/places.js'
 import { rowWmo, rowLabel, isDayAt, windInfo, pressureState } from '../utils/weather.js'
 
+// Pausa tra due aggiornamenti manuali: la quota delle API meteo è limitata, il server comunque risponde dalla sua cache (~5 km).
+export const REFRESH_COOLDOWN_MS = 30_000
 const clock = ms => new Date(ms).toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit', hour12: false })
 
 // autoload=false: la barra e la striscia non caricano da sole (lo fa già la scheda); leggono lo stesso store.
@@ -65,8 +67,21 @@ export function useHomeWeather({ autoload = true } = {}) {
     const p = store.place
     if (p && !p.name) { try { store.setName(await reverseLabel(p.lat, p.lng)) } catch { /* resta «La tua posizione» */ } }
   }
+  // Tasto «Aggiorna» della scheda: stesso meccanismo della pagina Meteo (load con force, la cache la gestisce il server) + breve anti-spam.
+  const coolingDown = ref(false)
+  let coolTimer = null
+  const refreshing = computed(() => store.refreshing)
+  const refreshFailed = computed(() => store.failed)
+  async function refresh() {
+    if (coolingDown.value || store.refreshing || offline.value || !store.place) return
+    coolingDown.value = true
+    clearTimeout(coolTimer); coolTimer = setTimeout(() => { coolingDown.value = false }, REFRESH_COOLDOWN_MS)
+    store.clearFlags()
+    await store.load({ force: true })
+  }
+  onBeforeUnmount(() => clearTimeout(coolTimer))
   const retry = () => { store.clearFlags(); return store.load({ force: true }) }
   if (autoload) onMounted(init)
 
-  return { activate, activating, denied, store, state, offline, summary, placeName, savedLabel, retry }
+  return { activate, activating, denied, store, state, offline, summary, placeName, savedLabel, retry, refresh, refreshing, refreshFailed, coolingDown }
 }
