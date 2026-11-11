@@ -15,3 +15,10 @@ export default {
     signature: '24px 24px 24px 8px',
   },
 }
+
+// Tipografia: aggiungi in theme.extend.fontFamily
+// fontFamily: {
+//   display: ['Fraunces', 'Georgia', 'serif'],   // titoli grandi (≥20 px, peso 700-800), mai sotto i 20 px
+//   sans: ['Manrope', 'system-ui', 'sans-serif'], // testi e interfaccia
+//   mono: ['JetBrains Mono', 'monospace']         // numeri, coordinate, misure
+// }

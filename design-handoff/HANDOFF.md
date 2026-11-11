@@ -6,7 +6,7 @@ Leggi questo file per primo. Descrive il restyling dell'interfaccia di `fishlog-
 
 | Cartella | Cosa c'è |
 |---|---|
-| `screenshots/` | Un PNG per ogni schermata, numerati nell'ordine del canvas. **Sono il riferimento visivo.** I font Google non si caricano nell'ambiente di rendering: il testo appare con un font di ripiego, ma nel progetto si usa Manrope. |
+| `screenshots/` | Un PNG per ogni schermata, numerati nell'ordine del canvas. **Sono il riferimento visivo.** Gli screenshot usano i font reali (Fraunces, Manrope; i numeri in JetBrains Mono possono apparire di ripiego). |
 | `design/` | Sorgenti del design (`*.dc.html`, `canvas.json`) e `support.js`. Per vederli interattivi: `cd design && python3 -m http.server 8080`, poi apri `http://localhost:8080/Main.dc.html`. Servono per leggere misure, colori e testi esatti. Non vanno copiati nel progetto. |
 | `tokens/` | `tokens.css` (variabili CSS) e `tailwind-extend.js` (estensione del tema). |
 | `assets/` | Logo (`logo-mark.svg`, `logo-mark-light.svg`, `favicon.svg`), icone app PNG 192/512, `icons-list.json`. |
@@ -22,7 +22,14 @@ Leggi questo file per primo. Descrive il restyling dell'interfaccia di `fishlog-
 
 ## Linguaggio visivo («carta nautica»)
 
-Identità invariata (oceano + sabbia, Manrope + JetBrains Mono), più gerarchia e una firma riconoscibile.
+### Font (aggiornato)
+- **Fraunces** (serif, 700-800, `letter-spacing: -.01em`): solo titoli grandi, cioè h1 e testi ≥ 20 px in grassetto (es. «Guarda il mare prima di uscire», «Bentornato», titoli delle schermate-hub). Classe `font-display` in Tailwind.
+- **Manrope**: testi, bottoni, etichette, navigazione, e anche la parola «FishLog» del logo (il logo non cambia).
+- **JetBrains Mono**: numeri, misure, coordinate.
+- Mai Fraunces sotto i 20 px né sulle etichette maiuscole piccole.
+- Carica da Google Fonts: `Fraunces:opsz,wght@9..144,600;9..144,700;9..144,800`. Token in `tokens/tokens.css`.
+
+Identità invariata (oceano + sabbia), più gerarchia e una firma riconoscibile.
 
 - **Colori scuri più profondi:** sfondo `#111c2c`, card `#1a293d`, riquadri `#243650`, bordi `#33486a`. Valori e triplette RGB in `tokens/tokens.css`.
 - **Testo su fondo scuro:** usa le varianti `ocean-text` (#7dd3fc) e `sand-text` (#fbbf24); le tinte piene `ocean`/`sand` restano per riempimenti. Contrasto ≥ 4,5:1.

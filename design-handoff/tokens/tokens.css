@@ -40,3 +40,11 @@
   --color-on-primary: 255 255 255;
   --color-sea-deep: 224 240 250;
 }
+
+/* Tipografia — titoli in Fraunces (serif, tono «carta nautica»), testi e UI in Manrope, numeri/coordinate in JetBrains Mono.
+   Google Fonts: Fraunces:opsz,wght@9..144,600;9..144,700;9..144,800 · Manrope:wght@400;500;600;700;800 · JetBrains+Mono:wght@500;700 */
+:root {
+  --font-display: 'Fraunces', Georgia, serif;
+  --font-sans: 'Manrope', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
