@@ -627,6 +627,8 @@
 			"length": "Lunghezza",
 			"weightAria": "Peso in chilogrammi",
 			"lengthAria": "Lunghezza in centimetri",
+			"fight": "Combattimento",
+			"fightAria": "Durata del combattimento in minuti",
 			"releasedShort": "Rilasciato",
 			"hoursLabel": "ore",
 			"visPrivateHint": "Solo tu la vedi.",

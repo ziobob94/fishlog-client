@@ -539,7 +539,7 @@
   const defaultForm = () => ({
     title: '', date: new Date().toISOString().split('T')[0],
     startTime: '', endTime: '', technique: '', waterType: '', rating: 0,
-    location: { name: '', spot: '', region: '', coords: { lat: null, lng: null }, notes: '' },
+    location: { name: '', spot: '', region: '', municipality: '', province: '', country: '', coords: { lat: null, lng: null }, notes: '' },
     sea: { seaState: '', waveHeight: '', wavePeriod: '', current: '', waterLevel: '', waterColor: '', waterTemp: null, tide: { state: '', notes: '' } },
     weather: { condition: '', windDirection: '', windSpeed: null, tempAir: null, pressure: null, notes: '' },
     catches: [], notes: '', visibility: defaultVisibility(), allowedGroups: []
@@ -685,9 +685,14 @@
       )
       const data = await res.json()
       const a = data.address || {}
+      const municipality = a.city || a.town || a.village || a.municipality || a.hamlet || ''
       return {
-        name: a.city || a.town || a.village || a.hamlet || a.county || '',
+        name: municipality || a.county || '',
         region: a.state || a.county || '',
+        // Zone per le classifiche locali: nomi senza prefissi amministrativi.
+        municipality,
+        province: (a.county || '').replace(/^(Provincia|Città metropolitana|Libero consorzio comunale) (di|del|della|dell')\s*/i, ''),
+        country: a.country || ''
       }
     } catch { return null }
   }
@@ -704,6 +709,10 @@
         gpsPlace.value = result.name
         if (!f.value.location.name) { skipNameGeocode = true; f.value.location.name = result.name }
         if (!f.value.location.region) f.value.location.region = result.region
+        // Le zone seguono sempre le coordinate (servono alle classifiche locali).
+        f.value.location.municipality = result.municipality
+        f.value.location.province = result.province
+        f.value.location.country = result.country
         geocodeMsg.value = result.name ? t('sessionForm.autoFill.geocodeFound', { name: result.name }) : ''
       }, 800)
     }
