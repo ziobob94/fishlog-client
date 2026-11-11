@@ -2032,7 +2032,8 @@
 			"yourCatches": "Tue catture qui: {n}.",
 			"noSpecies": "Nessuna specie spicca per questo giorno.",
 			"speciesBasis": "Basata su stagione, temperatura dell'acqua, condizioni del giorno e sulle tue catture: indica cosa è più plausibile, non cosa prenderai.",
-			"speciesSeason": "Per questo giorno la stima è solo stagionale (senza temperatura dell'acqua): indica cosa è più plausibile, non cosa prenderai.",
+			"speciesSeason": "Mancano i dati su meteo e acqua: l'elenco dice solo quali specie sono di stagione, non quanto sia probabile prenderle oggi.",
+			"seasonLevel": { "high": "In piena stagione", "mid": "Stagione discreta", "low": "Fuori stagione" },
 			"lightMoon": "Luce e luna",
 			"pressure": "Pressione"
 		},

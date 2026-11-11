@@ -144,8 +144,8 @@
               <li v-for="s in sp.items" :key="s.name">
                 <RouterLink :to="{ name: 'species', params: { name: s.name } }" class="wx-sprow m-press">
                   <WeatherIcon name="attivita-pesci" :size="22" />
-                  <span class="wx-sptx"><b>{{ s.name }}</b> <span class="wx-dots" aria-hidden="true"><i v-for="n in 3" :key="n" :class="{ on: n <= s.dots }"></i></span>
-                    <br /><span class="wx-muted"><b class="wx-splv">{{ s.label }}</b> · {{ s.reason }}<template v-if="s.userCatches"> {{ t('weather.day.yourCatches', { n: s.userCatches }) }}</template></span></span>
+                  <span class="wx-sptx"><b>{{ s.name }}</b> <span v-if="sp.basis !== 'stagione'" class="wx-dots" aria-hidden="true"><i v-for="n in 3" :key="n" :class="{ on: n <= s.dots }"></i></span>
+                    <br /><span class="wx-muted"><b class="wx-splv">{{ sp.basis === 'stagione' ? t('weather.day.seasonLevel.' + (s.dots >= 3 ? 'high' : s.dots === 2 ? 'mid' : 'low')) : s.label }}</b> · {{ s.reason }}<template v-if="s.userCatches"> {{ t('weather.day.yourCatches', { n: s.userCatches }) }}</template></span></span>
                   <ChevronRight :size="18" aria-hidden="true" class="wx-muted" />
                 </RouterLink>
               </li>
