@@ -5,7 +5,7 @@
 
     <div ref="stage" class="globe-stage">
       <div ref="mapEl" class="globe-map" role="region" :aria-label="ariaLabel"></div>
-      <div v-if="mapError" class="globe-fallback">{{ mapError }}</div>
+      <div v-if="mapError" class="globe-fallback">{{ mapError }} <button type="button" class="globe-retry" @click="retryMap">{{ t('common.retry') }}</button></div>
 
       <!-- Scheda del segnaposto toccato -->
       <div v-if="selected" class="globe-popup" role="dialog" :aria-label="t('globe.sessionsHere')">
@@ -59,7 +59,7 @@ import { useI18n } from 'vue-i18n'
 import { Layers } from 'lucide-vue-next'
 import api from '../utils/api.js'
 import AppIcon from './AppIcon.vue'
-import { loadMap, placesStatus, placesMessage, reportMapError } from '../utils/places.js'
+import { loadMap, placesStatus, placesMessage, reportMapError, resetPlaces } from '../utils/places.js'
 
 const { t } = useI18n()
 
@@ -190,6 +190,7 @@ async function initMap() {
     mapError.value = placesMessage(t) || t('globe.mapError')
   }
 }
+function retryMap() { resetPlaces(); mapError.value = ''; map = null; initMap() }
 watch(() => [placesStatus.error, placesStatus.code], () => { if (placesStatus.error) mapError.value = placesMessage(t) })
 
 onMounted(async () => {
@@ -224,6 +225,7 @@ onBeforeUnmount(() => { spotMarkers.forEach(m => m.setMap(null)); meMarker?.setM
 .globe-btn:disabled { @apply opacity-40 cursor-not-allowed; }
 .globe-btn[aria-pressed="true"] { @apply text-ocean-text border-ocean; }
 
+.globe-retry { @apply mt-2 block font-semibold text-ocean-text bg-transparent border-none p-0 cursor-pointer; }
 .globe-popup { @apply absolute left-2 right-2 bottom-2 z-10 rounded-lg bg-surface border border-border p-3 pr-12; }
 .globe-popup-close { @apply absolute right-1 top-1 w-11 h-11 flex items-center justify-center bg-transparent border-none text-muted cursor-pointer; }
 .globe-popup-list { @apply list-none flex flex-col gap-1 max-h-40 overflow-y-auto; }
