@@ -51,10 +51,13 @@ export function loadGoogle() {
     document.addEventListener('securitypolicyviolation', (e) => { if (/google|gstatic/.test(e.blockedURI || '')) fail('blocked', `CSP: ${e.violatedDirective}`) })
   }
   loading = new Promise((resolve, reject) => {
-    // un eventuale tag fallito in un tentativo precedente va rimosso prima di riprovare
-    document.querySelectorAll('script[data-fishlog-maps]').forEach(n => n.remove())
+    // Se un tentativo precedente ha già eseguito il bootstrap (window.google.maps esiste anche se rotto) non si
+    // aggiunge un secondo tag: Google lo rifiuterebbe ("API inclusa più volte") e lascerebbe la libreria in stato
+    // incoerente fino al reload. Un tag fallito senza bootstrap invece va rimosso prima di riprovare.
+    const bootstrapped = !!window.google?.maps
+    if (!bootstrapped) document.querySelectorAll('script[data-fishlog-maps]').forEach(n => n.remove())
     let done = false
-    const finish = (ok, err) => { if (done) return; done = true; clearTimeout(timer); clearInterval(poll); if (ok) resolve(ready()); else { loading = null; document.querySelectorAll('script[data-fishlog-maps]').forEach(n => n.remove()); reject(err) } }
+    const finish = (ok, err) => { if (done) return; done = true; clearTimeout(timer); clearInterval(poll); if (ok) resolve(ready()); else { loading = null; if (!window.google?.maps) document.querySelectorAll('script[data-fishlog-maps]').forEach(n => n.remove()); reject(err) } }
     const timer = setTimeout(() => { if (!placesStatus.error) fail('timeout', 'script non caricato in 15 s'); finish(false, new Error('timeout')) }, 15000)
     let loadedAt = 0
     // callback di Google: arriva quando l'API è pronta (con loading=async importLibrary compare solo da qui)
@@ -64,6 +67,7 @@ export function loadGoogle() {
       // script eseguito ma nessuna API dopo 4 s: Google non l'ha fornita (chiave con referrer/API non consentiti) o l'ha bloccata un'estensione
       if (loadedAt && Date.now() - loadedAt > 4000) { if (placesStatus.error !== 'rejected') fail('empty', 'script caricato ma Google Maps non disponibile'); finish(false, new Error(placesStatus.error || 'empty')) }
     }, 200)
+    if (bootstrapped) { loadedAt = Date.now(); return }
     const s = document.createElement('script')
     s.dataset.fishlogMaps = '1'
     s.src = `https://maps.googleapis.com/maps/api/js?key=${encodeURIComponent(KEY)}&v=weekly&language=${GEO_LANG}&loading=async&libraries=places&callback=__fishlogMapsReady`
@@ -74,6 +78,9 @@ export function loadGoogle() {
   })
   return loading
 }
+
+// Per il pulsante «Riprova»: azzera lo stato d'errore così il prossimo loadGoogle() ritenta senza ricaricare la pagina.
+export function resetPlaces() { placesStatus.error = ''; placesStatus.code = ''; placesStatus.detail = ''; loading = null }
 
 // Chiamata da chi cattura un errore di caricamento/inizializzazione: lo registra con il suo messaggio.
 export function reportMapError(e) { if (!placesStatus.error) fail('init', e?.message || e); else console.error('[google-maps]', e) }
