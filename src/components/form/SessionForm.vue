@@ -4,6 +4,7 @@
     <!-- ═══ NUOVA USCITA: solo l'essenziale (luogo, quando, ambiente, tecnica) ═══ -->
     <div v-if="mode === 'essential'" class="essential">
       <button type="button" class="detect-card" :disabled="!canAutoFill || autoFilling || gpsLoading" @click="autoFillWeatherAndSea">
+        <span class="detect-icon"><MapPin :size="22" /></span>
         <span class="detect-text">
           <strong>{{ gpsLoading ? t('sessionForm.fields.gpsDetecting') : (autoFilling ? t('sessionForm.autoFill.loading') : t('sessionForm.essential.detect')) }}</strong>
           <small>{{ t('sessionForm.essential.detectSub') }}</small>
@@ -13,49 +14,60 @@
       <p v-if="geocodeMsg" class="autofill-hint">{{ geocodeMsg }}</p>
 
       <section>
-        <label class="ess-lab" for="ess-where">{{ t('sessionForm.essential.where') }}</label>
-        <input id="ess-where" v-model="f.location.name" type="text" class="ess-inp" :placeholder="t('sessionForm.fields.locationNamePlaceholder')" :class="{ 'field-missing': !f.location.name }" />
-        <p v-if="f.location.coords.lat && f.location.coords.lng" class="ess-hint">{{ f.location.coords.lat }}°N · {{ f.location.coords.lng }}°E · {{ t('sessionForm.essential.detected') }}</p>
+        <label class="fl-lab" for="ess-where">{{ t('sessionForm.essential.where') }}</label>
+        <input id="ess-where" v-model="f.location.name" type="text" class="fl-inp" autocomplete="off" :placeholder="t('sessionForm.fields.locationNamePlaceholder')" />
+        <p v-if="f.location.coords.lat && f.location.coords.lng" class="fl-hint fl-mono">{{ f.location.coords.lat }}°N · {{ f.location.coords.lng }}°E · {{ t('sessionForm.essential.detected') }}</p>
       </section>
 
       <section>
-        <span class="ess-lab">{{ t('sessionForm.essential.when') }}</span>
+        <span class="fl-lab">{{ t('sessionForm.essential.when') }}</span>
         <div class="ess-two">
-          <input v-model="f.date" type="date" class="ess-inp" :aria-label="t('sessionForm.fields.dateLabel')" :class="{ 'field-missing': !f.date }" />
-          <input v-model="f.startTime" type="time" class="ess-inp" :aria-label="t('sessionForm.fields.startTimeLabel')" />
+          <input v-model="f.date" type="date" v-ph="'gg/mm/aaaa'" class="fl-inp" :aria-label="t('sessionForm.fields.dateLabel')" />
+          <input v-model="f.startTime" type="time" v-ph="'--:--'" class="fl-inp" :aria-label="t('sessionForm.fields.startTimeLabel')" />
         </div>
-        <label class="ess-switch">
-          <input type="checkbox" v-model="concluded" />
+        <div class="ess-switch">
           <span>{{ t('sessionForm.essential.alreadyDone') }}</span>
-        </label>
+          <button type="button" class="fl-switch" :class="{ on: concluded }" role="switch" :aria-checked="concluded" :aria-label="t('sessionForm.essential.alreadyDone')" @click="concluded = !concluded"></button>
+        </div>
         <div v-if="concluded" class="ess-end">
-          <label class="ess-lab" for="ess-end">{{ t('sessionForm.fields.endTimeLabel') }}</label>
-          <input id="ess-end" v-model="f.endTime" type="time" class="ess-inp" />
+          <label class="fl-lab" for="ess-end">{{ t('sessionForm.fields.endTimeLabel') }}</label>
+          <input id="ess-end" v-model="f.endTime" type="time" v-ph="'--:--'" class="fl-inp" />
         </div>
       </section>
 
       <section>
-        <span class="ess-lab">{{ t('sessionForm.essential.water') }}</span>
+        <span class="fl-lab">{{ t('sessionForm.essential.water') }}</span>
         <div class="ess-chips">
-          <button v-for="w in WATER_TYPES" :key="w.v" type="button" class="ess-chip" :class="{ on: f.waterType === w.v }" :aria-pressed="f.waterType === w.v" @click="f.waterType = f.waterType === w.v ? '' : w.v">{{ w.l }}</button>
+          <button v-for="w in WATER_TYPES" :key="w.v" type="button" class="fl-chip" :class="{ on: f.waterType === w.v }" :aria-pressed="f.waterType === w.v" @click="f.waterType = f.waterType === w.v ? '' : w.v">{{ w.l }}</button>
         </div>
       </section>
 
       <section>
-        <span class="ess-lab">{{ t('sessionForm.fields.techniqueLabel') }}</span>
+        <span class="fl-lab">{{ t('sessionForm.fields.techniqueLabel') }}</span>
         <div class="ess-chips">
-          <button v-for="t2 in TECHNIQUES" :key="t2.v" type="button" class="ess-chip" :class="{ on: f.technique === t2.v }" :aria-pressed="f.technique === t2.v" @click="f.technique = f.technique === t2.v ? '' : t2.v">{{ t2.l }}</button>
+          <button v-for="t2 in TECHNIQUES" :key="t2.v" type="button" class="fl-chip" :class="{ on: f.technique === t2.v }" :aria-pressed="f.technique === t2.v" @click="f.technique = f.technique === t2.v ? '' : t2.v">{{ t2.l }}</button>
         </div>
       </section>
     </div>
 
     <!-- ═══ DATI USCITA: elenco di righe → una schermata per sezione ═══ -->
     <div v-else-if="menuMode && !activeSection" class="data-menu">
+      <button type="button" class="detect-card" :disabled="!canAutoFill || autoFilling || gpsLoading" @click="autoFillWeatherAndSea">
+        <span class="detect-icon"><MapPin :size="22" /></span>
+        <span class="detect-text">
+          <strong>{{ gpsLoading ? t('sessionForm.fields.gpsDetecting') : (autoFilling ? t('sessionForm.autoFill.loading') : t('sessionForm.menu.autofill')) }}</strong>
+          <small>{{ t('sessionForm.menu.autofillSub') }}</small>
+        </span>
+        <ChevronRight :size="20" class="menu-go" />
+      </button>
+      <p v-if="autoFillMsg" class="autofill-result" :class="autoFillMsg.type">{{ autoFillMsg.text }}</p>
       <button v-for="row in menuRows" :key="row.id" type="button" class="menu-row" @click="openSection(row.id)">
+        <span class="menu-icon" :class="{ done: row.done }"><component :is="MENU_ICONS[row.id]" :size="22" /></span>
         <span class="menu-text"><strong>{{ row.title }}</strong><small>{{ row.sub }}</small></span>
         <span class="menu-status" :class="{ done: row.done }">{{ row.status }}</span>
         <ChevronRight :size="18" class="menu-go" />
       </button>
+      <button type="button" class="delete-link" @click="$emit('delete')"><Trash2 :size="18" /> {{ t('sessionForm.menu.delete') }}</button>
     </div>
 
     <div v-else-if="menuMode" class="section-bar">
@@ -371,20 +383,19 @@
 
     <!-- AZIONI -->
     <div class="form-actions">
-      <div class="form-actions-inner">
+      <div class="form-actions-inner" :class="{ 'ess-actions': mode === 'essential' }">
         <template v-if="menuMode && activeSection">
           <button type="button" class="btn btn-primary" @click="activeSection = null">{{ t('sessionForm.menu.done') }}</button>
         </template>
         <template v-else>
-          <button type="button" class="btn btn-ghost" @click="$emit('cancel')">{{ t('common.cancel') }}</button>
-          <button type="submit" class="btn btn-primary" :disabled="saving">
+          <button v-if="mode !== 'essential'" type="button" class="btn btn-ghost" @click="$emit('cancel')">{{ t('common.cancel') }}</button>
+          <button type="submit" :class="mode === 'essential' ? 'fl-btn1' : 'btn btn-primary'" :disabled="saving">
             <span v-if="saving" class="spinner" style="width:15px;height:15px"></span>
             {{ saving ? t('sessionForm.saving') : (mode === 'essential' ? (concluded ? t('sessionForm.essential.save') : t('sessionForm.essential.start')) : (isEdit ? t('sessionForm.submitEdit') : t('sessionForm.submitCreate'))) }}
           </button>
         </template>
       </div>
       <p v-if="mode === 'essential'" class="ess-foot">{{ t('sessionForm.essential.later') }}</p>
-      <button v-if="menuMode && !activeSection" type="button" class="delete-link" @click="$emit('delete')">{{ t('sessionForm.menu.delete') }}</button>
     </div>
 
   </form>
@@ -392,7 +403,8 @@
 
 <script setup>
   import { ref, computed, watch, onMounted, nextTick } from 'vue'
-  import { ChevronRight, ArrowLeft } from 'lucide-vue-next'
+  import { ChevronRight, ArrowLeft, MapPin, Trash2, FileText, Waves, CloudSun, Fish, StickyNote } from 'lucide-vue-next'
+  const MENU_ICONS = { base: FileText, location: MapPin, water: Waves, weather: CloudSun, catches: Fish, notes: StickyNote }
   import { useI18n } from 'vue-i18n'
   import { useGroupStore } from '../../stores/groups.js'
   import { useAuthStore } from '../../stores/auth.js'
@@ -422,6 +434,13 @@
   // ─── Nuova uscita essenziale e menu «Dati uscita» ─────────────────────────────
 
   const concluded = ref(false)
+  // Nuova uscita: l'ora di inizio parte da adesso (modificabile)
+  onMounted(() => {
+    if (props.mode === 'essential' && !f.value.startTime) {
+      const d = new Date()
+      f.value.startTime = `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`
+    }
+  })
   const activeSection = ref(null)
   const menuMode = computed(() => props.isEdit && props.mode !== 'essential')
 
@@ -1114,37 +1133,36 @@
     color: #f05050;
   }
 
-  /* ── Nuova uscita essenziale ── */
-  .essential { display: flex; flex-direction: column; gap: 1.5rem; }
-  .detect-card { align-items: center; background: rgba(14, 165, 233, .1); border: 1px solid var(--ocean); border-radius: 18px; color: var(--foam); cursor: pointer; display: flex; min-height: 64px; padding: .75rem 1rem; text-align: left; width: 100%; }
+  /* ── Nuova uscita essenziale (mockup 12) ── */
+  .essential { display: flex; flex-direction: column; gap: 22px; padding-bottom: 8.5rem; }
+  .detect-card { align-items: center; background: rgb(var(--color-sea-deep)); border: 1px solid var(--border); border-radius: 24px 24px 24px 8px; color: var(--foam); cursor: pointer; display: flex; gap: 14px; min-height: 72px; padding: 14px 16px; text-align: left; width: 100%; box-sizing: border-box; }
   .detect-card:disabled { opacity: .6; }
-  .detect-text { display: flex; flex-direction: column; gap: .15rem; }
-  .detect-text small { color: var(--text-muted); font-size: .8rem; }
-  .ess-lab { color: var(--text-muted); display: block; font-size: .75rem; font-weight: 800; letter-spacing: .12em; margin-bottom: .5rem; text-transform: uppercase; }
-  .ess-inp { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; color: var(--foam); font-size: 1rem; height: 52px; padding: 0 1rem; width: 100%; box-sizing: border-box; }
-  .ess-inp:focus { border-color: var(--ocean); outline: none; }
-  .ess-hint { color: var(--text-muted); font-size: .8rem; margin-top: .4rem; }
-  .ess-two { display: grid; gap: .6rem; grid-template-columns: 1.3fr 1fr; }
-  .ess-switch { align-items: center; color: var(--foam); display: flex; gap: .7rem; margin-top: .6rem; min-height: 44px; }
-  .ess-switch input { height: 22px; width: 22px; }
-  .ess-end { margin-top: .5rem; }
-  .ess-chips { display: flex; flex-wrap: wrap; gap: .5rem; }
-  .ess-chip { background: var(--surface); border: 1px solid var(--border); border-radius: 22px; color: var(--foam); cursor: pointer; font-weight: 600; min-height: 44px; padding: 0 1rem; }
-  .ess-chip.on { background: var(--ocean); border-color: var(--ocean); color: rgb(var(--color-on-primary)); font-weight: 800; }
-  .ess-foot { color: var(--text-muted); font-size: .8rem; text-align: center; margin: .5rem 0 0; }
+  .detect-icon { width: 44px; height: 44px; border-radius: 14px; background: rgba(14, 165, 233, .16); color: rgb(var(--color-ocean-text)); display: flex; align-items: center; justify-content: center; flex: none; }
+  .detect-text { display: flex; flex: 1; flex-direction: column; gap: 2px; }
+  .detect-text strong { font-size: 16px; font-weight: 800; }
+  .detect-text small { color: var(--text-muted); font-size: 13px; }
+  .ess-two { display: grid; gap: 10px; grid-template-columns: 1.3fr 1fr; }
+  .ess-switch { align-items: center; color: var(--foam); display: flex; justify-content: space-between; gap: 12px; margin-top: 14px; min-height: 48px; font-size: 15px; font-weight: 600; }
+  .ess-end { margin-top: 10px; }
+  .ess-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .form-actions-inner.ess-actions { flex-direction: column; align-items: stretch; gap: 8px; padding-bottom: 4px; }
+  .essential .field-missing { border-color: var(--border); }
+  .ess-foot { color: var(--text-muted); font-size: 12px; text-align: center; margin: 0; padding: 0 1rem 12px; }
+  .fl-inp[type="date"], .fl-inp[type="time"] { display: flex; align-items: center; text-align: left; -webkit-appearance: none; appearance: none; }
 
-  /* ── Dati uscita (menu a righe) ── */
-  .data-menu { display: flex; flex-direction: column; gap: .6rem; }
-  .menu-row { align-items: center; background: var(--surface); border: 1px solid var(--border); border-radius: 14px; color: var(--foam); cursor: pointer; display: flex; gap: .75rem; min-height: 64px; padding: .7rem 1rem; text-align: left; width: 100%; }
-  .menu-row:hover { border-color: var(--ocean); }
-  .menu-text { display: flex; flex: 1; flex-direction: column; gap: .1rem; }
-  .menu-text small { color: var(--text-muted); font-size: .78rem; }
-  .menu-status { color: var(--text-muted); font-size: .8rem; }
-  .menu-status.done { color: var(--success); }
-  .menu-go { color: var(--ocean); }
+  /* ── Dati uscita (menu a righe, mockup 37) ── */
+  .data-menu { display: flex; flex-direction: column; gap: 10px; padding-bottom: 7rem; }
+  .menu-row { align-items: center; background: var(--surface); border: 1px solid var(--border); border-radius: 20px; color: var(--foam); cursor: pointer; display: flex; gap: 14px; min-height: 72px; padding: 14px 16px; text-align: left; width: 100%; box-sizing: border-box; }
+  .menu-icon { width: 44px; height: 44px; border-radius: 14px; background: var(--surface-2); color: rgb(var(--color-ocean-text)); display: flex; align-items: center; justify-content: center; flex: none; }
+  .menu-text { display: flex; flex: 1; min-width: 0; flex-direction: column; gap: 2px; }
+  .menu-text strong { font-size: 16px; font-weight: 800; }
+  .menu-text small { color: var(--text-muted); font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .menu-status { color: rgb(var(--color-sand-text)); font-size: 12px; font-weight: 700; flex: none; }
+  .menu-status.done { color: rgb(var(--color-success-text)); }
+  .menu-go { color: var(--text-muted); flex: none; }
   .section-bar { align-items: center; display: flex; flex-direction: column; gap: .25rem; margin-bottom: 1rem; }
   .section-bar h3 { color: var(--foam); font-size: 1.2rem; margin: 0; }
   .link-back { align-items: center; align-self: flex-start; background: none; border: none; color: var(--ocean); cursor: pointer; display: inline-flex; font-weight: 600; gap: .3rem; padding: .4rem 0; }
   .single-section .accordion-header, .single-section .section-desc { display: none; }
-  .delete-link { background: none; border: none; color: var(--danger); cursor: pointer; font-size: .85rem; margin-top: .5rem; padding: .5rem; }
+  .delete-link { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; min-height: 52px; border-radius: 16px; background: transparent; border: 1px solid #7f1d1d; color: #fca5a5; cursor: pointer; font-size: 15px; font-weight: 700; margin-top: 18px; }
 </style>

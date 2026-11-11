@@ -1,22 +1,18 @@
 <template>
   <div class="catch-page">
-    <PageHeader :title="isNew ? t('session.ongoing.newCatch') : t('session.ongoing.editCatch')" back />
+    <PageHeader :title="isNew ? t('session.ongoing.newCatch') : t('session.ongoing.editCatch')" back compact />
 
     <div v-if="!ready" class="state-center"><div class="spinner"></div></div>
 
-    <form v-else class="catch-form" @submit.prevent="save(false)">
+    <form v-else class="catch-form" novalidate @submit.prevent="save(false)">
       <div v-if="error" class="error-banner"><AlertTriangle :size="16" /> {{ error }}</div>
 
-      <!-- 1. Specie -->
+      <!-- Che pesce è? -->
       <section>
-        <h4 class="sec-title">{{ t('session.ongoing.whichFish') }}</h4>
-        <div v-if="draft.species" class="chosen">
-          <strong>{{ draft.species }}</strong>
-          <button type="button" class="link-btn" @click="draft.species = ''">{{ t('session.ongoing.changeSpecies') }}</button>
-        </div>
-        <SpeciesQuickAdd v-else v-model="speciesQuery" :location="store.current?.location" @add="chooseSpecies">
+        <label class="fl-lab" for="species-quickadd-input">{{ t('session.ongoing.whichFish') }}</label>
+        <SpeciesQuickAdd v-model="speciesQuery" :location="store.current?.location" :selected="draft.species" :show-label="false" @add="chooseSpecies">
           <template #actions>
-            <button type="button" class="btn btn-secondary btn-sm" :disabled="speciesQuery.trim().length < 2" @click="chooseSpecies(speciesQuery.trim())">
+            <button type="button" class="fl-chip use-name" :disabled="speciesQuery.trim().length < 2" @click="chooseSpecies(speciesQuery.trim())">
               {{ t('session.ongoing.useName') }}
             </button>
           </template>
@@ -24,39 +20,38 @@
       </section>
 
       <template v-if="draft.species">
-        <!-- 2. Misure -->
+        <!-- Misure -->
         <section>
-          <h4 class="sec-title">{{ t('session.ongoing.measures') }}</h4>
+          <span class="fl-lab">{{ t('session.ongoing.measures') }}</span>
           <div class="two-cols">
-            <label class="big-field">
-              <span>{{ t('catchesSection.weightLabel') }}</span>
-              <input v-model.number="draft.weightKg" type="number" inputmode="decimal" step="0.01" min="0" placeholder="0" />
+            <label class="measure">
+              <span class="m-lab">{{ t('session.ongoing.weight') }}</span>
+              <span class="m-row"><input v-model.number="draft.weightKg" class="fl-mono m-inp" inputmode="decimal" type="number" step="0.01" min="0" :aria-label="t('session.ongoing.weightAria')" placeholder="0" /><span class="m-unit">kg</span></span>
             </label>
-            <label class="big-field">
-              <span>{{ t('catchesSection.lengthLabel') }}</span>
-              <input v-model.number="draft.lengthCm" type="number" inputmode="decimal" step="0.5" min="0" placeholder="0" />
+            <label class="measure">
+              <span class="m-lab">{{ t('session.ongoing.length') }}</span>
+              <span class="m-row"><input v-model.number="draft.lengthCm" class="fl-mono m-inp" inputmode="decimal" type="number" step="0.5" min="0" :aria-label="t('session.ongoing.lengthAria')" placeholder="0" /><span class="m-unit">cm</span></span>
             </label>
           </div>
         </section>
 
-        <label class="released-row" :class="{ on: draft.released }">
-          <span class="released-text">
-            <strong>{{ t('catchesSection.releasedLabel') }}</strong>
-            <small>{{ t('session.ongoing.releasedSub') }}</small>
-          </span>
-          <input type="checkbox" v-model="draft.released" />
-        </label>
+        <!-- Rilasciato -->
+        <section class="released">
+          <span class="rel-icon"><RefreshCw :size="22" /></span>
+          <span class="rel-text"><strong>{{ t('session.ongoing.releasedShort') }}</strong><small>{{ t('session.ongoing.releasedSub') }}</small></span>
+          <button type="button" class="fl-switch" :class="{ on: draft.released }" role="switch" :aria-checked="!!draft.released" :aria-label="t('session.ongoing.releasedShort')" @click="draft.released = !draft.released"></button>
+        </section>
 
-        <!-- 3. Foto -->
+        <!-- Foto -->
         <section>
-          <h4 class="sec-title">{{ t('session.ongoing.photos') }}</h4>
+          <span class="fl-lab">{{ t('session.ongoing.photos') }}</span>
           <div class="two-cols">
-            <label class="photo-btn">
-              <Camera :size="22" /> {{ t('session.ongoing.takePhoto') }}
+            <label class="photo-btn primary">
+              <Camera :size="24" /> {{ t('session.ongoing.takePhoto') }}
               <input type="file" accept="image/*" capture="environment" class="sr-only" @change="pickPhotos" />
             </label>
             <label class="photo-btn">
-              <Image :size="22" /> {{ t('session.ongoing.gallery') }}
+              <Image :size="24" /> {{ t('session.ongoing.gallery') }}
               <input type="file" accept="image/*,video/*" multiple class="sr-only" @change="pickPhotos" />
             </label>
           </div>
@@ -64,7 +59,7 @@
           <p v-else-if="draft.media?.length" class="photo-note">{{ t('session.ongoing.photosSaved', { n: draft.media.length }) }}</p>
         </section>
 
-        <!-- 4. Altri dettagli -->
+        <!-- Altri dettagli -->
         <section>
           <button type="button" class="more-row" @click="showMore = !showMore">
             <span>
@@ -75,15 +70,15 @@
           </button>
           <div v-if="showMore" class="more-grid">
             <label v-for="f in DETAIL_FIELDS" :key="f.key" class="field">
-              <span>{{ t(`catchesSection.${f.label}`) }}</span>
-              <select v-if="f.key === 'baitType'" v-model="draft.baitType">
+              <span class="fl-lab">{{ t(`catchesSection.${f.label}`) }}</span>
+              <select v-if="f.key === 'baitType'" v-model="draft.baitType" class="fl-inp">
                 <option value="">--</option>
                 <option value="naturale">{{ t('catchesSection.baitTypeNatural') }}</option>
                 <option value="artificiale">{{ t('catchesSection.baitTypeArtificial') }}</option>
                 <option value="misto">{{ t('catchesSection.baitTypeMixed') }}</option>
               </select>
-              <input v-else-if="f.num" v-model.number="draft[f.key]" type="number" inputmode="decimal" step="any" min="0" />
-              <input v-else v-model="draft[f.key]" :type="f.type || 'text'" :list="f.key === 'baitUsed' ? 'catch-bait-suggestions' : undefined" />
+              <input v-else-if="f.num" v-model.number="draft[f.key]" class="fl-inp" type="number" inputmode="decimal" step="any" min="0" />
+              <input v-else v-model="draft[f.key]" class="fl-inp" :type="f.type || 'text'" :list="f.key === 'baitUsed' ? 'catch-bait-suggestions' : undefined" v-ph="'--:--'" />
             </label>
           </div>
         </section>
@@ -91,13 +86,13 @@
 
       <datalist id="catch-bait-suggestions"><option v-for="b in baitSuggestions" :key="b" :value="b" /></datalist>
 
-      <div v-if="draft.species" class="catch-actions">
-        <button type="submit" class="btn btn-primary save-btn" :disabled="saving">
+      <div v-if="draft.species" class="fl-bar">
+        <button type="submit" class="fl-btn1" :disabled="saving">
           <span v-if="saving" class="spinner" style="width:15px;height:15px"></span>
           {{ t('session.ongoing.saveCatch') }}
         </button>
-        <button v-if="isNew" type="button" class="link-btn" :disabled="saving" @click="save(true)">{{ t('session.ongoing.saveAndAnother') }}</button>
-        <button v-else type="button" class="link-btn danger" :disabled="saving" @click="remove">{{ t('common.delete') }}</button>
+        <button v-if="isNew" type="button" class="bar-link" :disabled="saving" @click="save(true)">{{ t('session.ongoing.saveAndAnother') }}</button>
+        <button v-else type="button" class="bar-link danger" :disabled="saving" @click="remove">{{ t('common.delete') }}</button>
       </div>
     </form>
   </div>
@@ -107,7 +102,7 @@
 import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { AlertTriangle, Camera, Image, ChevronRight } from 'lucide-vue-next'
+import { AlertTriangle, Camera, Image, ChevronRight, RefreshCw } from 'lucide-vue-next'
 import PageHeader from '../components/PageHeader.vue'
 import SpeciesQuickAdd from '../components/form/SpeciesQuickAdd.vue'
 import { useSessionStore } from '../stores/sessions.js'
@@ -239,32 +234,38 @@ async function remove() {
 </script>
 
 <style scoped>
-.catch-form { display: flex; flex-direction: column; gap: 1.25rem; max-width: 640px; padding-bottom: 7rem; }
+.catch-form { display: flex; flex-direction: column; gap: 26px; max-width: 640px; padding: 0 0 9rem; }
 .state-center { display: flex; justify-content: center; padding: 4rem; }
-.sec-title { color: var(--text-muted, #6b8fa8); font-size: .75rem; font-weight: 800; letter-spacing: .06em; margin-bottom: .5rem; text-transform: uppercase; }
-.error-banner { align-items: center; background: rgba(240,80,80,.1); border: 1px solid var(--danger, #f05050); border-radius: 6px; color: var(--danger, #f05050); display: inline-flex; gap: .4rem; padding: .75rem 1rem; }
-.chosen { align-items: center; background: var(--surface, #0a1929); border: 1px solid var(--ocean, #0ea5e9); border-radius: 12px; color: var(--foam, #cde); display: flex; font-size: 1.15rem; justify-content: space-between; padding: .75rem 1rem; }
-.link-btn { background: none; border: none; color: var(--ocean, #0ea5e9); cursor: pointer; font-size: .9rem; font-weight: 600; padding: .6rem; }
-.link-btn.danger { color: var(--danger, #f05050); }
-.two-cols { display: grid; gap: .75rem; grid-template-columns: 1fr 1fr; }
-.big-field { background: var(--surface, #0a1929); border: 1px solid var(--border, #2a3f55); border-radius: 12px; display: flex; flex-direction: column; gap: .2rem; padding: .6rem .9rem; }
-.big-field span { color: var(--text-muted, #6b8fa8); font-size: .78rem; }
-.big-field input { background: none; border: none; color: var(--foam, #cde); font-family: monospace; font-size: 2rem; min-height: 48px; outline: none; padding: 0; width: 100%; }
-.released-row { align-items: center; background: var(--surface, #0a1929); border: 1px solid var(--border, #2a3f55); border-radius: 12px; cursor: pointer; display: flex; justify-content: space-between; padding: .9rem 1rem; }
-.released-row.on { border-color: var(--success, #5cd98a); }
-.released-text { display: flex; flex-direction: column; gap: .1rem; }
-.released-text small { color: var(--text-muted, #6b8fa8); }
-.released-row input { height: 26px; width: 26px; }
-.photo-btn { align-items: center; background: var(--surface, #0a1929); border: 1px dashed var(--ocean, #0ea5e9); border-radius: 12px; color: var(--ocean, #0ea5e9); cursor: pointer; display: flex; flex-direction: column; font-weight: 700; gap: .4rem; justify-content: center; min-height: 84px; }
-.photo-note { color: var(--success, #5cd98a); font-size: .85rem; margin-top: .5rem; }
-.more-row { align-items: center; background: none; border: none; border-top: 1px solid var(--border, #2a3f55); color: var(--foam, #cde); cursor: pointer; display: flex; justify-content: space-between; padding: 1rem 0; text-align: left; width: 100%; }
-.more-row span { display: flex; flex-direction: column; gap: .15rem; }
-.more-row small { color: var(--text-muted, #6b8fa8); }
+.error-banner { align-items: center; background: rgba(240,80,80,.1); border: 1px solid var(--danger); border-radius: 6px; color: var(--danger); display: inline-flex; gap: .4rem; padding: .75rem 1rem; }
+.use-name { min-height: 52px; border-radius: 14px; white-space: nowrap; }
+.use-name:disabled { opacity: .5; }
+
+.two-cols { display: grid; gap: 10px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.measure { display: flex; flex-direction: column; gap: 6px; background: var(--surface); border: 1px solid var(--border); border-radius: 18px; padding: 12px 14px; margin: 0; text-transform: none; letter-spacing: 0; }
+.m-lab { font-size: 13px; color: var(--text-muted); font-weight: 600; }
+.m-row { display: flex; align-items: baseline; gap: 6px; }
+.m-inp, .m-inp:focus { width: 100%; min-width: 0; min-height: 0; background: transparent; border: 0; border-radius: 0; box-shadow: none; outline: none; color: var(--foam); font-size: 34px; letter-spacing: -.04em; padding: 0; }
+.m-unit { font-size: 14px; color: var(--text-muted); }
+
+.released { display: flex; align-items: center; gap: 14px; background: var(--surface); border: 1px solid var(--border); border-radius: 18px; padding: 12px 14px; min-height: 64px; box-sizing: border-box; }
+.rel-icon { width: 40px; height: 40px; border-radius: 12px; background: rgba(74, 222, 128, .14); color: rgb(var(--color-success-text)); display: flex; align-items: center; justify-content: center; flex: none; }
+.rel-text { flex: 1; display: flex; flex-direction: column; gap: 2px; }
+.rel-text strong { font-size: 15px; font-weight: 800; color: var(--foam); }
+.rel-text small { font-size: 13px; color: var(--text-muted); }
+
+.photo-btn { min-height: 84px; border-radius: 18px; border: 1px dashed var(--border-light); background: var(--surface); color: var(--foam); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; font-weight: 700; font-size: 14px; cursor: pointer; margin: 0; text-transform: none; letter-spacing: 0; }
+.photo-btn.primary { border-color: rgb(var(--color-ocean-text)); background: rgba(14, 165, 233, .08); color: rgb(var(--color-ocean-text)); }
+.photo-note { color: var(--success); font-size: .85rem; margin-top: .5rem; }
+
+.more-row { align-items: center; background: none; border: none; border-top: 1px solid var(--border); color: var(--foam); cursor: pointer; display: flex; justify-content: space-between; padding: 16px 0 6px; text-align: left; width: 100%; }
+.more-row span { display: flex; flex-direction: column; gap: 2px; }
+.more-row strong { font-size: 16px; font-weight: 800; }
+.more-row small { color: var(--text-muted); font-size: 13px; }
+.more-row svg { color: rgb(var(--color-ocean-text)); }
 .more-row svg.open { transform: rotate(90deg); }
-.more-grid { display: grid; gap: .75rem; grid-template-columns: 1fr 1fr; }
-.field { display: flex; flex-direction: column; gap: .3rem; }
-.field span { color: var(--text-muted, #6b8fa8); font-size: .78rem; font-weight: 700; }
-.field input, .field select { min-height: 44px; }
-.catch-actions { background: var(--ink); border-top: 1px solid var(--border, #2a3f55); bottom: 0; display: flex; flex-direction: column; gap: .25rem; left: 0; padding: .9rem 1rem calc(.9rem + env(safe-area-inset-bottom)); position: fixed; right: 0; z-index: 50; }
-.save-btn { min-height: 52px; width: 100%; }
+.more-grid { display: grid; gap: 14px; grid-template-columns: 1fr 1fr; margin-top: 12px; }
+.field { display: flex; flex-direction: column; margin: 0; }
+
+.bar-link { background: none; border: none; color: rgb(var(--color-ocean-text)); cursor: pointer; font-weight: 700; font-size: 15px; min-height: 44px; }
+.bar-link.danger { color: rgb(var(--color-danger-text)); }
 </style>

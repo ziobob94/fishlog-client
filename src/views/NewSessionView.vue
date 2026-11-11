@@ -1,6 +1,6 @@
 <template>
   <div>
-    <PageHeader :title="t('nav.newSession')" back close-icon />
+    <PageHeader :title="t('nav.newSession')" back compact />
 
     <div v-if="error" class="error-banner" style="display:inline-flex;align-items:center;gap:.4rem"><AlertTriangle :size="16" /> {{ error }}</div>
 
