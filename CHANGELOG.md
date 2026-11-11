@@ -1,3 +1,10 @@
+# [1.50.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.49.0...client-v1.50.0) (2026-11-11)
+
+
+### Features
+
+* grafico dell'altezza dell'onda (48 h) e messaggio quando le maree non sono disponibili ([1a094be](https://github.com/ziobob94/fishlog-client/commit/1a094be1a4c896c89ef80ae57290d73187384c9d))
+
 # [1.49.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.48.0...client-v1.49.0) (2026-11-11)
 
 
