@@ -479,6 +479,86 @@
    "w": 390,
    "x": 7190,
    "y": 12700
+  },
+  "MeteoMobile.dc.html": {
+   "h": 2945,
+   "is_interactive": true,
+   "title": "56 · Meteo e mare · mobile (scuro)",
+   "w": 390,
+   "x": 0,
+   "y": 14900
+  },
+  "MeteoMobile-chiaro.dc.html": {
+   "h": 2945,
+   "is_interactive": true,
+   "title": "56 · Meteo e mare · mobile (chiaro)",
+   "w": 390,
+   "x": 470,
+   "y": 14900
+  },
+  "MeteoDesktop.dc.html": {
+   "h": 2088,
+   "is_interactive": true,
+   "title": "57 · Meteo e mare · desktop (scuro)",
+   "w": 1200,
+   "x": 1000,
+   "y": 14900
+  },
+  "MeteoDesktop-chiaro.dc.html": {
+   "h": 2088,
+   "is_interactive": true,
+   "title": "57 · Meteo e mare · desktop (chiaro)",
+   "w": 1200,
+   "x": 2280,
+   "y": 14900
+  },
+  "MeteoLuogo.dc.html": {
+   "h": 811,
+   "is_interactive": true,
+   "title": "58 · Meteo · luogo, permessi, ricerca (scuro)",
+   "w": 390,
+   "x": 0,
+   "y": 18000
+  },
+  "MeteoLuogo-chiaro.dc.html": {
+   "h": 811,
+   "is_interactive": true,
+   "title": "58 · Meteo · luogo, permessi, ricerca (chiaro)",
+   "w": 390,
+   "x": 470,
+   "y": 18000
+  },
+  "MeteoHome.dc.html": {
+   "h": 431,
+   "is_interactive": true,
+   "title": "59 · Meteo · scheda Home (scuro)",
+   "w": 390,
+   "x": 1000,
+   "y": 18000
+  },
+  "MeteoHome-chiaro.dc.html": {
+   "h": 431,
+   "is_interactive": true,
+   "title": "59 · Meteo · scheda Home (chiaro)",
+   "w": 390,
+   "x": 1470,
+   "y": 18000
+  },
+  "MeteoComponenti.dc.html": {
+   "h": 1023,
+   "is_interactive": true,
+   "title": "60 · Meteo · pressione, vento, luna (scuro)",
+   "w": 390,
+   "x": 2000,
+   "y": 18000
+  },
+  "MeteoComponenti-chiaro.dc.html": {
+   "h": 1023,
+   "is_interactive": true,
+   "title": "60 · Meteo · pressione, vento, luna (chiaro)",
+   "w": 390,
+   "x": 2470,
+   "y": 18000
   }
  },
  "createdOnFiles": {
@@ -503,7 +583,9 @@
   "n12",
   "n13",
   "n14",
-  "n15"
+  "n15",
+  "n16",
+  "n17"
  ],
  "notes": {
   "n1": {
@@ -603,6 +685,18 @@
    "w": 1100,
    "x": 1160,
    "y": 12540
+  },
+  "n16": {
+   "text": "Meteo e mare · movimento (solo motion system del progetto). Ingresso dei blocchi: opacity + translateY 8→0 px, 200 ms --ease-enter, stagger 40 ms (max 6), solo al primo caricamento. Tendenza pressione: la freccia ruota dalla posizione «stabile» a quella finale in 320 ms --ease-spring (ritardo 200 ms) e la linea si disegna in 320 ms; il significato resta nella parola «In calo/Stabile/In aumento» e nella freccia già orientata. Aggiorna: icona che ruota 800 ms lineare finché carica. Scheletri: pulsazione 1400 ms, sostituiti dai dati con dissolvenza 200 ms. Con prefers-reduced-motion: nessuno spostamento, ingresso = dissolvenza ≤120 ms, freccia e linea compaiono già finali, scheletri fermi, icona aggiorna sostituita da «Aggiorno…». Nessuna animazione porta informazione che non sia anche scritta.",
+   "w": 900,
+   "x": 0,
+   "y": 14700
+  },
+  "n17": {
+   "text": "Da decidere: 1) fonte dati: previsioni meteo e marine (onde, swell, temperatura mare, corrente) da un servizio con copertura Adriatico, es. Open-Meteo + Marine API; le maree sono una stima astronomica (non per la navigazione), disegnate con etichetta «Stima»; 2) suggerimenti luoghi: Google Places con chiave lato server; 3) senza dati mare (lago, entroterra, fiume) il blocco diventa una riga neutra: alternativa, nasconderlo del tutto; 4) lettura della pressione: solo testo prudente, nessun «pesca buona/cattiva»; 5) cache locale dell'ultimo dato per l'offline.",
+   "w": 800,
+   "x": 1000,
+   "y": 14700
   }
  },
  "order": [
@@ -668,7 +762,17 @@
   "GareClassificaPubblica.dc.html",
   "GareClassificaPubblica-chiaro.dc.html",
   "GareIscritti.dc.html",
-  "GareIscritti-chiaro.dc.html"
+  "GareIscritti-chiaro.dc.html",
+  "MeteoMobile.dc.html",
+  "MeteoMobile-chiaro.dc.html",
+  "MeteoDesktop.dc.html",
+  "MeteoDesktop-chiaro.dc.html",
+  "MeteoLuogo.dc.html",
+  "MeteoLuogo-chiaro.dc.html",
+  "MeteoHome.dc.html",
+  "MeteoHome-chiaro.dc.html",
+  "MeteoComponenti.dc.html",
+  "MeteoComponenti-chiaro.dc.html"
  ],
  "pages": [],
  "title": "FishLog – Restyling"

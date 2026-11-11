@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<title>FishLog Meteo · componenti (chiaro)</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700;9..144,800&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+.th{--bg:#111c2c;--sf:#1a293d;--sf2:#243650;--bd:#33486a;--bd2:#46617f;--inb:#5f7897;--fg:#f1f5f9;--fg2:#cbd5e1;--mu:#9db0c8;--pb:#0ea5e9;--onp:#0b1623;--oct:#7dd3fc;--snt:#fbbf24;--sn:#f59e0b;--dgt:#fca5a5;--dg:#f87171;--okt:#86efac;--deep:#10304d;--strip:#0b1623;--hi:rgba(14,165,233,.14);--sandbg:#2a2314;--dgbg:rgba(248,113,113,.10);--bob:#f1f5f9;--bobs:none;--wave:#7dd3fc;--shade:rgba(5,10,18,.62)}
+.th[data-theme=light]{--bg:#eef5fb;--sf:#ffffff;--sf2:#e7f0f9;--bd:#cddae8;--bd2:#b2c3d5;--inb:#7a8fa8;--fg:#0f172a;--fg2:#334155;--mu:#56667c;--pb:#0369a1;--onp:#ffffff;--oct:#0369a1;--snt:#92400e;--sn:#d97706;--dgt:#b91c1c;--dg:#dc2626;--okt:#15803d;--deep:#e0f0fa;--strip:#dbe7f3;--hi:rgba(3,105,161,.10);--sandbg:#fdf3e1;--dgbg:rgba(220,38,38,.07);--bob:#ffffff;--bobs:#334155;--wave:#0369a1;--shade:rgba(15,23,42,.45)}
+body{margin:0;font-family:'Manrope',system-ui,sans-serif;background:#111c2c}
+.th{color:var(--fg);background:var(--bg);font-family:'Manrope',system-ui,sans-serif;width:390px;box-sizing:border-box;display:flex;flex-direction:column;overflow:hidden;position:relative}
+.th *{box-sizing:border-box}
+.th button,.th input,.th textarea,.th select{font-family:inherit}
+.th button{cursor:pointer}
+.th a{color:inherit;text-decoration:none}
+.th h1,.th h2,.th .disp{font-family:'Fraunces',Georgia,serif;font-optical-sizing:auto;letter-spacing:-.01em}
+.mono{font-family:'JetBrains Mono',monospace}
+.i{fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.hd{display:flex;align-items:center;gap:8px;padding:8px 12px 8px 8px;min-height:64px}
+.hd h1{margin:0;font-size:22px;font-weight:800;flex:1;min-width:0;line-height:1.15}
+.ib{width:44px;height:44px;border-radius:14px;border:1px solid var(--bd);background:var(--sf);color:var(--fg);display:flex;align-items:center;justify-content:center;flex:none}
+.ib.bare{border:0;background:transparent}
+.btn1{min-height:52px;border-radius:16px;background:var(--pb);color:var(--onp);font-weight:800;font-size:16px;display:flex;align-items:center;justify-content:center;gap:8px;border:0;width:100%;padding:0 16px}
+.btn2{min-height:48px;border-radius:14px;background:transparent;color:var(--fg2);border:1px solid var(--bd2);font-weight:700;font-size:15px;display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:0 16px}
+.btnd{min-height:48px;border-radius:14px;background:transparent;color:var(--dgt);border:1px solid var(--dg);font-weight:700;font-size:15px;display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:0 16px}
+.card{background:var(--sf);border:1px solid var(--bd);border-radius:20px;padding:16px}
+.sig{border-radius:24px 24px 24px 8px}
+.lab{display:block;margin:0 0 8px;font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--mu)}
+.fld{width:100%;min-height:52px;border-radius:14px;border:1px solid var(--inb);background:var(--sf);color:var(--fg);font-size:16px;padding:0 16px;outline:none}
+.fld:focus-visible,.th button:focus-visible,.th a:focus-visible{outline:2px solid var(--oct);outline-offset:2px}
+.fld.err{border-color:var(--dg)}
+.hint{margin:6px 0 0;font-size:13px;color:var(--mu);line-height:1.4}
+.errm{margin:6px 0 0;font-size:13px;color:var(--dgt);font-weight:600}
+.chip{flex:none;min-height:44px;padding:0 16px;border-radius:22px;border:1px solid var(--bd2);background:var(--sf);color:var(--fg2);font-weight:600;font-size:14px;display:inline-flex;align-items:center;gap:6px}
+.chip.on{border-color:var(--pb);background:var(--pb);color:var(--onp);font-weight:800}
+.seg{display:grid;gap:4px;background:var(--sf);border:1px solid var(--bd);border-radius:16px;padding:4px}
+.seg button{min-height:44px;border-radius:12px;border:0;background:transparent;color:var(--fg2);font-weight:600;font-size:14px}
+.seg button[aria-selected=true],.seg button[aria-checked=true]{background:var(--pb);color:var(--onp);font-weight:800}
+.tabs{display:flex;gap:4px;overflow-x:auto;border-bottom:1px solid var(--bd);padding:0 12px;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tabs button{flex:none;min-height:48px;padding:0 12px;border:0;border-bottom:3px solid transparent;background:transparent;color:var(--mu);font-weight:700;font-size:14px}
+.tabs button[aria-selected=true]{color:var(--fg);border-bottom-color:var(--pb)}
+.pill{display:inline-flex;align-items:center;gap:5px;min-height:24px;padding:0 10px;border-radius:999px;font-size:12px;font-weight:800;border:1px solid var(--bd2);color:var(--fg2);white-space:nowrap}
+.pill.live{border-color:var(--sn);color:var(--snt);background:var(--sandbg)}
+.pill.oc{border-color:var(--oct);color:var(--oct)}
+.pill.ok{border-color:var(--okt);color:var(--okt)}
+.pill.dg{border-color:var(--dg);color:var(--dgt)}
+.dot{width:8px;height:8px;border-radius:50%;background:currentColor;display:inline-block}
+.sk{background:var(--sf2);border-radius:14px}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(6px)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:no-preference){.sk{animation:pulse 1.4s ease-in-out infinite}.bobg{animation:bob 2.6s ease-in-out infinite}.spin{animation:spin .8s linear infinite}.dot.l{animation:pulse 1.4s ease-in-out infinite}}
+.spin{width:18px;height:18px;border-radius:50%;border:3px solid currentColor;border-right-color:transparent;display:inline-block}
+.rowx{display:flex;align-items:center;gap:12px;min-height:56px;padding:8px 16px;border-top:1px solid var(--bd)}
+.av{border-radius:50%;border:1px solid var(--oct);background:var(--hi);color:var(--oct);font-weight:800;display:flex;align-items:center;justify-content:center;flex:none}
+.pos{display:inline-flex;align-items:center;justify-content:center;min-width:32px;height:32px;border-radius:10px;font-weight:700;font-size:15px;background:var(--sf2);color:var(--fg)}
+.pos.p1{background:var(--sn);color:#1a1204}
+.bar{padding:12px 16px 20px;background:var(--sf);border-top:1px solid var(--bd);display:flex;flex-direction:column;gap:8px}
+.strip{display:flex;gap:8px;overflow-x:auto;padding:10px 12px;background:var(--strip);border-bottom:1px dashed var(--bd2);scrollbar-width:none}
+.strip::-webkit-scrollbar{display:none}
+.strip button{flex:none;min-height:44px;padding:0 14px;border-radius:22px;border:1px solid var(--bd2);background:var(--sf);color:var(--fg2);font-weight:700;font-size:13px}
+.strip button[aria-selected=true]{background:var(--pb);border-color:var(--pb);color:var(--onp)}
+.strip .t{flex:none;align-self:center;font-size:12px;font-weight:700;color:var(--mu);letter-spacing:.08em;text-transform:uppercase}
+.sheetbg{position:absolute;inset:0;background:var(--shade);z-index:20}
+.sheet{position:absolute;left:0;right:0;bottom:0;z-index:21;background:var(--sf);border-radius:28px 28px 0 0;border-top:1px solid var(--bd2);padding:12px 16px 24px;display:flex;flex-direction:column;gap:12px}
+.grab{align-self:center;width:44px;height:5px;border-radius:3px;background:var(--bd2)}
+.banner{display:flex;align-items:center;gap:10px;margin:0 16px;padding:10px 14px;border-radius:16px;background:var(--sandbg);border:1px solid var(--sn);color:var(--snt);font-size:14px;font-weight:700}
+.stamp{border-radius:50%;border:2px dashed var(--snt);color:var(--snt);display:flex;flex-direction:column;align-items:center;justify-content:center;transform:rotate(-8deg);flex:none}
+.stamp b{font-size:8.5px;font-weight:800;letter-spacing:.06em}
+.stamp .v{font-family:'JetBrains Mono',monospace;font-size:20px;font-weight:700;line-height:1.1}
+.stamp i{font-style:normal;font-size:9px;font-weight:700}
+.tr{display:grid;align-items:center;gap:4px}
+.th main{flex:1}
+
+.th.w{width:1200px}
+.mc{background:var(--sf);border:1px solid var(--bd);border-radius:20px;padding:16px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.mh{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:32px}
+.mh h2{margin:0;font-size:21px;font-weight:800;line-height:1.15}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.cell{background:var(--sf2);border-radius:14px;padding:12px;display:flex;flex-direction:column;gap:4px;min-width:0}
+.cell .k{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--mu);display:flex;align-items:center;gap:6px}
+.cell .v{display:flex;align-items:baseline;gap:4px;font-size:24px;font-weight:700;line-height:1.15;flex-wrap:wrap}
+.cell .v .mono{font-weight:700}
+.u{font-size:13px;font-weight:600;color:var(--mu);font-family:'Manrope',sans-serif;margin-left:3px}
+.s{font-size:13px;color:var(--fg2);line-height:1.35}
+.s .mono{font-size:13px}
+.hr{display:flex;overflow-x:auto;border:1px solid var(--bd);border-radius:16px;background:var(--sf2);scrollbar-width:thin;scrollbar-color:var(--bd2) transparent}
+.hr:focus-visible{outline:2px solid var(--oct);outline-offset:2px}
+.hc{flex:none;width:62px;display:flex;flex-direction:column;align-items:center;gap:7px;padding:12px 0;border-right:1px solid var(--bd);font-size:13px}
+.hc.now{background:var(--hi)}
+.hc.day{width:44px;writing-mode:vertical-rl;transform:rotate(180deg);justify-content:center;font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--snt);padding:0;gap:0}
+.dr{display:grid;align-items:center;gap:8px;padding:10px 0;border-top:1px solid var(--bd);min-height:64px}
+.dr:first-child{border-top:0}
+.note{display:flex;gap:10px;align-items:flex-start;border-radius:16px;padding:12px 14px;background:var(--deep);border:1px solid var(--bd);font-size:14px;line-height:1.45;color:var(--fg2)}
+.note.sand{background:var(--sandbg);border-color:var(--sn);color:var(--snt)}
+.note.dg{background:var(--dgbg);border-color:var(--dg);color:var(--fg)}
+.lnk{display:inline-flex;align-items:center;gap:4px;min-height:44px;color:var(--oct);font-weight:800;font-size:14px}
+.stp{display:flex;gap:12px;align-items:flex-start;font-size:15px;line-height:1.45;color:var(--fg2)}
+.stp>b{flex:none;width:28px;height:28px;border-radius:50%;background:var(--sf2);border:1px solid var(--bd2);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--fg)}
+.sugg{display:flex;align-items:center;gap:12px;min-height:56px;padding:8px 16px;border-top:1px solid var(--bd);color:var(--fg)}
+.sugg[aria-selected=true]{background:var(--hi)}
+.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.sid{flex:0 0 248px;background:var(--sf);border-right:1px solid var(--bd);padding:20px 12px;display:flex;flex-direction:column;gap:2px}
+.sid .nv{display:flex;align-items:center;gap:12px;min-height:44px;padding:0 12px;border-radius:12px;color:var(--fg2);font-size:15px;font-weight:600}
+.sid .nv.on{background:var(--hi);color:var(--oct);font-weight:800}
+@keyframes mrise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@keyframes mtilt{from{transform:rotate(var(--from,0deg))}to{transform:rotate(var(--to,0deg))}}
+@keyframes mdraw{from{stroke-dashoffset:var(--len)}to{stroke-dashoffset:0}}
+@media (prefers-reduced-motion:no-preference){
+ .rise{animation:mrise 200ms cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--i,0)*40ms)}
+ .tilt{animation:mtilt 320ms cubic-bezier(.34,1.18,.64,1) 200ms both}
+ .draw{stroke-dasharray:var(--len);animation:mdraw 320ms cubic-bezier(.2,.8,.2,1) 200ms both}
+}
+</style>
+</helmet>
+<div class="th" data-theme="light" style="height:1023px"><div class="strip" role="tablist" aria-label="Anteprima stato"><span class="t">Anteprima · chiaro</span><sc-for list="{{states}}" as="st" hint-placeholder-count="4"><button role="tab" aria-selected="{{st.on}}" onClick="{{st.tap}}">{{st.label}}</button></sc-for></div><sc-if value="{{v0}}" hint-placeholder-val="{{ true }}"><div style="flex:1;display:flex;flex-direction:column;min-height:0;position:relative"><header class="hd" style="padding-left:16px"><h1>Meteo e mare</h1></header><main style="display:flex;flex-direction:column;gap:12px;padding:4px 0 28px"><section class="mc" style="margin:0 16px"><span class="lab" style="margin:0">Pressione · calo</span><div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap"><div style="display:flex;align-items:center;gap:8px;color:var(--snt);font-size:22px;font-weight:800"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true" style="color:var(--snt);flex:none"><g class="tilt" style="--from:90deg;--to:135deg;transform-origin:12px 12px;transform:rotate(135deg)"><path d="M12 20V5M6 11l6-6 6 6" fill="none" stroke="currentColor" stroke-width="2.600" stroke-linecap="round" stroke-linejoin="round"/></g></svg>In calo</div><svg viewBox="0 0 120 40" width="120" height="40" aria-hidden="true" style="flex:none"><path class="draw" style="--len:200" d="M4.0 8.0 L20.0 12.0 L36.0 12.0 L52.0 16.0 L68.0 20.0 L84.0 24.0 L100.0 28.0 L116.0 32.0" fill="none" stroke="var(--snt)" stroke-width="2.500" stroke-linecap="round" stroke-linejoin="round"/><circle cx="116.0" cy="32.0" r="3.500" fill="var(--snt)"/></svg><span class="mono" style="font-size:18px;font-weight:700">1018 <span class="u">hPa</span></span></div><div class="note"><svg class="i" viewBox="0 0 24 24" style="width:20px;height:20px;flex:none;color:var(--oct)" aria-hidden="true"><path d="M12 17v-5M12 8h.01M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg><div><b style="color:var(--fg)">Lettura indicativa.</b> In calo da 6 ore. Spesso accompagna un cambio di tempo. Per la pesca l’effetto cambia da luogo a specie: consideralo uno spunto, non una previsione.</div></div></section><section class="mc" style="margin:0 16px"><span class="lab" style="margin:0">Pressione · stabile</span><div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap"><div style="display:flex;align-items:center;gap:8px;color:var(--fg2);font-size:22px;font-weight:800"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true" style="color:var(--fg2);flex:none"><g class="tilt" style="--from:90deg;--to:90deg;transform-origin:12px 12px;transform:rotate(90deg)"><path d="M12 20V5M6 11l6-6 6 6" fill="none" stroke="currentColor" stroke-width="2.600" stroke-linecap="round" stroke-linejoin="round"/></g></svg>Stabile</div><svg viewBox="0 0 120 40" width="120" height="40" aria-hidden="true" style="flex:none"><path class="draw" style="--len:200" d="M4.0 25.3 L20.0 14.7 L36.0 25.3 L52.0 25.3 L68.0 14.7 L84.0 25.3 L100.0 25.3 L116.0 25.3" fill="none" stroke="var(--fg2)" stroke-width="2.500" stroke-linecap="round" stroke-linejoin="round"/><circle cx="116.0" cy="25.3" r="3.500" fill="var(--fg2)"/></svg><span class="mono" style="font-size:18px;font-weight:700">1016 <span class="u">hPa</span></span></div><div class="note"><svg class="i" viewBox="0 0 24 24" style="width:20px;height:20px;flex:none;color:var(--oct)" aria-hidden="true"><path d="M12 17v-5M12 8h.01M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg><div><b style="color:var(--fg)">Lettura indicativa.</b> Stabile da 6 ore: nessun cambio di tempo in vista da questo dato. Per la pesca conta più il resto (vento, mare, luce): guarda il quadro intero.</div></div></section><section class="mc" style="margin:0 16px"><span class="lab" style="margin:0">Pressione · aumento</span><div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap"><div style="display:flex;align-items:center;gap:8px;color:var(--oct);font-size:22px;font-weight:800"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true" style="color:var(--oct);flex:none"><g class="tilt" style="--from:90deg;--to:45deg;transform-origin:12px 12px;transform:rotate(45deg)"><path d="M12 20V5M6 11l6-6 6 6" fill="none" stroke="currentColor" stroke-width="2.600" stroke-linecap="round" stroke-linejoin="round"/></g></svg>In aumento</div><svg viewBox="0 0 120 40" width="120" height="40" aria-hidden="true" style="flex:none"><path class="draw" style="--len:200" d="M4.0 32.8 L20.0 29.6 L36.0 26.4 L52.0 23.2 L68.0 16.8 L84.0 13.6 L100.0 10.4 L116.0 7.2" fill="none" stroke="var(--oct)" stroke-width="2.500" stroke-linecap="round" stroke-linejoin="round"/><circle cx="116.0" cy="7.2" r="3.500" fill="var(--oct)"/></svg><span class="mono" style="font-size:18px;font-weight:700">1016 <span class="u">hPa</span></span></div><div class="note"><svg class="i" viewBox="0 0 24 24" style="width:20px;height:20px;flex:none;color:var(--oct)" aria-hidden="true"><path d="M12 17v-5M12 8h.01M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg><div><b style="color:var(--fg)">Lettura indicativa.</b> In aumento da 6 ore. Spesso segue un miglioramento del tempo. Per la pesca l’effetto cambia da luogo a specie: usalo come spunto, non come previsione.</div></div></section></main></div></sc-if><sc-if value="{{v1}}" hint-placeholder-val="{{ false }}"><div style="flex:1;display:flex;flex-direction:column;min-height:0;position:relative"><header class="hd" style="padding-left:16px"><h1>Meteo e mare</h1></header><main style="display:flex;flex-direction:column;gap:12px;padding:4px 0 28px"><section class="mc" style="margin:0 16px"><div class="mh"><h2 style="font-size:19px">Vento</h2></div><div class="g2"><div class="cell" style="flex-direction:row;align-items:center;gap:12px"><svg width="48" height="48" viewBox="0 0 44 44" role="img" aria-label="Freccia: il vento soffia verso sud" style="flex:none"><circle cx="22" cy="22" r="20" fill="none" stroke="var(--bd2)" stroke-width="1.5"/><path d="M22 2.500v4" stroke="var(--mu)" stroke-width="2" stroke-linecap="round"/><g transform="rotate(180 22 22)"><path d="M22 34V11M15 18l7-7 7 7" fill="none" stroke="var(--oct)" stroke-width="2.500" stroke-linecap="round" stroke-linejoin="round"/></g></svg><div><div class="v"><span class="mono">12</span><span class="u">km/h</span></div><span class="s">da N (0°) · soffia verso S</span></div></div><div class="cell" style="flex-direction:row;align-items:center;gap:12px"><svg width="48" height="48" viewBox="0 0 44 44" role="img" aria-label="Freccia: il vento soffia verso sud-est" style="flex:none"><circle cx="22" cy="22" r="20" fill="none" stroke="var(--bd2)" stroke-width="1.5"/><path d="M22 2.500v4" stroke="var(--mu)" stroke-width="2" stroke-linecap="round"/><g transform="rotate(135 22 22)"><path d="M22 34V11M15 18l7-7 7 7" fill="none" stroke="var(--oct)" stroke-width="2.500" stroke-linecap="round" stroke-linejoin="round"/></g></svg><div><div class="v"><span class="mono">18</span><span class="u">km/h</span></div><span class="s">da NO (315°) · verso SE</span></div></div><div class="cell" style="flex-direction:row;align-items:center;gap:12px"><svg width="48" height="48" viewBox="0 0 44 44" role="img" aria-label="Freccia: il vento soffia verso nord-ovest" style="flex:none"><circle cx="22" cy="22" r="20" fill="none" stroke="var(--bd2)" stroke-width="1.5"/><path d="M22 2.500v4" stroke="var(--mu)" stroke-width="2" stroke-linecap="round"/><g transform="rotate(315 22 22)"><path d="M22 34V11M15 18l7-7 7 7" fill="none" stroke="var(--oct)" stroke-width="2.500" stroke-linecap="round" stroke-linejoin="round"/></g></svg><div><div class="v"><span class="mono">24</span><span class="u">km/h</span></div><span class="s">da SE (135°) · verso NO</span></div></div><div class="cell" style="flex-direction:row;align-items:center;gap:12px"><span style="width:48px;height:48px;border-radius:50%;border:1.5px solid var(--bd2);display:flex;align-items:center;justify-content:center"><span style="width:8px;height:8px;border-radius:50%;background:var(--mu)"></span></span><div><div class="v"><span class="mono">0</span><span class="u">km/h</span></div><span class="s">Calmo · nessuna direzione</span></div></div></div><p class="hint" style="margin:0">La freccia indica dove soffia il vento; il testo dice sempre da dove arriva.</p></section><section class="mc" style="margin:0 16px"><div class="mh"><h2 style="font-size:19px">Fasi lunari</h2></div><div class="g2"><div class="cell" style="flex-direction:row;align-items:center;gap:12px"><svg width="56" height="56" viewBox="0 0 56 56" role="img" aria-label="Luna 0% illuminata" style="flex:none"><circle cx="28" cy="28" r="24" fill="var(--sf2)" stroke="var(--bd2)" stroke-width="2"/><circle cx="28" cy="28" r="24" fill="none" stroke="var(--bd2)" stroke-width="2"/></svg><div><div style="font-weight:800;font-size:15px">Luna nuova</div><span class="s"><span class="mono">0%</span></span></div></div><div class="cell" style="flex-direction:row;align-items:center;gap:12px"><svg width="56" height="56" viewBox="0 0 56 56" role="img" aria-label="Luna 12% illuminata" style="flex:none"><circle cx="28" cy="28" r="24" fill="var(--sf2)" stroke="var(--bd2)" stroke-width="2"/><path d="M28 4A24 24 0 0 1 28 52A18.2 24 0 0 0 28 4Z" fill="var(--snt)"/><circle cx="28" cy="28" r="24" fill="none" stroke="var(--bd2)" stroke-width="2"/></svg><div><div style="font-weight:800;font-size:15px">Crescente</div><span class="s"><span class="mono">12%</span></span></div></div><div class="cell" style="flex-direction:row;align-items:center;gap:12px"><svg width="56" height="56" viewBox="0 0 56 56" role="img" aria-label="Luna 100% illuminata" style="flex:none"><circle cx="28" cy="28" r="24" fill="var(--sf2)" stroke="var(--bd2)" stroke-width="2"/><circle cx="28" cy="28" r="24" fill="var(--snt)"/><circle cx="28" cy="28" r="24" fill="none" stroke="var(--bd2)" stroke-width="2"/></svg><div><div style="font-weight:800;font-size:15px">Luna piena</div><span class="s"><span class="mono">100%</span></span></div></div><div class="cell" style="flex-direction:row;align-items:center;gap:12px"><svg width="56" height="56" viewBox="0 0 56 56" role="img" aria-label="Luna 40% illuminata" style="flex:none"><circle cx="28" cy="28" r="24" fill="var(--sf2)" stroke="var(--bd2)" stroke-width="2"/><path d="M28 4A24 24 0 0 1 28 52A4.8 24 0 0 0 28 4Z" fill="var(--snt)" transform="translate(56 0) scale(-1 1)"/><circle cx="28" cy="28" r="24" fill="none" stroke="var(--bd2)" stroke-width="2"/></svg><div><div style="font-weight:800;font-size:15px">Calante</div><span class="s"><span class="mono">40%</span></span></div></div></div></section></main></div></sc-if></div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":1023}}'>
+class Component extends DCLogic {
+constructor(props) { super(props); this.state = { s: 0 }; }
+renderVals() {
+  const s = this.state;
+  const LABELS = ["Tendenza pressione", "Vento e luna"];
+  return {
+    states: LABELS.map((label, i) => ({ label, on: s.s === i, tap: () => this.setState({ s: i }) })),
+    v0: s.s === 0, go0: () => this.setState({ s: 0 }), v1: s.s === 1, go1: () => this.setState({ s: 1 })
+  };
+}
+}
+</script>
+</body>
+</html>

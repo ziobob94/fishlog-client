@@ -242,6 +242,47 @@ Regole: si animano **solo `transform` e `opacity`** (più colore/fill, che non s
 `tokens/motion.css` · `vue-starter/motion/`: `motion.js` (`initMotion`, `useReducedMotion`, `useSwipeDismiss`), `PageTransition.vue`, `BottomSheet.vue`, `ModalDialog.vue`, `ToastHost.vue` + `useToast.js`, `StaggerList.vue`, `vShake.js`, `LikeButton.vue`, `PullToRefresh.vue`, `useViewTransition.js`. Compilano con `@vue/compiler-sfc`; non sono ancora provati su dispositivo reale: nell'implementazione verificare swipe e pull su iOS Safari.
 Nota: i nomi `--color-*-text` vengono da `tokens.css`; l'attuale `src/assets/main.css` non li ha ancora (si aggiungono con il restyling dei token).
 
+## Meteo e mare (schermate 56-60, riga y=14900 del canvas) — DA APPROVARE PRIMA DI IMPLEMENTARE
+
+Pagina `/meteo` (mobile first, poi desktop) più scheda compatta per la Home. Ogni mockup è in coppia scuro/chiaro e ha il selettore «Anteprima» per gli stati. Screenshot: `56-Meteo-mobile`, `57-Meteo-desktop`, `58-Meteo-luogo`, `59-Meteo-home`, `60-Meteo-componenti` (+ `-chiaro`).
+
+| # | File in `design/` | Contenuto e stati |
+|---|---|---|
+| 56 | `MeteoMobile` | Selettore **Qui / Cerca un luogo**, luogo + «aggiornato alle HH:MM» + aggiorna; blocchi **Adesso**, **Mare** (onda, onda lunga, mare, corrente se presente, maree stimate 48 h con etichetta «Stima»), **Colpo d'occhio per la pesca** (luna, alba/tramonto, pressione con tendenza e lettura prudente), **Prossime ore** (24/48 h, scroll orizzontale), **Prossimi 7 giorni**. Stati: normale, caricamento (scheletri), offline (banner + «Non aggiornato · dati delle 13:40»), dati parziali («—»), senza mare. |
+| 57 | `MeteoDesktop` | Stessa pagina a due colonne con barra laterale: Adesso/Mare affiancati, Colpo d'occhio a tre colonne, tabella 7 giorni. Stati: normale, caricamento, offline, senza mare, errore, posizione negata. |
+| 58 | `MeteoLuogo` | Permesso negato, «Come riattivare» (foglio con passi per iPhone/Android/Computer), posizione non trovata, ricerca con suggerimenti (Google), nessun risultato, scelta sulla mappa (pin al centro, coordinate in mono), errore del servizio con «Riprova». |
+| 59 | `MeteoHome` | Scheda con 4 dati (temperatura, vento, pressione, onde; senza mare → pioggia) e link «Apri meteo e mare». Stati: normale, caricamento, offline, senza luogo, errore, senza mare. |
+| 60 | `MeteoComponenti` | Tendenza pressione (calo, stabile, aumento), vento (freccia + testo «da NO», calmo), fasi lunari. |
+
+### Regole dei dati e dei testi
+- Unità: °C, km/h, hPa, metri, secondi. Valore mancante = «—» (mai 0) con `aria-label="dato non disponibile"`.
+- Vento: la freccia indica **dove soffia**; il testo dice sempre **da dove arriva** («da NO · 315°», `<abbr title="nord-ovest">`). Calmo = pallino, nessuna freccia.
+- Pressione: tre stati con parola + freccia + colore (mai solo colore). La lettura è sempre prudente («spesso accompagna…», «uno spunto, non una previsione»): niente «pesca buona/cattiva».
+- Maree: **stima astronomica** (etichetta «Stima» e avviso «non usarla per la navigazione»), grafico con alte/basse e orari, più riepilogo testuale delle prossime 4.
+- Senza dati mare (lago, fiume, entroterra): il blocco diventa una riga neutra; in alternativa si può nascondere del tutto. La scheda Home sostituisce «Onde» con «Pioggia».
+- Offline: ultimo dato salvato, ora di aggiornamento in evidenza, pulsante aggiorna disabilitato (`aria-disabled`), nessun blocco nascosto.
+- Caricamento: solo scheletri (`aria-busy`, testo `role="status"` nascosto), niente spinner a pieno schermo; lo spinner sta solo nel pulsante aggiorna.
+- Accessibilità: contrasto AA (verificato come per le altre schermate), bersagli ≥ 44 px, scheda oraria `role="region"` con `tabindex=0` e scorrimento con frecce, grafico maree con `aria-label` riassuntivo, suggerimenti `role="listbox"`.
+- Font: Fraunces solo per i titoli (pagina e blocchi), Manrope per i testi, JetBrains Mono per ogni numero (temperature, vento, onde, pressione, orari, percentuali).
+
+### Movimento (usa solo i token di `tokens/motion.css`)
+| Elemento | Durata | Easing | Proprietà |
+|---|---|---|---|
+| Ingresso dei blocchi (primo caricamento) | 200 ms + 40 ms × blocco (max 6) | `--ease-enter` | opacity, translateY 8→0 px (classe `.stagger`) |
+| Tendenza pressione: freccia | 320 ms, ritardo 200 | `--ease-spring` | rotate dalla posizione «stabile» a quella finale |
+| Tendenza pressione: linea | 320 ms, ritardo 200 | `--ease-enter` | stroke-dashoffset |
+| Scheletri → dati | 200 ms | `--ease-standard` | opacity |
+| Scheletri (ciclo) | 1400 ms | linear | opacity (pulsazione) |
+| Pulsante aggiorna | ciclo 800 ms finché carica | linear | rotate dell'icona |
+| Foglio «Come riattivare» | 320 / 200 ms | enter / exit | translateY, sfondo opacity |
+| Selettore Qui/Cerca | 200 ms | `--ease-standard` | indicatore translateX |
+Con `prefers-reduced-motion` (o «Riduci animazioni» in app): nessuno spostamento, ingresso = dissolvenza ≤ 120 ms, freccia e linea già nella posizione finale, scheletri fermi, aggiorna sostituito da «Aggiorno…». Nessuna informazione dipende dal movimento.
+
+### Implementazione suggerita
+- Rotta `/meteo` e scheda `WeatherCard.vue` in Home; store `weather` con cache dell'ultimo dato (localStorage/IndexedDB) per l'offline.
+- Backend (da verificare): endpoint proxy `GET /weather?lat&lon` che unisce previsioni e dati marini (onde, swell, temperatura mare, corrente) e restituisce `null` per i campi mancanti; maree calcolate lato server (stima). Suggerimenti luogo con Google Places, chiave solo lato server.
+- Da decidere: fonte dati meteo/mare, copertura Adriatico, limiti di richieste, riga neutra o blocco nascosto per «senza mare».
+
 ## Navigazione (cambia)
 
 - **Mobile, barra in basso:** Home · Uscite · **+** (tasto centrale grande, azione «Nuova uscita») · Social · Market. Oggi è Home, Uscite, Feed, Market, Chat.
