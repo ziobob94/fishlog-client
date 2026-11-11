@@ -481,7 +481,7 @@
    "y": 12700
   },
   "MeteoMobile.dc.html": {
-   "h": 2945,
+   "h": 4481,
    "is_interactive": true,
    "title": "56 · Meteo e mare · mobile (scuro)",
    "w": 390,
@@ -489,7 +489,7 @@
    "y": 14900
   },
   "MeteoMobile-chiaro.dc.html": {
-   "h": 2945,
+   "h": 4481,
    "is_interactive": true,
    "title": "56 · Meteo e mare · mobile (chiaro)",
    "w": 390,
@@ -497,7 +497,7 @@
    "y": 14900
   },
   "MeteoDesktop.dc.html": {
-   "h": 2088,
+   "h": 2996,
    "is_interactive": true,
    "title": "57 · Meteo e mare · desktop (scuro)",
    "w": 1200,
@@ -505,7 +505,7 @@
    "y": 14900
   },
   "MeteoDesktop-chiaro.dc.html": {
-   "h": 2088,
+   "h": 2996,
    "is_interactive": true,
    "title": "57 · Meteo e mare · desktop (chiaro)",
    "w": 1200,
@@ -518,7 +518,7 @@
    "title": "58 · Meteo · luogo, permessi, ricerca (scuro)",
    "w": 390,
    "x": 0,
-   "y": 18000
+   "y": 19900
   },
   "MeteoLuogo-chiaro.dc.html": {
    "h": 811,
@@ -526,7 +526,7 @@
    "title": "58 · Meteo · luogo, permessi, ricerca (chiaro)",
    "w": 390,
    "x": 470,
-   "y": 18000
+   "y": 19900
   },
   "MeteoHome.dc.html": {
    "h": 431,
@@ -534,7 +534,7 @@
    "title": "59 · Meteo · scheda Home (scuro)",
    "w": 390,
    "x": 1000,
-   "y": 18000
+   "y": 19900
   },
   "MeteoHome-chiaro.dc.html": {
    "h": 431,
@@ -542,7 +542,7 @@
    "title": "59 · Meteo · scheda Home (chiaro)",
    "w": 390,
    "x": 1470,
-   "y": 18000
+   "y": 19900
   },
   "MeteoComponenti.dc.html": {
    "h": 1023,
@@ -550,7 +550,7 @@
    "title": "60 · Meteo · pressione, vento, luna (scuro)",
    "w": 390,
    "x": 2000,
-   "y": 18000
+   "y": 19900
   },
   "MeteoComponenti-chiaro.dc.html": {
    "h": 1023,
@@ -558,7 +558,7 @@
    "title": "60 · Meteo · pressione, vento, luna (chiaro)",
    "w": 390,
    "x": 2470,
-   "y": 18000
+   "y": 19900
   },
   "CattureClassifica.dc.html": {
    "h": 1135,
@@ -567,6 +567,38 @@
    "w": 390,
    "x": 2820,
    "y": 11300
+  },
+  "MeteoGiorno.dc.html": {
+   "h": 4590,
+   "is_interactive": true,
+   "title": "62 · Meteo · dettaglio giorno (scuro)",
+   "w": 390,
+   "x": 3000,
+   "y": 19900
+  },
+  "MeteoGiorno-chiaro.dc.html": {
+   "h": 4590,
+   "is_interactive": true,
+   "title": "62 · Meteo · dettaglio giorno (chiaro)",
+   "w": 390,
+   "x": 3470,
+   "y": 19900
+  },
+  "MeteoIcone.dc.html": {
+   "h": 2003,
+   "is_interactive": false,
+   "title": "63 · Meteo · icone (scuro)",
+   "w": 1200,
+   "x": 4000,
+   "y": 19900
+  },
+  "MeteoIcone-chiaro.dc.html": {
+   "h": 2003,
+   "is_interactive": false,
+   "title": "63 · Meteo · icone (chiaro)",
+   "w": 1200,
+   "x": 5280,
+   "y": 19900
   }
  },
  "createdOnFiles": {
@@ -593,7 +625,8 @@
   "n14",
   "n15",
   "n16",
-  "n17"
+  "n17",
+  "n18"
  ],
  "notes": {
   "n1": {
@@ -705,6 +738,12 @@
    "w": 800,
    "x": 1000,
    "y": 14700
+  },
+  "n18": {
+   "text": "Meteo · 7/15 giorni e dettaglio del giorno. Nel blocco «Prossimi giorni» si sceglie 7 o 15 giorni (scelta ricordata) e si vede un riepilogo del periodo: temperature, pioggia totale, vento e onda massimi, grafico min-max con pioggia e attività stimata dei pesci. Dal giorno 8 la previsione è meno affidabile e mancano dettaglio orario, mare e pressione. Toccando un giorno si apre il dettaglio: riepilogo, fasce (notte, mattina, pomeriggio, sera), grafici di temperatura e pioggia, pressione, altezza dell'onda e maree (stima), attività dei pesci e pesci più probabili. Attività e specie sono stime indicative (luce, marea, pressione, vento, temperatura dell'acqua, stagione, catture dell'utente): mai promesse di catture. Da validare con dati reali prima di mostrarle.",
+   "w": 1000,
+   "x": 2000,
+   "y": 14700
   }
  },
  "order": [
@@ -781,7 +820,11 @@
   "MeteoHome-chiaro.dc.html",
   "MeteoComponenti.dc.html",
   "MeteoComponenti-chiaro.dc.html",
-  "CattureClassifica.dc.html"
+  "CattureClassifica.dc.html",
+  "MeteoGiorno.dc.html",
+  "MeteoGiorno-chiaro.dc.html",
+  "MeteoIcone.dc.html",
+  "MeteoIcone-chiaro.dc.html"
  ],
  "pages": [],
  "title": "FishLog – Restyling"

@@ -10,7 +10,7 @@ Leggi questo file per primo. Descrive il restyling dell'interfaccia di `fishlog-
 | `design/` | Sorgenti del design (`*.dc.html`, `canvas.json`) e `support.js`. Per vederli interattivi: `cd design && python3 -m http.server 8080`, poi apri `http://localhost:8080/Main.dc.html`. Servono per leggere misure, colori e testi esatti. Non vanno copiati nel progetto. |
 | `tokens/` | `tokens.css` (variabili CSS) e `tailwind-extend.js` (estensione del tema). |
 | `assets/` | Logo (`logo-mark.svg`, `logo-mark-light.svg`, `favicon.svg`), icone app PNG 192/512, `icons-list.json`. |
-| `vue-starter/` | Componenti Vue pronti da copiare in `src/components/`: `FishLogo`, `AppIcon` + `icons.js`, `IsobathBg`, `TideDivider`, `RulerFrame`, `StampBadge`, `Bobber`; in `vue-starter/motion/` gli esempi del sistema di movimento. |
+| `vue-starter/` | Componenti Vue pronti da copiare in `src/components/`: `FishLogo`, `AppIcon` + `icons.js`, `IsobathBg`, `TideDivider`, `RulerFrame`, `StampBadge`, `Bobber`; `weather-icons.js` + `WeatherIcon.vue` (icone meteo); in `vue-starter/motion/` gli esempi del sistema di movimento. |
 
 ## Regole importanti
 
@@ -242,17 +242,30 @@ Regole: si animano **solo `transform` e `opacity`** (più colore/fill, che non s
 `tokens/motion.css` · `vue-starter/motion/`: `motion.js` (`initMotion`, `useReducedMotion`, `useSwipeDismiss`), `PageTransition.vue`, `BottomSheet.vue`, `ModalDialog.vue`, `ToastHost.vue` + `useToast.js`, `StaggerList.vue`, `vShake.js`, `LikeButton.vue`, `PullToRefresh.vue`, `useViewTransition.js`. Compilano con `@vue/compiler-sfc`; non sono ancora provati su dispositivo reale: nell'implementazione verificare swipe e pull su iOS Safari.
 Nota: i nomi `--color-*-text` vengono da `tokens.css`; l'attuale `src/assets/main.css` non li ha ancora (si aggiungono con il restyling dei token).
 
-## Meteo e mare (schermate 56-60, riga y=14900 del canvas) — DA APPROVARE PRIMA DI IMPLEMENTARE
+## Meteo e mare (schermate 56-60, 62-63, riga y=14900 del canvas) — DA APPROVARE PRIMA DI IMPLEMENTARE
 
 Pagina `/meteo` (mobile first, poi desktop) più scheda compatta per la Home. Ogni mockup è in coppia scuro/chiaro e ha il selettore «Anteprima» per gli stati. Screenshot: `56-Meteo-mobile`, `57-Meteo-desktop`, `58-Meteo-luogo`, `59-Meteo-home`, `60-Meteo-componenti` (+ `-chiaro`).
 
 | # | File in `design/` | Contenuto e stati |
 |---|---|---|
-| 56 | `MeteoMobile` | Selettore **Qui / Cerca un luogo**, luogo + «aggiornato alle HH:MM» + aggiorna; blocchi **Adesso**, **Mare** (onda, onda lunga, mare, corrente se presente, maree stimate 48 h con etichetta «Stima»), **Colpo d'occhio per la pesca** (luna, alba/tramonto, pressione con tendenza e lettura prudente), **Prossime ore** (24/48 h, scroll orizzontale), **Prossimi 7 giorni**. Stati: normale, caricamento (scheletri), offline (banner + «Non aggiornato · dati delle 13:40»), dati parziali («—»), senza mare. |
-| 57 | `MeteoDesktop` | Stessa pagina a due colonne con barra laterale: Adesso/Mare affiancati, Colpo d'occhio a tre colonne, tabella 7 giorni. Stati: normale, caricamento, offline, senza mare, errore, posizione negata. |
+| 56 | `MeteoMobile` | Selettore **Qui / Cerca un luogo**, luogo + «aggiornato alle HH:MM» + aggiorna; blocchi **Adesso**, **Mare** (onda, onda lunga, mare, corrente se presente, maree stimate 48 h con etichetta «Stima»), **Colpo d'occhio per la pesca** (luna, alba/tramonto, pressione con tendenza e lettura prudente), **Prossime ore** (24/48 h, scroll orizzontale), **Prossimi 7 giorni**. Stati: normale, 15 giorni, caricamento (scheletri), offline (banner + «Non aggiornato · dati delle 13:40»), dati parziali («—»), senza mare. |
+| 57 | `MeteoDesktop` | Stessa pagina a due colonne con barra laterale: Adesso/Mare affiancati, Colpo d'occhio a tre colonne, tabella 7 giorni. Stati: normale, 15 giorni, caricamento, offline, senza mare, errore, posizione negata, dettaglio giorno, dettaglio oltre 7 giorni. |
 | 58 | `MeteoLuogo` | Permesso negato, «Come riattivare» (foglio con passi per iPhone/Android/Computer), posizione non trovata, ricerca con suggerimenti (Google), nessun risultato, scelta sulla mappa (pin al centro, coordinate in mono), errore del servizio con «Riprova». |
 | 59 | `MeteoHome` | Scheda con 4 dati (temperatura, vento, pressione, onde; senza mare → pioggia) e link «Apri meteo e mare». Stati: normale, caricamento, offline, senza luogo, errore, senza mare. |
 | 60 | `MeteoComponenti` | Tendenza pressione (calo, stabile, aumento), vento (freccia + testo «da NO», calmo), fasi lunari. |
+
+### Prossimi 7 / 15 giorni e dettaglio del giorno (schermate 56, 57 e 62)
+- **Selettore 7 / 15 giorni** nel blocco «Prossimi giorni» (segmented control, `role="radiogroup"`, bersagli ≥ 40 px). Default 7; la scelta si ricorda (`localStorage` `fishlog.weather.days`). Stato «15 giorni» nei mockup 56 e 57.
+- **Riepilogo del periodo** sopra l'elenco, calcolato sul periodo scelto: temperatura minima e massima, pioggia totale e giorni di pioggia, vento massimo, onda massima, grafico a barre min-max con pioggia, e una riga di attività dei pesci stimata per giorno. Dal giorno 8: linea tratteggiata «meno affidabile», niente onda né attività (non disponibili).
+- **Dettaglio del giorno** (`MeteoGiorno`, mobile; desktop: stati «Dettaglio giorno» in `MeteoDesktop` con striscia dei giorni scorrevole): si apre toccando un giorno. Prev/successivo in alto e in basso. Contenuto: **riepilogo** con affidabilità (alta fino al 3º giorno, media fino al 7º, bassa oltre), **fasce** (notte, mattina, pomeriggio, sera con temperatura, vento, pioggia, onda), grafico **temperatura e pioggia** orari con alba e tramonto, grafico **pressione** con minimo e lettura prudente, **mare** (onda max, onda lunga, temperatura acqua, corrente, grafico dell'**altezza dell'onda** e **maree** del giorno con etichetta «Stima»), **attività dei pesci**, **pesci più probabili**, vento, luce e luna.
+- **Attività dei pesci** (grafico a barre orarie, 5 livelli, con alba e tramonto): è una **stima indicativa** (etichetta «Indicativa» sempre visibile), costruita da luce, movimento della marea, tendenza della pressione, vento e temperatura dell'acqua. Mostra le **finestre più favorevoli** e un elenco «cosa pesa nella stima» con parola (favorevole / neutro / sfavorevole) e frase, mai solo colore. Niente promesse di catture.
+- **Pesci più probabili**: elenco di specie con livello in parole (Molto probabile / Probabile / Possibile / Meno probabile) e tre pallini, motivo in una frase e, se esiste, il numero di catture dell'utente in quel luogo; ogni riga apre la scheda specie. Oltre 7 giorni solo stima stagionale.
+- **Oltre 7 giorni**: niente dettaglio orario, pressione, onde e attività (messaggio chiaro, resto della pagina completo). **Offline**: dettaglio salvato con banner, oppure «Dettaglio non disponibile offline» se il giorno non è in cache. Stati: caricamento a scheletri, errore con «Riprova».
+- **Backend (da verificare):** previsioni giornaliere fino a 15 giorni e orarie fino a 7; dati marini fino a 7; l'indice di attività e l'elenco specie sono calcolati lato server con regole dichiarate e **da validare con dati reali** prima di mostrarli; le catture dell'utente per luogo vengono dallo storico.
+
+### Icone del meteo (schermata 63, `MeteoIcone`)
+38 icone nello stile del progetto (griglia 24, tratto 2 px, estremità arrotondate): 15 condizioni (con varianti giorno/notte per sereno e poco nuvoloso), 10 dati (temperatura, percepita, umidità, pioggia, pressione, UV, copertura, direzione, freccia vento, raffica), 6 mare (onda, onda lunga, alta e bassa marea, corrente, temperatura del mare), 7 luce e pesca (alba, tramonto, luna, attività dei pesci, luogo, posizione, aggiorna). Colore: sole e luna in sabbia, acqua in ocean, il resto neutro; mai solo colore (c'è sempre il testo). Dimensioni: ≥ 20 px nelle liste, 28-30 px nelle schede, 56-64 px in «Adesso».
+Codice: `vue-starter/weather-icons.js` (path, etichette, `wmoToIcon(code, isDay)`, `wmoLabel(code)`) e `vue-starter/WeatherIcon.vue` (`<WeatherIcon :code="61" :is-day="false" />` o `name="pressione"`). Il codice sconosciuto ricade su «nuvoloso». Le fasi lunari sono disegnate a parte (cerchio con parte illuminata, in `MeteoComponenti`).
 
 ### Regole dei dati e dei testi
 - Unità: °C, km/h, hPa, metri, secondi. Valore mancante = «—» (mai 0) con `aria-label="dato non disponibile"`.
