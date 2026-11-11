@@ -266,7 +266,7 @@ const props = defineProps({
 const emit = defineEmits(['update:modelValue'])
 
 const empty = () => ({
-  species: '', weightKg: null, lengthCm: null, released: false,
+  species: '', weightKg: null, lengthCm: null, fightMinutes: null, released: false,
   time: '', distance: null, direction: '', notes: '',
   baitUsed: '', baitType: '', baitPresentation: '',
   rigUsed: '', rigType: '', hookSize: '', hookType: '',

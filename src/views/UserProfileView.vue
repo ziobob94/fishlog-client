@@ -72,7 +72,7 @@ import { toInitials } from '../utils/initials.js'
 import PageHeader from '../components/PageHeader.vue'
 import TideDivider from '../components/TideDivider.vue'
 import { ref, computed, onMounted } from 'vue'
-import { useRoute, RouterLink } from 'vue-router'
+import { useRoute, useRouter, RouterLink } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { UserX } from 'lucide-vue-next'
 import { useUserStore } from '../stores/users.js'
@@ -87,6 +87,7 @@ const userStore   = useUserStore()
 const friendStore = useFriendStore()
 const posts       = usePostStore()
 const auth        = useAuthStore()
+const router      = useRouter()
 
 const user         = ref(null)
 const loading      = ref(true)
@@ -103,8 +104,10 @@ return toInitials(name)
 const memberSince = computed(() => user.value?.createdAt ? new Date(user.value.createdAt).toLocaleDateString() : '')
 
 async function load() {
-  loading.value = true
   const id = route.params.id
+  // Il proprio profilo è la bacheca: niente azioni di amicizia verso se stessi.
+  if (auth.user?._id && String(id) === String(auth.user._id)) { router.replace('/board'); return }
+  loading.value = true
   const [u, st, groups] = await Promise.all([
     userStore.fetchUser(id),
     friendStore.fetchStatus(id),

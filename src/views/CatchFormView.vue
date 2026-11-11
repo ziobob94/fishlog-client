@@ -33,6 +33,10 @@
               <span class="m-row"><input v-model.number="draft.lengthCm" class="fl-mono m-inp" inputmode="decimal" type="number" step="0.5" min="0" :aria-label="t('session.ongoing.lengthAria')" placeholder="0" /><span class="m-unit">cm</span></span>
             </label>
           </div>
+          <label class="measure fight">
+            <span class="m-lab">{{ t('session.ongoing.fight') }}</span>
+            <span class="m-row"><input v-model.number="draft.fightMinutes" class="fl-mono m-inp" inputmode="numeric" type="number" step="1" min="0" :aria-label="t('session.ongoing.fightAria')" placeholder="0" /><span class="m-unit">min</span></span>
+          </label>
         </section>
 
         <!-- Rilasciato -->
@@ -140,7 +144,7 @@ const DETAIL_FIELDS = [
   { key: 'notes', label: 'notesLabel' }
 ]
 
-const emptyDraft = () => ({ species: '', weightKg: null, lengthCm: null, released: false })
+const emptyDraft = () => ({ species: '', weightKg: null, lengthCm: null, fightMinutes: null, released: false })
 
 const ready = ref(false)
 const error = ref(null)

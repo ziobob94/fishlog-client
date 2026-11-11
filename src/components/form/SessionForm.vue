@@ -533,7 +533,7 @@
   const defaultForm = () => ({
     title: '', date: new Date().toISOString().split('T')[0],
     startTime: '', endTime: '', technique: '', waterType: '', rating: 0,
-    location: { name: '', spot: '', region: '', coords: { lat: null, lng: null }, notes: '' },
+    location: { name: '', spot: '', region: '', municipality: '', province: '', country: '', coords: { lat: null, lng: null }, notes: '' },
     sea: { seaState: '', waveHeight: '', wavePeriod: '', current: '', waterLevel: '', waterColor: '', waterTemp: null, tide: { state: '', notes: '' } },
     weather: { condition: '', windDirection: '', windSpeed: null, tempAir: null, pressure: null, notes: '' },
     catches: [], notes: '', visibility: defaultVisibility(), allowedGroups: []
@@ -672,6 +672,10 @@
     appliedKey = `${p.lat},${p.lng}`
     if (overwriteName && p.name) f.value.location.name = p.name
     f.value.location.region = p.region || p.province || p.country || ''
+    // Zone per le classifiche locali, sempre allineate al luogo scelto.
+    f.value.location.municipality = p.municipality || p.city || ''
+    f.value.location.province = p.province || ''
+    f.value.location.country = p.country || ''
     if (p.lat != null && p.lng != null) {
       f.value.location.coords.lat = parseFloat(Number(p.lat).toFixed(6))
       f.value.location.coords.lng = parseFloat(Number(p.lng).toFixed(6))
@@ -694,6 +698,9 @@
         if (!f.value.location.name || forceNameNext) f.value.location.name = result.name
         forceNameNext = false
         f.value.location.region = result.region || result.province || result.country || ''
+        f.value.location.municipality = result.municipality || result.city || ''
+        f.value.location.province = result.province || ''
+        f.value.location.country = result.country || ''
         geocodeMsg.value = result.name ? t('sessionForm.autoFill.geocodeFound', { name: result.name }) : ''
       }, 400)
     }

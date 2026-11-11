@@ -21,6 +21,7 @@
           <img v-if="p.r.avatar" :src="p.r.avatar" class="podium-avatar" :alt="''" />
           <span v-else class="podium-avatar podium-placeholder">{{ initials(p.r.displayName) }}</span>
           <span class="podium-name">{{ p.r.displayName }}</span>
+          <span v-if="p.r.username" class="podium-user text-muted">@{{ p.r.username }}</span>
           <span class="podium-score font-mono">{{ p.r.score }}</span>
           <span class="podium-pos">{{ p.pos }}</span>
           </RouterLink>
@@ -35,8 +36,9 @@
           <span v-else class="mini-placeholder">{{ initials(r.displayName) }}</span>
           <div class="leaderboard-info">
             <span class="leaderboard-name">{{ r.displayName }}<span v-if="r.userId === auth.user?._id" class="you-badge">{{ t('leaderboard.you') }}</span></span>
+            <span v-if="r.username" class="leaderboard-meta text-muted">@{{ r.username }}</span>
             <span class="leaderboard-meta text-muted">
-              {{ t('leaderboard.sessionsCount', { n: r.sessionsCount }) }} · {{ t('leaderboard.catchesCount', { n: r.catchesCount }) }}
+              {{ t('leaderboard.sessionsCount', { n: r.sessionsCount }, r.sessionsCount) }} · {{ t('leaderboard.catchesCount', { n: r.catchesCount }, r.catchesCount) }}
             </span>
           </div>
           </RouterLink>
@@ -172,6 +174,7 @@ watch(period, load, { immediate: true })
 .podium-placeholder { @apply border border-ocean text-ocean-text flex items-center justify-center text-sm font-bold; background: var(--ocean-glow); }
 .podium-1 .podium-placeholder { @apply border-sand text-sand-text; background: rgb(var(--color-sand) / 0.15); }
 .podium-name { @apply text-sm font-bold text-foam max-w-full truncate; }
+.podium-user { @apply text-xs max-w-full truncate; }
 .podium-score { @apply text-xl text-foam; }
 .podium-1 .podium-score { @apply text-3xl text-sand-text; }
 .podium-pos { @apply inline-flex items-center justify-center w-7 h-7 rounded-full bg-surface-2 text-xs font-bold text-foam; }
