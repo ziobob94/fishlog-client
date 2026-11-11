@@ -104,7 +104,13 @@ onMounted(async () => {
 })
 onBeforeUnmount(() => clearInterval(timer))
 
-watch(index, () => { progress.value = 0; if (current.value && !current.value.seen) { store.markViewed(current.value._id); current.value.seen = true } }, { immediate: true })
+// Osserva la storia corrente (non solo l'indice): al primo caricamento l'indice
+// può restare 0 e un watch sull'indice non scatterebbe, quindi la prima storia
+// non verrebbe mai segnata come vista.
+watch(() => current.value?._id, () => {
+  progress.value = 0
+  if (current.value && !current.value.seen) { store.markViewed(current.value._id); current.value.seen = true }
+}, { immediate: true })
 
 function startTimer() {
   clearInterval(timer)
