@@ -105,10 +105,22 @@ Il form unico a sezioni e la scheda «Modifica uscita» erano confusionari. Nuov
 
 Chiavi i18n da aggiungere/rinominare: `session.ongoing.*`, `catchesSection.*`, `sessionForm.*`. Il tasto «Riprendi» in Home e Uscite porta a `/session/:id/edit` (schermata 34).
 
+### Creare post e storie (schermate 39-41, riga y=10200 del canvas)
+Prima mancava il punto d'ingresso per un nuovo post. Ora:
+
+| # | Schermata | Codice | Note |
+|---|---|---|---|
+| 39 | Crea (foglio dal basso) | nuovo, apre da «+» della barra | Post, Storia, Uscita, Annuncio. Il «+» non porta più direttamente a `PostForm.vue` |
+| 05 | Community · feed | `FeedView.vue` | In alto: fila storie (`StoriesRail.vue`, nuovo) e riga «Cosa hai pescato oggi?» che apre il form del post |
+| 40 | Storia · crea | nuovo `StoryComposer.vue` | Foto/video, adesivi della pesca (cattura, luogo, acqua e meteo), pubblico Tutti / Solo amici, scade dopo 24 ore |
+| 41 | Storia · guarda | nuovo `StoryViewer.vue` | Barre di avanzamento, risposta in chat, cuore. L'adesivo cattura apre il dettaglio uscita |
+
+**Backend da aggiungere** (`fishlog-server`): modello `Story` (autore, media, adesivi, pubblico, `expiresAt` = +24 h con indice TTL), elenco storie degli amici raggruppate per autore con flag «vista», registrazione delle visualizzazioni, risposta alla storia come messaggio chat. Upload media come per le catture.
+
 ## Navigazione (cambia)
 
 - **Mobile, barra in basso:** Home · Uscite · **+** (tasto centrale grande, azione «Nuova uscita») · Community · Market. Oggi è Home, Uscite, Feed, Market, Chat.
-- **Chat esce dalla barra:** si apre dall'icona messaggi (con badge) nell'intestazione di Community, come i DM di Instagram. Mantieni il badge dei non letti.
+- **Il «+» centrale** apre il foglio «Crea» (post, storia, uscita, annuncio). **Chat esce dalla barra:** si apre dall'icona messaggi (con badge) nell'intestazione di Community, come i DM di Instagram. Mantieni il badge dei non letti.
 - **Desktop:** la sidebar resta, con le stesse voci raggruppate (Pesca, Community) e l'icona/logo nuovi.
 - La barra è a 5 colonne; il «+» sporge di 30 px, 56×56, con bordo dello stesso colore dello sfondo.
 

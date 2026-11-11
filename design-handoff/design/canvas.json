@@ -39,7 +39,7 @@
    "y": 3440
   },
   "Community.dc.html": {
-   "h": 1560,
+   "h": 1760,
    "is_interactive": true,
    "title": "Community · feed",
    "w": 390,
@@ -279,6 +279,30 @@
    "w": 390,
    "x": 1880,
    "y": 8800
+  },
+  "Crea.dc.html": {
+   "h": 844,
+   "is_interactive": false,
+   "title": "Crea · scelta",
+   "w": 390,
+   "x": 0,
+   "y": 10200
+  },
+  "NuovaStoria.dc.html": {
+   "h": 844,
+   "is_interactive": true,
+   "title": "Storia · crea",
+   "w": 390,
+   "x": 470,
+   "y": 10200
+  },
+  "StoriaVista.dc.html": {
+   "h": 844,
+   "is_interactive": false,
+   "title": "Storia · guarda",
+   "w": 390,
+   "x": 940,
+   "y": 10200
   }
  },
  "createdOnFiles": {
@@ -299,7 +323,8 @@
   "n8",
   "n9",
   "n10",
-  "n11"
+  "n11",
+  "n12"
  ],
  "notes": {
   "n1": {
@@ -375,6 +400,12 @@
    "w": 900,
    "x": 0,
    "y": 8680
+  },
+  "n12": {
+   "text": "Creare contenuti: il «+» centrale della barra apre «Cosa vuoi condividere?» (post, storia, uscita, annuncio). In Community: fila di storie in alto (anello sabbia/oceano = da vedere, grigio = vista; «La tua storia» col +) e riga «Cosa hai pescato oggi?» per un post veloce. Storie: foto o video con adesivi della pesca (cattura, luogo, acqua e meteo), pubblico Tutti o Solo amici, durano 24 ore; chi guarda può rispondere o mettere un cuore. Nuovo rispetto al codice: servono storie nel server (scadenza a 24 h, visualizzazioni).",
+   "w": 900,
+   "x": 0,
+   "y": 10080
   }
  },
  "order": [
@@ -415,7 +446,10 @@
   "AggiungiCattura.dc.html",
   "ChiudiUscita.dc.html",
   "DatiUscita.dc.html",
-  "AcquaMeteo.dc.html"
+  "AcquaMeteo.dc.html",
+  "Crea.dc.html",
+  "NuovaStoria.dc.html",
+  "StoriaVista.dc.html"
  ],
  "pages": [],
  "title": "FishLog – Restyling"
