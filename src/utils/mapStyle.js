@@ -21,7 +21,9 @@ export function readBasemap() {
 
 const mt = (id) => `https://api.maptiler.com/maps/${id}/style.json?key=${MAPTILER_KEY}`
 const ESRI_TILES = 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
-const ESRI_ATTR = 'Immagini © Esri, Maxar, Earthstar Geographics'
+// Etichette (città, regioni, stati) sopra le immagini satellitari: stesso provider, nessuna chiave.
+const ESRI_LABELS = 'https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}'
+const ESRI_ATTR = 'Immagini ed etichette © Esri, Maxar, Earthstar Geographics, HERE, Garmin'
 
 export function attributionText(basemap) {
   if (basemap === 'sat' && !ENV.VITE_MAP_STYLE_SAT && !hasMapKey()) return ESRI_ATTR
@@ -37,8 +39,14 @@ export function buildStyle({ basemap = 'sat', dark = true } = {}) {
     if (hasMapKey()) return mt('hybrid')
     return {
       version: 8,
-      sources: { base: { type: 'raster', tiles: [ESRI_TILES], tileSize: 256, maxzoom: 17, attribution: ESRI_ATTR } },
-      layers: [{ id: 'base', type: 'raster', source: 'base' }]
+      sources: {
+        base: { type: 'raster', tiles: [ESRI_TILES], tileSize: 256, maxzoom: 17, attribution: ESRI_ATTR },
+        labels: { type: 'raster', tiles: [ESRI_LABELS], tileSize: 256, minzoom: 0, maxzoom: 17 }
+      },
+      layers: [
+        { id: 'base', type: 'raster', source: 'base' },
+        { id: 'labels', type: 'raster', source: 'labels' }
+      ]
     }
   }
   const custom = dark ? ENV.VITE_MAP_STYLE_DARK : ENV.VITE_MAP_STYLE_LIGHT
