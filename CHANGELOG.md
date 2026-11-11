@@ -1,3 +1,53 @@
+# [1.57.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.56.0...client-v1.57.0) (2026-11-11)
+
+
+### Features
+
+* scheda meteo Home ad accordion, mappamondo come in origine ([25213cc](https://github.com/ziobob94/fishlog-client/commit/25213cce48a8612e9aae8e2e94966480479984c9))
+* scheda meteo Home completa solo a mappamondo espanso, altrimenti compatta ([a2f38b0](https://github.com/ziobob94/fishlog-client/commit/a2f38b0afdfe5da85367b514700b930de2a75b5e))
+* tasto «Aggiorna» nella scheda meteo della Home ([bfa1bc0](https://github.com/ziobob94/fishlog-client/commit/bfa1bc0632b7821f9842c5b81089c63464de23ff))
+
+# [1.56.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.55.1...client-v1.56.0) (2026-11-11)
+
+
+### Bug Fixes
+
+* pesci probabili, con soli dati di stagione niente «Molto probabile» ([55b897b](https://github.com/ziobob94/fishlog-client/commit/55b897bf2f47d13ca71c261eb9141194d95ee194))
+
+
+### Features
+
+* «Confronta con 3bmeteo» una sola volta, in fondo alla pagina Meteo ([541aa73](https://github.com/ziobob94/fishlog-client/commit/541aa730e3fa58ef2fddc8b3db79670bb4781cfe))
+* meteo ora per ora continuo con alba e tramonto, fix dettaglio di oggi ([d8866cc](https://github.com/ziobob94/fishlog-client/commit/d8866ccfd410c5594846509e4822dbeb833de652))
+
+## [1.55.1](https://github.com/ziobob94/fishlog-client/compare/client-v1.55.0...client-v1.55.1) (2026-11-11)
+
+
+### Bug Fixes
+
+* posizione attivabile dalla Home e mappamondo espanso a tutto schermo ([ddbb0ba](https://github.com/ziobob94/fishlog-client/commit/ddbb0ba879ef2d149c045228d13b8b749309ffa2))
+
+# [1.55.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.54.4...client-v1.55.0) (2026-11-11)
+
+
+### Features
+
+* home con meteo in evidenza, mappamondo espandibile e confronto con 3bmeteo ([1326ed7](https://github.com/ziobob94/fishlog-client/commit/1326ed7f6c7e210ebc27a18b81b489b0cfe501b4))
+
+## [1.54.4](https://github.com/ziobob94/fishlog-client/compare/client-v1.54.3...client-v1.54.4) (2026-11-11)
+
+
+### Bug Fixes
+
+* **market:** top bar fissa durante lo scroll su mobile ([a047242](https://github.com/ziobob94/fishlog-client/commit/a047242decaf31e63f1eb1f797f3fd69f4d14395))
+
+## [1.54.3](https://github.com/ziobob94/fishlog-client/compare/client-v1.54.2...client-v1.54.3) (2026-11-11)
+
+
+### Bug Fixes
+
+* **uscite:** top bar fissa durante lo scroll su mobile ([881ca18](https://github.com/ziobob94/fishlog-client/commit/881ca187f22dc67c0ee67ceba480c04053b0fac4))
+
 ## [1.54.2](https://github.com/ziobob94/fishlog-client/compare/client-v1.54.1...client-v1.54.2) (2026-11-11)
 
 

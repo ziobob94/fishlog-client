@@ -24,7 +24,8 @@
         <li>
           <RouterLink :to="{ name: 'weather-day', params: { date: d.date } }" class="wx-drow m-press">
             <span class="wx-dday">{{ dayLabel(d.date, today) }} <span class="wx-num wx-muted">{{ d.date ? d.date.slice(8) : '' }}</span></span>
-            <span class="wx-cond"><WeatherIcon :code="rowWmo(d)" :size="24" /><span class="wx-dcond">{{ wmoLabel(rowWmo(d)) }}</span></span>
+            <span class="wx-cond"><WeatherIcon :code="rowWmo(d)" :size="24" /><span class="wx-dcond">{{ wmoLabel(rowWmo(d)) }}</span>
+              <span v-if="d.sunrise || d.sunset" class="wx-dsun"><Sunrise :size="13" aria-hidden="true" /><span class="wx-sr">{{ t('weather.hourly.sunrise') }}</span> <span class="wx-num">{{ hhmm(d.sunrise) }}</span> <Sunset :size="13" aria-hidden="true" /><span class="wx-sr">{{ t('weather.hourly.sunset') }}</span> <span class="wx-num">{{ hhmm(d.sunset) }}</span></span></span>
             <span class="wx-dtemp"><span class="wx-num">{{ fmt(d.tempMax) }}°</span> <span class="wx-num wx-muted">{{ fmt(d.tempMin) }}°</span></span>
             <span class="wx-dbar" aria-hidden="true"><i v-if="bars[i]" :style="{ left: bars[i].from + '%', width: Math.max(bars[i].to - bars[i].from, 4) + '%' }"></i></span>
             <span class="wx-drain"><span class="wx-num">{{ fmt(d.precipProbability) }}</span><small class="wx-muted">%</small></span>
@@ -50,10 +51,10 @@
 import { ref, computed } from 'vue'
 import { RouterLink } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { ChevronRight, Fish } from 'lucide-vue-next'
+import { ChevronRight, Fish, Sunrise, Sunset } from 'lucide-vue-next'
 import WeatherIcon from '../WeatherIcon.vue'
 import { wmoLabel } from '../weather-icons.js'
-import { fmt, dayLabel, rowWmo, periodSummary, tempBars, readDays, saveDays, DAY_CHOICES, LESS_RELIABLE_FROM } from '../../utils/weather.js'
+import { fmt, hhmm, dayLabel, rowWmo, periodSummary, tempBars, readDays, saveDays, DAY_CHOICES, LESS_RELIABLE_FROM } from '../../utils/weather.js'
 const props = defineProps({ view: { type: Object, required: true }, today: { type: String, default: '' } })
 const { t } = useI18n()
 const days = ref(readDays())
@@ -78,6 +79,8 @@ function onKey(e) {
 .wx-dlist { list-style: none; margin: 0; padding: 0; }
 .wx-drow { display: grid; grid-template-columns: 72px minmax(0, 1.4fr) 72px minmax(40px, .8fr) 44px 74px auto 24px; align-items: center; gap: 8px; min-height: 52px; padding: 6px 4px; border-top: 1px solid rgb(var(--color-border)); color: inherit; text-decoration: none; font-size: .9rem; }
 .wx-dday { font-weight: 700; }
+.wx-cond { flex-wrap: wrap; }
+.wx-dsun { display: inline-flex; align-items: center; gap: 3px; flex-basis: 100%; font-size: .74rem; color: rgb(var(--color-sand-text)); }
 .wx-dcond { color: rgb(var(--color-muted)); font-size: .82rem; }
 .wx-dbar { position: relative; height: 6px; border-radius: 3px; background: rgb(var(--color-border)); }
 .wx-dbar i { position: absolute; top: 0; bottom: 0; border-radius: 3px; background: rgb(var(--color-sand-text)); }

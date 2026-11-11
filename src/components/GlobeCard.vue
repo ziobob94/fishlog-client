@@ -7,6 +7,20 @@
       <div ref="mapEl" class="globe-map" role="region" :aria-label="ariaLabel"></div>
       <div v-if="mapError" class="globe-fallback">{{ mapError }} <button type="button" class="globe-retry" @click="retryMap">{{ t('common.retry') }}</button></div>
 
+      <!-- Posizione non attiva: permesso negato o posizione non disponibile -->
+      <div v-if="geoState === 'denied' || geoState === 'unavailable'" class="globe-loc" role="alert">
+        <button type="button" class="globe-popup-close" :aria-label="t('common.close')" @click="geoState = ''"><AppIcon name="chiudi" :size="18" /></button>
+        <strong class="globe-loc-title"><MapPinOff :size="18" aria-hidden="true" /> {{ t('home.globe.noPosition') }}</strong>
+        <p>{{ geoState === 'denied' ? t('home.globe.locDeniedText') : t('home.globe.locUnavailableText') }}</p>
+        <ol v-if="geoState === 'denied'" class="globe-loc-steps">
+          <li v-for="n in 3" :key="n">{{ t(`weather.help.${platform}.s${n}`) }}</li>
+        </ol>
+        <div class="globe-loc-actions">
+          <button v-if="geoState === 'unavailable'" type="button" class="globe-pill-btn m-press" @click="activateLocation">{{ t('home.globe.locRetry') }}</button>
+          <RouterLink :to="{ path: '/meteo', query: { modo: 'cerca' } }" class="globe-pill-btn m-press globe-loc-link"><Search :size="18" aria-hidden="true" /> {{ t('home.globe.pickPlace') }}</RouterLink>
+        </div>
+      </div>
+
       <!-- Scheda del segnaposto toccato -->
       <div v-if="selected" class="globe-popup" role="dialog" :aria-label="t('globe.sessionsHere')">
         <button type="button" class="globe-popup-close" :aria-label="t('common.close')" @click="selected = null"><AppIcon name="chiudi" :size="18" /></button>
@@ -26,7 +40,7 @@
         <button type="button" class="globe-btn" :aria-label="t('globe.zoomOut')" @click="zoomBy(1 / 1.3)">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14" /></svg>
         </button>
-        <button type="button" class="globe-btn" :aria-label="t('globe.myPosition')" :title="t('globe.myPosition')" @click="goToMe"><AppIcon name="luogo" :size="20" /></button>
+        <button type="button" class="globe-btn" :aria-label="t('globe.myPosition')" :title="t('globe.myPosition')" @click="activateLocation"><AppIcon name="luogo" :size="20" /></button>
         <button type="button" class="globe-btn" :aria-label="t('globe.layer')" :title="t('globe.layer')" :aria-pressed="basemap === 'sat'" @click="toggleBasemap"><Layers :size="20" /></button>
         <button type="button" class="globe-btn" :aria-label="t('globe.showCatches')" :title="t('globe.showCatches')" :disabled="!spots.length" @click="showAll"><AppIcon name="uscite" :size="20" /></button>
       </div>
@@ -36,7 +50,6 @@
       <span class="legend-item"><i class="dot dot-spot"></i> {{ t('globe.catchesLegend') }}</span>
       <span class="legend-hint">{{ t('globe.dragHint') }}</span>
     </div>
-    <p v-if="geoError" class="globe-error" role="alert">{{ geoError }}</p>
 
     <!-- Alternativa testuale al globo -->
     <details v-if="spots.length" class="globe-list">
@@ -56,12 +69,14 @@
 import { ref, computed, onMounted, onBeforeUnmount, watch } from 'vue'
 import { RouterLink } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { Layers } from 'lucide-vue-next'
+import { Layers, MapPinOff, Search } from 'lucide-vue-next'
 import api from '../utils/api.js'
 import AppIcon from './AppIcon.vue'
+import { useWeatherStore } from '../stores/weather.js'
 import { loadMap, placesStatus, placesMessage, reportMapError, resetPlaces } from '../utils/places.js'
 
 const { t } = useI18n()
+const weather = useWeatherStore()
 
 // Mappa Google Maps JS (satellite con etichette / stradale), caricata solo qui; vedi utils/places.js.
 
@@ -69,7 +84,13 @@ const spots = ref([])
 const loading = ref(true)
 const selected = ref(null)
 const me = ref(null)
-const geoError = ref('')
+// '' | 'asking' | 'denied' | 'unavailable'. Il permesso si chiede solo da activateLocation(), cioè da un tocco.
+const geoState = ref('')
+const platform = (() => {
+  const ua = typeof navigator === 'undefined' ? '' : navigator.userAgent || ''
+  if (/iPhone|iPad|iPod/i.test(ua) || (/Macintosh/i.test(ua) && navigator.maxTouchPoints > 1)) return 'ios'
+  return /Android/i.test(ua) ? 'android' : 'desktop'
+})()
 const mapError = ref('')
 const reduceMotion = ref(false)
 const mapEl = ref(null)
@@ -153,18 +174,29 @@ function showAll() {
   g.event.addListenerOnce(map, 'idle', () => { if (map.getZoom() > 8) map.setZoom(8) })
 }
 
-function goToMe() {
-  geoError.value = ''
-  if (me.value) { fly(me.value, 8); return }
-  if (!navigator.geolocation) { geoError.value = t('globe.geoUnavailable'); return }
+// Tocco su «Attiva la posizione» / «Vai alla mia posizione». Con il permesso già negato non si richiama il browser
+// (iOS e Chrome non ripropongono la richiesta): si mostrano subito i passaggi per riattivarlo.
+async function activateLocation() {
+  if (geoState.value === 'asking') return
+  selected.value = null
+  if (me.value) { geoState.value = ''; fly(me.value, 8); return }
+  if (!navigator.geolocation) { geoState.value = 'unavailable'; return }
+  try {
+    const p = await navigator.permissions?.query({ name: 'geolocation' })
+    if (p?.state === 'denied') { geoState.value = 'denied'; return }
+  } catch { /* Permissions API assente (Safari più vecchi): si chiede direttamente */ }
+  geoState.value = 'asking'
   navigator.geolocation.getCurrentPosition(
     (pos) => {
+      geoState.value = ''
       me.value = { lat: pos.coords.latitude, lng: pos.coords.longitude }
       setMeMarker()
       fly(me.value, 8)
+      // La Home mostra il meteo di questo luogo.
+      if (!weather.place) { weather.setPlace({ name: '', lat: me.value.lat, lng: me.value.lng, mode: 'here' }); weather.load().catch(() => {}) }
     },
-    () => { geoError.value = t('globe.geoDenied') },
-    { timeout: 8000 }
+    (err) => { geoState.value = err?.code === 1 ? 'denied' : 'unavailable' },
+    { timeout: 15000, maximumAge: 60000 }
   )
 }
 
@@ -238,7 +270,16 @@ onBeforeUnmount(() => { spotMarkers.forEach(m => m.setMap(null)); meMarker?.setM
 .dot { @apply inline-block w-3 h-3 rounded-full; }
 .dot-me { @apply bg-ocean; box-shadow: 0 0 0 2px #fff; }
 .dot-spot { @apply bg-sand; }
-.globe-error { @apply text-danger-text text-sm mt-2; }
+.globe-loc { @apply absolute left-3 right-3 bottom-3 z-20 rounded-xl bg-surface border border-border p-4 pr-12 text-sm; max-height: 70%; overflow-y: auto; }
+.globe-loc p { @apply m-0 mt-1 text-muted; }
+.globe-loc-title { @apply inline-flex items-center gap-2 text-foam; }
+.globe-loc-steps { @apply my-2 pl-5 text-foam; }
+.globe-loc-actions { @apply flex flex-wrap gap-2 mt-3; }
+.globe-loc-link { @apply no-underline; }
+.globe-pill-btn {
+  @apply inline-flex items-center gap-2 min-h-[44px] px-4 rounded-full border border-border-light bg-surface-2 text-foam font-bold text-sm cursor-pointer;
+}
+.globe-pill-btn:focus-visible { outline: 2px solid rgb(var(--color-ocean-text)); outline-offset: 2px; }
 
 .globe-list { @apply mt-3 text-sm; }
 .globe-list summary { @apply cursor-pointer min-h-[44px] flex items-center text-ocean-text font-semibold; }

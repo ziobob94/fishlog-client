@@ -429,12 +429,6 @@
 		"newSession": "Nuova uscita",
 		"ongoingTitle": "In corso",
 		"historyTitle": "Storico",
-		"hero": {
-			"eyebrow": "Pesca sportiva in Italia",
-			"title": "Guarda il mare prima di uscire",
-			"subtitle": "Condizioni in tempo reale, schede specie con normativa e fonti citate, e il tuo diario di pesca, tutto in un posto.",
-			"searchSpecies": "Cerca una specie"
-		},
 		"zones": {
 			"title": "Scegli la zona",
 			"items": {
@@ -445,11 +439,6 @@
 				"ionian": "Ionio",
 				"sicily": "Canale di Sicilia"
 			}
-		},
-		"sea": {
-			"title": "Oggi in mare",
-			"updated": "Aggiornato alle {time}",
-			"unavailable": "Dati non disponibili per questa zona in questo momento."
 		},
 		"stories": {
 			"community": {
@@ -562,6 +551,36 @@
 					"text": "Le statistiche delle tue uscite e catture"
 				}
 			}
+		},
+		"weather": {
+			"updatedAt": "aggiornato alle {time}",
+			"expand": "Mostra il meteo completo",
+			"collapse": "Riduci il meteo",
+			"refreshOffline": "Sei offline: l'aggiornamento non è disponibile",
+			"refreshWait": "Meteo appena aggiornato: riprova tra qualche secondo",
+			"refreshFailed": "Aggiornamento non riuscito: restano i dati di prima. Riprova tra poco.",
+			"feels": "percepita {n}°",
+			"next": "Prossime ore",
+			"period": "periodo {n} s",
+			"expectedMm": "attesa {mm} mm",
+			"gust": "raffiche {n}",
+			"offlineBanner": "Sei offline: dati non aggiornati.",
+			"staleLabel": "Non aggiornato · {time}",
+			"noPlaceTitle": "Scegli un luogo",
+			"activatePosition": "Attiva la posizione",
+			"deniedText": "Posizione non attiva. Riattivala dalle impostazioni del dispositivo, oppure scegli tu un luogo.",
+			"pickPlace": "Scegli un luogo a mano",
+			"noPlaceText": "Per vedere vento, onde e pressione vicino a te serve la posizione, oppure un luogo che scegli tu.",
+			"search": "Cerca un luogo",
+			"errorHint": "Il servizio non risponde."
+		},
+		"globe": {
+			"noPosition": "Posizione non attiva",
+			"locating": "Cerco la posizione…",
+			"locDeniedText": "FishLog non può usare la posizione di questo dispositivo. Riattivala così:",
+			"locUnavailableText": "Non riesco a leggere la posizione adesso. Controlla il GPS e che il segnale sia buono, poi riprova.",
+			"locRetry": "Riprova",
+			"pickPlace": "Scegli un luogo a mano"
 		}
 	},
 	"session": {
@@ -1209,7 +1228,6 @@
 			"errorTitle": "Non riesco a caricare la bacheca",
 			"errorText": "Controlla la connessione e riprova."
 		},
-		"composePrompt": "Cosa hai pescato oggi?",
 		"detail": {
 			"title": "Post",
 			"notFound": "Post non trovato"
@@ -1858,6 +1876,10 @@
 			"region": "Previsione ora per ora di {day}, scorri con le frecce",
 			"legend": "Vento in km/h, la freccia indica dove soffia. Pioggia = probabilità.",
 			"days": "Giorno da mostrare",
+			"span": "Ore da mostrare",
+			"regionAll": "Previsione ora per ora delle prossime {n} ore, scorri con le frecce",
+			"sunrise": "Alba",
+			"sunset": "Tramonto",
 			"fromOm": "Da qui: Open-Meteo",
 			"source": "Le prime 48 ore vengono da Google, le successive da Open-Meteo: più lontano nel tempo, meno precise."
 		},
@@ -2012,9 +2034,27 @@
 			"yourCatches": "Tue catture qui: {n}.",
 			"noSpecies": "Nessuna specie spicca per questo giorno.",
 			"speciesBasis": "Basata su stagione, temperatura dell'acqua, condizioni del giorno e sulle tue catture: indica cosa è più plausibile, non cosa prenderai.",
-			"speciesSeason": "Per questo giorno la stima è solo stagionale (senza temperatura dell'acqua): indica cosa è più plausibile, non cosa prenderai.",
+			"speciesSeason": "Mancano i dati su meteo e acqua: l'elenco dice solo quali specie sono di stagione, non quanto sia probabile prenderle oggi.",
+			"seasonLevel": { "high": "In piena stagione", "mid": "Stagione discreta", "low": "Fuori stagione" },
 			"lightMoon": "Luce e luna",
 			"pressure": "Pressione"
+		},
+		"compare": {
+			"title": "Confronta le previsioni",
+			"badge": "Consigliato",
+			"lead": "Per la pesca ti consigliamo di guardare anche",
+			"brand": "3bmeteo",
+			"praise": "molto apprezzato per vento e mare",
+			"reason": "Due fonti insieme danno un quadro più sicuro: se concordano puoi fidarti di più, se no, aspetta e ricontrolla.",
+			"cta": "Apri 3bmeteo",
+			"newTab": "(si apre in una nuova scheda)",
+			"offline": "Serve la connessione",
+			"hint": "Link esterno. FishLog non è collegato a 3bmeteo e non ne mostra i dati. I nostri dati arrivano da Open-Meteo.",
+			"compactTitle": "Confronta con 3bmeteo",
+			"compactText": "Utile per vento e mare, soprattutto se esci in barca o da scogliera.",
+			"compactOpen": "Apri",
+			"compactOffline": "Offline",
+			"compactOfflineLabel": "Serve la connessione per aprire 3bmeteo"
 		}
 	}
 }

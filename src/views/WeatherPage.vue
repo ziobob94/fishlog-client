@@ -52,6 +52,7 @@
         <div :style="{ '--i': 1 }"><WeatherGlance :view="store.data" /></div>
         <div :style="{ '--i': 2 }"><WeatherHourly :view="store.data" :today="today" /></div>
         <div :style="{ '--i': 3 }"><WeatherDaily :view="store.data" :today="today" /></div>
+        <div :style="{ '--i': 4 }"><CompareForecast /></div>
       </StaggerList>
       <p class="wx-note">{{ t('weather.disclaimer') }}</p>
     </template>
@@ -63,6 +64,7 @@
 <script setup>
 import { ref, computed, onMounted, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { useRoute } from 'vue-router'
 import { MapPin, MapPinOff, WifiOff, CloudOff } from 'lucide-vue-next'
 import PageHeader from '../components/PageHeader.vue'
 import StaggerList from '../components/motion/StaggerList.vue'
@@ -73,6 +75,7 @@ import WeatherSea from '../components/weather/WeatherSea.vue'
 import WeatherGlance from '../components/weather/WeatherGlance.vue'
 import WeatherHourly from '../components/weather/WeatherHourly.vue'
 import WeatherDaily from '../components/weather/WeatherDaily.vue'
+import CompareForecast from '../components/weather/CompareForecast.vue'
 import LocationHelp from '../components/weather/LocationHelp.vue'
 import { useWeatherStore } from '../stores/weather.js'
 import { isPartial } from '../utils/weather.js'
@@ -81,7 +84,9 @@ import '../assets/weather.css'
 
 const { t } = useI18n()
 const store = useWeatherStore()
-const mode = ref(store.place?.mode === 'search' ? 'search' : 'here')
+const route = useRoute()
+// ?modo=cerca (dalla Home: «Scegli un luogo a mano») apre subito la ricerca, senza chiedere la posizione.
+const mode = ref(route.query.modo === 'cerca' || store.place?.mode === 'search' ? 'search' : 'here')
 const helpOpen = ref(false)
 const online = ref(typeof navigator === 'undefined' ? true : navigator.onLine)
 window.addEventListener('online', () => { online.value = true; if (store.place) refresh(true) })
