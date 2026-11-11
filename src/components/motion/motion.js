@@ -20,18 +20,25 @@ export function setMotionPreference(pref, save = true) {
 
 /** true se l'utente ha chiesto meno movimento (sistema o app). Reattivo. */
 export function useReducedMotion() {
-  const reduced = ref(false)
   let mq
-  const read = () => {
+  try { mq = window.matchMedia('(prefers-reduced-motion: reduce)') } catch { /* ambiente senza matchMedia */ }
+  const compute = () => {
     const forced = document.documentElement.getAttribute('data-motion')
-    reduced.value = forced === 'reduce' ? true : forced === 'full' ? false : !!mq?.matches
+    return forced === 'reduce' ? true : forced === 'full' ? false : !!mq?.matches
   }
+  const reduced = ref(compute())   // valore corretto già al primo render (niente scatto al montaggio)
+  const read = () => { reduced.value = compute() }
+  // anche quando l'utente cambia «Riduci animazioni» nell'app (attributo data-motion), non solo la preferenza di sistema
+  let attrObs
   onMounted(() => {
-    mq = window.matchMedia('(prefers-reduced-motion: reduce)')
     read()
-    mq.addEventListener('change', read)
+    mq?.addEventListener?.('change', read)
+    if (typeof MutationObserver !== 'undefined') {
+      attrObs = new MutationObserver(read)
+      attrObs.observe(document.documentElement, { attributes: true, attributeFilter: ['data-motion'] })
+    }
   })
-  onBeforeUnmount(() => mq?.removeEventListener('change', read))
+  onBeforeUnmount(() => { mq?.removeEventListener?.('change', read); attrObs?.disconnect() })
   return reduced
 }
 

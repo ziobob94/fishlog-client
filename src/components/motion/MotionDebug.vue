@@ -9,12 +9,14 @@
     </div>
     <button type="button" class="btn btn-secondary btn-sm mt-2" @click="runTest">Prova animazione</button>
     <p class="mt-1 text-muted">{{ result }}</p>
+    <p class="mt-2 text-muted"><b>Frequenza di aggiornamento:</b> {{ fps }}</p>
   </details>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue'
 const rows = ref([])
+const fps = ref('misurazione…')
 const result = ref('Premi «Prova animazione»: il pallino deve scorrere a destra in 0,6 s.')
 const dot = ref(null)
 let on = false
@@ -32,7 +34,22 @@ function runTest() {
   setTimeout(() => { if (!fired) { el.removeEventListener('transitionend', done); result.value = 'La transizione CSS NON è partita (nessun transitionend dopo 1,5 s).' } }, 1500)
 }
 
+// ~60 (o 120) fps = normale; ~30 fps indica quasi sempre il «Risparmio energetico» di iOS, che dimezza il ritmo
+// delle animazioni (sembrano a scatti o «a tratti») senza alcun segnale leggibile da Safari.
+function measureFps() {
+  let n = 0, t0 = 0
+  const tick = (t) => {
+    if (!t0) t0 = t
+    n++
+    if (t - t0 < 1000) return requestAnimationFrame(tick)
+    const f = Math.round((n * 1000) / (t - t0))
+    fps.value = f < 40 ? `${f} fps: probabile Risparmio energetico (o schermo a basso ritmo)` : `${f} fps: normale`
+  }
+  requestAnimationFrame(tick)
+}
+
 onMounted(() => {
+  measureFps()
   const mm = (q) => { try { return window.matchMedia(q).matches } catch { return 'n/d' } }
   let stored = 'n/d'
   try { stored = localStorage.getItem('fishlog.motion') || 'auto (nessun valore)' } catch { stored = 'storage bloccato' }

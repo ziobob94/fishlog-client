@@ -20,15 +20,33 @@ import { RouterView, useRouter } from 'vue-router'
 
 const router = useRouter()
 const name = ref('page-tab')
-let popped = false
-window.addEventListener('popstate', () => { popped = true })   // tasto indietro del browser o gesto
+
+// Direzione «indietro» solo se popstate precede DAVVERO questa navigazione: il flag scade subito, altrimenti
+// un popstate senza cambio di route (hash, stessa pagina) faceva animare «indietro» la navigazione successiva.
+let popped = false, poppedTimer
+window.addEventListener('popstate', () => {
+  popped = true
+  clearTimeout(poppedTimer)
+  poppedTimer = setTimeout(() => { popped = false }, 400)
+})
+
+// Swipe dal bordo sinistro (gesto «indietro» di iOS Safari / PWA): il sistema anima già lo spostamento da sé,
+// quindi la nostra scivolata si sommerebbe (doppia animazione, a scatti). In quel caso solo dissolvenza.
+let edgeSwipe = false, edgeTimer
+window.addEventListener('touchstart', (e) => {
+  const x = e.touches?.[0]?.clientX ?? 999
+  const w = window.innerWidth
+  edgeSwipe = x < 24 || x > w - 24
+  clearTimeout(edgeTimer)
+  if (edgeSwipe) edgeTimer = setTimeout(() => { edgeSwipe = false }, 1500)
+}, { passive: true })
 
 router.beforeEach((to, from) => {
   const depth = (r) => r.meta?.depth ?? 0
-  if (!from.name || (to.meta?.tab && from.meta?.tab)) name.value = 'page-tab'
+  if (!from.name || (to.meta?.tab && from.meta?.tab) || (popped && edgeSwipe)) name.value = 'page-tab'
   else if (popped || depth(to) < depth(from)) name.value = 'page-back'
   else name.value = 'page-forward'
-  popped = false
+  popped = false; edgeSwipe = false
 })
 </script>
 
