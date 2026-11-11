@@ -72,7 +72,8 @@
 .page-tab-leave-active { transition: opacity var(--motion-fast) var(--ease-standard); position: absolute; inset: 0; }
 .page-tab-enter-from, .page-tab-leave-to { opacity: 0; }
 /* Contenitore delle pagine: senza contain né overflow:hidden (romperebbero position:fixed e sticky). */
-.page-stack { position: relative; overflow-x: clip; }   /* niente contain/overflow:hidden: romperebbero position:fixed e sticky nelle pagine */
+.page-stack { position: relative; }   /* niente overflow qui: tagliava i contenuti a tutta larghezza (margini negativi) */
+html, body { overflow-x: clip; }       /* la scivolata di 24 px delle pagine non crea scroll orizzontale   /* niente contain/overflow:hidden: romperebbero position:fixed e sticky nelle pagine */
 
 /* Apertura del dettaglio da card o griglia (View Transitions API, vedi useViewTransition.js).
    Sull'elemento condiviso: style="view-transition-name: card-<id>". Senza supporto: cambio pagina «avanti». */
