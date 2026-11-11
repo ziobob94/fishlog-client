@@ -19,9 +19,9 @@
 
 <script setup>
 import { computed } from 'vue'
-import { RouterLink } from 'vue-router'
+import { RouterLink, useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { X, ChevronRight, Image as ImageIcon, Fish, FileText, Camera } from 'lucide-vue-next'
+import { X, ChevronRight, Image as ImageIcon, Fish, FileText, Camera, CalendarDays } from 'lucide-vue-next'
 import { useSessionStore } from '../stores/sessions.js'
 
 defineProps({ open: { type: Boolean, default: false } })
@@ -29,11 +29,15 @@ defineEmits(['close'])
 
 const { t } = useI18n()
 const sessions = useSessionStore()
+const route = useRoute()
+// Da La mia bacheca, dopo la creazione si torna alla bacheca
+const from = computed(() => route.path === '/board' ? { from: 'board' } : {})
 
 // Foglio «Crea» (schermata 39): post, storia, uscita, annuncio.
 const options = computed(() => [
-  { key: 'post', tone: 'ocean', icon: ImageIcon, title: t('createMenu.post'), sub: t('createMenu.postSub'), to: '/post/new' },
-  { key: 'story', tone: 'sand', icon: Camera, title: t('createMenu.story'), sub: t('createMenu.storySub'), to: '/story/new' },
+  { key: 'post', tone: 'ocean', icon: ImageIcon, title: t('createMenu.post'), sub: t('createMenu.postSub'), to: { path: '/post/new', query: { ...from.value } } },
+  { key: 'event', tone: 'ocean', icon: CalendarDays, title: t('createMenu.event'), sub: t('createMenu.eventSub'), to: { path: '/post/new', query: { type: 'event', ...from.value } } },
+  { key: 'story', tone: 'sand', icon: Camera, title: t('createMenu.story'), sub: t('createMenu.storySub'), to: { path: '/story/new', query: { ...from.value } } },
   { key: 'session', tone: 'green', icon: Fish, title: t('createMenu.session'),
     sub: sessions.ongoing ? t('createMenu.resumeSession') : t('createMenu.sessionSub'),
     to: sessions.ongoing ? `/session/${sessions.ongoing._id}/edit` : '/new' },

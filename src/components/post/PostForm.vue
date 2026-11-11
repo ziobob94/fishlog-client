@@ -1,18 +1,32 @@
 <template>
-  <form class="post-form" @submit.prevent="submit">
+  <form :id="formId" class="post-form" @submit.prevent="submit">
     <div class="segmented" role="radiogroup" :aria-label="t('posts.form.typePost')">
       <button type="button" role="radio" :aria-checked="form.type === 'post'" class="seg-opt" :class="{ active: form.type === 'post' }" @click="form.type = 'post'">{{ t('posts.form.typePost') }}</button>
       <button type="button" role="radio" :aria-checked="form.type === 'event'" class="seg-opt" :class="{ active: form.type === 'event' }" @click="form.type = 'event'">{{ t('posts.form.typeEvent') }}</button>
     </div>
 
-    <input
-      v-if="form.type === 'event'"
-      v-model="form.title"
-      type="text"
-      :placeholder="t('posts.form.titlePlaceholder')"
-    />
+    <!-- Foto/video scelti insieme al testo, caricati solo al momento del salvataggio -->
+    <p class="field-label">{{ t('posts.form.mediaLabel') }}</p>
+    <div class="photo-grid" :class="{ dragging }" @dragover.prevent="dragging = true" @dragleave="dragging = false" @drop.prevent="onDrop">
+      <div v-for="item in pendingFiles" :key="item.id" class="photo-preview-item">
+        <img v-if="!item.isVideo" :src="item.previewUrl" alt="" />
+        <video v-else :src="item.previewUrl" muted />
+        <button type="button" class="photo-preview-remove" :aria-label="t('common.delete')" @click.stop="removeFile(item)"><X :size="12" /></button>
+      </div>
+      <button type="button" class="photo-add" :aria-label="t('mediaUploader.dropHintClick')" @click="fileInput.click()"><Plus :size="22" /></button>
+      <input ref="fileInput" type="file" multiple accept="image/*,video/*" class="hidden" @change="onFileChange" />
+    </div>
 
-    <label for="post-body" class="field-label">{{ t('posts.form.bodyLabel') }}</label>
+    <div v-if="saving && pendingFiles.length" class="upload-progress">
+      <div class="upload-progress-bar" :style="{ width: uploadProgress + '%' }"></div>
+    </div>
+
+    <template v-if="form.type === 'event'">
+      <label for="post-title" class="field-label">{{ t('posts.form.eventName') }}</label>
+      <input id="post-title" v-model="form.title" type="text" class="fl-inp" required :placeholder="t('posts.form.titlePlaceholder')" />
+    </template>
+
+    <label for="post-body" class="field-label">{{ form.type === 'event' ? t('posts.form.eventDesc') : t('posts.form.bodyLabel') }}</label>
     <textarea
       id="post-body"
       v-model="form.body"
@@ -22,7 +36,8 @@
     />
 
     <div v-if="form.type === 'event'" class="event-fields">
-      <input v-model="form.event.date" type="datetime-local" v-ph="'gg/mm/aaaa  --:--'" />
+      <label for="post-date" class="field-label">{{ t('posts.form.eventDate') }}</label>
+      <input id="post-date" v-model="form.event.date" type="datetime-local" class="fl-inp" required v-ph="'gg/mm/aaaa  --:--'" />
       <LocationPicker
         :lat="form.event.location.lat"
         :lng="form.event.location.lng"
@@ -32,34 +47,6 @@
         @update:lng="v => form.event.location.lng = v"
         @update:name="v => form.event.location.name = v"
       />
-    </div>
-
-    <!-- Foto/video scelti insieme al testo, caricati solo al momento del salvataggio -->
-    <div
-      class="photo-picker"
-      :class="{ dragging }"
-      @dragover.prevent="dragging = true"
-      @dragleave="dragging = false"
-      @drop.prevent="onDrop"
-      @click="fileInput.click()"
-    >
-      <input ref="fileInput" type="file" multiple accept="image/*,video/*" class="hidden" @change="onFileChange" />
-      <Paperclip :size="16" class="text-muted" />
-      <span class="text-sm text-foam">
-        {{ t('mediaUploader.dropHint') }} <span class="text-ocean-text">{{ t('mediaUploader.dropHintClick') }}</span>
-      </span>
-    </div>
-
-    <div v-if="pendingFiles.length" class="photo-preview-grid">
-      <div v-for="item in pendingFiles" :key="item.id" class="photo-preview-item">
-        <img v-if="!item.isVideo" :src="item.previewUrl" />
-        <video v-else :src="item.previewUrl" muted />
-        <button type="button" class="photo-preview-remove" @click.stop="removeFile(item)"><X :size="12" /></button>
-      </div>
-    </div>
-
-    <div v-if="saving && pendingFiles.length" class="upload-progress">
-      <div class="upload-progress-bar" :style="{ width: uploadProgress + '%' }"></div>
     </div>
 
     <!-- Uscita collegata (solo post): luogo, specie e misure compaiono sul post, le coordinate esatte restano nascoste -->
@@ -83,8 +70,8 @@
     </div>
 
     <p class="field-label">{{ t('posts.form.whoCanSee') }}</p>
-    <div class="segmented" role="radiogroup" :aria-label="t('posts.form.whoCanSee')">
-      <button v-for="v in ['public', 'group', 'private']" :key="v" type="button" role="radio" :aria-checked="form.visibility === v" class="seg-opt" :class="{ active: form.visibility === v }" @click="form.visibility = v">{{ t(`posts.visibility.${v}`) }}</button>
+    <div class="chips" role="radiogroup" :aria-label="t('posts.form.whoCanSee')">
+      <button v-for="v in ['public', 'group', 'private']" :key="v" type="button" role="radio" :aria-checked="form.visibility === v" class="chip" :class="{ 'chip-on': form.visibility === v }" @click="form.visibility = v">{{ v === 'private' ? t('posts.form.onlyMe') : t(`posts.visibility.${v}`) }}</button>
     </div>
     <template v-if="form.visibility === 'group'">
       <label for="post-group" class="field-label">{{ t('posts.visibility.group') }}</label>
@@ -93,7 +80,7 @@
         <option v-for="g in groups" :key="g._id" :value="g._id">{{ g.name }}</option>
       </select>
     </template>
-    <button type="submit" class="fl-btn1 publish" :disabled="saving">
+    <button v-if="!hideSubmit" type="submit" class="fl-btn1 publish" :disabled="saving">
       {{ saving ? t('posts.form.saving') : t('posts.form.submit') }}
     </button>
     <p v-if="error" class="error-msg">{{ error }}</p>
@@ -104,7 +91,7 @@
 import { ref, computed, onMounted, onBeforeUnmount, watch } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useI18n } from 'vue-i18n'
-import { Paperclip, X } from 'lucide-vue-next'
+import { Plus, X } from 'lucide-vue-next'
 import { useGroupStore } from '../../stores/groups.js'
 import { useAuthStore } from '../../stores/auth.js'
 import LocationPicker from '../form/LocationPicker.vue'
@@ -112,10 +99,12 @@ import api from '../../utils/api.js'
 import { compressAll, uploadErrorMessage } from '../../utils/image.js'
 import { showError, focusFirstInvalid } from '../../utils/formValidation.js'
 
-const emit = defineEmits(['created'])
+const emit = defineEmits(['created', 'state'])
 const props = defineProps({
   createFn: { type: Function, required: true },
-  initialType: { type: String, default: 'post' }
+  initialType: { type: String, default: 'post' },
+  formId: { type: String, default: 'post-form' },
+  hideSubmit: { type: Boolean, default: false }
 })
 
 const { t } = useI18n()
@@ -130,6 +119,7 @@ const uploadProgress = ref(0)
 const fileInput = ref(null)
 const dragging  = ref(false)
 const pendingFiles = ref([])
+watch([saving, uploadProgress], () => emit('state', { saving: saving.value, progress: uploadProgress.value }))
 
 function defaultVisibility() {
   const pref = authStore.user?.defaultVisibility
@@ -245,6 +235,7 @@ async function submit() {
 .linked { @apply flex flex-col gap-2; }
 .chips { @apply flex flex-wrap gap-2; }
 .chip { @apply inline-flex items-center min-h-[44px] px-4 rounded-full border border-border bg-surface text-foam text-sm font-semibold cursor-pointer; }
+.chip-on { background: var(--ocean); border-color: var(--ocean); color: rgb(var(--color-on-primary)); }
 .chip-sand { @apply border-sand text-sand-text; background: rgb(var(--color-sand) / 0.15); }
 .sr-only { @apply absolute w-px h-px overflow-hidden; clip: rect(0 0 0 0); }
 .event-fields { @apply flex flex-col gap-2; }
@@ -252,18 +243,12 @@ async function submit() {
 textarea, input:not([type=file]):not([type=checkbox]) { width: 100%; box-sizing: border-box; min-height: 52px; border-radius: 14px; border: 1px solid var(--border); background: var(--surface); color: var(--foam); font-size: 16px; padding: .8rem 1rem; outline: none; }
 textarea { min-height: 96px; resize: none; }
 
-.photo-picker {
-  @apply flex items-center justify-center gap-2 py-2.5 border-2 border-dashed border-border rounded-lg
-         cursor-pointer transition-all duration-200 hover:border-ocean hover:bg-ocean/5;
-}
-.photo-picker.dragging { @apply border-ocean bg-ocean/5; }
+.photo-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.photo-grid.dragging { outline: 2px dashed var(--ocean); outline-offset: 4px; }
+.photo-add { aspect-ratio: 1; border-radius: 16px; border: 2px dashed var(--border-light); background: transparent; color: rgb(var(--color-ocean-text)); display: flex; align-items: center; justify-content: center; cursor: pointer; }
 
-.photo-preview-grid {
-  @apply grid gap-2;
-  grid-template-columns: repeat(auto-fill, minmax(84px, 1fr));
-}
 .photo-preview-item {
-  @apply relative aspect-square bg-surface-2 rounded-sm overflow-hidden;
+  @apply relative aspect-square bg-surface-2 overflow-hidden; border-radius: 16px;
 }
 .photo-preview-item img, .photo-preview-item video {
   @apply w-full h-full object-cover;

@@ -50,7 +50,7 @@
 
 <script setup>
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { X, Camera, Fish, MapPin, Waves } from 'lucide-vue-next'
 import api from '../utils/api.js'
@@ -60,6 +60,7 @@ import { useToast } from '../composables/useToast.js'
 
 const { t } = useI18n()
 const router = useRouter()
+const route = useRoute()
 const store = useStoryStore()
 const { toast } = useToast()
 
@@ -134,7 +135,7 @@ async function publish() {
   if (waterOn.value) stickers.push({ kind: 'water', sessionId: sid })
   const created = await store.create({ audience: audience.value, stickers, file: file.value })
   publishing.value = false
-  if (created) { toast(t('stories.published'), { type: 'success' }); router.replace('/feed') }
+  if (created) { toast(t('stories.published'), { type: 'success' }); router.replace(route.query.from === 'board' ? '/board' : '/feed') }
 }
 </script>
 
