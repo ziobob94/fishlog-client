@@ -55,13 +55,11 @@ import { useSessionStore } from '../stores/sessions.js'
 import GlobeCard from '../components/GlobeCard.vue'
 import { useFriendStore } from '../stores/friends.js'
 import HomeWeatherCard from '../components/weather/HomeWeatherCard.vue'
-import { useMediaQuery } from '../composables/useMediaQuery.js'
 
 const { t } = useI18n()
 const friends = useFriendStore()
 const sessions = useSessionStore()
 const globeOpen = ref(false)                    // mappamondo espanso (si riparte sempre dal compatto)
-const isDesktop = useMediaQuery('(min-width: 768px)')
 
 // Badge numerico per box con contatori "da leggere/gestire" (gruppi: in sospeso).
 function badgeCount(key) {
