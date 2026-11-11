@@ -45,23 +45,26 @@
 
       <div class="cta-bar">
         <template v-if="isOwner">
-          <RouterLink :to="`/market/${listing._id}/edit`" class="btn btn-secondary">
-            <Pencil :size="16" /> {{ t('common.edit') }}
+          <RouterLink :to="`/market/${listing._id}/edit`" class="icon-act" :aria-label="t('common.edit')" :title="t('common.edit')">
+            <Pencil :size="20" />
           </RouterLink>
-          <select v-model="statusModel" :aria-label="t('market.status.active')" @change="changeStatus">
-            <option value="active">{{ t('market.status.active') }}</option>
-            <option value="reserved">{{ t('market.status.reserved') }}</option>
-            <option value="sold">{{ t('market.status.sold') }}</option>
-          </select>
-          <button type="button" class="btn btn-danger" :aria-label="t('common.delete')" @click="onDelete">
-            <Trash2 :size="16" />
+          <label class="status-pick" :title="t('market.status.label')">
+            <span class="status-dot" :class="`dot-${statusModel}`" aria-hidden="true"></span>
+            <select v-model="statusModel" :aria-label="t('market.status.label')" @change="changeStatus">
+              <option value="active">{{ t('market.status.active') }}</option>
+              <option value="reserved">{{ t('market.status.reserved') }}</option>
+              <option value="sold">{{ t('market.status.sold') }}</option>
+            </select>
+          </label>
+          <button type="button" class="icon-act icon-danger" :aria-label="t('common.delete')" :title="t('common.delete')" @click="onDelete">
+            <Trash2 :size="20" />
           </button>
         </template>
         <template v-else>
           <RouterLink :to="`/chat/${listing.seller._id}`" class="btn btn-primary cta-main">
             <MessageCircle :size="16" /> {{ t('market.contactSeller') }}
           </RouterLink>
-          <button type="button" class="round-btn round-btn-lg" :aria-label="t('market.share')" @click="share"><Send :size="18" /></button>
+          <button type="button" class="icon-act" :aria-label="t('market.share')" :title="t('market.share')" @click="share"><Send :size="20" /></button>
         </template>
       </div>
     </div>
@@ -77,6 +80,7 @@ import { useI18n } from 'vue-i18n'
 import { Package, MapPin, Check, ChevronRight, ArrowLeft, Send, Pencil, Trash2, MessageCircle } from 'lucide-vue-next'
 import { useMarketStore } from '../stores/market.js'
 import { useAuthStore } from '../stores/auth.js'
+import api from '../utils/api.js'
 
 const { t } = useI18n()
 const route = useRoute()
@@ -127,7 +131,13 @@ async function onDelete() {
   router.push('/market')
 }
 
-onMounted(() => store.fetchListing(route.params.id))
+onMounted(async () => {
+  await store.fetchListing(route.params.id)
+  // Visualizzazione unica per utente: il server ignora riaperture e il venditore.
+  if (!isOwner.value) {
+    try { const { data } = await api.post(`/listings/${route.params.id}/view`); if (store.current) store.current.views = data.views } catch { /* accessorio */ }
+  }
+})
 </script>
 
 <style scoped>
@@ -171,8 +181,14 @@ onMounted(() => store.fetchListing(route.params.id))
 @media (max-width: 719px) {
   .cta-bar {
     @apply fixed left-0 right-0 z-20 px-4 py-3 bg-surface border-t border-border mt-0;
-    bottom: var(--bottom-nav-h);
+    bottom: calc(var(--bottom-nav-h) + env(safe-area-inset-bottom));
   }
 }
 .cta-main { @apply flex-1 min-h-[48px]; }
+.icon-act { @apply flex items-center justify-center shrink-0 w-12 h-12 rounded-xl border border-border-light bg-surface-2 text-foam no-underline cursor-pointer; }
+.icon-danger { @apply text-danger-text; border-color: rgb(var(--color-danger) / .6); }
+.status-pick { @apply relative flex items-center flex-1 min-w-0 h-12 rounded-xl border border-border-light bg-surface-2; }
+.status-pick select { @apply w-full h-full bg-transparent border-0 text-foam font-semibold pl-8 pr-2; min-height: 48px; }
+.status-dot { @apply absolute left-3 top-1/2 -translate-y-1/2 w-2.5 h-2.5 rounded-full pointer-events-none; }
+.dot-active { background: rgb(var(--color-success)); } .dot-reserved { background: rgb(var(--color-sand)); } .dot-sold { background: rgb(var(--color-danger)); }
 </style>
