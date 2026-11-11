@@ -1,6 +1,8 @@
 <template>
   <div>
-    <section v-if="store.ongoing" class="ongoing-section">
+    <p v-if="route.query.user" class="text-muted text-sm mb-2">{{ t('profileStats.publicOnly') }}</p>
+
+    <section v-if="store.ongoing && !route.query.user" class="ongoing-section">
       <h2 class="ongoing-heading">
         <span class="pulse-dot"></span> {{ t('home.ongoingTitle') }}
       </h2>
@@ -38,7 +40,7 @@
 
 <script setup>
 import { ref, computed, watch, onMounted } from 'vue'
-import { RouterLink } from 'vue-router'
+import { RouterLink, useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { Fish } from 'lucide-vue-next'
 import { useSessionStore } from '../stores/sessions.js'
@@ -50,6 +52,7 @@ import InfiniteSentinel from '../components/InfiniteSentinel.vue'
 
 const { t } = useI18n()
 const store = useSessionStore()
+const route = useRoute()
 
 const filters = ref({ search: '', technique: '', dateFrom: '', dateTo: '' })
 
@@ -70,7 +73,8 @@ const { loading: infiniteLoading, loadingMore, hasMore, reset, loadMore } = useI
     search:    filters.value.search    || undefined,
     technique: filters.value.technique || undefined,
     dateFrom:  filters.value.dateFrom  || undefined,
-    dateTo:    filters.value.dateTo    || undefined
+    dateTo:    filters.value.dateTo    || undefined,
+    userId:    route.query.user || undefined
   }, { append }),
   pagesRef
 )
@@ -78,6 +82,7 @@ const { loading: infiniteLoading, loadingMore, hasMore, reset, loadMore } = useI
 const debouncedReset = useDebouncedFn(() => reset(), 320)
 
 watch(filters, debouncedReset, { deep: true })
+watch(() => route.query.user, () => reset())
 
 function resetFilters() {
   filters.value = { search: '', technique: '', dateFrom: '', dateTo: '' }

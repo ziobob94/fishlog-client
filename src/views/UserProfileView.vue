@@ -20,6 +20,8 @@
         </div>
       </div>
 
+      <ProfileStats :user-id="String(route.params.id)" :counts="user.counts || {}" />
+
       <div class="friend-action">
         <button v-if="status === 'none'" class="btn btn-primary btn-sm" :disabled="acting" @click="onSend">{{ t('friends.actions.add') }}</button>
         <button v-else-if="status === 'sent'" class="btn btn-ghost btn-sm" :disabled="acting" @click="onCancel">{{ t('friends.actions.cancel') }}</button>
@@ -51,6 +53,7 @@ import { useI18n } from 'vue-i18n'
 import { UserX } from 'lucide-vue-next'
 import { useUserStore } from '../stores/users.js'
 import { useFriendStore } from '../stores/friends.js'
+import ProfileStats from '../components/ProfileStats.vue'
 
 const { t } = useI18n()
 const route = useRoute()

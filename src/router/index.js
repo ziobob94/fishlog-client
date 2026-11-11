@@ -23,6 +23,7 @@ export default createRouter({
     { path: '/groups', name: 'groups', component: () => import('../views/GroupsView.vue') },
     { path: '/friends', name: 'friends', component: () => import('../views/FriendsView.vue') },
     { path: '/users/:id', name: 'user-profile', component: () => import('../views/UserProfileView.vue') },
+    { path: '/utenti/:id/catture', name: 'user-catches', component: () => import('../views/CatchesRankingPage.vue') },
     { path: '/feed',  name: 'feed',  component: () => import('../views/FeedView.vue') },
     { path: '/board', name: 'board', component: () => import('../views/MyBoardView.vue') },
     { path: '/market', name: 'market', component: () => import('../views/MarketView.vue') },

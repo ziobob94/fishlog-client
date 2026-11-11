@@ -1,5 +1,7 @@
 <template>
   <div>
+    <ProfileStats v-if="auth.user?._id" :user-id="auth.user._id" :counts="myCounts" is-self />
+
     <div class="bg-surface border border-border/60 rounded-lg p-3.5">
       <PostForm :create-fn="store.createPost" @created="onCreated" />
     </div>
@@ -31,7 +33,7 @@
 </template>
 
 <script setup>
-import { computed, onMounted } from 'vue'
+import { computed, ref, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { Pin } from 'lucide-vue-next'
 import { usePostStore } from '../stores/posts.js'
@@ -39,11 +41,15 @@ import { useAuthStore } from '../stores/auth.js'
 import { useInfiniteScroll } from '../composables/useInfiniteScroll.js'
 import PostForm from '../components/post/PostForm.vue'
 import PostCard from '../components/post/PostCard.vue'
+import ProfileStats from '../components/ProfileStats.vue'
+import { useUserStore } from '../stores/users.js'
 import InfiniteSentinel from '../components/InfiniteSentinel.vue'
 
 const { t } = useI18n()
 const store = usePostStore()
 const auth  = useAuthStore()
+const userStore = useUserStore()
+const myCounts = ref({})
 
 const pagesRef = computed(() => store.pagination.pages)
 const { loading: infiniteLoading, loadingMore, hasMore, reset, loadMore } = useInfiniteScroll(
@@ -54,6 +60,7 @@ const { loading: infiniteLoading, loadingMore, hasMore, reset, loadMore } = useI
 onMounted(() => {
   reset()
   store.markSeen('board')
+  if (auth.user?._id) userStore.fetchUser(auth.user._id).then(u => { myCounts.value = u?.counts || {} })
 })
 
 function onCreated() { reset() }
