@@ -23,8 +23,9 @@
     <div v-if="state === 'noplace'" class="hw-empty">
       <MapPin :size="28" aria-hidden="true" class="hw-ico" />
       <h2 class="hw-title">{{ t('home.weather.noPlaceTitle') }}</h2>
-      <p>{{ t('home.weather.noPlaceText') }}</p>
-      <RouterLink to="/meteo" class="fl-btn1 m-press hw-cta"><Search :size="18" aria-hidden="true" /> {{ t('home.weather.search') }}</RouterLink>
+      <p>{{ denied ? t('home.weather.deniedText') : t('home.weather.noPlaceText') }}</p>
+      <button v-if="!denied" type="button" class="fl-btn1 m-press hw-cta" :disabled="activating" @click="activate"><MapPin :size="18" aria-hidden="true" /> {{ activating ? t('home.globe.locating') : t('home.weather.activatePosition') }}</button>
+      <RouterLink :to="{ path: '/meteo', query: { modo: 'cerca' } }" class="m-press hw-cta" :class="denied ? 'fl-btn1' : 'hw-link'"><Search :size="18" aria-hidden="true" /> {{ denied ? t('home.weather.pickPlace') : t('home.weather.search') }}</RouterLink>
     </div>
 
     <!-- Errore -->
@@ -117,7 +118,7 @@ import '../../assets/weather.css'
 
 const props = defineProps({ variant: { type: String, default: 'card' } }) // 'card' | 'bar'
 const { t } = useI18n()
-const { state, offline, summary, placeName, savedLabel, retry } = useHomeWeather({ autoload: props.variant !== 'bar' })
+const { activate, activating, denied, state, offline, summary, placeName, savedLabel, retry } = useHomeWeather({ autoload: props.variant !== 'bar' })
 const s = computed(() => summary.value)
 const place = computed(() => placeName.value || t('weather.yourPosition'))
 const pressWord = computed(() => {

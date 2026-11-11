@@ -64,6 +64,7 @@
 <script setup>
 import { ref, computed, onMounted, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { useRoute } from 'vue-router'
 import { MapPin, MapPinOff, WifiOff, CloudOff } from 'lucide-vue-next'
 import PageHeader from '../components/PageHeader.vue'
 import StaggerList from '../components/motion/StaggerList.vue'
@@ -83,7 +84,9 @@ import '../assets/weather.css'
 
 const { t } = useI18n()
 const store = useWeatherStore()
-const mode = ref(store.place?.mode === 'search' ? 'search' : 'here')
+const route = useRoute()
+// ?modo=cerca (dalla Home: «Scegli un luogo a mano») apre subito la ricerca, senza chiedere la posizione.
+const mode = ref(route.query.modo === 'cerca' || store.place?.mode === 'search' ? 'search' : 'here')
 const helpOpen = ref(false)
 const online = ref(typeof navigator === 'undefined' ? true : navigator.onLine)
 window.addEventListener('online', () => { online.value = true; if (store.place) refresh(true) })
