@@ -1,3 +1,10 @@
+# [1.44.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.43.0...client-v1.44.0) (2026-11-11)
+
+
+### Features
+
+* azioni dell'annuncio come icone sotto la foto, a destra; barra in basso solo per Contatta ([32df799](https://github.com/ziobob94/fishlog-client/commit/32df7996ad3606b8f807b84601fb87e4d27b6fde))
+
 # [1.43.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.42.1...client-v1.43.0) (2026-11-11)
 
 
