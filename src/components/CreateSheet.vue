@@ -55,7 +55,7 @@ const options = computed(() => [
 .ic.green { background: rgba(74, 222, 128, .16); color: rgb(var(--color-success-text)); }
 .ic.slate { background: rgba(148, 163, 184, .18); color: var(--foam); }
 .tx { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
-.tx strong { font-family: var(--font-display); font-size: 18px; font-weight: 800; letter-spacing: -.01em; }
+.tx strong { font-size: 16px; font-weight: 700; }
 .tx small { font-size: 13px; color: var(--text-muted); }
 .go { color: var(--text-muted); flex: none; }
 </style>
