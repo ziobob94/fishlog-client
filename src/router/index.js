@@ -41,6 +41,7 @@ export default createRouter({
     { path: '/groups', name: 'groups', component: () => import('../views/GroupsView.vue'), meta: { ownHeader: true } },
     { path: '/friends', name: 'friends', component: () => import('../views/FriendsView.vue'), meta: { ownHeader: true } },
     { path: '/users/:id', name: 'user-profile', component: () => import('../views/UserProfileView.vue'), meta: { ownHeader: true } },
+    { path: '/utenti/:id/catture', name: 'user-catches', component: () => import('../views/CatchesRankingPage.vue'), meta: { ownHeader: true } },
     { path: '/story/new', name: 'story-new', component: () => import('../views/StoryComposerView.vue'), meta: { ownHeader: true, hideBottomNav: true } },
     { path: '/post/new', name: 'post-new', component: () => import('../views/PostComposeView.vue'), meta: { ownHeader: true, hideBottomNav: true } },
     { path: '/stories/:userId', name: 'story-view', component: () => import('../views/StoryViewerView.vue'), meta: { ownHeader: true, hideBottomNav: true } },

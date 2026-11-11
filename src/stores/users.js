@@ -29,5 +29,11 @@ export const useUserStore = defineStore('users', () => {
     }
   }
 
-  return { results, loading, error, searchUsers, fetchUser }
+  // Classifica catture: GET /users/:id/catches (lancia in caso di errore, la pagina mostra «Riprova»)
+  async function fetchUserCatches(id, params = {}) {
+    const { data } = await api.get(`/users/${id}/catches`, { params })
+    return data
+  }
+
+  return { results, loading, error, searchUsers, fetchUser, fetchUserCatches }
 })

@@ -1480,6 +1480,43 @@
 		"last12": "ultimi 12 mesi",
 		"topSpecies": "Specie più catturate"
 	},
+	"profileStats": {
+		"label": "Numeri del profilo",
+		"sessions": "uscite",
+		"friends": "amici",
+		"catches": "catture",
+		"sessionsAria": "{n} uscite: apri l'elenco",
+		"friendsAria": "{n} amici: apri l'elenco",
+		"catchesAria": "{n} catture: apri la classifica",
+		"publicOnly": "Solo le uscite che puoi vedere."
+	},
+	"catchesRanking": {
+		"titleMine": "Le mie catture",
+		"titleOther": "Catture di {name}",
+		"subtitle": "Classifica personale",
+		"recordMine": "Il tuo record",
+		"recordOther": "Il suo record",
+		"recordStamp": "record",
+		"totals": { "catches": "catture", "species": "specie", "heaviest": "più pesante" },
+		"sort": { "label": "Ordinamento", "weight": "Per peso", "length": "Per lunghezza", "species": "Per specie" },
+		"period": { "label": "Periodo", "all": "Sempre", "30d": "Ultimi 30 giorni", "year": "Anno {year}" },
+		"allSpecies": "Tutte",
+		"speciesFilter": "Filtra per specie",
+		"catchesCount": "{n} cattura | {n} catture",
+		"record": "record",
+		"openCatch": "{species}, posizione {pos}: apri il dettaglio",
+		"showMore": "Mostra altre catture",
+		"shown": "Prime {shown} su {total}",
+		"speciesHint": "Ordinate per numero di catture. Tocca una specie per vedere solo le sue catture.",
+		"empty": {
+			"title": "Ancora nessuna cattura",
+			"textMine": "Quando aggiungi catture a una uscita, qui compare la tua classifica personale: la più pesante, la più lunga e i record per specie.",
+			"textOther": "Non ci sono catture visibili per questo periodo.",
+			"cta": "Inizia un'uscita"
+		},
+		"error": { "title": "Non riesco a caricare le catture", "text": "Controlla la connessione e riprova.", "retry": "Riprova" },
+		"notFound": "Utente non trovato."
+	},
 	"leaderboard": {
 		"title": "Classifica",
 		"periods": {

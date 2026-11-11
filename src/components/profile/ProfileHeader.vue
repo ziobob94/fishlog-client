@@ -5,11 +5,11 @@
         <span class="avatar"><img v-if="user?.avatar" :src="user.avatar" alt="" /><template v-else>{{ initials }}</template></span>
         <span v-if="!own" class="plus" aria-hidden="true"><Plus :size="16" :stroke-width="2.6" /></span>
       </RouterLink>
-      <div class="stats">
-        <div><span class="fl-mono num">{{ stats.sessionsCount }}</span><span class="lbl">{{ t('profile.board.sessions') }}</span></div>
-        <div><span class="fl-mono num">{{ stats.catchesCount }}</span><span class="lbl">{{ t('profile.board.catches') }}</span></div>
-        <div><span class="fl-mono num">{{ stats.friendsCount }}</span><span class="lbl">{{ t('profile.board.friends') }}</span></div>
-      </div>
+      <nav class="stats" :aria-label="t('profileStats.label')">
+        <RouterLink to="/sessions" class="stat m-press" :aria-label="t('profileStats.sessionsAria', { n: stats.sessionsCount })"><span class="fl-mono num">{{ stats.sessionsCount }}</span><span class="lbl">{{ t('profile.board.sessions') }}</span></RouterLink>
+        <RouterLink :to="`/utenti/${meId}/catture`" class="stat m-press" :aria-label="t('profileStats.catchesAria', { n: stats.catchesCount })"><span class="fl-mono num">{{ stats.catchesCount }}</span><span class="lbl">{{ t('profile.board.catches') }}</span></RouterLink>
+        <RouterLink to="/friends" class="stat m-press" :aria-label="t('profileStats.friendsAria', { n: stats.friendsCount })"><span class="fl-mono num">{{ stats.friendsCount }}</span><span class="lbl">{{ t('profile.board.friends') }}</span></RouterLink>
+      </nav>
     </div>
     <p class="name">{{ user?.displayName || user?.username || user?.email }}</p>
     <p v-if="user?.bio" class="bio">{{ user.bio }}</p>
@@ -63,7 +63,9 @@ async function share() {
 .avatar img { width: 100%; height: 100%; object-fit: cover; }
 .plus { position: absolute; right: -2px; bottom: -2px; width: 26px; height: 26px; border-radius: 50%; background: var(--ocean); color: rgb(var(--color-on-primary)); border: 2px solid rgb(var(--color-ink)); display: flex; align-items: center; justify-content: center; }
 .stats { flex: 1; display: grid; grid-template-columns: repeat(3, 1fr); text-align: center; }
-.stats > div { display: flex; flex-direction: column; }
+.stat { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 56px; min-width: 52px; border-radius: 12px; text-decoration: none; }
+.stat:active { background: var(--ocean-glow); }
+.stat:focus-visible { outline: 2px solid rgb(var(--color-ocean-text)); outline-offset: 2px; }
 .num { font-size: 20px; color: var(--foam); line-height: 1.2; }
 .lbl { font-size: 13px; color: var(--text-muted); }
 .name { margin: 14px 0 0; font-size: 16px; font-weight: 800; color: var(--foam); }

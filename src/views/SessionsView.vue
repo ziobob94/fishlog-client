@@ -4,7 +4,7 @@
 
     <SessionFilters v-model="filters" @reset="resetFilters" />
 
-    <RouterLink v-if="store.ongoing" :to="newSessionTarget" class="ongoing-panel">
+    <RouterLink v-if="store.ongoing && !otherUser" :to="newSessionTarget" class="ongoing-panel">
       <span class="pulse-dot"></span>
       <span class="ongoing-text">
         <span class="ongoing-eyebrow">{{ t('home.ongoingTitle') }}<template v-if="store.ongoing.startTime"> · {{ t('sessions.since', { time: store.ongoing.startTime }) }}</template></span>
@@ -14,7 +14,7 @@
       <span class="btn btn-sand">{{ t('sessions.resume') }}</span>
     </RouterLink>
 
-    <TideDivider v-if="store.ongoing && historySessions.length">{{ t('home.historyTitle') }}</TideDivider>
+    <TideDivider v-if="store.ongoing && !otherUser && historySessions.length">{{ t('home.historyTitle') }}</TideDivider>
 
     <div v-if="infiniteLoading" class="state-center">
       <div class="m-spinner"></div>
@@ -41,7 +41,7 @@
 import PageHeader from '../components/PageHeader.vue'
 import TideDivider from '../components/TideDivider.vue'
 import { ref, computed, watch, onMounted } from 'vue'
-import { RouterLink } from 'vue-router'
+import { RouterLink, useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { Fish } from 'lucide-vue-next'
 import { useSessionStore } from '../stores/sessions.js'
@@ -53,6 +53,9 @@ import InfiniteSentinel from '../components/InfiniteSentinel.vue'
 
 const { t } = useI18n()
 const store = useSessionStore()
+const route = useRoute()
+// /sessions?user=ID: uscite di un altro utente (il server restituisce solo quelle visibili a chi guarda)
+const otherUser = computed(() => (route.query.user ? String(route.query.user) : ''))
 
 const filters = ref({ search: '', technique: '', dateFrom: '', dateTo: '' })
 
@@ -70,7 +73,8 @@ const pagesRef = computed(() => store.pagination.pages)
 const { loading: infiniteLoading, loadingMore, hasMore, reset, loadMore } = useInfiniteScroll(
   (page, { append }) => store.fetchSessions({
     page,
-    mine:      'true',
+    mine:      otherUser.value ? undefined : 'true',
+    userId:    otherUser.value || undefined,
     search:    filters.value.search    || undefined,
     technique: filters.value.technique || undefined,
     dateFrom:  filters.value.dateFrom  || undefined,
@@ -82,6 +86,7 @@ const { loading: infiniteLoading, loadingMore, hasMore, reset, loadMore } = useI
 const debouncedReset = useDebouncedFn(() => reset(), 320)
 
 watch(filters, debouncedReset, { deep: true })
+watch(otherUser, () => reset())
 
 function resetFilters() {
   filters.value = { search: '', technique: '', dateFrom: '', dateTo: '' }

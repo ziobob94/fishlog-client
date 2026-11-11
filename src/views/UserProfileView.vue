@@ -20,8 +20,8 @@
       </div>
 
       <div v-if="user.stats" class="profile-stats">
-        <div class="pstat"><span class="pstat-n font-mono">{{ user.stats.sessionsCount }}</span><span class="pstat-l">{{ t('friends.profile.sessions') }}</span></div>
-        <div class="pstat"><span class="pstat-n font-mono">{{ user.stats.catchesCount }}</span><span class="pstat-l">{{ t('friends.profile.catches') }}</span></div>
+        <RouterLink :to="{ path: '/sessions', query: { user: String(route.params.id) } }" class="pstat m-press" :aria-label="t('profileStats.sessionsAria', { n: user.stats.sessionsCount })"><span class="pstat-n font-mono">{{ user.stats.sessionsCount }}</span><span class="pstat-l">{{ t('friends.profile.sessions') }}</span></RouterLink>
+        <RouterLink :to="`/utenti/${route.params.id}/catture`" class="pstat m-press" :aria-label="t('profileStats.catchesAria', { n: user.stats.catchesCount })"><span class="pstat-n font-mono">{{ user.stats.catchesCount }}</span><span class="pstat-l">{{ t('friends.profile.catches') }}</span></RouterLink>
         <div class="pstat"><span class="pstat-n font-mono">{{ posts.feed.length }}</span><span class="pstat-l">{{ t('friends.profile.posts') }}</span></div>
       </div>
 
@@ -178,7 +178,9 @@ async function onRemove() {
 
 .common-groups { @apply flex flex-wrap gap-2; }
 .profile-stats { @apply grid grid-cols-3 gap-2 mb-4; }
-.pstat { @apply flex flex-col items-center gap-0.5 py-2.5 rounded-xl bg-surface-2/60 border border-border/60; }
+.pstat { @apply flex flex-col items-center justify-center gap-0.5 py-2.5 rounded-xl bg-surface-2/60 border border-border/60 no-underline; min-height: 56px; min-width: 52px; }
+a.pstat:active { background: var(--ocean-glow); }
+a.pstat:focus-visible { outline: 2px solid rgb(var(--color-ocean-text)); outline-offset: 2px; }
 .pstat-n { @apply text-lg font-bold text-foam; }
 .pstat-l { @apply text-[0.7rem] uppercase text-muted; letter-spacing: 0.14em; }
 .profile-posts { @apply flex flex-col gap-5 mt-3; }
