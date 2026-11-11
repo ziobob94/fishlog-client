@@ -50,7 +50,8 @@ function goBack() {
 
 <style scoped>
 .page-header { @apply flex items-center gap-2 mb-3 min-h-[44px]; }
-.page-header-sticky { top: env(safe-area-inset-top); @apply sticky z-30 bg-ink py-3 mb-0 border-b border-border; }
+/* Fissa in alto mentre la pagina scorre: a tutta larghezza e sopra il padding superiore del main (pt-4 su mobile) */
+.page-header-sticky { top: env(safe-area-inset-top); @apply max-md:sticky z-30 max-md:bg-ink max-md:-mx-4 sm:max-md:-mx-6 max-md:px-4 sm:max-md:px-6 max-md:-mt-4 max-md:pt-4 pb-2 mb-3 max-md:border-b max-md:border-border; }
 /* Intestazione compatta del flusso uscita (mockup: 64px, titolo 18/800, riga sotto) */
 .page-header-compact { @apply -mx-4 sm:-mx-6 -mt-6 sm:-mt-8 mb-5 px-2 gap-2 border-b border-border bg-ink; min-height: 64px; position: sticky; top: env(safe-area-inset-top); z-index: 30; }
 .page-header-compact .ph-title { font-size: 18px; font-weight: 800; letter-spacing: -.02em; }
