@@ -44,5 +44,5 @@ const tileStyle = computed(() => ({
 <style scoped>
 .fishlogo { display: inline-flex; align-items: center; }
 .fishlogo-tile { display: inline-flex; align-items: center; justify-content: center; flex: none; }
-.fishlogo-word { font-weight: 800; letter-spacing: -0.04em; line-height: 1; }
+.fishlogo-word { font-family: 'Manrope', system-ui, sans-serif; font-weight: 800; letter-spacing: -0.04em; line-height: 1; }
 </style>

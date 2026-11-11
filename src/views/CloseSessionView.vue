@@ -124,7 +124,7 @@ async function closeSession() {
 .state-center { display: flex; justify-content: center; padding: 4rem; }
 .error-banner { align-items: center; background: rgba(240,80,80,.1); border: 1px solid var(--danger); border-radius: 6px; color: var(--danger); display: inline-flex; gap: .4rem; padding: .75rem 1rem; }
 .summary-card { background: rgb(var(--color-sea-deep)); border: 1px solid var(--border); border-radius: 24px 24px 24px 8px; padding: 18px 20px; }
-.summary-card h3 { color: var(--foam); font-size: 20px; font-weight: 800; letter-spacing: -.02em; margin: 0; }
+.summary-card h3 { font-family: var(--font-display); color: var(--foam); font-size: 20px; font-weight: 800; letter-spacing: -.01em; margin: 0; }
 .meta { color: rgb(var(--color-ocean-text)); font-size: 12px; margin: 4px 0 16px; }
 .stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
 .stats > div { display: flex; flex-direction: column; gap: 2px; }

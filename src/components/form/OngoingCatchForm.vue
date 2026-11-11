@@ -123,7 +123,7 @@ const elapsed = computed(() => elapsedLabel(props.session, now.value))
 .hero-text { position: relative; padding-left: 8px; display: flex; flex-direction: column; gap: 6px; }
 .eyebrow { display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: rgb(var(--color-sand-text)); }
 .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--sand); }
-.hero h1 { margin: 0; font-size: 28px; line-height: 1.1; letter-spacing: -.03em; font-weight: 800; color: var(--foam); }
+.hero h1 { margin: 0; font-size: 28px; line-height: 1.1; letter-spacing: -.01em; font-weight: 800; color: var(--foam); }
 .subline { font-size: 12px; color: rgb(var(--color-ocean-text)); }
 .stats { position: relative; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; padding-left: 8px; }
 .stats > div { display: flex; flex-direction: column; gap: 2px; }
