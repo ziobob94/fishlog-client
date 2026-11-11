@@ -912,7 +912,7 @@
 		},
 		"autoFill": {
 			"title": "Compila posizione, meteo e condizioni acqua automaticamente",
-			"subtitle": "Rileva la tua posizione GPS e recupera i dati storici del giorno selezionato tramite Open-Meteo",
+			"subtitle": "Recupera meteo e condizioni acqua per luogo, data e ora indicati. Puoi ricalcolarli dopo aver cambiato luogo, data o ora.",
 			"collapsedHint": "Compilazione automatica di posizione, meteo e condizioni acqua",
 			"disclaimer": "I dati sono una stima basata sulla zona e sulla data: possono non rispecchiare esattamente le condizioni reali nel punto in cui hai pescato.",
 			"loading": "Recupero...",
@@ -934,7 +934,10 @@
 				"seaState": "stato mare",
 				"waveHeight": "altezza onde",
 				"wavePeriod": "periodo onde"
-			}
+			},
+			"recalc": "Ricalcola",
+			"noPlace": "Imposta il luogo o usa il GPS per recuperare i dati",
+			"offline": "Sei offline: riprova quando c'è connessione"
 		},
 		"waterSection": {
 			"sea": "Condizioni mare",
