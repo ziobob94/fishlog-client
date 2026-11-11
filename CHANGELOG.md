@@ -1,3 +1,10 @@
+# [1.46.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.45.0...client-v1.46.0) (2026-11-11)
+
+
+### Features
+
+* tutte le mappe su Google Maps (Home e dettaglio), controlli sotto la mappa, avviso se manca la chiave; rimosso MapLibre/Esri ([23998b6](https://github.com/ziobob94/fishlog-client/commit/23998b6419b6c77ff51ac9943b1b40aa69747d25))
+
 # [1.45.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.44.1...client-v1.45.0) (2026-11-11)
 
 
