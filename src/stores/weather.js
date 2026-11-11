@@ -87,5 +87,20 @@ export const useWeatherStore = defineStore('weather', () => {
   function setName(name) { if (place.value && name) setPlace({ ...place.value, name }) }
   function clearFlags() { offlineNow.value = false; failed.value = false }
 
-  return { place, data, savedAt, status, fromCache, refreshing, offlineNow, failed, hasPlace, stale, setPlace, loadCached, load, useHere, pickPlace, setName, clearFlags }
+  // Attività dei pesci e specie probabili di un giorno (calcolate dal server). Offline si usa l'ultima risposta salvata per quel giorno.
+  async function loadFishing(date) {
+    if (!place.value) return { data: null, failed: false }
+    const { lat, lng } = place.value
+    const key = `fish:${cellKey(lat, lng)}:${date}`
+    try {
+      const { data: d } = await api.get('/weather/fishing', { params: { lat, lng, date } })
+      putWeatherCache({ key, data: d, savedAt: Date.now() }).catch(() => {})
+      return { data: d, fromCache: false }
+    } catch {
+      try { const rec = await getWeatherCache(key); if (rec?.data) return { data: rec.data, fromCache: true, savedAt: rec.savedAt } } catch { /* IndexedDB non disponibile */ }
+      return { data: null, failed: true }
+    }
+  }
+
+  return { loadFishing, place, data, savedAt, status, fromCache, refreshing, offlineNow, failed, hasPlace, stale, setPlace, loadCached, load, useHere, pickPlace, setName, clearFlags }
 })

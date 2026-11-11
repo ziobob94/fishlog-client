@@ -16,11 +16,11 @@
       </dl>
       <template v-if="waves.points.length">
         <h3 class="wx-h" style="font-size:1rem;margin:16px 0 6px">{{ t('weather.sea.waves') }}</h3>
-        <WaveChart :waves="m.waves" />
+        <WaveChart :waves="waves48" />
       </template>
       <template v-if="m.tides">
         <h3 class="wx-h" style="font-size:1rem;margin:16px 0 6px">{{ t('weather.sea.tides') }}</h3>
-        <TideChart :tides="m.tides" :now-iso="nowIso" />
+        <TideChart :tides="tides48" :now-iso="nowIso" />
         <p class="wx-note">{{ t('weather.sea.tideNote') }}</p>
       </template>
       <p v-else class="wx-note">{{ t('weather.sea.noTides') }}</p>
@@ -35,11 +35,18 @@ import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import TideChart from './TideChart.vue'
 import WaveChart from './WaveChart.vue'
-import { fmt, compass, waveSeries } from '../../utils/weather.js'
+import { fmt, compass, waveSeries, fromNow } from '../../utils/weather.js'
 const props = defineProps({ view: { type: Object, required: true }, nowIso: { type: String, default: null } })
 const { t } = useI18n()
 const m = computed(() => props.view.marine)
-const waves = computed(() => waveSeries(m.value.waves))
+const waves48 = computed(() => fromNow(m.value.waves, props.nowIso, 48))
+const waves = computed(() => waveSeries(waves48.value))
+const tides48 = computed(() => {
+  const t = m.value.tides; if (!t) return null
+  const series = fromNow(t.series, props.nowIso, 48)
+  const a = series[0]?.time, b = series[series.length - 1]?.time
+  return { ...t, series, extremes: (t.extremes || []).filter(e => e.time >= a && e.time <= b) }
+})
 const waveFrom = computed(() => compass(m.value.waveDeg))
 const swellFrom = computed(() => compass(m.value.swellDeg))
 // La corrente si indica verso dove va (convenzione oceanografica): 180° = «verso S».
