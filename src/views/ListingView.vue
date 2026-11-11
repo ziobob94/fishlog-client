@@ -41,6 +41,7 @@
         <span class="tag" :class="listing.condition === 'nuovo' ? 'tag-new' : 'tag-used'">{{ t(`market.condition.${listing.condition}`) }}</span>
         <span class="chip">{{ t(`market.categories.${listing.category}`) }}</span>
         <span v-if="listing.location?.name" class="chip icon-inline"><MapPin :size="14" /> {{ listing.location.name }}</span>
+        <span class="chip icon-inline"><Eye :size="14" /> {{ t("market.viewsCount", { n: listing.views || 0 }, listing.views || 0) }}</span>
         <span v-if="listing.status !== 'active'" class="badge badge-danger">{{ t(`market.status.${listing.status}`) }}</span>
       </div>
 
@@ -78,7 +79,7 @@ import { toInitials } from '../utils/initials.js'
 import { ref, computed, onMounted, watch } from 'vue'
 import { RouterLink, useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { Package, MapPin, Check, ChevronRight, ArrowLeft, Send, Pencil, Trash2, MessageCircle } from 'lucide-vue-next'
+import { Package, Eye, MapPin, Check, ChevronRight, ArrowLeft, Send, Pencil, Trash2, MessageCircle } from 'lucide-vue-next'
 import { useMarketStore } from '../stores/market.js'
 import { useAuthStore } from '../stores/auth.js'
 import api from '../utils/api.js'
