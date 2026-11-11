@@ -71,6 +71,11 @@ const isPublicRoute = computed(() => !!route.meta.public)
 const isFullHeight  = computed(() => !!route.meta.fullHeight)
 const showBottomNav = computed(() => !route.meta.hideBottomNav)
 
+// Viste a scroll interno (chat, feed): il documento non deve scorrere. Il body ha min-h-screen (100vh, più alto
+// dell'area visibile su iOS Safari), quindi senza blocco scorre l'intera pagina invece della lista interna.
+watch(isFullHeight, (v) => document.documentElement.classList.toggle('lock-doc-scroll', v), { immediate: true })
+onBeforeUnmount(() => document.documentElement.classList.remove('lock-doc-scroll'))
+
 provide('toggleSidebar', () => { sidebarOpen.value = !sidebarOpen.value })
 const sidebarOpen   = ref(false)
 const sidebarLocked = ref(localStorage.getItem('sidebar_locked') === 'true')

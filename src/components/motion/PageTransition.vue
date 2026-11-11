@@ -34,9 +34,5 @@ router.beforeEach((to, from) => {
 
 <style>
 .page { position: relative; min-height: 100%; }
-/* Viste a tutta altezza (chat): la catena di altezze deve restare vincolata, così scorre solo la lista interna
-   e non la pagina. Senza queste regole .page cresce col contenuto e la lista messaggi non è più il contenitore di scroll. */
-.page-stack.page-fill { display: flex; flex-direction: column; flex: 1 1 0%; min-height: 0; }
-.page.page-fill { display: flex; flex-direction: column; flex: 1 1 0%; min-height: 0; height: 100%; }
 html { scrollbar-gutter: stable; }   /* la comparsa della scrollbar non sposta la pagina */
 </style>
