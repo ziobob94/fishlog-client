@@ -78,7 +78,7 @@ const emptyIcon = computed(() => TABS.find(x => x.id === tab.value).icon)
 
 const pagesRef = computed(() => (tab.value === 'sessions' ? sessions.pagination?.pages : posts.pagination?.pages))
 const { loading: infiniteLoading, loadingMore, hasMore, reset, loadMore } = useInfiniteScroll((page, { append }) => {
-  if (tab.value === 'sessions') return sessions.fetchSessions({ page }, { append })
+  if (tab.value === 'sessions') return sessions.fetchSessions({ page, mine: 'true' }, { append })
   if (tab.value === 'saved') return posts.fetchPosts({ scope: 'saved', page }, { append })
   return posts.fetchPosts({ author: auth.user?._id, page }, { append })
 }, pagesRef)
@@ -88,7 +88,7 @@ const items = computed(() => {
   if (tab.value === 'sessions') {
     return sessions.sessions.map(s => ({
       id: s._id, to: `/session/${s._id}`, url: s.media?.[0]?.url, isVideo: isVideo(s.media?.[0]), multi: (s.media?.length || 0) > 1,
-      text: s.title || s.location?.name || t('session.untitled'), label: s.title || s.location?.name || t('session.untitled')
+      session: true, date: s.date, place: s.title || s.location?.name || t('session.untitled'), text: s.title || s.location?.name || t('session.untitled'), label: s.title || s.location?.name || t('session.untitled')
     }))
   }
   return posts.feed.map(p => ({
