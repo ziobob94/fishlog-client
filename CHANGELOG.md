@@ -1,3 +1,11 @@
+# [1.49.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.48.0...client-v1.49.0) (2026-11-11)
+
+
+### Features
+
+* collegamenti al meteo nella Home (accesso rapido e titolo della scheda) ([4426ea8](https://github.com/ziobob94/fishlog-client/commit/4426ea8eee4b2c212cc31075844a4c3537bd39bf))
+* pannello Meteo e mare (pagina /meteo, scheda Home, cache offline, quota Google in Admin) ([2eb44ae](https://github.com/ziobob94/fishlog-client/commit/2eb44aec083cd38cda33180334ee63662305f24c))
+
 # [1.48.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.47.2...client-v1.48.0) (2026-11-11)
 
 
