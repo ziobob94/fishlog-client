@@ -111,7 +111,7 @@ const elapsed = computed(() => elapsedLabel(props.session, now.value))
 </script>
 
 <style scoped>
-.ongoing { display: flex; flex-direction: column; margin: -1.5rem -1rem 0; padding-bottom: 6.5rem; }
+.ongoing { display: flex; flex-direction: column; margin: -1.5rem -1rem 0; padding-bottom: calc(100px + env(safe-area-inset-bottom)); }
 @media (min-width: 640px) { .ongoing { margin: -2rem -1.5rem 0; } }
 
 .hero { position: relative; background: rgb(var(--color-sea-deep)); border-radius: 0 0 28px 8px; overflow: hidden; padding: 8px 16px 22px 8px; display: flex; flex-direction: column; gap: 14px; }

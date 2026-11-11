@@ -38,7 +38,7 @@
             {{ t(`sessionForm.visibility.${v}`) }}
           </button>
         </div>
-        <p class="fl-hint vis-hint">{{ t(`session.ongoing.${hintKey}`) }}</p>
+        <p class="fl-hint vis-hint">{{ t(`session.ongoing.${hintKey}`) }} {{ t('session.ongoing.canEditLater') }}</p>
         <div v-if="visibility === 'group'" class="groups">
           <label v-for="g in groups" :key="g._id" class="group-check">
             <input type="checkbox" :value="g._id" v-model="allowedGroups" /> {{ g.name }}
@@ -53,7 +53,6 @@
           {{ t('session.ongoing.close') }}
         </button>
         <button type="button" class="link-btn" @click="router.replace(`/session/${route.params.id}/edit`)">{{ t('session.ongoing.keepFishing') }}</button>
-        <p class="later">{{ t('session.ongoing.canEditLater') }}</p>
       </div>
     </div>
   </div>
@@ -120,7 +119,7 @@ async function closeSession() {
 </script>
 
 <style scoped>
-.close-form { display: flex; flex-direction: column; gap: 22px; max-width: 640px; padding: 4px 0 11rem; }
+.close-form { display: flex; flex-direction: column; gap: 22px; max-width: 640px; padding: 4px 0 calc(130px + env(safe-area-inset-bottom)); }
 .state-center { display: flex; justify-content: center; padding: 4rem; }
 .error-banner { align-items: center; background: rgba(240,80,80,.1); border: 1px solid var(--danger); border-radius: 6px; color: var(--danger); display: inline-flex; gap: .4rem; padding: .75rem 1rem; }
 .summary-card { background: rgb(var(--color-sea-deep)); border: 1px solid var(--border); border-radius: 24px 24px 24px 8px; padding: 18px 20px; }
@@ -141,6 +140,6 @@ async function closeSession() {
 .groups { display: flex; flex-direction: column; gap: .5rem; margin-top: .75rem; }
 .group-check { align-items: center; display: flex; gap: .5rem; margin: 0; text-transform: none; letter-spacing: 0; }
 .later { color: var(--text-muted); font-size: 12px; margin: 0; text-align: center; }
-.link-btn { background: none; border: none; color: rgb(var(--color-ocean-text)); cursor: pointer; font-weight: 700; font-size: 15px; min-height: 44px; }
+.link-btn { background: none; border: none; color: rgb(var(--color-ocean-text)); cursor: pointer; font-weight: 700; font-size: 15px; min-height: 36px; }
 .fl-bar { align-items: stretch; }
 </style>
