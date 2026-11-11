@@ -9,7 +9,7 @@
 
       <!-- Che pesce è? -->
       <section>
-        <label class="fl-lab" for="species-quickadd-input">{{ t('session.ongoing.whichFish') }}</label>
+        <label class="fl-lab" for="species-quickadd-input">{{ t('session.ongoing.whichFish') }} <span class="req" aria-hidden="true">*</span></label>
         <SpeciesQuickAdd v-model="speciesQuery" :location="store.current?.location" :selected="draft.species" :show-label="false" @add="chooseSpecies">
           <template #actions>
             <button type="button" class="fl-chip use-name" :disabled="speciesQuery.trim().length < 2" @click="chooseSpecies(speciesQuery.trim())">

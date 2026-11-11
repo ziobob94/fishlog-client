@@ -9,6 +9,7 @@ import App from './App.vue'
 import i18n from './i18n/index.js'
 import './assets/main.css'
 import { setupFormA11y } from './utils/formA11y.js'
+import { setupFormValidation } from './utils/formValidation.js'
 
 const app   = createApp(App)
 const pinia = createPinia()
@@ -50,3 +51,4 @@ app.directive('ph', {
 
 app.mount('#app')
 setupFormA11y()
+setupFormValidation()

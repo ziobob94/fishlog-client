@@ -270,6 +270,8 @@
 /* App installata su iOS (viewport-fit=cover): il contenuto parte sotto la
    barra di stato e non scorre più sotto l'orologio. */
 #app { padding-top: env(safe-area-inset-top); padding-left: env(safe-area-inset-left); padding-right: env(safe-area-inset-right); }
+/* Pagine a scroll interno: l'altezza esclude la fascia della barra di stato */
+#app > .h-dvh { height: calc(100dvh - env(safe-area-inset-top)); }
 body::before {
   content: ''; position: fixed; top: 0; left: 0; right: 0; height: env(safe-area-inset-top);
   background: rgb(var(--color-ink)); z-index: 1000; pointer-events: none;
@@ -281,6 +283,9 @@ body::before {
    Non stanno in @layer così battono lo stile globale dei campi. ── */
 .fl-mono { font-family: 'JetBrains Mono', monospace; font-weight: 500; }
 .fl-lab { display: block; margin: 0 0 8px; font-size: 12px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--text-muted); }
+.req { color: var(--danger); margin-left: 2px; font-weight: 800; }
+.fl-error { margin: 6px 0 0; font-size: 13px; font-weight: 600; color: var(--danger); }
+input[aria-invalid="true"], select[aria-invalid="true"], textarea[aria-invalid="true"] { border-color: var(--danger) !important; }
 .fl-hint { margin: 6px 0 0; font-size: 13px; color: var(--text-muted); }
 .fl-inp {
   width: 100%; box-sizing: border-box; min-height: 52px; border-radius: 14px; border: 1px solid var(--border);

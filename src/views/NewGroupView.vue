@@ -2,8 +2,9 @@
   <div class="new-group">
     <PageHeader :title="t('chat.group.newTitle')" back="/chat" />
 
+    <form class="ng-form" @submit.prevent="submit">
     <label for="group-name" class="field-label">{{ t('chat.group.nameLabel') }}</label>
-    <input id="group-name" v-model="name" type="text" class="name-input" :placeholder="t('chat.group.namePlaceholder')" maxlength="60" />
+    <input id="group-name" v-model="name" type="text" required class="name-input" :placeholder="t('chat.group.namePlaceholder')" maxlength="60" />
 
     <div class="members-head">
       <span class="field-label">{{ t('chat.group.membersLabel') }}</span>
@@ -19,20 +20,23 @@
       </label>
     </div>
 
-    <p v-if="error" class="text-danger text-sm mt-2">{{ error }}</p>
+    <p v-if="membersError" class="fl-error" role="alert">{{ membersError }}</p>
+    <p v-if="error" class="fl-error" role="alert">{{ error }}</p>
 
     <div class="cta-bar">
-      <button type="button" class="btn btn-primary cta" :disabled="creating" @click="submit">
+      <button type="submit" class="btn btn-primary cta" :disabled="creating">
         {{ creating ? t('chat.group.creating') : t('chat.group.create') }}
       </button>
     </div>
+    </form>
   </div>
 </template>
 
 <script setup>
 import { toInitials } from '../utils/initials.js'
 import PageHeader from '../components/PageHeader.vue'
-  import { ref, onMounted } from 'vue'
+  import { ref, onMounted, nextTick } from 'vue'
+  import { showError, focusFirstInvalid } from '../utils/formValidation.js'
   import { useRouter } from 'vue-router'
   import { useI18n } from 'vue-i18n'
   import { useChatStore } from '../stores/chat.js'
@@ -47,6 +51,7 @@ import PageHeader from '../components/PageHeader.vue'
   const selectedIds = ref([])
   const creating = ref(false)
   const error = ref('')
+  const membersError = ref('')
 
   function initials(u) {
     const n = u?.displayName || u?.email || '?'
@@ -55,8 +60,14 @@ return toInitials(n)
 
   async function submit() {
     error.value = ''
-    if (!name.value.trim()) { error.value = t('chat.group.nameRequired'); return }
-    if (selectedIds.value.length < 2) { error.value = t('chat.group.minMembers'); return }
+    membersError.value = ''
+    const nameEl = document.getElementById('group-name')
+    if (!name.value.trim()) { showError(nameEl, t('chat.group.nameRequired')); focusFirstInvalid(nameEl.closest('form')); return }
+    if (selectedIds.value.length < 2) {
+      membersError.value = t('chat.group.minMembers')
+      nextTick(() => document.querySelector('.members-head')?.scrollIntoView({ block: 'center', behavior: 'smooth' }))
+      return
+    }
 
     creating.value = true
     const result = await chatStore.createGroup({ name: name.value.trim(), participantIds: selectedIds.value })

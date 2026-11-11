@@ -1103,9 +1103,11 @@
 			"locationPlaceholder": "Luogo",
 			"submit": "Pubblica",
 			"saving": "...",
-			"bodyRequired": "Testo obbligatorio",
+			"bodyRequired": "Scrivi il testo del post",
 			"groupRequired": "Seleziona un gruppo",
-			"pageTitle": "Nuovo post"
+			"pageTitle": "Nuovo post",
+			"bodyLabel": "Testo",
+			"chooseGroup": "Scegli un gruppo"
 		},
 		"tabs": {
 			"posts": "Post",
@@ -1568,5 +1570,14 @@
 		"views": "{n} visualizzazioni",
 		"noStories": "Nessuna storia da mostrare.",
 		"openSession": "Apri l'uscita"
+	},
+	"validation": {
+		"required": "Campo obbligatorio",
+		"accept": "Devi accettare per continuare",
+		"file": "Seleziona un file",
+		"email": "Inserisci un'email valida",
+		"format": "Formato non valido",
+		"range": "Valore non valido",
+		"tooShort": "Testo troppo corto"
 	}
 }

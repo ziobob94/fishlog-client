@@ -1224,8 +1224,6 @@
   .where-tx { display: flex; flex-direction: column; min-width: 0; }
   .where-tx strong { font-size: 15px; font-weight: 700; }
   .where-tx small { font-size: 12px; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .req { color: var(--danger); margin-left: 2px; }
-  .fl-error { margin: 6px 0 0; font-size: 13px; font-weight: 600; color: var(--danger); }
   .essential .field-missing { border-color: var(--border); }
   .ess-foot { color: var(--text-muted); font-size: 13px; text-align: center; margin: 0; }
   .fl-inp[type="date"], .fl-inp[type="time"] { display: flex; align-items: center; text-align: left; -webkit-appearance: none; appearance: none; }

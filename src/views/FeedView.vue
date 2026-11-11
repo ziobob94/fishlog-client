@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="feed-page">
     <PageHeader :title="currentTabLabel" bell>
       <template #title>
         <div ref="tabMenuWrap" class="tab-title-wrap">
@@ -24,6 +24,8 @@
       ><Filter :size="16" /></button>
     </PageHeader>
 
+    <!-- Un solo scroll verticale: quello del feed (storie e riga di creazione ne fanno parte) -->
+    <div class="feed-scroll">
     <StoriesRail />
 
     <button type="button" class="compose-row" @click="openCompose">
@@ -156,6 +158,7 @@
         @attend="onAttend"
       />
       <InfiniteSentinel :active="hasMore" :loading="loadingMore" @trigger="loadMore" />
+    </div>
     </div>
   </div>
 </template>
@@ -365,6 +368,9 @@ import PageHeader from '../components/PageHeader.vue'
 </script>
 
 <style scoped>
+  .feed-page { display: flex; flex-direction: column; min-height: 0; }
+  .feed-scroll { flex: 1; min-height: 0; overflow-y: auto; overflow-x: hidden; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; margin: 0 -1rem; padding: 0 1rem; }
+  @media (min-width: 640px) { .feed-scroll { margin: 0 -1.5rem; padding: 0 1.5rem; } }
   .posts-list {
     @apply flex flex-col gap-5;
   }

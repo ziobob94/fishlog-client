@@ -62,11 +62,11 @@
     <!-- Modal crea/modifica gruppo -->
     <Teleport to="body">
       <div v-if="showCreate || editTarget" class="dialog-overlay" @click.self="closeModal">
-        <div class="dialog card">
+        <form class="dialog card" @submit.prevent="saveGroup">
           <h3>{{ editTarget ? t('groups.modal.editTitle') : t('groups.modal.newTitle') }}</h3>
           <div class="form-group mt-2">
             <label>{{ t('groups.modal.nameLabel') }}</label>
-            <input v-model="groupForm.name" type="text" :placeholder="t('groups.modal.namePlaceholder')" />
+            <input v-model="groupForm.name" type="text" required :placeholder="t('groups.modal.namePlaceholder')" />
           </div>
           <div class="form-group mt-1">
             <label>{{ t('groups.modal.descLabel') }}</label>
@@ -74,12 +74,12 @@
           </div>
           <p v-if="modalError" class="error-msg mt-1">{{ modalError }}</p>
           <div style="display:flex;gap:.75rem;justify-content:flex-end;margin-top:1.25rem">
-            <button class="btn btn-ghost btn-sm" @click="closeModal">{{ t('common.cancel') }}</button>
-            <button class="btn btn-primary btn-sm" :disabled="saving" @click="saveGroup">
+            <button type="button" class="btn btn-ghost btn-sm" @click="closeModal">{{ t('common.cancel') }}</button>
+            <button type="submit" class="btn btn-primary btn-sm" :disabled="saving">
               {{ saving ? t('groups.modal.saving') : (editTarget ? t('groups.modal.update') : t('groups.modal.create')) }}
             </button>
           </div>
-        </div>
+        </form>
       </div>
     </Teleport>
 
