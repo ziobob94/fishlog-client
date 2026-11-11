@@ -1,4 +1,4 @@
-// Dati meteo per la Home (scheda grande, barra e striscia del mappamondo): stessa fonte e stessa cache della pagina Meteo.
+// Dati meteo per la Home (scheda grande): stessa fonte e stessa cache della pagina Meteo.
 // Il permesso si chiede solo al tocco su «Attiva la posizione» (o dalla pagina /meteo); all'avvio si usa solo se è già concesso. Se il dato in cache è recente non parte nessuna richiesta.
 import { computed, ref, onMounted, onBeforeUnmount } from 'vue'
 import { useWeatherStore } from '../stores/weather.js'
@@ -10,8 +10,7 @@ import { rowWmo, rowLabel, isDayAt, windInfo, pressureState } from '../utils/wea
 export const REFRESH_COOLDOWN_MS = 30_000
 const clock = ms => new Date(ms).toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit', hour12: false })
 
-// autoload=false: la barra e la striscia non caricano da sole (lo fa già la scheda); leggono lo stesso store.
-export function useHomeWeather({ autoload = true } = {}) {
+export function useHomeWeather() {
   const store = useWeatherStore()
   const online = useOnline()
   const offline = computed(() => store.offlineNow || !online.value)
@@ -81,7 +80,7 @@ export function useHomeWeather({ autoload = true } = {}) {
   }
   onBeforeUnmount(() => clearTimeout(coolTimer))
   const retry = () => { store.clearFlags(); return store.load({ force: true }) }
-  if (autoload) onMounted(init)
+  onMounted(init)
 
   return { activate, activating, denied, store, state, offline, summary, placeName, savedLabel, retry, refresh, refreshing, refreshFailed, coolingDown }
 }
