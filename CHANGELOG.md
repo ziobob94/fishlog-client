@@ -1,3 +1,10 @@
+## [1.47.1](https://github.com/ziobob94/fishlog-client/compare/client-v1.47.0...client-v1.47.1) (2026-11-11)
+
+
+### Bug Fixes
+
+* loader Google Maps singleton con callback, errore 'script vuoto' distinto dal blocco di rete (referrer), debug aggiornato ([7878e02](https://github.com/ziobob94/fishlog-client/commit/7878e02b51ac4e58a29b3f24d36cc3920f0eaee5))
+
 # [1.47.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.46.1...client-v1.47.0) (2026-11-11)
 
 
