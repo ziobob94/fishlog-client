@@ -379,7 +379,9 @@ import PageHeader from '../components/PageHeader.vue'
 </script>
 
 <style scoped>
-  .feed-page { display: flex; flex-direction: column; min-height: 0; }
+  /* Il <main> è overflow-hidden (pagina a scroll interno): senza margine in alto
+     il badge della chat (-top-1.5) e il puntino della campanella vengono tagliati. */
+  .feed-page { display: flex; flex-direction: column; min-height: 0; padding-top: 8px; }
   .feed-scroll { flex: 1; min-height: 0; overflow-y: auto; overflow-x: hidden; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; margin: 0 -1rem; padding: 0 1rem; }
   @media (min-width: 640px) { .feed-scroll { margin: 0 -1.5rem; padding: 0 1.5rem; } }
   .posts-list {
