@@ -22,12 +22,13 @@ Leggi questo file per primo. Descrive il restyling dell'interfaccia di `fishlog-
 
 ## Linguaggio visivo («carta nautica»)
 
-### Font (aggiornato)
-- **Fraunces** (serif, 700-800, `letter-spacing: -.01em`): tutti i **titoli**: titoli di pagina (anche quelli piccoli da 18 px nelle schermate interne), titoli di scheda/riga (15-19 px in grassetto 800, es. «Spigola», «Alba al molo», «Rilevazione luogo e meteo») e i valori in evidenza delle schede. Classe `font-display` in Tailwind.
-- **Manrope**: testi, bottoni, etichette, navigazione, e anche la parola «FishLog» del logo (il logo non cambia).
-- **JetBrains Mono**: numeri, misure, coordinate.
-- Mai Fraunces su bottoni, chip, navigazione, etichette maiuscole piccole e testo corrente.
+### Font (regola attuale, dalle schermate 42-45)
+- **Fraunces** (serif, 700-800, `letter-spacing: -.01em`): **solo titoli di pagina e titoli di card** (es. «La mia bacheca», «Nuovo post», «Prima spigola dell'autunno»). Classe `font-display` in Tailwind.
+- **Manrope**: etichette, valori, testi corrente, bottoni, chip, navigazione e la parola «FishLog» del logo.
+- **JetBrains Mono**: **solo** numeri, coordinate e misure (conteggi, date/ore, «52 cm», percentuali). Classe `font-mono`.
+- Mai Fraunces su bottoni, chip, navigazione, etichette e testo corrente; mai Mono su parole.
 - Carica da Google Fonts: `Fraunces:opsz,wght@9..144,600;9..144,700;9..144,800`. Token in `tokens/tokens.css`.
+- Nota: le schermate 01-41 seguono ancora la regola precedente (Fraunces anche su titoli di riga da 15-19 px e valori in evidenza, es. «Poco mosso»). Per allinearle: valori e titoli di riga in Manrope 800, Fraunces solo sul titolo della card.
 
 Identità invariata (oceano + sabbia), più gerarchia e una firma riconoscibile.
 
@@ -116,6 +117,18 @@ Prima mancava il punto d'ingresso per un nuovo post. Ora:
 | 41 | Storia · guarda | nuovo `StoryViewer.vue` | Barre di avanzamento, risposta in chat, cuore. L'adesivo cattura apre il dettaglio uscita |
 
 **Backend da aggiungere** (`fishlog-server`): modello `Story` (autore, media, adesivi, pubblico, `expiresAt` = +24 h con indice TTL), elenco storie degli amici raggruppate per autore con flag «vista», registrazione delle visualizzazioni, risposta alla storia come messaggio chat. Upload media come per le catture.
+
+### La mia bacheca: creare contenuti (schermate 42-45, riga y=11300 del canvas)
+**Decisione:** in `/board` la creazione usa **le stesse pagine dedicate di Community** (nuovo post/evento, nuova storia), non una variante: il form inline di `MyBoardView.vue` sparisce. Una sola implementazione, un solo comportamento. Cambiano solo l'ingresso e il ritorno: il «+» della barra apre il foglio Crea (come ovunque tranne Community), chiudere o pubblicare riporta a `/board`, e l'anello con «+» sull'avatar apre direttamente la storia. Nel foglio Crea è stata aggiunta la voce **Evento**, perché `PostForm.vue` ha il tipo post/evento.
+
+| # | Schermata | Codice | Stati / note |
+|---|---|---|---|
+| 42 | La mia bacheca | `MyBoardView.vue` (`/board`), `PostCard.vue` | Con post · Vuota · Caricamento (skeleton, `role=status`) · Errore (`role=alert`, «Riprova»). Filtro Tutti/Post/Eventi, conteggi in mono. Si toglie `PostForm` inline |
+| 43 | Menù Crea da bacheca | foglio Crea (come 39) | Post e Evento → 44, Storia → 45, Uscita, Annuncio. Aggiunta voce «Evento» anche al foglio 39 |
+| 44 | Nuovo post / evento | `PostForm.vue` ripensato come pagina (`/post/new`) | Vuoto · Compilato · Invio (pulsante «Pubblico…», avanzamento foto) · Errore di rete · Da correggere (`bodyRequired`, nome evento). Visibilità Pubblico/Gruppo/Solo io (`groupRequired` se Gruppo) |
+| 45 | Nuova storia | `StoryComposer.vue` (come 40) | Fotocamera · Senza permesso (scegli dalla galleria) · Modifica (adesivo cattura, Tutti/Solo amici) · Invio (%) · Errore (Riprova / Elimina) |
+
+Nessun nuovo endpoint rispetto a 39-41: `store.createPost` resta quello della bacheca. Le schermate sono solo disegnate, non funzionanti.
 
 ## Navigazione (cambia)
 

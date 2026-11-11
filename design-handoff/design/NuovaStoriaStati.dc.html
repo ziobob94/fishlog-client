@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<title>FishLog Nuova storia stati</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700;9..144,800&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+body{margin:0;font-family:'Manrope',system-ui,sans-serif;background:#111c2c;color:#f1f5f9}
+.i{fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+button,input,textarea,select{font-family:inherit}
+button{cursor:pointer}
+a{color:inherit;text-decoration:none}
+.lab{display:block;margin:0 0 8px;font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#9db0c8}
+.inp{width:100%;box-sizing:border-box;height:52px;border-radius:14px;border:1px solid #33486a;background:#1a293d;color:#f1f5f9;font-size:16px;padding:0 16px;outline:none}
+.inp:focus{border-color:#0ea5e9}
+.mono{font-family:'JetBrains Mono',monospace}
+.chip{flex:none;min-height:44px;padding:0 16px;border-radius:22px;border:1px solid #33486a;background:#1a293d;color:#cbd5e1;font-weight:600;font-size:15px}
+.chip.on{border-color:#0ea5e9;background:#0ea5e9;color:#0b1623;font-weight:800}
+.btn1{min-height:54px;border-radius:16px;background:#0ea5e9;color:#0b1623;font-weight:800;font-size:16px;display:flex;align-items:center;justify-content:center;gap:8px;border:0;width:100%;box-sizing:border-box}
+.btn2{min-height:48px;border-radius:14px;background:transparent;color:#cbd5e1;border:1px solid #46617f;font-weight:700;font-size:15px;display:flex;align-items:center;justify-content:center;gap:8px;width:100%;box-sizing:border-box}
+.bar{padding:12px 16px 20px;background:#1a293d;border-top:1px solid #33486a;display:flex;flex-direction:column;gap:8px}
+.iconbtn{width:44px;height:44px;border-radius:14px;border:1px solid #33486a;background:#1a293d;color:#f1f5f9;display:flex;align-items:center;justify-content:center;flex:none}
+.card{background:#1a293d;border:1px solid #33486a;border-radius:20px;padding:16px;box-sizing:border-box}
+.hint{margin:6px 0 0;font-size:13px;color:#9db0c8}
+.seg{display:grid;gap:8px}
+.seg button{min-height:44px;border-radius:12px;font-size:14px;font-weight:700}
+h1,.disp{font-family:'Fraunces',Georgia,serif;font-optical-sizing:auto}
+.chips::-webkit-scrollbar{display:none}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.55}}
+@media (prefers-reduced-motion:no-preference){.sk{animation:pulse 1.4s ease-in-out infinite}}
+@keyframes spin{to{transform:rotate(360deg)}}
+.spin{width:18px;height:18px;border-radius:50%;border:3px solid currentColor;border-right-color:transparent;display:inline-block}
+@media (prefers-reduced-motion:no-preference){.spin{animation:spin .8s linear infinite}}
+.fld{width:100%;box-sizing:border-box;min-height:52px;border-radius:14px;border:1px solid #33486a;background:#1a293d;color:#f1f5f9;font-size:16px;padding:0 16px;outline:none}
+.fld.err{border-color:#f87171}
+.errm{margin:6px 0 0;font-size:13px;color:#fca5a5;font-weight:600}
+</style>
+</helmet>
+<div style="width:390px;height:908px;background:#0b1623;color:#f1f5f9;display:flex;flex-direction:column;overflow:hidden">
+<div style="width:390px;height:844px;position:relative;overflow:hidden;background:#0b1623;flex:none">
+  <div style="position:absolute;inset:0;background:linear-gradient(160deg,#1f3a56,#0b1623 70%)"><svg width="100%" height="100%" viewBox="0 0 400 240" preserveAspectRatio="xMidYMid slice" style="position:absolute;inset:0" aria-hidden="true"><g fill="none" stroke="#7dd3fc" stroke-width="1.5"><path opacity=".10" d="M250-10c80 0 160 45 170 120s-40 140-120 150-170-20-190-100S170-10 250-10Z"/><path opacity=".16" d="M255 14c60 0 125 38 132 96s-30 110-95 124-135-12-152-80S198 14 255 14Z"/><path opacity=".24" d="M260 40c40 0 80 30 85 70s-20 80-70 90-100-10-110-55 55-105 95-105Z"/></g></svg></div>
+  <div style="position:absolute;left:0;right:0;top:0;padding:16px;display:flex;align-items:flex-start;gap:8px;z-index:2">
+    <a href="Bacheca.dc.html" aria-label="Chiudi" style="width:48px;height:48px;border-radius:50%;background:rgba(11,22,35,.62);display:flex;align-items:center;justify-content:center"><svg class="i" viewBox="0 0 24 24" style="width:22px;height:22px;" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></a>
+    <sc-if value="{{tools}}" hint-placeholder-val="{{ true }}"><span style="margin-left:auto;display:flex;flex-direction:column;gap:10px"><button aria-label="Testo" style="width:48px;height:48px;border-radius:50%;border:0;background:rgba(11,22,35,.62);color:#f1f5f9;display:flex;align-items:center;justify-content:center"><svg class="i" viewBox="0 0 24 24" style="width:22px;height:22px;" aria-hidden="true"><path d="M5 4h14a2 2 0 0 1 2 2v10l-5 5H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2ZM16 21v-4a1 1 0 0 1 1-1h4M7 9h10M7 13h6"/></svg></button><button aria-label="Adesivo cattura" style="width:48px;height:48px;border-radius:50%;border:0;background:rgba(11,22,35,.62);color:#f1f5f9;display:flex;align-items:center;justify-content:center"><svg class="i" viewBox="0 0 24 24" style="width:22px;height:22px;" aria-hidden="true"><path d="M2.5 12.4c0-3.7 3.7-6.4 8.3-6.4s7.2 2.6 7.2 6.4-3 6.4-7.2 6.4-8.3-2.7-8.3-6.4ZM17.5 12.4l3.4-3.7a.8.8 0 0 1 1.3.5v6.4a.8.8 0 0 1-1.3.5l-3.4-3.7ZM7.2 11h.01"/></svg></button><button aria-label="Adesivo luogo" style="width:48px;height:48px;border-radius:50%;border:0;background:rgba(11,22,35,.62);color:#f1f5f9;display:flex;align-items:center;justify-content:center"><svg class="i" viewBox="0 0 24 24" style="width:22px;height:22px;" aria-hidden="true"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11ZM14.5 10a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0Z"/></svg></button><button aria-label="Adesivo acqua e meteo" style="width:48px;height:48px;border-radius:50%;border:0;background:rgba(11,22,35,.62);color:#f1f5f9;display:flex;align-items:center;justify-content:center"><svg class="i" viewBox="0 0 24 24" style="width:22px;height:22px;" aria-hidden="true"><path d="M2 8c2.5 0 2.5 2 5 2s2.5-2 5-2 2.5 2 5 2 2.5-2 5-2M2 14c2.5 0 2.5 2 5 2s2.5-2 5-2 2.5 2 5 2 2.5-2 5-2"/></svg></button></span></sc-if>
+  </div>
+  <sc-if value="{{showSticker}}" hint-placeholder-val="{{ true }}"><div style="position:absolute;left:24px;top:300px;transform:rotate(-4deg);background:#f59e0b;color:#1a1204;border-radius:24px 24px 24px 8px;padding:12px 16px;display:flex;flex-direction:column;gap:2px;box-shadow:0 8px 24px rgba(0,0,0,.4)"><span style="font-size:12px;font-weight:800;letter-spacing:.1em;text-transform:uppercase">Abboccata!</span><span style="font-size:22px;font-weight:800">Spigola · <span class="mono">52 cm</span></span><span class="mono" style="font-size:12px">43.72°N · 13.22°E</span></div></sc-if>
+
+  <sc-if value="{{v0}}" hint-placeholder-val="{{ false }}"><div style="position:absolute;left:0;right:0;bottom:0;padding:16px 16px 34px;display:flex;flex-direction:column;align-items:center;gap:18px;background:linear-gradient(rgba(11,22,35,0),rgba(11,22,35,.85))">
+    <div style="display:flex;gap:6px"><span style="min-height:44px;padding:0 16px;border-radius:22px;background:#f1f5f9;color:#0b1623;font-weight:700;font-size:14px;display:flex;align-items:center">Foto</span><span style="min-height:44px;padding:0 16px;border-radius:22px;background:rgba(11,22,35,.62);font-weight:700;font-size:14px;display:flex;align-items:center">Video</span><span style="min-height:44px;padding:0 16px;border-radius:22px;background:rgba(11,22,35,.62);font-weight:700;font-size:14px;display:flex;align-items:center">Testo</span></div>
+    <div style="display:flex;align-items:center;justify-content:space-between;width:100%;padding:0 20px;box-sizing:border-box"><button aria-label="Galleria" style="width:56px;height:56px;border-radius:16px;border:1px solid #7dd3fc;background:rgba(11,22,35,.62);color:#7dd3fc;display:flex;align-items:center;justify-content:center"><svg class="i" viewBox="0 0 24 24" style="width:26px;height:26px;" aria-hidden="true"><path d="M5 4h14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2ZM3 16l5-5 4 4 3-3 6 6M9 9h.01"/></svg></button><button onClick="{{shoot}}" aria-label="Scatta" style="width:80px;height:80px;border-radius:50%;border:4px solid #f1f5f9;background:transparent;padding:0;display:flex;align-items:center;justify-content:center"><span style="width:62px;height:62px;border-radius:50%;background:#f1f5f9"></span></button><button aria-label="Cambia fotocamera" style="width:56px;height:56px;border-radius:50%;border:0;background:rgba(11,22,35,.62);color:#f1f5f9;display:flex;align-items:center;justify-content:center"><svg class="i" viewBox="0 0 24 24" style="width:26px;height:26px;" aria-hidden="true"><path d="M4 12a8 8 0 0 1 14-5.3L20 9M20 4v5h-5M20 12a8 8 0 0 1-14 5.3L4 15M4 20v-5h5"/></svg></button></div></div></sc-if>
+
+  <sc-if value="{{v1}}" hint-placeholder-val="{{ false }}"><div style="position:absolute;left:16px;right:16px;top:230px;background:#1a293d;border:1px solid #46617f;border-radius:24px 24px 24px 8px;padding:24px 20px;display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center"><span style="width:56px;height:56px;border-radius:18px;background:#243650;color:#fbbf24;display:flex;align-items:center;justify-content:center"><svg class="i" viewBox="0 0 24 24" style="width:28px;height:28px;" aria-hidden="true"><path d="M4 8.5A2.5 2.5 0 0 1 6.5 6h1.2l1.1-1.6A1.5 1.5 0 0 1 10 3.8h4a1.5 1.5 0 0 1 1.2.6L16.3 6h1.2A2.5 2.5 0 0 1 20 8.5v8a2.5 2.5 0 0 1-2.5 2.5h-11A2.5 2.5 0 0 1 4 16.5ZM15.2 12.5a3.2 3.2 0 1 1-6.4 0 3.2 3.2 0 0 1 6.4 0Z"/></svg></span><h2 style="margin:0;font-size:22px;font-weight:800;font-family:'Fraunces',Georgia,serif">Fotocamera non disponibile</h2><p style="margin:0;font-size:15px;color:#cbd5e1;line-height:1.45">Consenti l'accesso alla fotocamera dalle impostazioni del telefono, oppure scegli una foto dalla galleria.</p><button class="btn1" style="margin-top:6px"><svg class="i" viewBox="0 0 24 24" style="width:26px;height:26px;" aria-hidden="true"><path d="M5 4h14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2ZM3 16l5-5 4 4 3-3 6 6M9 9h.01"/></svg>Scegli dalla galleria</button><button onClick="{{shoot}}" class="btn2" style="border:0;color:#7dd3fc">Riprova</button></div></sc-if>
+
+  <sc-if value="{{edit}}" hint-placeholder-val="{{ false }}"><div style="position:absolute;left:0;right:0;bottom:0;background:#1a293d;border-radius:28px 28px 0 0;border-top:1px solid #46617f;padding:16px 16px 28px;display:flex;flex-direction:column;gap:14px">
+    <sc-if value="{{v2}}" hint-placeholder-val="{{ true }}"><div><span class="lab">Chi la vede</span><div class="seg" style="grid-template-columns:repeat(2,minmax(0,1fr))" role="radiogroup" aria-label="Pubblico"><button role="radio" aria-checked="true" style="color:#0b1623;background:#0ea5e9;border:1px solid #0ea5e9">Tutti</button><button role="radio" aria-checked="false" style="color:#cbd5e1;background:#243650;border:1px solid #33486a">Solo amici</button></div></div><p class="hint" style="margin:0">Resta visibile per <span class="mono">24</span> ore, poi sparisce.</p><a href="Bacheca.dc.html" class="btn1">Pubblica la storia</a><button onClick="{{back}}" class="btn2" style="border:0;min-height:44px;color:#7dd3fc">Rifai</button></sc-if>
+    <sc-if value="{{v3}}" hint-placeholder-val="{{ false }}"><div role="status" style="display:flex;flex-direction:column;gap:12px"><div style="display:flex;justify-content:space-between;font-size:15px;font-weight:700"><span style="display:flex;align-items:center;gap:10px"><span class="spin" style="color:#7dd3fc"></span>Pubblico la storia…</span><span class="mono" style="color:#7dd3fc">72%</span></div><div style="height:8px;border-radius:4px;background:#243650;overflow:hidden"><div style="width:72%;height:100%;background:#0ea5e9"></div></div><button class="btn2" style="border:0;min-height:44px">Annulla</button></div></sc-if>
+    <sc-if value="{{v4}}" hint-placeholder-val="{{ false }}"><div role="alert" style="display:flex;flex-direction:column;gap:10px"><div style="border-radius:16px;background:rgba(248,113,113,.10);border:1px solid #f87171;padding:14px 16px;display:flex;flex-direction:column;gap:4px"><span style="font-size:16px;font-weight:800;color:#fecaca">Storia non pubblicata</span><span style="font-size:14px;color:#fecaca;line-height:1.45">Il file non è stato caricato. Controlla la connessione e riprova.</span></div><button onClick="{{retry}}" class="btn1">Riprova</button><button onClick="{{back}}" class="btn2" style="border-color:#7f1d1d;color:#fca5a5">Elimina la storia</button></div></sc-if>
+  </div></sc-if>
+</div>
+<div role="tablist" aria-label="Anteprima stato" class="chips" style="display:flex;gap:8px;overflow-x:auto;padding:10px 16px;background:#0b1623;border-top:1px dashed #46617f;scrollbar-width:none"><span style="flex:none;align-self:center;font-size:12px;font-weight:700;color:#9db0c8;letter-spacing:.08em;text-transform:uppercase">Anteprima</span><sc-for list="{{states}}" as="st" hint-placeholder-count="4"><button role="tab" aria-selected="{{st.on}}" onClick="{{st.tap}}" style="flex:none;min-height:44px;padding:0 14px;border-radius:22px;border:1px solid {{st.bd}};background:{{st.bg}};color:{{st.fg}};font-weight:700;font-size:13px">{{st.label}}</button></sc-for></div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":908}}'>
+class Component extends DCLogic {
+constructor(props) { super(props); this.state = { s: 2 }; }
+renderVals() {
+  const s = this.state;
+  const LABELS = ['Fotocamera', 'Senza permesso', 'Modifica', 'Invio', 'Errore'];
+  return {
+    states: LABELS.map((label, i) => s.s === i ? { label, on: true, bg: '#0ea5e9', fg: '#0b1623', bd: '#0ea5e9', tap: () => this.setState({ s: i }) } : { label, on: false, bg: '#1a293d', fg: '#cbd5e1', bd: '#46617f', tap: () => this.setState({ s: i }) }),
+    v0: s.s === 0, v1: s.s === 1, v2: s.s === 2, v3: s.s === 3, v4: s.s === 4,
+    edit: s.s >= 2, tools: s.s === 0 || s.s === 2, showSticker: s.s >= 2,
+    shoot: () => this.setState({ s: 2 }), back: () => this.setState({ s: 0 }), retry: () => this.setState({ s: 3 })
+  };
+}
+}
+</script>
+</body>
+</html>

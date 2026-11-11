@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<title>FishLog Nuovo post stati</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700;9..144,800&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+body{margin:0;font-family:'Manrope',system-ui,sans-serif;background:#111c2c;color:#f1f5f9}
+.i{fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+button,input,textarea,select{font-family:inherit}
+button{cursor:pointer}
+a{color:inherit;text-decoration:none}
+.lab{display:block;margin:0 0 8px;font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#9db0c8}
+.inp{width:100%;box-sizing:border-box;height:52px;border-radius:14px;border:1px solid #33486a;background:#1a293d;color:#f1f5f9;font-size:16px;padding:0 16px;outline:none}
+.inp:focus{border-color:#0ea5e9}
+.mono{font-family:'JetBrains Mono',monospace}
+.chip{flex:none;min-height:44px;padding:0 16px;border-radius:22px;border:1px solid #33486a;background:#1a293d;color:#cbd5e1;font-weight:600;font-size:15px}
+.chip.on{border-color:#0ea5e9;background:#0ea5e9;color:#0b1623;font-weight:800}
+.btn1{min-height:54px;border-radius:16px;background:#0ea5e9;color:#0b1623;font-weight:800;font-size:16px;display:flex;align-items:center;justify-content:center;gap:8px;border:0;width:100%;box-sizing:border-box}
+.btn2{min-height:48px;border-radius:14px;background:transparent;color:#cbd5e1;border:1px solid #46617f;font-weight:700;font-size:15px;display:flex;align-items:center;justify-content:center;gap:8px;width:100%;box-sizing:border-box}
+.bar{padding:12px 16px 20px;background:#1a293d;border-top:1px solid #33486a;display:flex;flex-direction:column;gap:8px}
+.iconbtn{width:44px;height:44px;border-radius:14px;border:1px solid #33486a;background:#1a293d;color:#f1f5f9;display:flex;align-items:center;justify-content:center;flex:none}
+.card{background:#1a293d;border:1px solid #33486a;border-radius:20px;padding:16px;box-sizing:border-box}
+.hint{margin:6px 0 0;font-size:13px;color:#9db0c8}
+.seg{display:grid;gap:8px}
+.seg button{min-height:44px;border-radius:12px;font-size:14px;font-weight:700}
+h1,.disp{font-family:'Fraunces',Georgia,serif;font-optical-sizing:auto}
+.chips::-webkit-scrollbar{display:none}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.55}}
+@media (prefers-reduced-motion:no-preference){.sk{animation:pulse 1.4s ease-in-out infinite}}
+@keyframes spin{to{transform:rotate(360deg)}}
+.spin{width:18px;height:18px;border-radius:50%;border:3px solid currentColor;border-right-color:transparent;display:inline-block}
+@media (prefers-reduced-motion:no-preference){.spin{animation:spin .8s linear infinite}}
+.fld{width:100%;box-sizing:border-box;min-height:52px;border-radius:14px;border:1px solid #33486a;background:#1a293d;color:#f1f5f9;font-size:16px;padding:0 16px;outline:none}
+.fld.err{border-color:#f87171}
+.errm{margin:6px 0 0;font-size:13px;color:#fca5a5;font-weight:600}
+</style>
+</helmet>
+<div style="width:390px;height:964px;box-sizing:border-box;background:#111c2c;display:flex;flex-direction:column;overflow:hidden">
+  <header style="display:flex;align-items:center;gap:8px;padding:8px 16px 8px 8px;min-height:64px;box-sizing:border-box;border-bottom:1px solid #33486a">
+    <a href="Bacheca.dc.html" aria-label="Chiudi" style="width:44px;height:44px;display:flex;align-items:center;justify-content:center"><svg class="i" viewBox="0 0 24 24" style="width:22px;height:22px;" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></a>
+    <h1 style="margin:0;font-size:20px;font-weight:800;letter-spacing:-.01em;flex:1">{{title}}</h1>
+    <button aria-disabled="{{pubOff}}" style="min-height:44px;padding:0 20px;border-radius:14px;border:0;background:{{pubBg}};color:{{pubFg}};font-weight:800;font-size:15px;display:flex;align-items:center;gap:8px"><sc-if value="{{v2}}" hint-placeholder-val="{{ false }}"><span class="spin"></span></sc-if>{{pubLabel}}</button>
+  </header>
+  <main style="flex:1;overflow:hidden;padding:16px 16px 0;display:flex;flex-direction:column;gap:20px;opacity:{{dim}}">
+    <sc-if value="{{v3}}" hint-placeholder-val="{{ false }}"><div role="alert" style="border-radius:18px;background:rgba(248,113,113,.10);border:1px solid #f87171;padding:14px 16px;display:flex;flex-direction:column;gap:8px"><span style="font-size:16px;font-weight:800;color:#fecaca">Pubblicazione non riuscita</span><span style="font-size:14px;color:#fecaca;line-height:1.45">Controlla la connessione e riprova. Il testo e le foto sono al sicuro.</span><button onClick="{{retry}}" style="align-self:flex-start;min-height:44px;padding:0 18px;border-radius:14px;border:0;background:#f87171;color:#1f0a0a;font-weight:800;font-size:14px">Riprova</button></div></sc-if>
+    <sc-if value="{{v2}}" hint-placeholder-val="{{ false }}"><div role="status" style="border-radius:18px;background:#1a293d;border:1px solid #33486a;padding:14px 16px;display:flex;flex-direction:column;gap:10px"><div style="display:flex;justify-content:space-between;font-size:14px;font-weight:700"><span>Carico le foto · <span class="mono">2</span> di <span class="mono">3</span></span><span class="mono" style="color:#7dd3fc">64%</span></div><div style="height:8px;border-radius:4px;background:#243650;overflow:hidden"><div style="width:64%;height:100%;background:#0ea5e9"></div></div></div></sc-if>
+    <div class="seg" style="grid-template-columns:repeat(2,minmax(0,1fr))" role="radiogroup" aria-label="Tipo"><sc-for list="{{types}}" as="t" hint-placeholder-count="2"><button role="radio" aria-checked="{{t.on}}" onClick="{{t.tap}}" style="color:{{t.fg}};background:{{t.bg}};border:1px solid {{t.bd}}">{{t.label}}</button></sc-for></div>
+
+    <sc-if value="{{isEvent}}" hint-placeholder-val="{{ false }}"><section style="display:flex;flex-direction:column;gap:14px">
+      <div><label class="lab" for="et">Nome dell'evento</label><input id="et" class="fld {{evErr}}" placeholder="Es. Serata al molo" value="{{evTitle}}" aria-invalid="{{evInvalid}}"><sc-if value="{{evInvalid}}" hint-placeholder-val="{{ false }}"><p class="errm">Dai un nome all'evento</p></sc-if></div>
+      <div><label class="lab" for="el">Luogo</label><input id="el" class="fld" placeholder="Dove ci si trova" value="{{evPlace}}"></div>
+      <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px"><div><label class="lab" for="ed">Data</label><input id="ed" class="fld mono" value="{{evDate}}" placeholder="gg/mm/aaaa"></div><div><label class="lab" for="eh">Ora</label><input id="eh" class="fld mono" value="{{evTime}}" placeholder="hh:mm"></div></div>
+    </section></sc-if>
+
+    <section><span class="lab">Foto e video</span>
+      <sc-if value="{{noMedia}}" hint-placeholder-val="{{ true }}"><button style="width:100%;min-height:112px;border-radius:18px;border:2px dashed #46617f;background:transparent;color:#7dd3fc;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;font-weight:700;font-size:15px"><svg class="i" viewBox="0 0 24 24" style="width:26px;height:26px;" aria-hidden="true"><path d="M4 8.5A2.5 2.5 0 0 1 6.5 6h1.2l1.1-1.6A1.5 1.5 0 0 1 10 3.8h4a1.5 1.5 0 0 1 1.2.6L16.3 6h1.2A2.5 2.5 0 0 1 20 8.5v8a2.5 2.5 0 0 1-2.5 2.5h-11A2.5 2.5 0 0 1 4 16.5ZM15.2 12.5a3.2 3.2 0 1 1-6.4 0 3.2 3.2 0 0 1 6.4 0Z"/></svg>Aggiungi foto o video</button></sc-if>
+      <sc-if value="{{hasMedia}}" hint-placeholder-val="{{ false }}"><div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px"><div style="position:relative;aspect-ratio:1/1;border-radius:16px;background:#1f3a56;color:#6f89a8;display:flex;align-items:center;justify-content:center"><svg class="i" viewBox="0 0 24 24" style="width:28px;height:28px;" aria-hidden="true"><path d="M5 4h14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2ZM3 16l5-5 4 4 3-3 6 6M9 9h.01"/></svg></div><div style="position:relative;aspect-ratio:1/1;border-radius:16px;background:#24415c;color:#6f89a8;display:flex;align-items:center;justify-content:center"><svg class="i" viewBox="0 0 24 24" style="width:28px;height:28px;" aria-hidden="true"><path d="M5 4h14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2ZM3 16l5-5 4 4 3-3 6 6M9 9h.01"/></svg></div><button aria-label="Aggiungi altre foto" style="aspect-ratio:1/1;border-radius:16px;border:2px dashed #46617f;background:transparent;color:#7dd3fc;display:flex;align-items:center;justify-content:center"><svg class="i" viewBox="0 0 24 24" style="width:24px;height:24px;" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button></div></sc-if>
+    </section>
+
+    <section><label class="lab" for="bd">{{bodyLab}}</label><textarea id="bd" rows="3" placeholder="{{bodyPh}}" aria-invalid="{{bodyInvalid}}" value="{{bodyVal}}" style="width:100%;box-sizing:border-box;min-height:104px;border-radius:16px;border:1px solid {{bodyBd}};background:#1a293d;color:#f1f5f9;font-size:16px;padding:14px 16px;outline:none;resize:none;line-height:1.45;font-family:inherit"></textarea><sc-if value="{{bodyInvalid}}" hint-placeholder-val="{{ false }}"><p class="errm">Scrivi qualcosa o aggiungi una foto</p></sc-if></section>
+
+    <section><span class="lab">Chi lo vede</span><div style="display:flex;gap:8px;flex-wrap:wrap"><sc-for list="{{vis}}" as="v" hint-placeholder-count="3"><button class="chip {{v.cls}}" aria-pressed="{{v.on}}" onClick="{{v.tap}}">{{v.label}}</button></sc-for></div></section>
+  </main>
+  <div role="tablist" aria-label="Anteprima stato" class="chips" style="display:flex;gap:8px;overflow-x:auto;padding:10px 16px;background:#0b1623;border-top:1px dashed #46617f;scrollbar-width:none"><span style="flex:none;align-self:center;font-size:12px;font-weight:700;color:#9db0c8;letter-spacing:.08em;text-transform:uppercase">Anteprima</span><sc-for list="{{states}}" as="st" hint-placeholder-count="4"><button role="tab" aria-selected="{{st.on}}" onClick="{{st.tap}}" style="flex:none;min-height:44px;padding:0 14px;border-radius:22px;border:1px solid {{st.bd}};background:{{st.bg}};color:{{st.fg}};font-weight:700;font-size:13px">{{st.label}}</button></sc-for></div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":964}}'>
+class Component extends DCLogic {
+constructor(props) { super(props); this.state = { s: 1, t: 0, v: 0 }; }
+renderVals() {
+  const s = this.state;
+  const LABELS = ['Vuoto', 'Compilato', 'Invio', 'Errore di rete', 'Da correggere'];
+  const ev = s.t === 1;
+  const filled = s.s === 1 || s.s === 2 || s.s === 3;
+  const off = s.s === 0 || s.s === 2;
+  const V = ['Pubblico', 'Gruppo', 'Solo io'];
+  return {
+    states: LABELS.map((label, i) => s.s === i ? { label, on: true, bg: '#0ea5e9', fg: '#0b1623', bd: '#0ea5e9', tap: () => this.setState({ s: i }) } : { label, on: false, bg: '#1a293d', fg: '#cbd5e1', bd: '#46617f', tap: () => this.setState({ s: i }) }),
+    title: ev ? 'Nuovo evento' : 'Nuovo post',
+    pubLabel: s.s === 2 ? 'Pubblico…' : (ev ? 'Crea' : 'Pubblica'),
+    pubOff: off, pubBg: off ? '#243650' : '#0ea5e9', pubFg: off ? '#b4c3d6' : '#0b1623',
+    dim: s.s === 2 ? .6 : 1,
+    v2: s.s === 2, v3: s.s === 3, isEvent: ev,
+    retry: () => this.setState({ s: 2 }),
+    types: ['Post', 'Evento'].map((label, i) => s.t === i ? { label, on: true, fg: '#0b1623', bg: '#0ea5e9', bd: '#0ea5e9', tap: () => this.setState({ t: i }) } : { label, on: false, fg: '#cbd5e1', bg: '#1a293d', bd: '#33486a', tap: () => this.setState({ t: i }) }),
+    evTitle: filled ? 'Serata al molo' : '', evPlace: filled ? 'Molo di Levante, Senigallia' : '', evDate: filled ? '14/11/2026' : '', evTime: filled ? '19:30' : '',
+    evInvalid: s.s === 4, evErr: s.s === 4 ? 'err' : '',
+    noMedia: !filled, hasMedia: filled,
+    bodyLab: ev ? 'Descrizione' : 'Cosa vuoi raccontare?',
+    bodyPh: ev ? 'Cosa si fa, cosa portare' : 'Esca, condizioni, com\'è andata',
+    bodyVal: filled ? (ev ? 'Ritrovo al molo, si pesca fino a tardi. Portate la canna da spinning.' : 'Prima spigola dell\'autunno, all\'alba. Minnow da 9 cm.') : '',
+    bodyInvalid: s.s === 4 && !ev, bodyBd: (s.s === 4 && !ev) ? '#f87171' : '#33486a',
+    vis: V.map((label, i) => ({ label, on: s.v === i, cls: s.v === i ? 'on' : '', tap: () => this.setState({ v: i }) }))
+  };
+}
+}
+</script>
+</body>
+</html>

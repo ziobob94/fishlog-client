@@ -303,6 +303,38 @@
    "w": 390,
    "x": 940,
    "y": 10200
+  },
+  "Bacheca.dc.html": {
+   "h": 1320,
+   "is_interactive": true,
+   "title": "La mia bacheca",
+   "w": 390,
+   "x": 0,
+   "y": 11300
+  },
+  "CreaBacheca.dc.html": {
+   "h": 844,
+   "is_interactive": false,
+   "title": "Bacheca · menù Crea",
+   "w": 390,
+   "x": 470,
+   "y": 11300
+  },
+  "NuovoPostStati.dc.html": {
+   "h": 964,
+   "is_interactive": true,
+   "title": "Nuovo post · stati",
+   "w": 390,
+   "x": 940,
+   "y": 11300
+  },
+  "NuovaStoriaStati.dc.html": {
+   "h": 908,
+   "is_interactive": true,
+   "title": "Nuova storia · stati",
+   "w": 390,
+   "x": 1410,
+   "y": 11300
   }
  },
  "createdOnFiles": {
@@ -324,7 +356,8 @@
   "n9",
   "n10",
   "n11",
-  "n12"
+  "n12",
+  "n13"
  ],
  "notes": {
   "n1": {
@@ -406,6 +439,12 @@
    "w": 900,
    "x": 0,
    "y": 10080
+  },
+  "n13": {
+   "text": "La mia bacheca: stesse pagine dedicate di Community (Nuovo post, Nuova storia), niente più form inline. Cambiano solo l'ingresso (il «+» della bacheca apre «Cosa vuoi condividere?», e l'anello con + sull'avatar apre la storia) e dove si torna (chiudendo si resta in «La mia bacheca»). Nel menù Crea compare anche «Evento», perché il PostForm reale ha il tipo post/evento. Stati disegnati: bacheca con post, vuota, caricamento, errore; nuovo post vuoto, compilato, invio, errore di rete, da correggere; storia con fotocamera, senza permesso, modifica, invio, errore. Provali dal selettore «Anteprima». Font: Fraunces solo su titoli di pagina e card, Manrope per etichette, valori e testi, JetBrains Mono solo per numeri, coordinate e misure.",
+   "w": 900,
+   "x": 0,
+   "y": 11180
   }
  },
  "order": [
@@ -449,7 +488,11 @@
   "AcquaMeteo.dc.html",
   "Crea.dc.html",
   "NuovaStoria.dc.html",
-  "StoriaVista.dc.html"
+  "StoriaVista.dc.html",
+  "Bacheca.dc.html",
+  "CreaBacheca.dc.html",
+  "NuovoPostStati.dc.html",
+  "NuovaStoriaStati.dc.html"
  ],
  "pages": [],
  "title": "FishLog – Restyling"

@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<title>FishLog La mia bacheca</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700;9..144,800&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+body{margin:0;font-family:'Manrope',system-ui,sans-serif;background:#111c2c;color:#f1f5f9}
+.i{fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+button,input,textarea,select{font-family:inherit}
+button{cursor:pointer}
+a{color:inherit;text-decoration:none}
+.lab{display:block;margin:0 0 8px;font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#9db0c8}
+.inp{width:100%;box-sizing:border-box;height:52px;border-radius:14px;border:1px solid #33486a;background:#1a293d;color:#f1f5f9;font-size:16px;padding:0 16px;outline:none}
+.inp:focus{border-color:#0ea5e9}
+.mono{font-family:'JetBrains Mono',monospace}
+.chip{flex:none;min-height:44px;padding:0 16px;border-radius:22px;border:1px solid #33486a;background:#1a293d;color:#cbd5e1;font-weight:600;font-size:15px}
+.chip.on{border-color:#0ea5e9;background:#0ea5e9;color:#0b1623;font-weight:800}
+.btn1{min-height:54px;border-radius:16px;background:#0ea5e9;color:#0b1623;font-weight:800;font-size:16px;display:flex;align-items:center;justify-content:center;gap:8px;border:0;width:100%;box-sizing:border-box}
+.btn2{min-height:48px;border-radius:14px;background:transparent;color:#cbd5e1;border:1px solid #46617f;font-weight:700;font-size:15px;display:flex;align-items:center;justify-content:center;gap:8px;width:100%;box-sizing:border-box}
+.bar{padding:12px 16px 20px;background:#1a293d;border-top:1px solid #33486a;display:flex;flex-direction:column;gap:8px}
+.iconbtn{width:44px;height:44px;border-radius:14px;border:1px solid #33486a;background:#1a293d;color:#f1f5f9;display:flex;align-items:center;justify-content:center;flex:none}
+.card{background:#1a293d;border:1px solid #33486a;border-radius:20px;padding:16px;box-sizing:border-box}
+.hint{margin:6px 0 0;font-size:13px;color:#9db0c8}
+.seg{display:grid;gap:8px}
+.seg button{min-height:44px;border-radius:12px;font-size:14px;font-weight:700}
+h1,.disp{font-family:'Fraunces',Georgia,serif;font-optical-sizing:auto}
+.chips::-webkit-scrollbar{display:none}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.55}}
+@media (prefers-reduced-motion:no-preference){.sk{animation:pulse 1.4s ease-in-out infinite}}
+@keyframes spin{to{transform:rotate(360deg)}}
+.spin{width:18px;height:18px;border-radius:50%;border:3px solid currentColor;border-right-color:transparent;display:inline-block}
+@media (prefers-reduced-motion:no-preference){.spin{animation:spin .8s linear infinite}}
+.fld{width:100%;box-sizing:border-box;min-height:52px;border-radius:14px;border:1px solid #33486a;background:#1a293d;color:#f1f5f9;font-size:16px;padding:0 16px;outline:none}
+.fld.err{border-color:#f87171}
+.errm{margin:6px 0 0;font-size:13px;color:#fca5a5;font-weight:600}
+</style>
+</helmet>
+<div style="width:390px;height:1320px;box-sizing:border-box;background:#111c2c;display:flex;flex-direction:column;overflow:hidden">
+  <header style="display:flex;align-items:center;gap:10px;padding:12px 16px;min-height:64px;box-sizing:border-box"><a href="Community.dc.html" aria-label="Torna alla community" style="width:44px;height:44px;margin-left:-8px;display:flex;align-items:center;justify-content:center"><svg class="i" viewBox="0 0 24 24" style="width:22px;height:22px;" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></a><h1 style="margin:0;font-size:26px;font-weight:800;letter-spacing:-.01em">La mia bacheca</h1></header>
+  <div role="tablist" aria-label="Anteprima stato" class="chips" style="display:flex;gap:8px;overflow-x:auto;padding:10px 16px;background:#0b1623;border-top:1px dashed #46617f;scrollbar-width:none"><span style="flex:none;align-self:center;font-size:12px;font-weight:700;color:#9db0c8;letter-spacing:.08em;text-transform:uppercase">Anteprima</span><sc-for list="{{states}}" as="st" hint-placeholder-count="4"><button role="tab" aria-selected="{{st.on}}" onClick="{{st.tap}}" style="flex:none;min-height:44px;padding:0 14px;border-radius:22px;border:1px solid {{st.bd}};background:{{st.bg}};color:{{st.fg}};font-weight:700;font-size:13px">{{st.label}}</button></sc-for></div>
+  <main style="flex:1;overflow:hidden;padding:16px 16px 0;display:flex;flex-direction:column;gap:16px">
+    <section style="display:flex;align-items:center;gap:14px">
+      <a href="NuovaStoriaStati.dc.html" aria-label="Aggiungi una storia" style="position:relative;flex:none;width:72px;height:72px;border-radius:50%;border:1.5px dashed #7dd3fc;display:flex;align-items:center;justify-content:center"><span style="width:62px;height:62px;border-radius:50%;background:rgba(14,165,233,.18);color:#7dd3fc;font-weight:800;font-size:16px;display:flex;align-items:center;justify-content:center">MC</span><span style="position:absolute;right:-2px;bottom:-2px;width:26px;height:26px;border-radius:50%;background:#0ea5e9;color:#0b1623;border:3px solid #111c2c;display:flex;align-items:center;justify-content:center"><svg class="i" viewBox="0 0 24 24" style="width:14px;height:14px;stroke-width:3" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></span></a>
+      <div style="flex:1;display:flex;flex-direction:column;gap:8px"><span style="font-size:16px;font-weight:800">mauro.c</span>
+        <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px"><div style="display:flex;flex-direction:column"><span class="mono" style="font-size:20px;font-weight:700;line-height:1.1">24</span><span style="font-size:12px;color:#9db0c8;font-weight:600">post</span></div><div style="display:flex;flex-direction:column"><span class="mono" style="font-size:20px;font-weight:700;line-height:1.1">3</span><span style="font-size:12px;color:#9db0c8;font-weight:600">eventi</span></div><div style="display:flex;flex-direction:column"><span class="mono" style="font-size:20px;font-weight:700;line-height:1.1">12</span><span style="font-size:12px;color:#9db0c8;font-weight:600">amici</span></div></div></div>
+    </section>
+    <div class="seg" style="grid-template-columns:repeat(3,minmax(0,1fr))" role="radiogroup" aria-label="Filtra"><sc-for list="{{filt}}" as="f" hint-placeholder-count="3"><button role="radio" aria-checked="{{f.on}}" onClick="{{f.tap}}" style="color:{{f.fg}};background:{{f.bg}};border:1px solid {{f.bd}}">{{f.label}}</button></sc-for></div>
+    <sc-if value="{{v0}}" hint-placeholder-val="{{ true }}"><div style="display:flex;flex-direction:column;gap:14px">
+<article aria-label="Post di mauro" style="background:#1a293d;border:1px solid #33486a;border-radius:24px 24px 24px 8px;overflow:hidden">
+  <div style="display:flex;align-items:center;gap:10px;padding:12px 8px 10px 14px"><span style="width:36px;height:36px;border-radius:50%;border:1px solid #0ea5e9;background:rgba(14,165,233,.16);color:#7dd3fc;font-weight:800;font-size:12px;display:flex;align-items:center;justify-content:center">MC</span><span style="flex:1;display:flex;flex-direction:column"><span style="font-size:14px;font-weight:700">mauro.c</span><span style="font-size:12px;color:#9db0c8">Pubblico · 2 h fa</span></span><button aria-label="Azioni sul post" style="width:44px;height:44px;border:0;background:transparent;color:#9db0c8;display:flex;align-items:center;justify-content:center"><svg class="i" viewBox="0 0 24 24" style="width:22px;height:22px;" aria-hidden="true"><path d="M5 12h.01M12 12h.01M19 12h.01"/></svg></button></div>
+  <div style="position:relative;height:200px;background:#1f3a56;color:#6f89a8;display:flex;align-items:center;justify-content:center"><svg class="i" viewBox="0 0 24 24" style="width:44px;height:44px;" aria-hidden="true"><path d="M5 4h14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2ZM3 16l5-5 4 4 3-3 6 6M9 9h.01"/></svg><span style="position:absolute;left:12px;bottom:12px;font-size:13px;font-weight:800;color:#1a1204;background:#f59e0b;padding:5px 10px;border-radius:999px">Spigola <span class="mono">52 cm</span></span></div>
+  <div style="padding:14px 16px 6px;display:flex;flex-direction:column;gap:6px"><h2 style="margin:0;font-size:19px;font-weight:800;letter-spacing:-.01em;line-height:1.2;font-family:'Fraunces',Georgia,serif">Prima spigola dell'autunno</h2><p style="margin:0;font-size:15px;line-height:1.5;color:#dbe4ee">All'alba, sul lato sinistro del molo. Minnow da 9 cm, rilasciata dopo la foto.</p></div>
+  <div style="display:flex;align-items:center;padding:0 8px 6px"><span style="min-height:44px;padding:0 10px;display:flex;align-items:center;gap:6px;color:#fbbf24;font-size:14px;font-weight:700"><svg class="i" viewBox="0 0 24 24" style="width:22px;height:22px;fill:currentColor" aria-hidden="true"><path d="M12 20s-7.500-4.600-7.500-10A4.300 4.300 0 0 1 12 7.500 4.300 4.300 0 0 1 19.500 10c0 5.400-7.500 10-7.500 10Z"/></svg><span class="mono">12</span></span><span style="min-height:44px;padding:0 10px;display:flex;align-items:center;gap:6px;color:#cbd5e1;font-size:14px;font-weight:700"><svg class="i" viewBox="0 0 24 24" style="width:22px;height:22px" aria-hidden="true"><path d="M6 4h12a3 3 0 0 1 3 3v7a3 3 0 0 1-3 3h-6.500l-3.700 3.300a.6.6 0 0 1-1-.45V17H6a3 3 0 0 1-3-3V7a3 3 0 0 1 3-3Z"/></svg><span class="mono">3</span></span></div>
+</article>
+<article aria-label="Evento" style="background:#1a293d;border:1px solid #33486a;border-radius:24px 24px 24px 8px;padding:14px 16px;display:flex;gap:14px">
+  <div style="flex:none;width:64px;border-radius:16px;background:#10304d;border:1px solid #33486a;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8px 0;gap:2px"><span class="mono" style="font-size:12px;color:#fbbf24;font-weight:700">NOV</span><span class="mono" style="font-size:28px;font-weight:700;line-height:1">14</span><span class="mono" style="font-size:12px;color:#b4c3d6">19:30</span></div>
+  <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:6px"><span style="font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#7dd3fc">Evento</span><h2 style="margin:0;font-size:19px;font-weight:800;line-height:1.2;font-family:'Fraunces',Georgia,serif">Serata al molo di Senigallia</h2><span style="font-size:14px;color:#b4c3d6">Molo di Levante · <span class="mono">8</span> partecipano</span>
+  <button style="align-self:flex-start;min-height:44px;padding:0 16px;border-radius:14px;border:1px solid #46617f;background:transparent;color:#cbd5e1;font-weight:700;font-size:14px">Chiudi evento</button></div>
+</article></div></sc-if>
+    <sc-if value="{{v1}}" hint-placeholder-val="{{ false }}"><div style="position:relative;overflow:hidden;border-radius:24px 24px 24px 8px;background:#10304d;border:1px solid #33486a;padding:28px 20px;display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center"><svg width="100%" height="100%" viewBox="0 0 400 240" preserveAspectRatio="xMidYMid slice" style="position:absolute;inset:0" aria-hidden="true"><g fill="none" stroke="#7dd3fc" stroke-width="1.5"><path opacity=".10" d="M250-10c80 0 160 45 170 120s-40 140-120 150-170-20-190-100S170-10 250-10Z"/><path opacity=".16" d="M255 14c60 0 125 38 132 96s-30 110-95 124-135-12-152-80S198 14 255 14Z"/><path opacity=".24" d="M260 40c40 0 80 30 85 70s-20 80-70 90-100-10-110-55 55-105 95-105Z"/></g></svg>
+ <svg width="64" height="76" viewBox="0 0 120 140" style="position:relative" aria-hidden="true"><path d="M60 6v22" stroke="#f1f5f9" stroke-width="5" stroke-linecap="round" fill="none"/><path d="M60 28c-17 0-26 14-26 28 0 16 12 28 26 28s26-12 26-28c0-14-9-28-26-28Z" fill="#f1f5f9"/><path d="M36 52c3-14 13-24 24-24s21 10 24 24Z" fill="#f59e0b"/><path d="M4 102c10 0 10 8 21 8s11-8 21 0 11 8 21 0 11 8 21 0 11 8 22 0" fill="none" stroke="#7dd3fc" stroke-width="3" stroke-linecap="round"/></svg>
+ <h2 style="position:relative;margin:0;font-size:22px;font-weight:800;font-family:'Fraunces',Georgia,serif">Nessun post</h2><p style="position:relative;margin:0;font-size:15px;color:#cbd5e1;max-width:240px">Pubblica il tuo primo post o evento.</p>
+ <a href="CreaBacheca.dc.html" class="btn1" style="position:relative;width:auto;padding:0 28px;margin-top:6px"><svg class="i" viewBox="0 0 24 24" style="width:20px;height:20px;stroke-width:2.6" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Crea</a></div></sc-if>
+    <sc-if value="{{v2}}" hint-placeholder-val="{{ false }}"><div role="status" style="display:flex;flex-direction:column;gap:14px" aria-label="Carico la tua bacheca"><div class="sk" style="height:300px;border-radius:24px 24px 24px 8px;background:#1a293d;border:1px solid #33486a"></div><div class="sk" style="height:120px;border-radius:24px 24px 24px 8px;background:#1a293d;border:1px solid #33486a"></div><p style="margin:0;text-align:center;font-size:13px;color:#9db0c8">Carico la tua bacheca…</p></div></sc-if>
+    <sc-if value="{{v3}}" hint-placeholder-val="{{ false }}"><div role="alert" style="border-radius:24px 24px 24px 8px;background:rgba(248,113,113,.10);border:1px solid #f87171;padding:20px 18px;display:flex;flex-direction:column;gap:10px">
+ <span style="color:#fca5a5;display:flex"><svg class="i" viewBox="0 0 24 24" style="width:28px;height:28px" aria-hidden="true"><path d="M12 3.500 2.500 20h19L12 3.500ZM12 10v4.500M12 17.500h.01"/></svg></span>
+ <h2 style="margin:0;font-size:20px;font-weight:800;font-family:'Fraunces',Georgia,serif">Non riesco a caricare la bacheca</h2><p style="margin:0;font-size:15px;color:#fecaca;line-height:1.45">Controlla la connessione e riprova. I tuoi post sono al sicuro.</p>
+ <button onClick="{{retry}}" class="btn1" style="margin-top:4px">Riprova</button></div></sc-if>
+  </main>
+  <nav aria-label="Navigazione principale" style="display:grid;grid-template-columns:repeat(5,minmax(0,1fr));align-items:end;background:#1a293d;border-top:1px solid #33486a;padding:8px 8px 14px;min-height:68px;box-sizing:border-box">
+    <a href="Main.dc.html" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:48px;color:#b4c3d6;font-size:11px;font-weight:600"><svg class="i" viewBox="0 0 24 24" style="width:20px;height:20px" aria-hidden="true"><path d="M4 11.2a2 2 0 0 1 .7-1.5l6-5.2a2 2 0 0 1 2.6 0l6 5.2a2 2 0 0 1 .7 1.5V18a3 3 0 0 1-3 3h-2.5a1 1 0 0 1-1-1v-3.5a1 1 0 0 0-1-1h-1a1 1 0 0 0-1 1V20a1 1 0 0 1-1 1H7a3 3 0 0 1-3-3v-6.8Z"/></svg>Home</a>
+    <a href="Uscite.dc.html" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:48px;color:#b4c3d6;font-size:11px;font-weight:600"><svg class="i" viewBox="0 0 24 24" style="width:20px;height:20px" aria-hidden="true"><path d="M2.5 12.4c0-3.7 3.7-6.4 8.3-6.4s7.2 2.6 7.2 6.4-3 6.4-7.2 6.4-8.3-2.7-8.3-6.4Z"/><path d="M17.5 12.4l3.4-3.7a.8.8 0 0 1 1.3.5v6.4a.8.8 0 0 1-1.3.5l-3.4-3.7ZM7.2 11h.01"/></svg>Uscite</a>
+    <a href="CreaBacheca.dc.html" aria-label="Crea" style="display:flex;justify-content:center;margin-top:-30px"><span style="width:56px;height:56px;border-radius:50%;background:#0ea5e9;color:#0b1623;display:flex;align-items:center;justify-content:center;border:4px solid #111c2c;box-shadow:0 6px 18px rgba(14,165,233,.35)"><svg class="i" viewBox="0 0 24 24" style="width:26px;height:26px;stroke-width:2.400" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></span></a>
+    <a href="Community.dc.html" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:48px;color:#7dd3fc;font-size:11px;font-weight:700"><svg class="i" viewBox="0 0 24 24" style="width:20px;height:20px" aria-hidden="true"><path d="M6 4h12a3 3 0 0 1 3 3v7a3 3 0 0 1-3 3h-6.5l-3.7 3.3a.6.6 0 0 1-1-.45V17H6a3 3 0 0 1-3-3V7a3 3 0 0 1 3-3Z"/></svg>Community</a>
+    <a href="Main.dc.html" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:48px;color:#b4c3d6;font-size:11px;font-weight:600"><svg class="i" viewBox="0 0 24 24" style="width:20px;height:20px" aria-hidden="true"><path d="M5.5 8h13a1 1 0 0 1 1 1.1l-1 9.2a2.5 2.5 0 0 1-2.5 2.2H8a2.5 2.5 0 0 1-2.5-2.2l-1-9.2A1 1 0 0 1 5.500 8Z"/><path d="M8.5 8V7a3.5 3.5 0 0 1 7 0v1"/></svg>Market</a>
+  </nav>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":1320}}'>
+class Component extends DCLogic {
+constructor(props) { super(props); this.state = { s: 0, f: 0 }; }
+renderVals() {
+  const s = this.state;
+  const LABELS = ['Con post', 'Vuota', 'Caricamento', 'Errore'];
+  const FL = ['Tutti', 'Post', 'Eventi'];
+  return {
+    states: LABELS.map((label, i) => s.s === i ? { label, on: true, bg: '#0ea5e9', fg: '#0b1623', bd: '#0ea5e9', tap: () => this.setState({ s: i }) } : { label, on: false, bg: '#1a293d', fg: '#cbd5e1', bd: '#46617f', tap: () => this.setState({ s: i }) }),
+    filt: FL.map((label, i) => s.f === i ? { label, on: true, fg: '#0b1623', bg: '#0ea5e9', bd: '#0ea5e9', tap: () => this.setState({ f: i }) } : { label, on: false, fg: '#cbd5e1', bg: '#1a293d', bd: '#33486a', tap: () => this.setState({ f: i }) }),
+    v0: s.s === 0, v1: s.s === 1, v2: s.s === 2, v3: s.s === 3,
+    retry: () => this.setState({ s: 2 })
+  };
+}
+}
+</script>
+</body>
+</html>
