@@ -234,7 +234,7 @@ async function remove() {
 </script>
 
 <style scoped>
-.catch-form { display: flex; flex-direction: column; gap: 26px; max-width: 640px; padding: 0 0 9rem; }
+.catch-form { display: flex; flex-direction: column; gap: 26px; max-width: 640px; padding: 0 0 calc(130px + env(safe-area-inset-bottom)); }
 .state-center { display: flex; justify-content: center; padding: 4rem; }
 .error-banner { align-items: center; background: rgba(240,80,80,.1); border: 1px solid var(--danger); border-radius: 6px; color: var(--danger); display: inline-flex; gap: .4rem; padding: .75rem 1rem; }
 .use-name { min-height: 52px; border-radius: 14px; white-space: nowrap; }
@@ -266,6 +266,6 @@ async function remove() {
 .more-grid { display: grid; gap: 14px; grid-template-columns: 1fr 1fr; margin-top: 12px; }
 .field { display: flex; flex-direction: column; margin: 0; }
 
-.bar-link { background: none; border: none; color: rgb(var(--color-ocean-text)); cursor: pointer; font-weight: 700; font-size: 15px; min-height: 44px; }
+.bar-link { background: none; border: none; color: rgb(var(--color-ocean-text)); cursor: pointer; font-weight: 700; font-size: 15px; min-height: 36px; }
 .bar-link.danger { color: rgb(var(--color-danger-text)); }
 </style>

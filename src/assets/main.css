@@ -305,9 +305,10 @@ textarea.fl-inp { min-height: 96px; resize: none; line-height: 1.45; padding: 14
   font-weight: 700; font-size: 15px; display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; box-sizing: border-box; cursor: pointer;
 }
 .fl-bar {
-  position: fixed; left: 0; right: 0; bottom: 0; z-index: 160; padding: 12px 16px calc(20px + env(safe-area-inset-bottom));
-  background: var(--surface); border-top: 1px solid var(--border); display: flex; flex-direction: column; gap: 8px;
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 160; padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
+  background: var(--surface); border-top: 1px solid var(--border); display: flex; flex-direction: column; gap: 2px;
 }
+.fl-bar .fl-btn1, .fl-bar .fl-btn2 { min-height: 50px; }
 .fl-switch { width: 52px; height: 32px; border-radius: 16px; border: 0; background: var(--border-light); position: relative; flex: none; padding: 0; cursor: pointer; transition: background .15s; }
 .fl-switch.on { background: var(--ocean); }
 .fl-switch::after { content: ''; position: absolute; top: 4px; left: 4px; width: 24px; height: 24px; border-radius: 50%; background: #fff; transition: left .15s; }

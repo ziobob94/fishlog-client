@@ -60,6 +60,7 @@
           <button v-for="t2 in TECHNIQUES" :key="t2.v" type="button" class="fl-chip" :class="{ on: f.technique === t2.v }" :aria-pressed="f.technique === t2.v" @click="f.technique = f.technique === t2.v ? '' : t2.v">{{ t2.l }}</button>
         </div>
       </section>
+      <p class="ess-foot">{{ t('sessionForm.essential.later') }}</p>
     </div>
 
     <!-- ═══ DATI USCITA: elenco di righe → una schermata per sezione ═══ -->
@@ -407,7 +408,6 @@
           </button>
         </template>
       </div>
-      <p v-if="mode === 'essential'" class="ess-foot">{{ t('sessionForm.essential.later') }}</p>
     </div>
 
   </form>
@@ -1204,7 +1204,7 @@
   }
 
   /* ── Nuova uscita essenziale (mockup 12) ── */
-  .essential { display: flex; flex-direction: column; gap: 22px; padding-bottom: 8.5rem; }
+  .essential { display: flex; flex-direction: column; gap: 22px; padding-bottom: calc(110px + env(safe-area-inset-bottom)); }
   .detect-card { align-items: center; background: rgb(var(--color-sea-deep)); border: 1px solid var(--border); border-radius: 24px 24px 24px 8px; color: var(--foam); cursor: pointer; display: flex; gap: 14px; min-height: 72px; padding: 14px 16px; text-align: left; width: 100%; box-sizing: border-box; }
   .detect-card:disabled { opacity: .6; }
   .detect-icon { width: 44px; height: 44px; border-radius: 14px; background: rgba(14, 165, 233, .16); color: rgb(var(--color-ocean-text)); display: flex; align-items: center; justify-content: center; flex: none; }
@@ -1215,7 +1215,7 @@
   .ess-switch { align-items: center; color: var(--foam); display: flex; justify-content: space-between; gap: 12px; margin-top: 14px; min-height: 48px; font-size: 15px; font-weight: 600; }
   .ess-end { margin-top: 10px; }
   .ess-chips { display: flex; flex-wrap: wrap; gap: 8px; }
-  .form-actions-inner.ess-actions { flex-direction: column; align-items: stretch; gap: 8px; padding-bottom: 4px; }
+  .form-actions-inner.ess-actions { flex-direction: column; align-items: stretch; gap: 6px; padding: 10px 16px; }
   .where-wrap { position: relative; }
   .where-list { position: absolute; left: 0; right: 0; top: calc(100% + 6px); z-index: 50; margin: 0; padding: 6px; list-style: none; background: var(--surface); border: 1px solid var(--border-light); border-radius: 16px; box-shadow: 0 12px 30px rgba(0,0,0,.25); }
   .where-opt { display: flex; align-items: center; gap: 12px; width: 100%; min-height: 52px; padding: 6px 8px; background: none; border: 0; border-radius: 12px; color: var(--foam); text-align: left; cursor: pointer; }
@@ -1227,11 +1227,11 @@
   .req { color: var(--danger); margin-left: 2px; }
   .fl-error { margin: 6px 0 0; font-size: 13px; font-weight: 600; color: var(--danger); }
   .essential .field-missing { border-color: var(--border); }
-  .ess-foot { color: var(--text-muted); font-size: 12px; text-align: center; margin: 0; padding: 0 1rem 12px; }
+  .ess-foot { color: var(--text-muted); font-size: 13px; text-align: center; margin: 0; }
   .fl-inp[type="date"], .fl-inp[type="time"] { display: flex; align-items: center; text-align: left; -webkit-appearance: none; appearance: none; }
 
   /* ── Dati uscita (menu a righe, mockup 37) ── */
-  .data-menu { display: flex; flex-direction: column; gap: 10px; padding-bottom: 7rem; }
+  .data-menu { display: flex; flex-direction: column; gap: 10px; padding-bottom: calc(100px + env(safe-area-inset-bottom)); }
   .menu-row { align-items: center; background: var(--surface); border: 1px solid var(--border); border-radius: 20px; color: var(--foam); cursor: pointer; display: flex; gap: 14px; min-height: 72px; padding: 14px 16px; text-align: left; width: 100%; box-sizing: border-box; }
   .menu-icon { width: 44px; height: 44px; border-radius: 14px; background: var(--surface-2); color: rgb(var(--color-ocean-text)); display: flex; align-items: center; justify-content: center; flex: none; }
   .menu-text { display: flex; flex: 1; min-width: 0; flex-direction: column; gap: 2px; }
