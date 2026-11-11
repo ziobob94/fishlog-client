@@ -554,6 +554,9 @@
 		},
 		"weather": {
 			"updatedAt": "aggiornato alle {time}",
+			"refreshOffline": "Sei offline: l'aggiornamento non è disponibile",
+			"refreshWait": "Meteo appena aggiornato: riprova tra qualche secondo",
+			"refreshFailed": "Aggiornamento non riuscito: restano i dati di prima. Riprova tra poco.",
 			"feels": "percepita {n}°",
 			"next": "Prossime ore",
 			"period": "periodo {n} s",

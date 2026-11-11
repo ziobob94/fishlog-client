@@ -56,6 +56,11 @@
         <h2 class="hw-place"><MapPin :size="16" aria-hidden="true" /> <RouterLink to="/meteo" class="hw-place-link">{{ place }}</RouterLink></h2>
         <span v-if="offline" class="hw-stale wx-num">{{ t('home.weather.staleLabel', { time: savedLabel }) }}</span>
         <span v-else class="hw-upd">{{ t('home.weather.updatedAt', { time: savedLabel }) }}</span>
+        <button type="button" class="hw-refresh m-press" :aria-disabled="refreshDisabled || undefined" :aria-label="refreshLabel" :title="refreshLabel" @click="refresh">
+          <span v-if="refreshing" class="m-spinner" style="width:14px;height:14px" aria-hidden="true"></span><RefreshCw v-else :size="16" aria-hidden="true" />
+        </button>
+        <p v-if="refreshing" class="wx-sr" role="status">{{ t('weather.refreshing') }}</p>
+        <p v-else-if="refreshFailed && !offline" class="hw-banner hw-banner-err" role="alert"><TriangleAlert :size="16" aria-hidden="true" /> {{ t('home.weather.refreshFailed') }}</p>
       </div>
 
       <div class="hw-now">
@@ -118,13 +123,15 @@ import '../../assets/weather.css'
 
 const props = defineProps({ variant: { type: String, default: 'card' } }) // 'card' | 'bar'
 const { t } = useI18n()
-const { activate, activating, denied, state, offline, summary, placeName, savedLabel, retry } = useHomeWeather({ autoload: props.variant !== 'bar' })
+const { activate, activating, denied, state, offline, summary, placeName, savedLabel, retry, refresh, refreshing, refreshFailed, coolingDown } = useHomeWeather({ autoload: props.variant !== 'bar' })
 const s = computed(() => summary.value)
 const place = computed(() => placeName.value || t('weather.yourPosition'))
 const pressWord = computed(() => {
   const st = s.value?.pressure.state
   return st?.key ? t(`weather.pressure.${st.key}${st.strong ? 'Strong' : ''}`) : null
 })
+const refreshDisabled = computed(() => offline.value || refreshing.value || coolingDown.value)
+const refreshLabel = computed(() => refreshing.value ? t('weather.refreshing') : offline.value ? t('home.weather.refreshOffline') : coolingDown.value ? t('home.weather.refreshWait') : t('weather.refresh'))
 const stateText = computed(() => state.value === 'noplace' ? t('home.weather.noPlaceTitle') : state.value === 'error' ? t('weather.error.title') : t('weather.offline.title'))
 </script>
 
@@ -134,9 +141,13 @@ const stateText = computed(() => state.value === 'noplace' ? t('home.weather.noP
 .hw-place { margin: 0; display: inline-flex; align-items: center; gap: 6px; font-family: var(--font-sans); font-weight: 800; font-size: 1rem; color: rgb(var(--color-ocean-text)); min-width: 0; }
 .hw-place-link { color: rgb(var(--color-foam)); text-decoration: none; min-height: 44px; display: inline-flex; align-items: center; overflow-wrap: anywhere; }
 .hw-place-link:hover { text-decoration: underline; }
+.hw-refresh { min-width: 44px; min-height: 44px; margin: -8px -10px -8px 0; border-radius: 12px; display: inline-flex; align-items: center; justify-content: center; background: none; border: 0; color: rgb(var(--color-foam)); cursor: pointer; }
+.hw-refresh[aria-disabled='true'] { opacity: .55; cursor: not-allowed; }
+.hw-refresh:focus-visible { outline: 2px solid rgb(var(--color-ocean-text)); outline-offset: 2px; }
 .hw-upd { font-size: .8rem; color: rgb(var(--color-muted)); }
 .hw-stale { font-size: .75rem; font-weight: 700; padding: 3px 10px; border-radius: 999px; border: 1px solid rgb(var(--color-sand-text)); color: rgb(var(--color-sand-text)); }
 .hw-banner { display: flex; align-items: center; gap: 8px; margin: 0; padding: 10px 14px; border-radius: 14px; border: 1px solid rgb(var(--color-sand-text)); background: rgb(var(--color-sand) / .12); color: rgb(var(--color-foam)); font-size: .88rem; font-weight: 600; }
+.hw-banner-err { flex-basis: 100%; }
 .hw-banner svg { color: rgb(var(--color-sand-text)); flex: none; }
 .hw-ico { color: rgb(var(--color-ocean-text)); flex: none; }
 .hw-now { display: flex; align-items: center; gap: 14px; }
