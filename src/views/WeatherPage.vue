@@ -50,8 +50,9 @@
           <WeatherSea :view="store.data" :now-iso="nowIso" />
         </div>
         <div :style="{ '--i': 1 }"><WeatherGlance :view="store.data" /></div>
-        <div :style="{ '--i': 2 }"><WeatherHourly :view="store.data" :today="today" /></div>
-        <div :style="{ '--i': 3 }"><WeatherDaily :view="store.data" :today="today" /></div>
+        <div :style="{ '--i': 2 }"><CompareForecast /></div>
+        <div :style="{ '--i': 3 }"><WeatherHourly :view="store.data" :today="today" /></div>
+        <div :style="{ '--i': 4 }"><WeatherDaily :view="store.data" :today="today" /></div>
       </StaggerList>
       <p class="wx-note">{{ t('weather.disclaimer') }}</p>
     </template>
@@ -73,6 +74,7 @@ import WeatherSea from '../components/weather/WeatherSea.vue'
 import WeatherGlance from '../components/weather/WeatherGlance.vue'
 import WeatherHourly from '../components/weather/WeatherHourly.vue'
 import WeatherDaily from '../components/weather/WeatherDaily.vue'
+import CompareForecast from '../components/weather/CompareForecast.vue'
 import LocationHelp from '../components/weather/LocationHelp.vue'
 import { useWeatherStore } from '../stores/weather.js'
 import { isPartial } from '../utils/weather.js'
