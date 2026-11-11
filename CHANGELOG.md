@@ -1,3 +1,10 @@
+# [1.42.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.41.1...client-v1.42.0) (2026-11-11)
+
+
+### Features
+
+* visibilità annunci, privacy messaggi dal Market, azioni a icone, visualizzazioni uniche ([2e3854c](https://github.com/ziobob94/fishlog-client/commit/2e3854c7e5570277ca3dca1a9dd08349abcb48c1))
+
 ## [1.41.1](https://github.com/ziobob94/fishlog-client/compare/client-v1.41.0...client-v1.41.1) (2026-11-11)
 
 
