@@ -1,3 +1,15 @@
+# [1.54.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.53.0...client-v1.54.0) (2026-11-11)
+
+
+### Bug Fixes
+
+* **feed:** badge chat tagliato in cima all'intestazione ([b003cc9](https://github.com/ziobob94/fishlog-client/commit/b003cc94456adb6095ad6a170c34c78115870c0c))
+
+
+### Features
+
+* meteo 7/15 giorni, dettaglio del giorno, icone WMO e attività dei pesci ([a1621d6](https://github.com/ziobob94/fishlog-client/commit/a1621d62ec1fcd9cae0e81eebe8bb2c335bd0841))
+
 # [1.53.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.52.0...client-v1.53.0) (2026-11-11)
 
 
