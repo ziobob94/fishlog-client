@@ -1,3 +1,10 @@
+# [1.55.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.54.4...client-v1.55.0) (2026-11-11)
+
+
+### Features
+
+* home con meteo in evidenza, mappamondo espandibile e confronto con 3bmeteo ([1326ed7](https://github.com/ziobob94/fishlog-client/commit/1326ed7f6c7e210ebc27a18b81b489b0cfe501b4))
+
 ## [1.54.4](https://github.com/ziobob94/fishlog-client/compare/client-v1.54.3...client-v1.54.4) (2026-11-11)
 
 
