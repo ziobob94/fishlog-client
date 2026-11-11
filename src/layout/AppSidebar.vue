@@ -76,7 +76,10 @@
 
       <div class="nav-section-label">{{ t('nav.sections.account') }}</div>
       <RouterLink to="/board" class="nav-item" @click="$emit('close')">
-        <span class="w-5 text-center flex justify-center"><UserCircle :size="16" /></span> {{ t('nav.profile') }}
+        <span class="w-5 text-center flex justify-center"><UserCircle :size="16" /></span> {{ t('nav.board') }}
+      </RouterLink>
+      <RouterLink to="/profile" class="nav-item" @click="$emit('close')">
+        <span class="w-5 text-center flex justify-center"><Settings :size="16" /></span> {{ t('nav.settings') }}
       </RouterLink>
       <RouterLink
         v-if="auth.user?.role === 'admin'"

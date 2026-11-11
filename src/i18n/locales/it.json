@@ -43,6 +43,7 @@
 		"forum": "Forum",
 		"culture": "Cultura",
 		"profile": "Profilo",
+		"settings": "Impostazioni",
 		"admin": "Admin",
 		"logout": "Esci",
 		"install": "Installa app",
@@ -469,7 +470,7 @@
 			"stats": "Statistiche",
 			"leaderboard": "Classifica",
 			"friends": "Amici",
-			"profile": "Profilo"
+			"profile": "Il mio profilo"
 		},
 		"liveConditions": {
 			"title": "Oggi dove sei",
@@ -544,7 +545,7 @@
 					"text": "Messaggi privati e chat globale"
 				},
 				"profile": {
-					"title": "Profilo",
+					"title": "Impostazioni",
 					"text": "Credenziali, privacy e impostazioni account"
 				},
 				"stats": {
