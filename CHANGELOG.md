@@ -1,3 +1,15 @@
+# [1.51.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.50.0...client-v1.51.0) (2026-11-11)
+
+
+### Bug Fixes
+
+* conteggio visualizzazioni storie ([3b48012](https://github.com/ziobob94/fishlog-client/commit/3b480124ef4e3447dcae3566237bf10539f8fb95))
+
+
+### Features
+
+* ora per ora fino a 7 giorni (un giorno alla volta) e previsioni a 15 giorni con fonte dichiarata ([f9362d5](https://github.com/ziobob94/fishlog-client/commit/f9362d5b5e8a404615a60920a528c8117ba376df))
+
 # [1.50.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.49.0...client-v1.50.0) (2026-11-11)
 
 
