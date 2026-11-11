@@ -45,12 +45,30 @@
       </div>
       <div>
         <label for="lf-zone" class="field-label">{{ t('market.form.location') }}</label>
-        <input id="lf-zone" v-model="form.location.name" type="text" class="field" :placeholder="t('market.form.locationPlaceholder')" />
+        <PlaceInput id="lf-zone" v-model="form.location.name" v-model:lat="form.location.coords.lat" v-model:lng="form.location.coords.lng" :placeholder="t('market.form.locationPlaceholder')" />
       </div>
     </div>
 
     <label for="lf-desc" class="field-label">{{ t('market.form.description') }}</label>
     <textarea id="lf-desc" v-model="form.description" rows="5" class="field" :placeholder="t('market.form.descriptionPlaceholder')"></textarea>
+
+    <p class="field-label">{{ t('market.form.whoCanSee') }}</p>
+    <div class="chips" role="radiogroup" :aria-label="t('market.form.whoCanSee')">
+      <button
+        v-for="v in ['all', 'friends', 'groups']" :key="v" type="button" role="radio" :aria-checked="form.visibility === v"
+        class="chip" :class="{ on: form.visibility === v }" @click="setVisibility(v)"
+      >{{ t(`market.visibility.${v}`) }}</button>
+    </div>
+    <p class="vis-hint">{{ t(`market.visibility.${form.visibility}Hint`) }}</p>
+    <template v-if="form.visibility === 'groups'">
+      <p class="field-label">{{ t('market.form.chooseGroups') }}</p>
+      <div class="chips" role="group" :aria-label="t('market.form.chooseGroups')">
+        <button v-for="g in groups" :key="g._id" type="button" class="chip" :class="{ on: form.allowedGroups.includes(g._id) }"
+          :aria-pressed="form.allowedGroups.includes(g._id)" @click="toggleGroup(g._id)">{{ g.name }}</button>
+        <span v-if="!groups.length" class="vis-hint">{{ t('market.form.noGroups') }}</span>
+      </div>
+      <p v-if="groupError" class="fl-error" role="alert">{{ t('market.form.groupRequired') }}</p>
+    </template>
 
     <p v-if="error" class="error-msg mt-3">{{ error }}</p>
 
@@ -63,7 +81,10 @@
 </template>
 
 <script setup>
-import { ref, reactive, computed, onBeforeUnmount } from 'vue'
+import { ref, reactive, computed, onMounted, onBeforeUnmount } from 'vue'
+import { storeToRefs } from 'pinia'
+import PlaceInput from '../form/PlaceInput.vue'
+import { useGroupStore } from '../../stores/groups.js'
 import { useI18n } from 'vue-i18n'
 import { X, Plus } from 'lucide-vue-next'
 
@@ -83,8 +104,20 @@ const form = reactive({
   category: props.initial.category || props.categories[0] || 'altro',
   condition: props.initial.condition || 'usato',
   price: props.initial.price ?? null,
-  location: { name: props.initial.location?.name || '' }
+  location: { name: props.initial.location?.name || '', coords: { lat: props.initial.location?.coords?.lat ?? null, lng: props.initial.location?.coords?.lng ?? null } },
+  visibility: props.initial.visibility || 'all',
+  allowedGroups: (props.initial.allowedGroups || []).map(g => g._id || g)
 })
+const groupStore = useGroupStore()
+const { groups } = storeToRefs(groupStore)
+const groupError = ref(false)
+onMounted(() => { if (!groups.value.length) groupStore.fetchGroups() })
+function setVisibility(v) { form.visibility = v; groupError.value = false }
+function toggleGroup(id) {
+  const i = form.allowedGroups.indexOf(id)
+  if (i >= 0) form.allowedGroups.splice(i, 1); else form.allowedGroups.push(id)
+  groupError.value = false
+}
 
 const existingMedia = computed(() => props.initial.media || [])
 
@@ -108,6 +141,8 @@ function removePending(i) {
 onBeforeUnmount(() => previewUrls.value.forEach(u => URL.revokeObjectURL(u)))
 
 function submit() {
+  if (props.saving) return
+  if (form.visibility === 'groups' && !form.allowedGroups.length) { groupError.value = true; return }
   emit('submit', { ...form }, pendingFiles.value)
 }
 </script>
@@ -134,6 +169,7 @@ textarea.field { @apply py-3; }
   @apply absolute top-1 right-1 w-7 h-7 flex items-center justify-center bg-black/60 text-white rounded-full border-none cursor-pointer;
 }
 
+.vis-hint { @apply text-sm text-muted mt-2; }
 .chips { @apply flex flex-wrap gap-2; }
 .chip {
   @apply inline-flex items-center min-h-[44px] px-4 rounded-full border border-border bg-surface text-foam text-sm font-semibold cursor-pointer;
@@ -144,7 +180,7 @@ textarea.field { @apply py-3; }
 .seg-opt { @apply flex-1 min-h-[44px] rounded-full bg-transparent border-none text-sm font-semibold text-foam cursor-pointer; }
 .seg-opt.active { @apply bg-ocean text-on-primary; }
 
-.form-row { @apply grid gap-3; grid-template-columns: 1fr 1fr; }
+.form-row { @apply grid gap-3; grid-template-columns: 1fr; }
 .error-msg { @apply bg-danger/10 border border-danger rounded-sm text-danger text-xs px-2.5 py-1.5; }
 
 .cta-bar { @apply fixed left-0 right-0 bottom-0 z-20 px-4 py-3 bg-surface border-t border-border; }

@@ -1,7 +1,7 @@
 <template>
   <div>
     <PageHeader :title="t('posts.detail.title')" back compact />
-    <div v-if="store.loading && !post" class="state-center"><div class="spinner"></div></div>
+    <div v-if="store.loading && !post" class="state-center"><div class="m-spinner"></div></div>
     <div v-else-if="!post" class="state-center mt-4" role="alert">
       <h3>{{ t('posts.detail.notFound') }}</h3>
     </div>

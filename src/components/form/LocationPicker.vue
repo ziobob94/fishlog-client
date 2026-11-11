@@ -11,13 +11,13 @@
         :placeholder="namePlaceholder || t('locationPicker.namePlaceholder')"
       />
       <ul v-if="results.length" class="results" role="listbox">
-        <li v-for="r in results" :key="r.name + r.lat" role="option">
-          <button type="button" @click="pick(r)">{{ r.name }}</button>
+        <li v-for="(r, i) in results" :key="i" role="option">
+          <button type="button" @click="pick(r)">{{ r.title }}<small v-if="r.sub"> · {{ r.sub }}</small></button>
         </li>
       </ul>
     </div>
     <p class="picker-hint">{{ t('locationPicker.hint') }}</p>
-    <div ref="mapEl" class="map-picker"></div>
+    <div ref="mapEl" class="map-picker" data-no-sheet-drag></div>
     <p v-if="error" class="picker-error" role="alert">{{ error }}</p>
   </div>
 </template>
@@ -25,11 +25,12 @@
 <script setup>
 import { ref, onMounted, onUnmounted, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { buildStyle, readBasemap, COOP_LOCALE, loadMapLibre, searchPlaces, reversePlace } from '../../utils/mapStyle.js'
+import { searchPlaceOptions, resolveOption, reverseGeocode, loadMap, placesStatus, placesMessage, reportMapError } from '../../utils/places.js'
 import { useThemeStore } from '../../stores/theme.js'
 
-// Selettore luogo: cerca per nome oppure tocca la mappa per impostare le
-// coordinate. MapLibre + Nominatim (OpenStreetMap), nessuna chiave API.
+// Selettore luogo: cerca per nome oppure tocca la mappa per impostare le coordinate.
+// Google Maps + Places + Geocoding (vedi utils/places.js). Ogni scelta emette anche
+// `place` con nome, regione, provincia, comune, paese e coordinate calcolati insieme.
 const { t } = useI18n()
 const theme = useThemeStore()
 const props = defineProps({
@@ -37,22 +38,24 @@ const props = defineProps({
   lng: { type: Number, default: null },
   name: { type: String, default: undefined },
   namePlaceholder: { type: String, default: '' },
+  greedy: { type: Boolean, default: false },   // dentro un foglio: la mappa prende tutti i gesti (un dito sposta, due zoomano)
 })
-const emit = defineEmits(['update:lat', 'update:lng', 'update:name'])
+const emit = defineEmits(['update:lat', 'update:lng', 'update:name', 'place'])
 
 const mapEl = ref(null)
 const results = ref([])
 const error = ref('')
-let maplibre = null
 let map = null
 let marker = null
 let searchTimer = null
 
 function setPosition(lat, lng, zoom) {
   if (!map) return
-  if (marker) marker.setLngLat([lng, lat])
-  else marker = new maplibre.Marker({ color: '#f59e0b' }).setLngLat([lng, lat]).addTo(map)
-  map.easeTo({ center: [lng, lat], zoom: zoom ?? Math.max(map.getZoom(), 12), duration: 400 })
+  const pos = { lat, lng }
+  if (marker) marker.setPosition(pos)
+  else marker = new window.google.maps.Marker({ position: pos, map })
+  map.panTo(pos)
+  if (zoom || map.getZoom() < 12) map.setZoom(zoom || 12)
 }
 
 function onNameInput(e) {
@@ -61,48 +64,43 @@ function onNameInput(e) {
   clearTimeout(searchTimer)
   error.value = ''
   if (value.trim().length < 3) { results.value = []; return }
-  searchTimer = setTimeout(async () => {
-    try { results.value = await searchPlaces(value.trim()) }
-    catch { results.value = []; error.value = t('locationPicker.searchError') }
-  }, 500)
+  searchTimer = setTimeout(async () => { results.value = await searchPlaceOptions(value.trim()) }, 300)
 }
 
-function pick(r) {
+async function pick(r) {
   results.value = []
-  emit('update:name', r.name)
-  emit('update:lat', r.lat)
-  emit('update:lng', r.lng)
-  setPosition(r.lat, r.lng, 13)
+  const p = await resolveOption(r)
+  if (!p) return
+  emit('update:name', p.name)
+  emit('update:lat', p.lat)
+  emit('update:lng', p.lng)
+  emit('place', p)
+  setPosition(p.lat, p.lng, 13)
 }
 
 onMounted(async () => {
   try {
-    maplibre = await loadMapLibre()
+    const { Map } = await loadMap()
     const hasCoords = props.lat && props.lng
-    map = new maplibre.Map({
-      container: mapEl.value,
-      style: buildStyle({ basemap: readBasemap(), dark: theme.mode !== 'light' }),
-      center: hasCoords ? [props.lng, props.lat] : [12.5, 42.5],
+    map = new Map(mapEl.value, {
+      center: hasCoords ? { lat: props.lat, lng: props.lng } : { lat: 42.5, lng: 12.5 },
       zoom: hasCoords ? 13 : 5,
-      cooperativeGestures: true, locale: COOP_LOCALE,
-      dragRotate: false, pitchWithRotate: false, touchPitch: false
+      gestureHandling: props.greedy ? 'greedy' : 'cooperative', streetViewControl: false, fullscreenControl: false, mapTypeControlOptions: { mapTypeIds: ['roadmap', 'hybrid'] },
+      clickableIcons: false
     })
-    map.touchZoomRotate.disableRotation()
-    map.addControl(new maplibre.NavigationControl({ showCompass: false }), 'top-right')
-    if (hasCoords) marker = new maplibre.Marker({ color: '#f59e0b' }).setLngLat([props.lng, props.lat]).addTo(map)
-
-    map.on('click', async (e) => {
-      const lat = parseFloat(e.lngLat.lat.toFixed(6))
-      const lng = parseFloat(e.lngLat.lng.toFixed(6))
+    if (hasCoords) setPosition(props.lat, props.lng)
+    map.addListener('click', async (e) => {
+      const lat = parseFloat(e.latLng.lat().toFixed(6))
+      const lng = parseFloat(e.latLng.lng().toFixed(6))
       emit('update:lat', lat)
       emit('update:lng', lng)
       setPosition(lat, lng)
-      if (props.name !== undefined) {
-        try { const n = await reversePlace(lat, lng); if (n) emit('update:name', n) } catch { /* il nome resta com'è */ }
-      }
+      const p = await reverseGeocode(lat, lng)
+      if (p) { if (props.name !== undefined) emit('update:name', p.name); emit('place', p) }
     })
-  } catch {
-    error.value = t('locationPicker.mapError')
+  } catch (e) {
+    reportMapError(e)
+    error.value = placesMessage(t) || t('locationPicker.mapError')
   }
 })
 
@@ -110,8 +108,9 @@ watch(() => [props.lat, props.lng], ([lat, lng]) => {
   if (!map || !lat || !lng) return
   setPosition(lat, lng)
 })
+watch(() => [placesStatus.error, placesStatus.code], () => { if (placesStatus.error) error.value = placesMessage(t) })
 
-onUnmounted(() => { clearTimeout(searchTimer); map?.remove(); map = null })
+onUnmounted(() => { clearTimeout(searchTimer); map = null; marker = null })
 </script>
 
 <style scoped>
@@ -134,5 +133,6 @@ onUnmounted(() => { clearTimeout(searchTimer); map?.remove(); map = null })
   border: 1px solid rgb(var(--color-border));
   background: rgb(var(--color-surface-2));
   cursor: crosshair;
+  touch-action: none;
 }
 </style>

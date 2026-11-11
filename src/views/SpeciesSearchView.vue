@@ -11,7 +11,7 @@
     </div>
 
     <p v-if="!query.trim()" class="text-muted text-sm">{{ t('species.searchHint') }}</p>
-    <div v-else-if="loading" class="state-center"><div class="spinner"></div></div>
+    <div v-else-if="loading" class="state-center"><div class="m-spinner"></div></div>
     <p v-else-if="!results.length" class="text-muted text-sm">{{ t('species.noResults') }}</p>
 
     <div v-else class="species-grid">

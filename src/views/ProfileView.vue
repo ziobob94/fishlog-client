@@ -91,6 +91,13 @@
             <Sun :size="15" /> {{ t('profile.appearance.light') }}
           </button>
         </div>
+        <p class="text-muted text-sm mt-4 mb-2">{{ t('profile.appearance.motion') }}</p>
+        <div class="theme-toggle" role="radiogroup" :aria-label="t('profile.appearance.motion')">
+          <button v-for="o in motionOptions" :key="o.value" type="button" role="radio" :aria-checked="motionPref === o.value" class="theme-opt m-color" :class="{ active: motionPref === o.value }" @click="pickMotion(o.value)">
+            {{ t(o.label) }}
+          </button>
+        </div>
+        <p class="text-muted text-sm mt-2">{{ t('profile.appearance.motionHint') }}</p>
       </section>
 
       <!-- Privacy -->
@@ -109,6 +116,16 @@
         <button class="btn btn-primary btn-sm mt-2" :disabled="savingAccount" @click="saveAccount">
           {{ t('common.save') }}
         </button>
+        <div class="notification-row mt-4">
+          <div>
+            <strong>{{ t('profile.privacy.marketMessages') }}</strong>
+            <p class="text-muted text-sm">{{ t('profile.privacy.marketMessagesHint') }}</p>
+          </div>
+          <label class="switch">
+            <input type="checkbox" v-model="marketMessages" :aria-label="t('profile.privacy.marketMessages')" @change="saveMarketMessages" />
+            <span class="switch-track"></span>
+          </label>
+        </div>
       </section>
 
       <!-- Negozio / Market -->
@@ -253,6 +270,8 @@
 </template>
 
 <script setup>
+import { ref as motionRef } from 'vue'
+import { setMotionPreference } from '../components/motion/motion.js'
 import { toInitials } from '../utils/initials.js'
 import PageHeader from '../components/PageHeader.vue'
 import { ref, computed, onMounted } from 'vue'
@@ -269,6 +288,13 @@ import api from '../utils/api.js'
 const { t } = useI18n()
 const auth  = useAuthStore()
 const features = useFeaturesStore()
+const motionOptions = [
+  { value: 'auto', label: 'profile.appearance.motionAuto' },
+  { value: 'reduce', label: 'profile.appearance.motionYes' },
+  { value: 'full', label: 'profile.appearance.motionNo' }
+]
+const motionPref = motionRef((() => { try { return localStorage.getItem('fishlog.motion') || 'auto' } catch { return 'auto' } })())
+function pickMotion(v) { motionPref.value = v; setMotionPreference(v) }
 const theme = useThemeStore()
 const market = useMarketStore()
 const router = useRouter()
@@ -290,6 +316,11 @@ return toInitials(name)
 // ── account ──
 const displayName = ref(auth.user?.displayName || '')
 const defaultVisibility = ref(auth.user?.defaultVisibility || 'public')
+const marketMessages = ref(auth.user?.marketMessagesFromStrangers !== false)
+async function saveMarketMessages() {
+  try { await auth.updateProfile({ marketMessagesFromStrangers: marketMessages.value }) }
+  catch { marketMessages.value = !marketMessages.value; accountError.value = t('common.error') }
+}
 const savingAccount = ref(false)
 const accountError  = ref('')
 const accountSaved  = ref(false)

@@ -41,6 +41,8 @@ export function clearError(el) {
 export function showError(el, text) {
   clearError(el)
   el.setAttribute('aria-invalid', 'true')
+  // scuotimento una volta (disattivato dal CSS con movimento ridotto)
+  el.classList.remove('m-shake'); void el.offsetWidth; el.classList.add('m-shake')
   const p = document.createElement('p')
   p.className = 'fl-error'
   p.setAttribute('role', 'alert')

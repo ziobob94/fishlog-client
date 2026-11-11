@@ -28,6 +28,9 @@
       <RouterLink to="/sessions" class="nav-item" @click="$emit('close')">
         <span class="w-5 text-center flex justify-center"><Fish :size="16" /></span> {{ t('nav.sessions') }}
       </RouterLink>
+      <RouterLink to="/meteo" class="nav-item" @click="$emit('close')">
+        <span class="w-5 text-center flex justify-center"><CloudSun :size="16" /></span> {{ t('nav.weather') }}
+      </RouterLink>
       <RouterLink to="/stats" class="nav-item" @click="$emit('close')">
         <span class="w-5 text-center flex justify-center"><BarChart3 :size="16" /></span> {{ t('nav.stats') }}
       </RouterLink>
@@ -55,7 +58,7 @@
         <span v-if="friends.pendingCount" class="nav-badge">{{ friends.pendingCount }}</span>
       </RouterLink>
       <RouterLink to="/chat" class="nav-item" @click="$emit('close')">
-        <span class="w-5 text-center flex justify-center"><MessagesSquare :size="16" /></span> {{ t('nav.chat') }}
+        <span class="w-5 text-center flex justify-center"><MessageCircle :size="16" /></span> {{ t('nav.chat') }}
         <span v-if="chat.unreadCount" class="nav-badge">{{ chat.unreadCount }}</span>
       </RouterLink>
       <div class="nav-item nav-item-disabled" :title="t('home.hub.comingSoon')">
@@ -140,7 +143,7 @@ import { toInitials } from '../utils/initials.js'
   import { useInstallPrompt } from '../composables/useInstallPrompt.js'
   import { RouterLink, useRouter } from 'vue-router'
   import { useI18n } from 'vue-i18n'
-  import { Fish, Home, Pin, MapPin, Users, UserPlus, Newspaper, MessagesSquare, Settings, BarChart3, UserCircle, Plus, Waves, ShoppingBag, Tag, MessageSquare, BookOpen, Trophy, Download } from 'lucide-vue-next'
+  import { Fish, Home, Pin, MapPin, Users, UserPlus, Newspaper, MessageCircle, Settings, BarChart3, UserCircle, Plus, Waves, ShoppingBag, Tag, MessageSquare, BookOpen, Trophy, Download, CloudSun } from 'lucide-vue-next'
   import { useAuthStore } from '../stores/auth.js'
   import { useSessionStore } from '../stores/sessions.js'
   import { usePostStore } from '../stores/posts.js'

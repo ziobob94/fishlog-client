@@ -14,49 +14,6 @@
 
     <GlobeCard />
 
-    <!-- Selettore zona: la barra "Oggi in mare" sotto segue la zona scelta. -->
-    <section class="zones" :aria-label="t('home.zones.title')">
-      <h2 class="section-label">{{ t('home.zones.title') }}</h2>
-      <div class="zone-list">
-        <button
-          v-for="z in zones"
-          :key="z.key"
-          type="button"
-          class="zone-chip"
-          :class="{ 'zone-chip-active': selectedZone === z.key }"
-          @click="selectZone(z.key)"
-        >
-          <component :is="z.key === 'here' ? MapPin : Waves" :size="15" />
-          {{ t(`home.zones.items.${z.key}`) }}
-        </button>
-      </div>
-    </section>
-
-    <!-- Barra "Oggi in mare": condizioni live della zona scelta. -->
-    <section class="sea-bar">
-      <div class="sea-bar-head">
-        <span class="eyebrow icon-inline"><Waves :size="14" /> {{ t('home.sea.title') }}</span>
-        <span v-if="updatedAt" class="text-muted text-xs">{{ t('home.sea.updated', { time: updatedAt }) }}</span>
-      </div>
-
-      <div v-if="conditions" class="live-tiles">
-        <div v-for="tile in tiles" :key="tile.key" class="live-tile">
-          <component :is="tile.icon" :size="16" class="live-tile-icon" />
-          <span class="live-tile-value">{{ tile.value }}<small>{{ tile.unit }}</small></span>
-          <span class="live-tile-label">{{ t(`home.liveConditions.labels.${tile.key}`) }}</span>
-        </div>
-      </div>
-      <div v-else-if="loadingConditions" class="live-empty icon-inline text-muted text-xs">
-        <div class="spinner"></div> {{ t('home.liveConditions.loading') }}
-      </div>
-      <div v-else class="live-empty">
-        <p class="text-muted text-sm">{{ selectedZone === 'here' ? t('home.liveConditions.enable') : t('home.sea.unavailable') }}</p>
-        <button v-if="selectedZone === 'here'" class="btn btn-secondary btn-sm" @click="loadZone('here')">{{ t('home.liveConditions.enableCta') }}</button>
-      </div>
-
-      <p class="live-disclaimer">{{ t('home.liveConditions.disclaimer') }}</p>
-    </section>
-
     <!-- Uscita in corso (mobile): riprendi con un tocco. -->
     <RouterLink v-if="sessions.ongoing" :to="{ path: `/session/${sessions.ongoing._id}/edit`, hash: '#section-catches' }" class="ongoing-panel md:hidden">
       <span class="pulse-dot"></span>
@@ -66,6 +23,9 @@
       </span>
       <span class="btn-sand">{{ t('sessions.resume') }}</span>
     </RouterLink>
+
+    <!-- Meteo e mare: scheda compatta, il dettaglio è in /meteo. -->
+    <WeatherCard class="mb-4" />
 
     <!-- Due scorciatoie (mobile). -->
     <div class="tiles-2 md:hidden">
@@ -94,72 +54,21 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import {
   Fish, Users, ShoppingBag, UserCircle, UserPlus, BarChart3,
-  Waves, Thermometer, Wind, Gauge, Droplet, Trophy, MapPin,
-  CalendarDays, ArrowRight
+  Trophy, CalendarDays, ArrowRight, CloudSun
 } from 'lucide-vue-next'
 import AppIcon from '../components/AppIcon.vue'
 import { useSessionStore } from '../stores/sessions.js'
 import GlobeCard from '../components/GlobeCard.vue'
 import IsobathBg from '../components/IsobathBg.vue'
 import { useFriendStore } from '../stores/friends.js'
-import { useLiveConditions } from '../composables/useLiveConditions.js'
+import WeatherCard from '../components/weather/WeatherCard.vue'
 
 const { t } = useI18n()
 const friends = useFriendStore()
 const sessions = useSessionStore()
-const { fetchLiveConditions } = useLiveConditions()
-
-const conditions = ref(null)
-const loadingConditions = ref(false)
-const updatedAt = ref('')
-const selectedZone = ref('here')
-
-// Punti in mare aperto rappresentativi di ogni zona, per le condizioni.
-const zones = [
-  { key: 'here' },
-  { key: 'adriatic', lat: 43.6, lng: 14.0 },
-  { key: 'tyrrhenian', lat: 40.0, lng: 12.3 },
-  { key: 'ligurian', lat: 43.7, lng: 8.6 },
-  { key: 'ionian', lat: 38.3, lng: 17.3 },
-  { key: 'sicily', lat: 37.2, lng: 12.2 }
-]
-
-function nowLabel() {
-  return new Date().toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' })
-}
-
-async function loadCoords(lat, lng) {
-  conditions.value = await fetchLiveConditions(lat, lng)
-  updatedAt.value = conditions.value ? nowLabel() : ''
-  loadingConditions.value = false
-}
-
-function loadZone(key) {
-  conditions.value = null
-  updatedAt.value = ''
-  if (key === 'here') {
-    if (!navigator.geolocation) return
-    loadingConditions.value = true
-    navigator.geolocation.getCurrentPosition(
-      (pos) => loadCoords(pos.coords.latitude, pos.coords.longitude),
-      () => { loadingConditions.value = false },
-      { timeout: 8000 }
-    )
-    return
-  }
-  const z = zones.find(x => x.key === key)
-  loadingConditions.value = true
-  loadCoords(z.lat, z.lng)
-}
-
-function selectZone(key) {
-  selectedZone.value = key
-  loadZone(key)
-}
 
 // Badge numerico per box con contatori "da leggere/gestire" (gruppi: in sospeso).
 function badgeCount(key) {
@@ -174,28 +83,13 @@ const stories = [
 ]
 
 const quickLinks = [
+  { key: 'weather',     to: '/meteo',      icon: CloudSun },
   { key: 'sessions',    to: '/sessions',   icon: Fish },
   { key: 'stats',       to: '/stats',      icon: BarChart3 },
   { key: 'leaderboard', to: '/classifica', icon: Trophy },
   { key: 'friends',     to: '/friends',    icon: UserPlus },
   { key: 'profile',     to: '/board',    icon: UserCircle }
 ]
-
-// Solo i valori disponibili: fuori mare onda e temperatura acqua mancano e
-// la tile semplicemente non compare.
-const tiles = computed(() => {
-  const c = conditions.value
-  if (!c) return []
-  return [
-    c.windSpeed != null && { key: 'wind', icon: Wind, value: Math.round(c.windSpeed), unit: ` km/h ${c.windDirection ?? ''}` },
-    c.waveHeight != null && { key: 'wave', icon: Waves, value: c.waveHeight, unit: ' m' },
-    c.waterTemp != null && { key: 'water', icon: Droplet, value: c.waterTemp, unit: '°C' },
-    c.tempAir != null && { key: 'air', icon: Thermometer, value: c.tempAir, unit: '°C' },
-    c.pressure != null && { key: 'pressure', icon: Gauge, value: Math.round(c.pressure), unit: ' hPa' }
-  ].filter(Boolean)
-})
-
-onMounted(() => { loadZone('here') })
 </script>
 
 <style scoped>
@@ -212,26 +106,8 @@ onMounted(() => { loadZone('here') })
 .hero-sub { @apply text-muted text-sm max-w-xl mt-2; }
 .hero-actions { @apply flex flex-wrap gap-2 mt-4; }
 
-.zones { @apply mb-4; }
-.zone-list { @apply flex flex-wrap gap-2; }
-.zone-chip {
-  @apply inline-flex items-center gap-1.5 rounded-full border border-border bg-surface px-4 min-h-[44px]
-         text-sm font-semibold text-foam cursor-pointer transition-all duration-200;
-}
-.zone-chip:hover { @apply border-ocean; }
-.zone-chip-active { @apply bg-ocean border-ocean text-on-primary; }
 
-.sea-bar { @apply rounded-signature border border-border/60 bg-surface p-4 mb-6; }
-.sea-bar-head { @apply flex flex-wrap items-center justify-between gap-1 mb-3; }
 
-.live-tiles { @apply grid gap-2; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); }
-.live-tile { @apply flex flex-col gap-0.5 rounded-sm bg-surface-2 border border-border/50 px-3 py-2; }
-.live-tile-icon { @apply text-ocean-text; }
-.live-tile-value { @apply font-mono text-3xl font-medium text-foam leading-none mt-1; }
-.live-tile-value small { @apply text-xs font-semibold text-muted; }
-.live-tile-label { @apply text-xs font-semibold uppercase text-muted; letter-spacing: 0.14em; }
-.live-empty { @apply flex flex-wrap items-center justify-between gap-2 py-2; }
-.live-disclaimer { @apply text-[0.7rem] text-muted mt-3; }
 
 .story-grid { @apply grid gap-4 mb-8; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
 .story { @apply flex flex-col items-start gap-2 rounded-signature border border-border/60 bg-surface p-5; }

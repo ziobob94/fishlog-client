@@ -1,5 +1,5 @@
 <template>
-  <div v-if="listing" class="listing-view">
+  <div v-if="listing" class="listing-view" :class="{ 'has-cta': !isOwner }">
     <div class="gallery">
       <img v-if="activeMedia" :src="activeMedia.url" class="gallery-main" :alt="listing.title" />
       <div v-else class="gallery-placeholder"><Package :size="56" /></div>
@@ -13,6 +13,26 @@
       </div>
     </div>
 
+    <div class="photo-actions">
+      <template v-if="isOwner">
+        <RouterLink :to="`/market/${listing._id}/edit`" class="icon-act" :aria-label="t('common.edit')" :title="t('common.edit')">
+          <Pencil :size="17" />
+        </RouterLink>
+        <label class="status-pick" :title="t('market.status.label')">
+          <span class="status-dot" :class="`dot-${statusModel}`" aria-hidden="true"></span>
+          <select v-model="statusModel" :aria-label="t('market.status.label')" @change="changeStatus">
+            <option value="active">{{ t('market.status.active') }}</option>
+            <option value="reserved">{{ t('market.status.reserved') }}</option>
+            <option value="sold">{{ t('market.status.sold') }}</option>
+          </select>
+        </label>
+        <button type="button" class="icon-act icon-danger" :aria-label="t('common.delete')" :title="t('common.delete')" @click="onDelete">
+          <Trash2 :size="17" />
+        </button>
+      </template>
+      <button type="button" class="icon-act" :aria-label="t('market.share')" :title="t('market.share')" @click="share"><Send :size="17" /></button>
+    </div>
+
     <div class="info">
       <p class="price">{{ formatPrice(listing.price, listing.currency) }}</p>
       <h1 class="title">{{ listing.title }}</h1>
@@ -21,6 +41,7 @@
         <span class="tag" :class="listing.condition === 'nuovo' ? 'tag-new' : 'tag-used'">{{ t(`market.condition.${listing.condition}`) }}</span>
         <span class="chip">{{ t(`market.categories.${listing.category}`) }}</span>
         <span v-if="listing.location?.name" class="chip icon-inline"><MapPin :size="14" /> {{ listing.location.name }}</span>
+        <span class="chip icon-inline"><Eye :size="14" /> {{ t("market.viewsCount", { n: listing.views || 0 }, listing.views || 0) }}</span>
         <span v-if="listing.status !== 'active'" class="badge badge-danger">{{ t(`market.status.${listing.status}`) }}</span>
       </div>
 
@@ -43,39 +64,25 @@
         <ChevronRight :size="18" class="text-muted" />
       </RouterLink>
 
-      <div class="cta-bar">
-        <template v-if="isOwner">
-          <RouterLink :to="`/market/${listing._id}/edit`" class="btn btn-secondary">
-            <Pencil :size="16" /> {{ t('common.edit') }}
-          </RouterLink>
-          <select v-model="statusModel" :aria-label="t('market.status.active')" @change="changeStatus">
-            <option value="active">{{ t('market.status.active') }}</option>
-            <option value="reserved">{{ t('market.status.reserved') }}</option>
-            <option value="sold">{{ t('market.status.sold') }}</option>
-          </select>
-          <button type="button" class="btn btn-danger" :aria-label="t('common.delete')" @click="onDelete">
-            <Trash2 :size="16" />
-          </button>
-        </template>
-        <template v-else>
-          <RouterLink :to="`/chat/${listing.seller._id}`" class="btn btn-primary cta-main">
-            <MessagesSquare :size="16" /> {{ t('market.contactSeller') }}
-          </RouterLink>
-          <button type="button" class="round-btn round-btn-lg" :aria-label="t('market.share')" @click="share"><Send :size="18" /></button>
-        </template>
+      <div v-if="!isOwner" class="cta-bar">
+        <RouterLink :to="`/chat/${listing.seller._id}`" class="btn btn-primary cta-main">
+          <MessageCircle :size="16" /> {{ t('market.contactSeller') }}
+        </RouterLink>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
+import { confirmDialog } from '../composables/useConfirm.js'
 import { toInitials } from '../utils/initials.js'
 import { ref, computed, onMounted, watch } from 'vue'
 import { RouterLink, useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { Package, MapPin, Check, ChevronRight, ArrowLeft, Send, Pencil, Trash2, MessagesSquare } from 'lucide-vue-next'
+import { Package, Eye, MapPin, Check, ChevronRight, ArrowLeft, Send, Pencil, Trash2, MessageCircle } from 'lucide-vue-next'
 import { useMarketStore } from '../stores/market.js'
 import { useAuthStore } from '../stores/auth.js'
+import api from '../utils/api.js'
 
 const { t } = useI18n()
 const route = useRoute()
@@ -121,17 +128,26 @@ async function changeStatus() {
 }
 
 async function onDelete() {
-  if (!confirm(t('market.deleteConfirm'))) return
+  if (!(await confirmDialog(t('market.deleteConfirm')))) return
   await store.deleteListing(listing.value._id)
   router.push('/market')
 }
 
-onMounted(() => store.fetchListing(route.params.id))
+onMounted(async () => {
+  await store.fetchListing(route.params.id)
+  // Visualizzazione unica per utente: il server ignora riaperture e il venditore.
+  if (!isOwner.value) {
+    try { const { data } = await api.post(`/listings/${route.params.id}/view`); if (store.current) store.current.views = data.views } catch { /* accessorio */ }
+  }
+})
 </script>
 
 <style scoped>
-.listing-view { @apply flex flex-col gap-0 pb-28; }
-@media (min-width: 720px) { .listing-view { @apply grid gap-6 pb-4; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); } }
+.listing-view { @apply flex flex-col gap-0; padding-bottom: calc(var(--bottom-nav-h) + 1.5rem + env(safe-area-inset-bottom)); }
+.listing-view.has-cta { padding-bottom: calc(var(--bottom-nav-h) + 6rem + env(safe-area-inset-bottom)); }
+.photo-actions { @apply flex items-center justify-end gap-1.5 mt-3; }
+.photo-actions .status-pick { flex: 0 0 auto; min-width: 0; }
+@media (min-width: 720px) { .listing-view { @apply grid gap-x-6 gap-y-0 pb-4; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); } .listing-view .info { grid-column: 2; grid-row: 1 / span 2; } .photo-actions { grid-column: 1; align-self: start; } }
 
 .gallery { @apply relative; }
 .gallery-main { @apply w-full aspect-[4/3] object-cover rounded-xl bg-surface-2; }
@@ -170,8 +186,14 @@ onMounted(() => store.fetchListing(route.params.id))
 @media (max-width: 719px) {
   .cta-bar {
     @apply fixed left-0 right-0 z-20 px-4 py-3 bg-surface border-t border-border mt-0;
-    bottom: var(--bottom-nav-h);
+    bottom: calc(var(--bottom-nav-h) + env(safe-area-inset-bottom));
   }
 }
 .cta-main { @apply flex-1 min-h-[48px]; }
+.icon-act { @apply flex items-center justify-center shrink-0 w-10 h-10 rounded-xl border border-border-light bg-surface-2 text-foam no-underline cursor-pointer; }
+.icon-danger { @apply text-danger-text; border-color: rgb(var(--color-danger) / .6); }
+.status-pick { @apply relative flex items-center shrink-0 h-10 rounded-full border border-border-light bg-surface-2; }
+.status-pick select { @apply h-full bg-transparent border-0 text-foam font-semibold text-sm pl-7 pr-3; min-height: 40px; appearance: none; -webkit-appearance: none; background-image: none; border-radius: 9999px; }
+.status-dot { @apply absolute left-3 top-1/2 -translate-y-1/2 w-2.5 h-2.5 rounded-full pointer-events-none; }
+.dot-active { background: rgb(var(--color-success)); } .dot-reserved { background: rgb(var(--color-sand)); } .dot-sold { background: rgb(var(--color-danger)); }
 </style>

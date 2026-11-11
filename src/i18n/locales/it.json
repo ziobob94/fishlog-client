@@ -25,7 +25,7 @@
 	"nav": {
 		"mainNavigation": "Navigazione principale",
 		"menu": "Apri il menu",
-		"community": "Community",
+		"community": "Social",
 		"home": "Home",
 		"sessions": "Uscite",
 		"newSession": "Nuova uscita",
@@ -54,9 +54,10 @@
 		"unlock": "Sblocca",
 		"sections": {
 			"fishing": "Pesca",
-			"community": "Community",
+			"community": "Social",
 			"account": "Account"
-		}
+		},
+		"weather": "Meteo e mare"
 	},
 	"createMenu": {
 		"title": "Crea nuovo",
@@ -180,6 +181,13 @@
 				"source": "Fonte",
 				"actions": "Azioni"
 			}
+		},
+		"quota": {
+			"title": "Google Weather: richieste del mese",
+			"warning": "Quota Google Weather in esaurimento.",
+			"blocked": "Quota Google Weather bloccata.",
+			"line": "{count} su {quota} richieste ({percent}%)",
+			"rules": "Avvisi per email al {warn}%; blocco automatico al {stop}% (restano {remaining} richieste). Da lì solo cache e Open-Meteo. Si azzera a inizio mese."
 		}
 	},
 	"auth": {
@@ -445,9 +453,9 @@
 		},
 		"stories": {
 			"community": {
-				"title": "Community",
+				"title": "Social",
 				"text": "Racconta le tue uscite, confrontati con gli altri pescatori e scala la classifica.",
-				"cta": "Vai alla community"
+				"cta": "Vai al Social"
 			},
 			"market": {
 				"title": "Market",
@@ -466,6 +474,7 @@
 		},
 		"quick": {
 			"title": "Accessi rapidi",
+			"weather": "Meteo e mare",
 			"sessions": "Uscite",
 			"stats": "Statistiche",
 			"leaderboard": "Classifica",
@@ -496,7 +505,7 @@
 			"comingSoon": "Prossimamente",
 			"groups": {
 				"diary": "Il tuo diario",
-				"community": "Community",
+				"community": "Social",
 				"more": "Altro"
 			},
 			"sections": {
@@ -506,7 +515,7 @@
 				},
 				"leaderboard": {
 					"title": "Classifica",
-					"text": "I pescatori più attivi della community"
+					"text": "I pescatori più attivi del Social"
 				},
 				"sessions": {
 					"title": "Uscite",
@@ -514,7 +523,7 @@
 				},
 				"feed": {
 					"title": "Bacheca generale",
-					"text": "Post ed eventi della community e dei tuoi gruppi"
+					"text": "Post ed eventi del Social e dei tuoi gruppi"
 				},
 				"board": {
 					"title": "Il mio profilo",
@@ -1037,6 +1046,25 @@
 		"reportSend": "Invia segnalazione",
 		"reportSent": "Segnalazione inviata, grazie!"
 	},
+	"placeInput": {
+		"useMyPosition": "Usa la mia posizione",
+		"pickOnMap": "Scegli sulla mappa",
+		"useThisPoint": "Usa questo punto",
+		"noGps": "Il dispositivo non fornisce la posizione.",
+		"gpsDenied": "Non riesco a leggere la posizione: controlla i permessi.",
+		"keyMissing": "Google Maps non è configurato: manca la chiave VITE_GOOGLE_MAPS_KEY (dopo averla aggiunta serve rifare il build del client).",
+		"keyRejected": "Google ha rifiutato la chiave: controlla che Maps JavaScript, Places e Geocoding siano abilitati, la fatturazione attiva e il dominio consentito.",
+		"errReferer": "Google rifiuta questo dominio ({origin}): aggiungilo ai referrer HTTP consentiti della chiave (es. {origin}/*) nella Google Cloud Console.",
+		"errApi": "Una delle API non è abilitata o la chiave non può usarla: abilita Maps JavaScript API, Places API (New) e Geocoding API e consentile nelle restrizioni della chiave.",
+		"errBilling": "La fatturazione del progetto Google non è attiva (o la quota è esaurita): attivala nella Cloud Console.",
+		"errInvalid": "La chiave Google non è valida o è scaduta: controlla VITE_GOOGLE_MAPS_KEY e rifai il build.",
+		"errEmpty": "Google ha risposto ma non ha fornito la mappa: di solito la chiave ha restrizioni che non includono questo sito ({origin}). Nei referrer HTTP consentiti metti sia il dominio senza sottodominio (es. fishlog.it/*) sia quello con (*.fishlog.it/*) e controlla che Maps JavaScript, Places (New) e Geocoding siano abilitate. Se è tutto giusto, prova senza ad-blocker.",
+		"errBlocked": "Lo script di Google Maps è bloccato (rete, ad-blocker o Content-Security-Policy del server): consenti maps.googleapis.com e maps.gstatic.com.",
+		"errTimeout": "Google Maps non risponde: controlla la connessione e riprova.",
+		"errInit": "Errore imprevisto nel caricamento di Google Maps: ",
+		"loadFailed": "Non riesco a contattare Google Maps, riprova tra poco.",
+		"noResults": "Nessun luogo trovato."
+	},
 	"locationPicker": {
 		"hint": "Cerca un luogo o clicca sulla mappa per impostare le coordinate",
 		"namePlaceholder": "Cerca un luogo...",
@@ -1188,6 +1216,15 @@
 		}
 	},
 	"market": {
+		"viewsCount": "{n} visualizzazioni | {n} visualizzazione | {n} visualizzazioni",
+		"visibility": {
+			"all": "Tutti",
+			"friends": "Amici",
+			"groups": "Gruppi",
+			"allHint": "Visibile a tutti. Chi non è tuo amico può scriverti, se lo permetti in Privacy.",
+			"friendsHint": "Solo i tuoi amici vedono l'annuncio.",
+			"groupsHint": "Solo i membri dei gruppi scelti vedono l'annuncio."
+		},
 		"view": {
 			"label": "Come vedere gli elenchi",
 			"grid": "Griglia",
@@ -1247,6 +1284,7 @@
 			"unverified": "Negozio (in verifica)"
 		},
 		"status": {
+			"label": "Stato dell'annuncio",
 			"active": "Disponibile",
 			"reserved": "Prenotato",
 			"sold": "Venduto",
@@ -1272,6 +1310,10 @@
 			"price": "Prezzo (€)",
 			"location": "Zona",
 			"locationPlaceholder": "Es. Genova",
+			"whoCanSee": "Chi può vedere l'annuncio",
+			"chooseGroups": "Scegli i gruppi",
+			"noGroups": "Non fai ancora parte di nessun gruppo.",
+			"groupRequired": "Scegli almeno un gruppo.",
 			"photos": "Foto",
 			"cover": "Copertina",
 			"add": "Aggiungi",
@@ -1333,10 +1375,17 @@
 			"title": "Aspetto",
 			"hint": "Scegli come vuoi vedere l'app",
 			"light": "Chiaro",
-			"dark": "Scuro"
+			"dark": "Scuro",
+			"motion": "Riduci animazioni",
+			"motionAuto": "Auto",
+			"motionYes": "Sì",
+			"motionNo": "No",
+			"motionHint": "Auto segue l'impostazione del telefono. Con \"Sì\" le schermate si dissolvono soltanto."
 		},
 		"privacy": {
 			"title": "Privacy",
+			"marketMessages": "Messaggi dal Market",
+			"marketMessagesHint": "Chi non è tuo amico può scriverti a proposito dei tuoi annunci pubblici.",
 			"defaultVisibilityLabel": "Visibilità di default",
 			"hint": "Usata come preselezione quando crei una nuova uscita o un nuovo post"
 		},
@@ -1595,7 +1644,7 @@
 		"count": "Nessun luogo sul mappamondo | 1 luogo sul mappamondo | {n} luoghi sul mappamondo",
 		"you": "Tu sei qui",
 		"catchesLegend": "Pescate",
-		"dragHint": "Trascina per ruotare, due dita per muovere",
+		"dragHint": "Due dita per muovere la mappa",
 		"layer": "Satellite / mappa",
 		"tilesError": "Non riesco a caricare le immagini della mappa.",
 		"mapError": "Non riesco a caricare la mappa.",
@@ -1660,5 +1709,170 @@
 		"format": "Formato non valido",
 		"range": "Valore non valido",
 		"tooShort": "Testo troppo corto"
+	},
+	"weather": {
+		"title": "Meteo e mare",
+		"missing": "dato non disponibile",
+		"loading": "Carico meteo e mare…",
+		"updatedAt": "aggiornato alle",
+		"refresh": "Aggiorna meteo e mare",
+		"refreshing": "Aggiorno…",
+		"refreshShort": "Aggiorna",
+		"refreshingShort": "Aggiorno…",
+		"retry": "Riprova",
+		"yourPosition": "La tua posizione",
+		"partial": "Alcuni dati non sono disponibili in questo momento. Mostriamo «—» al posto dei valori mancanti.",
+		"degraded": "Servizio meteo in modalità ridotta: alcuni dati possono mancare o non essere aggiornati. Dati delle {time}.",
+		"disclaimer": "Dati indicativi da Google e Open-Meteo, non per la navigazione. Verifica sempre le condizioni reali prima di uscire.",
+		"mode": {
+			"label": "Dove guardare",
+			"here": "Qui",
+			"search": "Cerca un luogo"
+		},
+		"search": {
+			"placeholder": "Cerca un luogo, un porto, una spiaggia…",
+			"zones": "Zone di mare"
+		},
+		"now": {
+			"title": "Adesso",
+			"temp": "Aria",
+			"feels": "percepita",
+			"wind": "Vento",
+			"gust": "raffiche",
+			"pressure": "Pressione",
+			"humidity": "Umidità",
+			"rain": "Pioggia",
+			"expected": "attesa",
+			"uv": "Indice UV",
+			"clouds": "Nuvole",
+			"cover": "copertura"
+		},
+		"wind": {
+			"calm": "Calmo",
+			"from": "da"
+		},
+		"pressure": {
+			"falling": "In calo",
+			"fallingStrong": "In forte calo",
+			"steady": "Stabile",
+			"rising": "In aumento",
+			"risingStrong": "In forte aumento",
+			"noTrend": "Tendenza non disponibile",
+			"unavailable": "Tendenza non disponibile: senza questo dato non possiamo darti una lettura.",
+			"chartLabel": "Pressione delle ultime ore, {n} rilevazioni",
+			"read": {
+				"falling": "Un calo di pressione spesso accompagna un cambio di tempo. È uno spunto, non una previsione.",
+				"steady": "Pressione senza grandi variazioni: condizioni che tendono a restare simili. Lettura indicativa.",
+				"rising": "Un aumento di pressione spesso accompagna un miglioramento. È uno spunto, non una previsione."
+			}
+		},
+		"sea": {
+			"title": "Mare",
+			"model": "Previsione del modello",
+			"wave": "Onda",
+			"period": "periodo",
+			"swell": "Onda lunga",
+			"temp": "Acqua",
+			"current": "Corrente",
+			"toward": "verso",
+			"tides": "Maree · prossime 48 h",
+			"estimate": "Stima",
+			"high": "Alta",
+			"low": "Bassa",
+			"tideNote": "Stima del modello (livello del mare), non una tabella delle maree: nel Mediterraneo l'escursione è piccola. Non usarla per la navigazione.",
+			"tideAria": "Maree stimate nelle prossime 48 ore: {summary}",
+			"noExtremes": "nessun massimo o minimo previsto",
+			"none": "Qui non ci sono dati sul mare. Per laghi, fiumi e zone interne mostriamo solo il meteo.",
+			"waves": "Altezza dell'onda · prossime 48 h",
+			"waveMax": "Massimo {h} m alle {time}",
+			"waveAria": "Altezza dell'onda nelle prossime 48 ore: da {first} m a {last} m, massimo {max} m alle {time}",
+			"noTides": "Maree non disponibili per questo luogo: il modello non copre questo punto."
+		},
+		"glance": {
+			"title": "Colpo d'occhio per la pesca",
+			"moon": "Luna",
+			"lit": "illuminata",
+			"sun": "Alba e tramonto",
+			"dawn": "Alba",
+			"dusk": "Tramonto",
+			"ofLight": "di luce",
+			"pressure": "Pressione · ultime 6 ore"
+		},
+		"hourly": {
+			"title": "Ora per ora",
+			"region": "Previsione ora per ora di {day}, scorri con le frecce",
+			"legend": "Vento in km/h, la freccia indica dove soffia. Pioggia = probabilità.",
+			"days": "Giorno da mostrare",
+			"fromOm": "Da qui: Open-Meteo",
+			"source": "Le prime 48 ore vengono da Google, le successive da Open-Meteo: più lontano nel tempo, meno precise."
+		},
+		"daily": {
+			"title": "Prossimi 15 giorni",
+			"day": "Giorno",
+			"sky": "Cielo",
+			"temp": "Max / min",
+			"wind": "Vento",
+			"rain": "Pioggia",
+			"wave": "Onda max",
+			"fromOm": "Da qui: previsioni Open-Meteo",
+			"source": "Dal giorno {n} le previsioni vengono da Open-Meteo (Google arriva a 10 giorni). Oltre una settimana sono indicative."
+		},
+		"denied": {
+			"title": "Posizione non consentita",
+			"text": "Non possiamo leggere la tua posizione. Puoi cercare un luogo a mano oppure riattivare il permesso."
+		},
+		"unavailable": {
+			"title": "Posizione non trovata",
+			"text": "Non riusciamo a trovare dove sei. Riprova all'aperto o cerca un luogo a mano."
+		},
+		"offline": {
+			"title": "Sei offline.",
+			"empty": "Non ci sono dati salvati per questo luogo. Si caricheranno appena torni online.",
+			"banner": "Dati non aggiornati: ultimo aggiornamento alle {time}. Si aggiornano da soli appena torni online.",
+			"cardShort": "Non aggiornato · dati delle {time}"
+		},
+		"error": {
+			"title": "Meteo non disponibile",
+			"text": "Il servizio meteo non risponde. Riprova tra poco.",
+			"stale": "Non riusciamo ad aggiornare: mostriamo i dati delle {time}."
+		},
+		"noPlace": {
+			"title": "Dove vuoi guardare il meteo?",
+			"text": "Usa la tua posizione oppure cerca un luogo."
+		},
+		"help": {
+			"open": "Come riattivare",
+			"title": "Come riattivare la posizione",
+			"intro": "Il permesso si cambia dalle impostazioni del dispositivo o del browser.",
+			"close": "Ho capito",
+			"ios": {
+				"name": "iPhone e iPad",
+				"s1": "Apri Impostazioni → Privacy e sicurezza → Localizzazione.",
+				"s2": "Cerca Safari (o l'app FishLog) e scegli «Mentre usi l'app».",
+				"s3": "Torna in FishLog e tocca «Qui»."
+			},
+			"android": {
+				"name": "Android",
+				"s1": "Tocca il lucchetto accanto all'indirizzo nel browser → Autorizzazioni.",
+				"s2": "Imposta Posizione su «Consenti».",
+				"s3": "Ricarica la pagina e tocca «Qui»."
+			},
+			"desktop": {
+				"name": "Computer",
+				"s1": "Clicca l'icona accanto all'indirizzo (lucchetto o impostazioni del sito).",
+				"s2": "Imposta Posizione su «Consenti».",
+				"s3": "Ricarica la pagina e clicca «Qui»."
+			}
+		},
+		"card": {
+			"label": "Meteo e mare",
+			"title": "Meteo e mare",
+			"noPlace": "Scegli un luogo per vedere meteo e mare.",
+			"setPlace": "Imposta il luogo",
+			"open": "Apri meteo e mare",
+			"windKmh": "km/h",
+			"waveM": "onda m",
+			"rain": "pioggia"
+		}
 	}
 }

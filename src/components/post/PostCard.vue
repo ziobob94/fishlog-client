@@ -1,10 +1,7 @@
 <template>
   <article class="post-card">
     <div class="post-header">
-      <component :is="post.author?._id ? RouterLink : 'span'" :to="post.author?._id ? authorTo : undefined" class="post-author-link" :aria-label="post.author?.displayName">
-        <span v-if="!post.author?.avatar" class="mini-placeholder">{{ initials(post.author) }}</span>
-        <img v-else :src="post.author.avatar" class="mini-avatar" alt="" />
-      </component>
+      <UserAvatar :user="post.author" :size="36" :label="post.author?.displayName" />
       <div class="post-author">
         <component :is="post.author?._id ? RouterLink : 'span'" :to="post.author?._id ? authorTo : undefined" class="post-author-name">{{ post.author?.displayName || post.author?.email }}</component>
         <span class="post-sub">{{ subtitle }}</span>
@@ -49,9 +46,7 @@
     </div>
 
     <div class="action-row">
-      <button type="button" class="act-btn" :class="{ liked: isLiked }" :aria-pressed="isLiked" :aria-label="t('posts.like')" @click="$emit('like', post)">
-        <Heart :size="24" :fill="isLiked ? 'currentColor' : 'none'" />
-      </button>
+      <LikeButton :liked="isLiked" @toggle="$emit('like', post)" />
       <button v-if="post.type !== 'event'" type="button" class="act-btn" :aria-label="t('posts.comment')" @click="showComments = !showComments">
         <MessageCircle :size="24" />
       </button>
@@ -259,6 +254,8 @@
 </template>
 
 <script setup>
+  import UserAvatar from '../UserAvatar.vue'
+  import LikeButton from '../motion/LikeButton.vue'
 import { toInitials } from '../../utils/initials.js'
 import RulerFrame from '../RulerFrame.vue'
 import AppIcon from '../AppIcon.vue'

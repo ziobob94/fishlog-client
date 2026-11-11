@@ -1,9 +1,8 @@
-// Condizioni meteo-marine attuali per una coppia di coordinate, via
-// Open-Meteo (gratuita, nessuna chiave richiesta) — chiamata diretta dal
-// browser, stesso principio del reverse/forward geocoding già in uso in
-// SessionForm. A differenza dell'autofill del form (che recupera anche dati
-// storici per la data della sessione), qui serve solo l'istante presente,
-// per un widget di sola lettura ("come sono le condizioni ora").
+// Condizioni meteo-marine attuali per una coppia di coordinate. Il meteo arriva dal server
+// (Google Weather API, chiave solo lato server) e il mare da Open-Meteo, sempre tramite
+// GET /api/weather/current. Serve solo l'istante presente, per un widget di sola lettura.
+import api from '../utils/api.js'
+
 const COMPASS = ['N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE', 'S', 'SSW', 'SW', 'WSW', 'W', 'WNW', 'NW', 'NNW']
 
 function degToCompass(deg) {
@@ -14,23 +13,15 @@ function degToCompass(deg) {
 export function useLiveConditions() {
   async function fetchLiveConditions(lat, lng) {
     try {
-      const [weatherRes, marineRes] = await Promise.all([
-        fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&current=temperature_2m,wind_speed_10m,wind_direction_10m,surface_pressure&wind_speed_unit=kmh&timezone=auto`),
-        // Fuori mare l'API marina non ha dati: non deve far fallire il resto.
-        fetch(`https://marine-api.open-meteo.com/v1/marine?latitude=${lat}&longitude=${lng}&current=wave_height,wave_period,sea_surface_temperature&timezone=auto`).catch(() => null)
-      ])
-      if (!weatherRes.ok) return null
-      const weather = await weatherRes.json()
-      const marine = marineRes?.ok ? await marineRes.json() : null
-      if (!weather?.current) return null
-
+      const { data: w } = await api.get('/weather/current', { params: { lat, lng } })
+      if (!w || (w.tempAir == null && w.windSpeed == null && w.pressure == null)) return null
       return {
-        tempAir: weather.current.temperature_2m ?? null,
-        windSpeed: weather.current.wind_speed_10m ?? null,
-        windDirection: degToCompass(weather.current.wind_direction_10m),
-        pressure: weather.current.surface_pressure ?? null,
-        waveHeight: marine?.current?.wave_height ?? null,
-        waterTemp: marine?.current?.sea_surface_temperature ?? null
+        tempAir: w.tempAir ?? null,
+        windSpeed: w.windSpeed ?? null,
+        windDirection: degToCompass(w.windDeg),
+        pressure: w.pressure ?? null,
+        waveHeight: w.waveHeight ?? null,
+        waterTemp: w.waterTemp ?? null
       }
     } catch {
       return null

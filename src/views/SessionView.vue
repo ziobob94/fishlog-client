@@ -1,7 +1,7 @@
 <template>
   <div class="detail">
     <div v-if="store.loading && !session" class="state-center">
-      <div class="spinner"></div>
+      <div class="m-spinner"></div>
     </div>
 
     <div v-else-if="!session" class="state-center">

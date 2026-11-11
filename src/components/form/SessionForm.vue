@@ -4,7 +4,7 @@
     <!-- ═══ NUOVA USCITA: solo l'essenziale (luogo, quando, ambiente, tecnica) ═══ -->
     <div v-if="mode === 'essential'" class="essential">
       <button type="button" class="detect-card" :disabled="!canAutoFill || autoFilling || gpsLoading" @click="autoFillWeatherAndSea">
-        <span class="detect-icon"><span v-if="autoFilling || gpsLoading" class="spinner" style="width:18px;height:18px"></span><RefreshCw v-else-if="hasAutoData" :size="22" /><MapPin v-else :size="22" /></span>
+        <span class="detect-icon"><span v-if="autoFilling || gpsLoading" class="m-spinner" style="width:18px;height:18px"></span><RefreshCw v-else-if="hasAutoData" :size="22" /><MapPin v-else :size="22" /></span>
         <span class="detect-text">
           <strong>{{ gpsLoading ? t('sessionForm.fields.gpsDetecting') : (autoFilling ? t('sessionForm.autoFill.loading') : (hasAutoData ? t('sessionForm.autoFill.recalc') : t('sessionForm.essential.detect'))) }}</strong>
           <small>{{ t('sessionForm.essential.detectSub') }}</small>
@@ -15,17 +15,7 @@
 
       <section>
         <label class="fl-lab" for="ess-where">{{ t('sessionForm.essential.where') }} <span class="req" :title="t('sessionForm.essential.required')">*</span></label>
-        <div class="where-wrap">
-          <input id="ess-where" v-model="f.location.name" type="text" class="fl-inp" :class="{ 'fl-err': essErr.where }" :aria-invalid="essErr.where" aria-describedby="ess-where-err" aria-required="true" autocomplete="off" @input="onWhereInput" @focus="whereOpen = true" @blur="closeWhereSoon" :placeholder="t('sessionForm.fields.locationNamePlaceholder')" />
-          <ul v-if="whereOpen && whereOptions.length" class="where-list" role="listbox">
-            <li v-for="(o, i) in whereOptions" :key="i" role="option">
-              <button type="button" class="where-opt" @mousedown.prevent @click="pickPlace(o)">
-                <span class="where-ic"><MapPin :size="18" /></span>
-                <span class="where-tx"><strong>{{ o.title }}</strong><small>{{ o.sub }}</small></span>
-              </button>
-            </li>
-          </ul>
-        </div>
+        <PlaceInput id="ess-where" v-model="f.location.name" v-model:lat="f.location.coords.lat" v-model:lng="f.location.coords.lng" :invalid="!!essErr.where" required :placeholder="t('sessionForm.fields.locationNamePlaceholder')" @place="applyPlace" />
         <p v-if="essErr.where" id="ess-where-err" class="fl-error" role="alert">{{ t('sessionForm.essential.whereRequired') }}</p>
         <p v-if="f.location.coords.lat && f.location.coords.lng" class="fl-hint fl-mono">{{ f.location.coords.lat }}°N · {{ f.location.coords.lng }}°E · {{ t('sessionForm.essential.detected') }}</p>
       </section>
@@ -66,7 +56,7 @@
     <!-- ═══ DATI USCITA: elenco di righe → una schermata per sezione ═══ -->
     <div v-else-if="menuMode && !activeSection" class="data-menu">
       <button type="button" class="detect-card" :disabled="!canAutoFill || autoFilling || gpsLoading" @click="autoFillWeatherAndSea">
-        <span class="detect-icon"><span v-if="autoFilling || gpsLoading" class="spinner" style="width:18px;height:18px"></span><RefreshCw v-else-if="hasAutoData" :size="22" /><MapPin v-else :size="22" /></span>
+        <span class="detect-icon"><span v-if="autoFilling || gpsLoading" class="m-spinner" style="width:18px;height:18px"></span><RefreshCw v-else-if="hasAutoData" :size="22" /><MapPin v-else :size="22" /></span>
         <span class="detect-text">
           <strong>{{ gpsLoading ? t('sessionForm.fields.gpsDetecting') : (autoFilling ? t('sessionForm.autoFill.loading') : (hasAutoData ? t('sessionForm.autoFill.recalc') : t('sessionForm.menu.autofill'))) }}</strong>
           <small>{{ t('sessionForm.menu.autofillSub') }}</small>
@@ -98,7 +88,7 @@
       </div>
       <button type="button" class="btn btn-secondary btn-sm"
         :disabled="!canAutoFill || autoFilling || gpsLoading" @click="autoFillWeatherAndSea">
-        <span v-if="autoFilling || gpsLoading" class="spinner" style="width:13px;height:13px"></span>
+        <span v-if="autoFilling || gpsLoading" class="m-spinner" style="width:13px;height:13px"></span>
         <RefreshCw v-else-if="hasAutoData" :size="14" />
         {{ gpsLoading ? t('sessionForm.fields.gpsDetecting') : (autoFilling ? t('sessionForm.autoFill.loading') : (hasAutoData ? t('sessionForm.autoFill.recalc') : t('sessionForm.autoFill.button'))) }}
       </button>
@@ -175,7 +165,7 @@
     <div class="form-grid">
       <div class="form-group">
         <label>{{ t('sessionForm.fields.locationNameLabel') }} <span class="required-mark">*</span><FieldInfo :text="t('sessionForm.fields.locationNameInfo')" /></label>
-        <input v-model="f.location.name" type="text" :placeholder="t('sessionForm.fields.locationNamePlaceholder')" required :class="{ 'field-missing': !f.location.name }" />
+        <PlaceInput id="loc-name" v-model="f.location.name" v-model:lat="f.location.coords.lat" v-model:lng="f.location.coords.lng" required :placeholder="t('sessionForm.fields.locationNamePlaceholder')" @place="applyPlace" />
       </div>
       <div class="form-group">
         <label>{{ t('sessionForm.fields.spotLabel') }}<FieldInfo :text="t('sessionForm.fields.spotInfo')" /></label>
@@ -183,15 +173,15 @@
       </div>
       <div class="form-group">
         <label>{{ t('sessionForm.fields.regionLabel') }}<FieldInfo :text="t('sessionForm.fields.regionInfo')" /></label>
-        <input v-model="f.location.region" type="text" :placeholder="t('sessionForm.fields.regionPlaceholder')" />
+        <input :value="f.location.region" type="text" readonly class="derived" :placeholder="t('sessionForm.fields.regionPlaceholder')" />
       </div>
       <div class="form-group">
         <label>{{ t('sessionForm.fields.latLabel') }}<FieldInfo :text="t('sessionForm.fields.latInfo')" /></label>
-        <input v-model.number="f.location.coords.lat" type="number" step="0.000001" placeholder="43.123456" />
+        <input :value="f.location.coords.lat ?? ''" type="text" readonly class="derived" placeholder="43.123456" />
       </div>
       <div class="form-group">
         <label>{{ t('sessionForm.fields.lngLabel') }}<FieldInfo :text="t('sessionForm.fields.lngInfo')" /></label>
-        <input v-model.number="f.location.coords.lng" type="number" step="0.000001" placeholder="10.123456" />
+        <input :value="f.location.coords.lng ?? ''" type="text" readonly class="derived" placeholder="10.123456" />
       </div>
       <div class="form-group full">
         <label>{{ t('sessionForm.fields.locationNotesLabel') }}<FieldInfo :text="t('sessionForm.fields.locationNotesInfo')" /></label>
@@ -206,6 +196,7 @@
           :lng="f.location.coords.lng"
           @update:lat="v => f.location.coords.lat = v"
           @update:lng="v => f.location.coords.lng = v"
+          @place="p => applyPlace(p, true)"
         />
       </div>
     </div>
@@ -397,7 +388,7 @@
         <template v-else>
           <button v-if="mode !== 'essential'" type="button" class="btn btn-ghost" @click="$emit('cancel')">{{ t('common.cancel') }}</button>
           <button type="submit" :class="mode === 'essential' ? 'fl-btn1' : 'btn btn-primary'" :disabled="saving">
-            <span v-if="saving" class="spinner" style="width:15px;height:15px"></span>
+            <span v-if="saving" class="m-spinner" style="width:15px;height:15px"></span>
             {{ saving ? t('sessionForm.saving') : (mode === 'essential' ? (concluded ? t('sessionForm.essential.save') : t('sessionForm.essential.start')) : (isEdit ? t('sessionForm.submitEdit') : t('sessionForm.submitCreate'))) }}
           </button>
         </template>
@@ -408,7 +399,7 @@
 </template>
 
 <script setup>
-  import { ref, computed, watch, onMounted, nextTick } from 'vue'
+  import { ref, reactive, computed, watch, onMounted, nextTick } from 'vue'
   import { ChevronRight, ArrowLeft, MapPin, RefreshCw, Trash2, FileText, Waves, CloudSun, Fish, StickyNote } from 'lucide-vue-next'
   const MENU_ICONS = { base: FileText, location: MapPin, water: Waves, weather: CloudSun, catches: Fish, notes: StickyNote }
   import { useI18n } from 'vue-i18n'
@@ -417,6 +408,9 @@
   import { RouterLink } from 'vue-router'
   import { storeToRefs } from 'pinia'
   import LocationPicker from './LocationPicker.vue'
+  import PlaceInput from './PlaceInput.vue'
+  import api from '../../utils/api.js'
+  import { reverseGeocode, geocodeText } from '../../utils/places.js'
   import CatchesSection from './CatchesSection.vue'
   import FieldInfo from '../FieldInfo.vue'
   import { useToast } from '../../composables/useToast.js'
@@ -614,18 +608,6 @@
 
   // ─── Helpers ──────────────────────────────────────────────────────────────────
 
-  function wmoToCondition(code, windSpeed) {
-    if (windSpeed >= 30) return 'vento'
-    if (code === 0) return 'sole'
-    if (code <= 2) return 'nuvoloso'
-    if (code === 3) return 'coperto'
-    if (code === 45 || code === 48) return 'nebbia'
-    if (code >= 51 && code <= 82) return 'pioggia'
-    if (code >= 85 && code <= 86) return 'pioggia'
-    if (code >= 95) return 'pioggia'
-    return 'nuvoloso'
-  }
-
   function degToWindName(deg) {
     if (deg == null) return ''
     const dirs = [
@@ -661,6 +643,7 @@
         pos => {
           f.value.location.coords.lat = parseFloat(pos.coords.latitude.toFixed(6))
           f.value.location.coords.lng = parseFloat(pos.coords.longitude.toFixed(6))
+          forceNameNext = true; appliedKey = ''
           gpsLoading.value = false
           resolve(true)
         },
@@ -675,26 +658,29 @@
     })
   }
 
-  // ─── Reverse geocoding ────────────────────────────────────────────────────────
+  // ─── Luogo (Google, vedi utils/places.js) ─────────────────────────────────────
+  // Nome, regione e coordinate si calcolano sempre insieme dallo stesso luogo, così non
+  // possono contraddirsi. Regione e coordinate nel form non si digitano: arrivano dal luogo.
 
-  async function reverseGeocode(lat, lng) {
-    try {
-      const res = await fetch(
-        `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json&accept-language=it`,
-        { headers: { 'Accept-Language': 'it' } }
-      )
-      const data = await res.json()
-      const a = data.address || {}
-      const municipality = a.city || a.town || a.village || a.municipality || a.hamlet || ''
-      return {
-        name: municipality || a.county || '',
-        region: a.state || a.county || '',
-        // Zone per le classifiche locali: nomi senza prefissi amministrativi.
-        municipality,
-        province: (a.county || '').replace(/^(Provincia|Città metropolitana|Libero consorzio comunale) (di|del|della|dell')\s*/i, ''),
-        country: a.country || ''
-      }
-    } catch { return null }
+  let skipNameGeocode = false
+  let appliedKey = ''
+  let forceNameNext = false
+
+  function applyPlace(p, overwriteName = false) {
+    if (!p) return
+    skipNameGeocode = true
+    appliedKey = `${p.lat},${p.lng}`
+    if (overwriteName && p.name) f.value.location.name = p.name
+    f.value.location.region = p.region || p.province || p.country || ''
+    // Zone per le classifiche locali, sempre allineate al luogo scelto.
+    f.value.location.municipality = p.municipality || p.city || ''
+    f.value.location.province = p.province || ''
+    f.value.location.country = p.country || ''
+    if (p.lat != null && p.lng != null) {
+      f.value.location.coords.lat = parseFloat(Number(p.lat).toFixed(6))
+      f.value.location.coords.lng = parseFloat(Number(p.lng).toFixed(6))
+    }
+    geocodeMsg.value = ''
   }
 
   watch(
@@ -702,84 +688,32 @@
     ([lat, lng]) => {
       clearTimeout(geocodeTimer)
       if (!lat || !lng) return
+      if (appliedKey === `${lat},${lng}`) return   // già calcolati dal luogo scelto
       geocodeTimer = setTimeout(async () => {
         geocodeMsg.value = t('sessionForm.autoFill.geocoding')
         const result = await reverseGeocode(lat, lng)
         if (!result) { geocodeMsg.value = ''; return }
-        gpsPlace.value = result.name
-        if (!f.value.location.name) { skipNameGeocode = true; f.value.location.name = result.name }
-        if (!f.value.location.region) f.value.location.region = result.region
-        // Le zone seguono sempre le coordinate (servono alle classifiche locali).
-        f.value.location.municipality = result.municipality
-        f.value.location.province = result.province
-        f.value.location.country = result.country
+        appliedKey = `${lat},${lng}`
+        skipNameGeocode = true
+        if (!f.value.location.name || forceNameNext) f.value.location.name = result.name
+        forceNameNext = false
+        f.value.location.region = result.region || result.province || result.country || ''
+        f.value.location.municipality = result.municipality || result.city || ''
+        f.value.location.province = result.province || ''
+        f.value.location.country = result.country || ''
         geocodeMsg.value = result.name ? t('sessionForm.autoFill.geocodeFound', { name: result.name }) : ''
-      }, 800)
+      }, 400)
     }
   )
 
-  // ─── Forward geocoding (name → coords) ─────────────────────────────────────────
-
-  async function forwardGeocode(query) {
-    try {
-      const res = await fetch(
-        `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=1&accept-language=it`,
-        { headers: { 'Accept-Language': 'it' } }
-      )
-      const data = await res.json()
-      if (!data.length) return null
-      return { lat: parseFloat(data[0].lat), lng: parseFloat(data[0].lon) }
-    } catch { return null }
-  }
-
-  // Suggerimenti luogo mentre si digita (Nominatim, senza chiavi): il luogo rilevato dal GPS è il primo
-  const gpsPlace = ref('')
-  const placeResults = ref([])
-  const whereOpen = ref(false)
-  let suggestTimer = null
-  let skipNameGeocode = false
-
-  const whereOptions = computed(() => {
-    const out = []
-    const c = f.value.location.coords
-    if (c.lat && c.lng && gpsPlace.value) {
-      out.push({ title: gpsPlace.value, sub: t('sessionForm.essential.detectedHere'), name: gpsPlace.value, lat: c.lat, lng: c.lng })
-    }
-    for (const r of placeResults.value) if (!out.some(o => o.title === r.title && o.sub === r.sub)) out.push(r)
-    return out
-  })
-
-  function onWhereInput() {
-    clearTimeout(suggestTimer)
-    whereOpen.value = true
-    const q = (f.value.location.name || '').trim()
-    if (q.length < 3) { placeResults.value = []; return }
-    suggestTimer = setTimeout(async () => {
-      try {
-        const res = await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(q)}&format=json&limit=5&accept-language=it&addressdetails=0`)
-        const data = await res.json()
-        if ((f.value.location.name || '').trim() !== q) return
-        placeResults.value = data.map(d => {
-          const parts = String(d.display_name).split(',').map(x => x.trim())
-          return { title: parts[0], sub: parts.slice(1, 3).join(', '), name: parts[0], lat: parseFloat(d.lat), lng: parseFloat(d.lon) }
-        })
-      } catch { placeResults.value = [] }
-    }, 500)
-  }
-
-  function pickPlace(o) {
-    clearTimeout(suggestTimer); clearTimeout(nameGeocodeTimer)
-    skipNameGeocode = true
-    f.value.location.name = o.name
-    f.value.location.coords.lat = parseFloat(Number(o.lat).toFixed(6))
-    f.value.location.coords.lng = parseFloat(Number(o.lng).toFixed(6))
-    placeResults.value = []
-    whereOpen.value = false
-  }
-  function closeWhereSoon() { setTimeout(() => { whereOpen.value = false }, 150) }
-
+  // Nome scritto a mano senza scegliere un suggerimento: coordinate e regione dal Geocoding.
   let nameGeocodeTimer = null
   let nameGeocodePending = false
+  async function geocodeName(name) {
+    const r = await geocodeText(name)
+    if (!r) return
+    applyPlace(r)
+  }
   watch(
     () => f.value.location.name,
     (name) => {
@@ -790,12 +724,9 @@
       nameGeocodeTimer = setTimeout(async () => {
         nameGeocodePending = false
         geocodeMsg.value = t('sessionForm.autoFill.geocoding')
-        const result = await forwardGeocode(name)
-        if (!result) { geocodeMsg.value = ''; return }
-        f.value.location.coords.lat = parseFloat(result.lat.toFixed(6))
-        f.value.location.coords.lng = parseFloat(result.lng.toFixed(6))
+        await geocodeName(name)
         geocodeMsg.value = ''
-      }, 800)
+      }, 900)
     }
   )
 
@@ -809,11 +740,8 @@
     const name = f.value.location.name
     if (!name || name.trim().length < 3) return
     geocodeMsg.value = t('sessionForm.autoFill.geocoding')
-    const result = await forwardGeocode(name)
+    await geocodeName(name)
     geocodeMsg.value = ''
-    if (!result) return
-    f.value.location.coords.lat = parseFloat(result.lat.toFixed(6))
-    f.value.location.coords.lng = parseFloat(result.lng.toFixed(6))
   }
 
   // Compila (o ricalcola) meteo e condizioni acqua con i valori correnti di luogo, data e ora.
@@ -832,53 +760,28 @@
 
     autoFilling.value = true
 
-    const today = new Date().toISOString().split('T')[0]
-    const weatherBase = date < today
-      ? 'https://archive-api.open-meteo.com/v1/archive'
-      : 'https://api.open-meteo.com/v1/forecast'
-
     try {
       const isSaltwater = f.value.waterType === 'mare'
-      const [weatherRes, marineRes] = await Promise.allSettled([
-        fetch(`${weatherBase}?latitude=${lat}&longitude=${lng}&start_date=${date}&end_date=${date}&daily=weather_code,temperature_2m_max,temperature_2m_min,wind_speed_10m_max,wind_direction_10m_dominant&hourly=surface_pressure,relative_humidity_2m&timezone=auto`).then(r => r.json()),
-        isSaltwater
-          ? fetch(`https://marine-api.open-meteo.com/v1/marine?latitude=${lat}&longitude=${lng}&start_date=${date}&end_date=${date}&daily=wave_height_max,wave_period_max&timezone=auto`).then(r => r.json())
-          : Promise.resolve(null),
-      ])
+      const hour = Math.min(23, Math.max(0, parseInt(String(f.value.startTime || '12').split(':')[0], 10) || 12))
+      // Meteo da Google (server), mare e ripiego da Open-Meteo: /api/weather/day
+      const { data: w } = await api.get('/weather/day', { params: { lat, lng, date, hour, marine: isSaltwater ? 1 : 0 } })
 
       const filled = []
 
-      if (weatherRes.status === 'fulfilled' && weatherRes.value?.daily) {
-        const d = weatherRes.value.daily
-        const h = weatherRes.value.hourly
-        const code = d.weather_code?.[0]
-        const tMax = d.temperature_2m_max?.[0]
-        const tMin = d.temperature_2m_min?.[0]
-        const windSpeed = d.wind_speed_10m_max?.[0]
-        const windDeg = d.wind_direction_10m_dominant?.[0]
-        const hour = Math.min(23, Math.max(0, parseInt(String(f.value.startTime || '12').split(':')[0], 10) || 12))
-        const pressure = h?.surface_pressure?.[hour]
+      if (w.condition != null) { f.value.weather.condition = w.condition; filled.push(t('sessionForm.autoFill.filledFields.condition')) }
+      if (w.tempAir != null) { f.value.weather.tempAir = w.tempAir; filled.push(t('sessionForm.autoFill.filledFields.temperature')) }
+      if (w.windSpeed != null) { f.value.weather.windSpeed = Math.round(w.windSpeed); filled.push(t('sessionForm.autoFill.filledFields.wind')) }
+      if (w.windDeg != null) { f.value.weather.windDirection = degToWindName(w.windDeg); filled.push(t('sessionForm.autoFill.filledFields.windDirection')) }
+      if (w.pressure != null) { f.value.weather.pressure = Math.round(w.pressure); filled.push(t('sessionForm.autoFill.filledFields.pressure')) }
 
-        if (code != null) { f.value.weather.condition = wmoToCondition(code, windSpeed); filled.push(t('sessionForm.autoFill.filledFields.condition')) }
-        if (tMax != null && tMin != null) { f.value.weather.tempAir = Math.round((tMax + tMin) / 2); filled.push(t('sessionForm.autoFill.filledFields.temperature')) }
-        if (windSpeed != null) { f.value.weather.windSpeed = Math.round(windSpeed); filled.push(t('sessionForm.autoFill.filledFields.wind')) }
-        if (windDeg != null) { f.value.weather.windDirection = degToWindName(windDeg); filled.push(t('sessionForm.autoFill.filledFields.windDirection')) }
-        if (pressure != null) { f.value.weather.pressure = Math.round(pressure); filled.push(t('sessionForm.autoFill.filledFields.pressure')) }
+      if (isSaltwater && w.waveHeight != null) {
+        f.value.sea.seaState = waveHeightToSeaState(w.waveHeight)
+        f.value.sea.waveHeight = `${w.waveHeight.toFixed(1)}m`
+        filled.push(t('sessionForm.autoFill.filledFields.seaState'), t('sessionForm.autoFill.filledFields.waveHeight'))
       }
-
-      if (isSaltwater && marineRes.status === 'fulfilled' && marineRes.value?.daily) {
-        const m = marineRes.value.daily
-        const waveH = m.wave_height_max?.[0]
-        const wavePeriod = m.wave_period_max?.[0]
-        if (waveH != null) {
-          f.value.sea.seaState = waveHeightToSeaState(waveH)
-          f.value.sea.waveHeight = `${waveH.toFixed(1)}m`
-          filled.push(t('sessionForm.autoFill.filledFields.seaState'), t('sessionForm.autoFill.filledFields.waveHeight'))
-        }
-        if (wavePeriod != null) {
-          f.value.sea.wavePeriod = `${Math.round(wavePeriod)}s`
-          filled.push(t('sessionForm.autoFill.filledFields.wavePeriod'))
-        }
+      if (isSaltwater && w.wavePeriod != null) {
+        f.value.sea.wavePeriod = `${Math.round(w.wavePeriod)}s`
+        filled.push(t('sessionForm.autoFill.filledFields.wavePeriod'))
       }
 
       autoFillMsg.value = filled.length
@@ -1144,6 +1047,7 @@
     width: auto;
   }
 
+  .derived { opacity: .75; cursor: default; }
   .autofill-hint {
     color: var(--text-muted, #6b8fa8);
     font-size: .78rem;
@@ -1242,14 +1146,6 @@
   .ess-end { margin-top: 10px; }
   .ess-chips { display: flex; flex-wrap: wrap; gap: 8px; }
   .form-actions-inner.ess-actions { flex-direction: column; align-items: stretch; gap: 6px; padding: 10px 16px; }
-  .where-wrap { position: relative; }
-  .where-list { position: absolute; left: 0; right: 0; top: calc(100% + 6px); z-index: 50; margin: 0; padding: 6px; list-style: none; background: var(--surface); border: 1px solid var(--border-light); border-radius: 16px; box-shadow: 0 12px 30px rgba(0,0,0,.25); }
-  .where-opt { display: flex; align-items: center; gap: 12px; width: 100%; min-height: 52px; padding: 6px 8px; background: none; border: 0; border-radius: 12px; color: var(--foam); text-align: left; cursor: pointer; }
-  .where-opt:hover { background: var(--surface-2); }
-  .where-ic { width: 36px; height: 36px; border-radius: 10px; background: var(--surface-2); color: rgb(var(--color-ocean-text)); display: flex; align-items: center; justify-content: center; flex: none; }
-  .where-tx { display: flex; flex-direction: column; min-width: 0; }
-  .where-tx strong { font-size: 15px; font-weight: 700; }
-  .where-tx small { font-size: 12px; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .essential .field-missing { border-color: var(--border); }
   .ess-foot { color: var(--text-muted); font-size: 13px; text-align: center; margin: 0; }
   .fl-inp[type="date"], .fl-inp[type="time"] { display: flex; align-items: center; text-align: left; -webkit-appearance: none; appearance: none; }

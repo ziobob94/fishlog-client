@@ -25,6 +25,8 @@ export default {
         'on-primary':   'rgb(var(--color-on-primary) / <alpha-value>)',
         'sea-deep':     'rgb(var(--color-sea-deep) / <alpha-value>)',
       },
+      transitionDuration: { press: 'var(--motion-press)', fast: 'var(--motion-fast)', base: 'var(--motion-base)', slow: 'var(--motion-slow)' },
+      transitionTimingFunction: { enter: 'var(--ease-enter)', exit: 'var(--ease-exit)', standard: 'var(--ease-standard)', spring: 'var(--ease-spring)' },
       fontFamily: {
         display: ['Fraunces', 'Georgia', 'serif'],
         sans:    ['Manrope', 'system-ui', 'sans-serif'],

@@ -63,10 +63,10 @@
           >{{ t('chat.filters.groups') }}<span v-if="groupConversationsCount"> {{ groupConversationsCount }}</span></button>
         </div>
 
-        <div v-if="chatStore.loading" class="state-center"><div class="spinner"></div></div>
+        <div v-if="chatStore.loading" class="state-center"><div class="m-spinner"></div></div>
 
         <div v-else-if="!chatStore.conversations.length" class="state-center">
-          <div style="font-size:3rem; display:flex; justify-content:center"><MessagesSquare :size="48" /></div>
+          <div style="font-size:3rem; display:flex; justify-content:center"><MessageCircle :size="48" /></div>
           <p class="text-muted mt-1">{{ t('chat.empty') }}</p>
         </div>
 
@@ -132,7 +132,7 @@
       </div>
 
       <div v-if="threadError" class="error-banner"><AlertTriangle :size="16" /> {{ threadError }}</div>
-      <div v-else-if="!conversationId" class="state-center"><div class="spinner"></div></div>
+      <div v-else-if="!conversationId" class="state-center"><div class="m-spinner"></div></div>
       <ChatThread v-else :conversation-id="conversationId" />
     </template>
   </div>
@@ -143,7 +143,7 @@ import { toInitials } from '../utils/initials.js'
   import { ref, reactive, computed, watch, onMounted, onBeforeUnmount } from 'vue'
   import { useRoute, useRouter, RouterLink } from 'vue-router'
   import { useI18n } from 'vue-i18n'
-  import { MessagesSquare, AlertTriangle, UserPlus, ArrowLeft, UsersRound, Search, Star, Check, CheckCheck } from 'lucide-vue-next'
+  import { MessageCircle, AlertTriangle, UserPlus, ArrowLeft, UsersRound, Search, Star, Check, CheckCheck } from 'lucide-vue-next'
   import { useChatStore } from '../stores/chat.js'
   import { useFriendStore } from '../stores/friends.js'
   import { useUserStore } from '../stores/users.js'

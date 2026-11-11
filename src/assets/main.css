@@ -180,9 +180,13 @@
   :focus-visible { outline: 2px solid rgb(var(--color-ocean-text)); outline-offset: 2px; }
   input:not([type='checkbox']):not([type='radio']):focus-visible, textarea:focus-visible, select:focus-visible { outline: none; }
 
+  /* Rete di sicurezza per le animazioni che non usano i token di motion.css. Rispetta l'impostazione dell'app:
+     con «Animazioni complete» (data-motion="full") non si applica, altrimenti su molti telefoni (iOS «Riduci movimento»,
+     Android «Rimuovi animazioni» / risparmio energetico) la preferenza di sistema spegneva tutto senza via d'uscita. */
   @media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+    :root:not([data-motion='full']) *, :root:not([data-motion='full']) *::before, :root:not([data-motion='full']) *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
   }
+  :root[data-motion='reduce'] *, :root[data-motion='reduce'] *::before, :root[data-motion='reduce'] *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
 }
 
 @layer components {
@@ -233,11 +237,6 @@
 
   .stars { @apply text-sand-text tracking-wide; }
 
-  .spinner {
-    @apply inline-block rounded-full border-2 border-border border-t-ocean;
-    width: 18px; height: 18px;
-    animation: spin .7s linear infinite;
-  }
 
   .state-center {
     @apply flex flex-col items-center gap-2 py-16 text-center;
@@ -251,14 +250,6 @@
 }
 
 /* ── Transizioni di pagina e finestre ── */
-.page-fade-enter-active, .page-fade-leave-active,
-.page-forward-enter-active, .page-forward-leave-active,
-.page-back-enter-active, .page-back-leave-active { transition: opacity 150ms ease, transform 150ms ease; }
-.page-fade-enter-from, .page-fade-leave-to { opacity: 0; }
-.page-forward-enter-from { opacity: 0; transform: translateX(18px); }
-.page-forward-leave-to   { opacity: 0; transform: translateX(-12px); }
-.page-back-enter-from    { opacity: 0; transform: translateX(-18px); }
-.page-back-leave-to      { opacity: 0; transform: translateX(12px); }
 .page-fill { @apply flex flex-col flex-1 min-h-0; }
 
 @keyframes overlay-in { from { opacity: 0; } to { opacity: 1; } }
@@ -304,6 +295,7 @@ textarea.fl-inp { min-height: 96px; resize: none; line-height: 1.45; padding: 14
   min-height: 54px; border-radius: 16px; background: var(--ocean); color: rgb(var(--color-on-primary)); font-weight: 800; font-size: 16px;
   display: flex; align-items: center; justify-content: center; gap: 8px; border: 0; width: 100%; box-sizing: border-box; cursor: pointer;
 }
+.fl-btn1.danger { background: var(--danger); color: #fff; }
 .fl-btn1:disabled { opacity: .6; }
 .fl-btn2 {
   min-height: 48px; border-radius: 14px; background: transparent; color: var(--foam); border: 1px solid var(--border-light);

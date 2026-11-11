@@ -70,7 +70,7 @@
             <ShoppingBag :size="16" /> {{ t('createMenu.newListing') }}
           </RouterLink>
           <RouterLink to="/chat" class="create-menu-item" @click="createMenuOpen = false">
-            <MessagesSquare :size="16" /> {{ t('createMenu.newMessage') }}
+            <MessageCircle :size="16" /> {{ t('createMenu.newMessage') }}
           </RouterLink>
           <RouterLink to="/chat/group/new" class="create-menu-item" @click="createMenuOpen = false">
             <UsersRound :size="16" /> {{ t('createMenu.newChatGroup') }}
@@ -104,7 +104,7 @@ import { computed, onMounted, onBeforeUnmount, ref, watch } from 'vue'
 import { RouterLink, useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import FishLogo from '../components/FishLogo.vue'
-import { Fish, WifiOff, RefreshCw, AlertTriangle, Hourglass, Plus, Bell, X, Newspaper, ShoppingBag, MessagesSquare, MessageCircle, Users, UsersRound } from 'lucide-vue-next'
+import { Fish, WifiOff, RefreshCw, AlertTriangle, Hourglass, Plus, Bell, X, Newspaper, ShoppingBag, MessageCircle, Users, UsersRound } from 'lucide-vue-next'
 import { useOfflineStore } from '../stores/offline.js'
 import { useSessionStore } from '../stores/sessions.js'
 import { useAuthStore } from '../stores/auth.js'

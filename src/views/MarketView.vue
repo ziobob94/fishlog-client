@@ -67,11 +67,13 @@
 
     <!-- Tab Annunci: solo venditori privati, le vetrine dei negozi hanno una
          tab propria per non mescolare due modi diversi di sfogliare. -->
+    <Transition name="tab-swap" mode="out-in">
+    <div :key="tab">
     <template v-if="tab === 'listings'">
       <ListingFilters v-if="showFilters" v-model="filters" :categories="store.categories" :show-seller-type="false" @reset="resetFilters" />
 
       <div v-if="listingsInfiniteLoading" class="state-center">
-        <div class="spinner"></div>
+        <div class="m-spinner"></div>
       </div>
 
       <div v-else-if="!store.listings.length" class="market-empty">
@@ -98,7 +100,7 @@
       </div>
 
       <div v-if="shopsInfiniteLoading" class="state-center">
-        <div class="spinner"></div>
+        <div class="m-spinner"></div>
       </div>
 
       <div v-else-if="!store.shops.length" class="market-empty">
@@ -123,7 +125,7 @@
       />
 
       <div v-if="ebayInfiniteLoading" class="state-center">
-        <div class="spinner"></div>
+        <div class="m-spinner"></div>
       </div>
 
       <div v-else-if="!store.external.length" class="market-empty">
@@ -142,6 +144,8 @@
         {{ t('market.external.adminError', { error: store.externalError }) }}
       </p>
     </template>
+    </div>
+    </Transition>
   </div>
 </template>
 
@@ -161,6 +165,7 @@ import ListingFilters      from '../components/market/ListingFilters.vue'
 import ExternalListingCard from '../components/market/ExternalListingCard.vue'
 import ShopCard            from '../components/market/ShopCard.vue'
 import InfiniteSentinel    from '../components/InfiniteSentinel.vue'
+import { reverseGeocode } from '../utils/places.js'
 
 const { t } = useI18n()
 const { view } = useListView()
@@ -265,10 +270,9 @@ function detectZip() {
   navigator.geolocation.getCurrentPosition(async (pos) => {
     try {
       const { latitude, longitude } = pos.coords
-      const res = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json&accept-language=it`)
-      const data = await res.json()
-      if (data.address?.postcode) {
-        zip.value = data.address.postcode
+      const p = await reverseGeocode(latitude, longitude)
+      if (p?.postalCode) {
+        zip.value = p.postalCode
         if (store.external.length) ebayReset()
       }
     } catch { /* nessun blocco: la ricerca esterna funziona anche senza zip */ }
