@@ -1,6 +1,7 @@
 const DB_NAME    = 'fishlog-offline'
-const DB_VERSION = 1
+const DB_VERSION = 2
 const STORE      = 'outbox'
+const WEATHER    = 'weather'   // ultimo meteo visto per luogo (offline)
 
 function openDb() {
   return new Promise((resolve, reject) => {
@@ -9,6 +10,9 @@ function openDb() {
       const db = req.result
       if (!db.objectStoreNames.contains(STORE)) {
         db.createObjectStore(STORE, { keyPath: 'localId' })
+      }
+      if (!db.objectStoreNames.contains(WEATHER)) {
+        db.createObjectStore(WEATHER, { keyPath: 'key' })
       }
     }
     req.onsuccess = () => resolve(req.result)
@@ -43,4 +47,24 @@ export function putOutboxItem(item) {
 
 export function removeOutboxItem(localId) {
   return withStore('readwrite', store => store.delete(localId))
+}
+
+// ── Cache meteo ───────────────────────────────────────────────────────────────
+// Record { key, place, data, savedAt }: key = 'last' (ultimo luogo visto) oppure 'lat,lng' a 2 decimali.
+export async function getWeatherCache(key) {
+  const db = await openDb()
+  return new Promise((resolve, reject) => {
+    const req = db.transaction(WEATHER, 'readonly').objectStore(WEATHER).get(key)
+    req.onsuccess = () => resolve(req.result || null)
+    req.onerror   = () => reject(req.error)
+  })
+}
+export async function putWeatherCache(rec) {
+  const db = await openDb()
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(WEATHER, 'readwrite')
+    tx.objectStore(WEATHER).put(rec)
+    tx.oncomplete = () => resolve()
+    tx.onerror    = () => reject(tx.error)
+  })
 }

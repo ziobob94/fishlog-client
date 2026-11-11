@@ -56,7 +56,8 @@
 			"fishing": "Pesca",
 			"community": "Social",
 			"account": "Account"
-		}
+		},
+		"weather": "Meteo e mare"
 	},
 	"createMenu": {
 		"title": "Crea nuovo",
@@ -180,6 +181,13 @@
 				"source": "Fonte",
 				"actions": "Azioni"
 			}
+		},
+		"quota": {
+			"title": "Google Weather: richieste del mese",
+			"warning": "Quota Google Weather in esaurimento.",
+			"blocked": "Quota Google Weather bloccata.",
+			"line": "{count} su {quota} richieste ({percent}%)",
+			"rules": "Avvisi per email al {warn}%; blocco automatico al {stop}% (restano {remaining} richieste). Da lì solo cache e Open-Meteo. Si azzera a inizio mese."
 		}
 	},
 	"auth": {
@@ -1698,5 +1706,162 @@
 		"format": "Formato non valido",
 		"range": "Valore non valido",
 		"tooShort": "Testo troppo corto"
+	},
+	"weather": {
+		"title": "Meteo e mare",
+		"missing": "dato non disponibile",
+		"loading": "Carico meteo e mare…",
+		"updatedAt": "aggiornato alle",
+		"refresh": "Aggiorna meteo e mare",
+		"refreshing": "Aggiorno…",
+		"refreshShort": "Aggiorna",
+		"refreshingShort": "Aggiorno…",
+		"retry": "Riprova",
+		"yourPosition": "La tua posizione",
+		"partial": "Alcuni dati non sono disponibili in questo momento. Mostriamo «—» al posto dei valori mancanti.",
+		"degraded": "Servizio meteo in modalità ridotta: alcuni dati possono mancare o non essere aggiornati. Dati delle {time}.",
+		"disclaimer": "Dati indicativi da Google e Open-Meteo, non per la navigazione. Verifica sempre le condizioni reali prima di uscire.",
+		"mode": {
+			"label": "Dove guardare",
+			"here": "Qui",
+			"search": "Cerca un luogo"
+		},
+		"search": {
+			"placeholder": "Cerca un luogo, un porto, una spiaggia…",
+			"zones": "Zone di mare"
+		},
+		"now": {
+			"title": "Adesso",
+			"temp": "Aria",
+			"feels": "percepita",
+			"wind": "Vento",
+			"gust": "raffiche",
+			"pressure": "Pressione",
+			"humidity": "Umidità",
+			"rain": "Pioggia",
+			"expected": "attesa",
+			"uv": "Indice UV",
+			"clouds": "Nuvole",
+			"cover": "copertura"
+		},
+		"wind": {
+			"calm": "Calmo",
+			"from": "da"
+		},
+		"pressure": {
+			"falling": "In calo",
+			"fallingStrong": "In forte calo",
+			"steady": "Stabile",
+			"rising": "In aumento",
+			"risingStrong": "In forte aumento",
+			"noTrend": "Tendenza non disponibile",
+			"unavailable": "Tendenza non disponibile: senza questo dato non possiamo darti una lettura.",
+			"chartLabel": "Pressione delle ultime ore, {n} rilevazioni",
+			"read": {
+				"falling": "Un calo di pressione spesso accompagna un cambio di tempo. È uno spunto, non una previsione.",
+				"steady": "Pressione senza grandi variazioni: condizioni che tendono a restare simili. Lettura indicativa.",
+				"rising": "Un aumento di pressione spesso accompagna un miglioramento. È uno spunto, non una previsione."
+			}
+		},
+		"sea": {
+			"title": "Mare",
+			"model": "Previsione del modello",
+			"wave": "Onda",
+			"period": "periodo",
+			"swell": "Onda lunga",
+			"temp": "Acqua",
+			"current": "Corrente",
+			"toward": "verso",
+			"tides": "Maree · prossime 48 h",
+			"estimate": "Stima",
+			"high": "Alta",
+			"low": "Bassa",
+			"tideNote": "Stima del modello (livello del mare), non una tabella delle maree: nel Mediterraneo l'escursione è piccola. Non usarla per la navigazione.",
+			"tideAria": "Maree stimate nelle prossime 48 ore: {summary}",
+			"noExtremes": "nessun massimo o minimo previsto",
+			"none": "Qui non ci sono dati sul mare. Per laghi, fiumi e zone interne mostriamo solo il meteo."
+		},
+		"glance": {
+			"title": "Colpo d'occhio per la pesca",
+			"moon": "Luna",
+			"lit": "illuminata",
+			"sun": "Alba e tramonto",
+			"dawn": "Alba",
+			"dusk": "Tramonto",
+			"ofLight": "di luce",
+			"pressure": "Pressione · ultime 6 ore"
+		},
+		"hourly": {
+			"title": "Prossime ore",
+			"range": "Ore da mostrare",
+			"region": "Previsione ora per ora, scorri con le frecce",
+			"legend": "Vento in km/h, la freccia indica dove soffia. Pioggia = probabilità."
+		},
+		"daily": {
+			"title": "Prossimi 7 giorni",
+			"day": "Giorno",
+			"sky": "Cielo",
+			"temp": "Max / min",
+			"wind": "Vento",
+			"rain": "Pioggia",
+			"wave": "Onda max"
+		},
+		"denied": {
+			"title": "Posizione non consentita",
+			"text": "Non possiamo leggere la tua posizione. Puoi cercare un luogo a mano oppure riattivare il permesso."
+		},
+		"unavailable": {
+			"title": "Posizione non trovata",
+			"text": "Non riusciamo a trovare dove sei. Riprova all'aperto o cerca un luogo a mano."
+		},
+		"offline": {
+			"title": "Sei offline.",
+			"empty": "Non ci sono dati salvati per questo luogo. Si caricheranno appena torni online.",
+			"banner": "Dati non aggiornati: ultimo aggiornamento alle {time}. Si aggiornano da soli appena torni online.",
+			"cardShort": "Non aggiornato · dati delle {time}"
+		},
+		"error": {
+			"title": "Meteo non disponibile",
+			"text": "Il servizio meteo non risponde. Riprova tra poco.",
+			"stale": "Non riusciamo ad aggiornare: mostriamo i dati delle {time}."
+		},
+		"noPlace": {
+			"title": "Dove vuoi guardare il meteo?",
+			"text": "Usa la tua posizione oppure cerca un luogo."
+		},
+		"help": {
+			"open": "Come riattivare",
+			"title": "Come riattivare la posizione",
+			"intro": "Il permesso si cambia dalle impostazioni del dispositivo o del browser.",
+			"close": "Ho capito",
+			"ios": {
+				"name": "iPhone e iPad",
+				"s1": "Apri Impostazioni → Privacy e sicurezza → Localizzazione.",
+				"s2": "Cerca Safari (o l'app FishLog) e scegli «Mentre usi l'app».",
+				"s3": "Torna in FishLog e tocca «Qui»."
+			},
+			"android": {
+				"name": "Android",
+				"s1": "Tocca il lucchetto accanto all'indirizzo nel browser → Autorizzazioni.",
+				"s2": "Imposta Posizione su «Consenti».",
+				"s3": "Ricarica la pagina e tocca «Qui»."
+			},
+			"desktop": {
+				"name": "Computer",
+				"s1": "Clicca l'icona accanto all'indirizzo (lucchetto o impostazioni del sito).",
+				"s2": "Imposta Posizione su «Consenti».",
+				"s3": "Ricarica la pagina e clicca «Qui»."
+			}
+		},
+		"card": {
+			"label": "Meteo e mare",
+			"title": "Meteo e mare",
+			"noPlace": "Scegli un luogo per vedere meteo e mare.",
+			"setPlace": "Imposta il luogo",
+			"open": "Apri meteo e mare",
+			"windKmh": "km/h",
+			"waveM": "onda m",
+			"rain": "pioggia"
+		}
 	}
 }
