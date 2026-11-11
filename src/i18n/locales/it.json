@@ -1104,7 +1104,8 @@
 			"submit": "Pubblica",
 			"saving": "...",
 			"bodyRequired": "Testo obbligatorio",
-			"groupRequired": "Seleziona un gruppo"
+			"groupRequired": "Seleziona un gruppo",
+			"pageTitle": "Nuovo post"
 		},
 		"tabs": {
 			"posts": "Post",

@@ -26,18 +26,12 @@
 
     <StoriesRail />
 
-    <button v-if="!showForm" type="button" class="compose-row" @click="showForm = true">
+    <button type="button" class="compose-row" @click="openCompose">
       <span class="compose-avatar"><img v-if="auth.user?.avatar" :src="auth.user.avatar" alt="" /><template v-else>{{ initials }}</template></span>
       <span class="compose-text">{{ t('posts.composePrompt') }}</span>
       <ImageIcon :size="22" class="compose-ic" />
     </button>
 
-    <template v-if="showForm">
-      <div class="post-form-wrap">
-        <PostForm :create-fn="store.createPost" :initial-type="tab === 'event' ? 'event' : 'post'" @created="onCreated" />
-      </div>
-      <div class="section-separator"></div>
-    </template>
 
     <div v-if="showFilters" class="filters-panel">
       <p class="filters-desc">{{ t('posts.filters.description') }}</p>
@@ -179,7 +173,6 @@ import PageHeader from '../components/PageHeader.vue'
   import { useAuthStore } from '../stores/auth.js'
   import { useUserStore } from '../stores/users.js'
   import { useInfiniteScroll } from '../composables/useInfiniteScroll.js'
-  import PostForm from '../components/post/PostForm.vue'
   import StoriesRail from '../components/StoriesRail.vue'
   import PostCard from '../components/post/PostCard.vue'
   import LocationPicker from '../components/form/LocationPicker.vue'
@@ -201,7 +194,6 @@ import PageHeader from '../components/PageHeader.vue'
     { id: 'saved', label: 'posts.tabs.saved' }
   ]
   const tab = ref('post')
-  const showForm = ref(false)
   const tabMenuOpen = ref(false)
   const tabMenuWrap = ref(null)
   const showFilters = ref(false)
@@ -355,11 +347,14 @@ import PageHeader from '../components/PageHeader.vue'
   // tramite un cambio di query invece che con un evento diretto.
   watch(() => route.query.compose, (value) => {
     if (!value) return
-    showForm.value = true
-    router.replace({ query: { ...route.query, compose: undefined } })
+    openCompose(true)
   }, { immediate: true })
 
-  function onCreated() { showForm.value = false; reload() }
+  // La creazione del post sta in una pagina dedicata.
+  function openCompose(replace = false) {
+    const to = { path: '/post/new', query: tab.value === 'event' ? { type: 'event' } : {} }
+    return replace === true ? router.replace(to) : router.push(to)
+  }
   async function onDelete(post) { await store.deletePost(post._id) }
   async function onCloseEvent(post) { await store.setEventStatus(post._id, 'closed') }
   async function onRespond(post, message) { await store.respond(post._id, message) }
@@ -400,10 +395,6 @@ import PageHeader from '../components/PageHeader.vue'
   .ph-icon.active { @apply text-ocean-text border-ocean; }
   .ph-count {
     @apply absolute -top-1.5 -right-1.5 min-w-[1.1rem] h-[1.1rem] px-1 rounded-full bg-ocean text-on-primary text-[0.65rem] font-bold inline-flex items-center justify-center;
-  }
-
-  .post-form-wrap {
-    @apply mt-3;
   }
 
   .section-separator {
