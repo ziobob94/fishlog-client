@@ -1,3 +1,10 @@
+## [1.47.2](https://github.com/ziobob94/fishlog-client/compare/client-v1.47.1...client-v1.47.2) (2026-11-11)
+
+
+### Bug Fixes
+
+* loader Google Maps non duplica i tag dopo un errore, pulsante Riprova senza ricaricare la pagina ([1d0826b](https://github.com/ziobob94/fishlog-client/commit/1d0826b81d805da1d709e9a63bd3f97df8fb2932))
+
 ## [1.47.1](https://github.com/ziobob94/fishlog-client/compare/client-v1.47.0...client-v1.47.1) (2026-11-11)
 
 
