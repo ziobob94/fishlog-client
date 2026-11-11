@@ -1,3 +1,10 @@
+## [1.44.1](https://github.com/ziobob94/fishlog-client/compare/client-v1.44.0...client-v1.44.1) (2026-11-11)
+
+
+### Bug Fixes
+
+* animazioni pagina visibili anche con Riduci movimento, transizione tra i tab del Market, visualizzazioni mostrate nel dettaglio annuncio ([6883ff1](https://github.com/ziobob94/fishlog-client/commit/6883ff1d73fb35c386ae563014f12ca82cf789f9))
+
 # [1.44.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.43.0...client-v1.44.0) (2026-11-11)
 
 
