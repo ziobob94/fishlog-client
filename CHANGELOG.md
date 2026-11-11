@@ -1,3 +1,10 @@
+## [1.41.1](https://github.com/ziobob94/fishlog-client/compare/client-v1.41.0...client-v1.41.1) (2026-11-11)
+
+
+### Bug Fixes
+
+* icona chat a bolla ovunque (il Social usava l'aeroplanino) ([ea7d141](https://github.com/ziobob94/fishlog-client/commit/ea7d1413bed7eb4effaed03f94d518698721f576))
+
 # [1.41.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.40.0...client-v1.41.0) (2026-11-11)
 
 
