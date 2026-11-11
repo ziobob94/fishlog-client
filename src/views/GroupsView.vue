@@ -1,6 +1,8 @@
 <template>
   <div>
-    <div v-if="store.loading" class="state-center"><div class="spinner"></div></div>
+    <PageHeader :title="t('nav.groups')" back />
+
+    <div v-if="store.loading" class="state-center"><div class="m-spinner"></div></div>
 
     <div v-else-if="!store.groups.length" class="state-center">
       <div style="font-size:3rem; display:flex; justify-content:center"><Users :size="48" /></div>
@@ -12,21 +14,23 @@
     <div v-else class="groups-grid">
       <div v-for="g in store.groups" :key="g._id" class="group-card card">
         <div class="group-header">
-          <div>
+          <span class="group-tile" aria-hidden="true">{{ groupInitials(g.name) }}</span>
+          <div class="group-title">
             <h3>{{ g.name }}</h3>
-            <p v-if="g.description" class="text-muted" style="font-size:.85rem;margin-top:.2rem">{{ g.description }}</p>
+            <p class="text-muted text-sm">{{ t('groups.membersCount', { n: g.members?.length || 0 }) }}</p>
           </div>
-          <span class="badge badge-ocean">{{ t('groups.membersCount', { n: g.members?.length || 0 }) }}</span>
+          <span v-if="g.owner?._id === authStore.user?._id" class="badge badge-ocean">{{ t('groups.owner') }}</span>
         </div>
+        <p v-if="g.description" class="group-desc">{{ g.description }}</p>
 
         <div class="members-list">
           <div v-for="m in g.members" :key="m._id" class="member-row">
-            <div class="member-info">
+            <RouterLink :to="`/users/${m._id}`" class="member-info">
               <img v-if="m.avatar" :src="m.avatar" class="mini-avatar" />
               <span v-else class="mini-placeholder">{{ initials(m) }}</span>
               <span class="member-name">{{ m.displayName || m.email }}</span>
               <span v-if="m._id === g.owner?._id" class="badge badge-sand shrink-0" style="font-size:.6rem">{{ t('groups.owner') }}</span>
-            </div>
+            </RouterLink>
             <button
               v-if="canRemove(g, m)"
               class="btn btn-ghost btn-sm shrink-0"
@@ -58,11 +62,11 @@
     <!-- Modal crea/modifica gruppo -->
     <Teleport to="body">
       <div v-if="showCreate || editTarget" class="dialog-overlay" @click.self="closeModal">
-        <div class="dialog card">
+        <form class="dialog card" @submit.prevent="saveGroup">
           <h3>{{ editTarget ? t('groups.modal.editTitle') : t('groups.modal.newTitle') }}</h3>
           <div class="form-group mt-2">
             <label>{{ t('groups.modal.nameLabel') }}</label>
-            <input v-model="groupForm.name" type="text" :placeholder="t('groups.modal.namePlaceholder')" />
+            <input v-model="groupForm.name" type="text" required :placeholder="t('groups.modal.namePlaceholder')" />
           </div>
           <div class="form-group mt-1">
             <label>{{ t('groups.modal.descLabel') }}</label>
@@ -70,12 +74,12 @@
           </div>
           <p v-if="modalError" class="error-msg mt-1">{{ modalError }}</p>
           <div style="display:flex;gap:.75rem;justify-content:flex-end;margin-top:1.25rem">
-            <button class="btn btn-ghost btn-sm" @click="closeModal">{{ t('common.cancel') }}</button>
-            <button class="btn btn-primary btn-sm" :disabled="saving" @click="saveGroup">
+            <button type="button" class="btn btn-ghost btn-sm" @click="closeModal">{{ t('common.cancel') }}</button>
+            <button type="submit" class="btn btn-primary btn-sm" :disabled="saving">
               {{ saving ? t('groups.modal.saving') : (editTarget ? t('groups.modal.update') : t('groups.modal.create')) }}
             </button>
           </div>
-        </div>
+        </form>
       </div>
     </Teleport>
 
@@ -96,6 +100,8 @@
 </template>
 
 <script setup>
+import { toInitials } from '../utils/initials.js'
+import PageHeader from '../components/PageHeader.vue'
 import { ref, onMounted, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
@@ -142,9 +148,13 @@ function canRemove(g, m) {
   return notOwner && (isOwner || isAdmin || isSelf)
 }
 
+function groupInitials(name) {
+  return toInitials(name || '?')
+}
+
 function initials(u) {
   const name = u.displayName || u.email || '?'
-  return name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2)
+return toInitials(name)
 }
 
 function startEdit(g) {
@@ -204,17 +214,21 @@ async function removeMember(g, m) {
 
 <style scoped>
 .groups-grid  { @apply grid gap-4; grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr)); }
-.group-card   { @apply flex flex-col gap-3; }
-.group-header { @apply flex items-start justify-between; }
+.group-card   { @apply flex flex-col gap-3 rounded-xl; }
+.group-header { @apply flex items-center gap-3; }
+.group-tile { @apply w-12 h-12 shrink-0 rounded-lg border border-sand-text/60 text-sand-text flex items-center justify-center font-bold; background: rgb(var(--color-sand) / 0.15); }
+.group-title { @apply flex-1 min-w-0; }
+.group-title h3 { @apply truncate; }
+.group-desc { @apply text-sm text-foam/90; }
 
 .members-list { @apply flex flex-col gap-1.5; }
 .member-row   { @apply flex items-center justify-between gap-2; }
-.member-info  { @apply flex items-center gap-2 text-sm text-foam min-w-0 flex-1; }
+.member-info  { @apply no-underline flex items-center gap-2 text-sm text-foam min-w-0 flex-1; }
 .member-name  { @apply truncate; }
 
-.mini-avatar { @apply w-7 h-7 rounded-full object-cover; }
+.mini-avatar { @apply w-9 h-9 rounded-full object-cover; }
 .mini-placeholder {
-  @apply w-7 h-7 rounded-full border border-ocean text-ocean flex items-center
+  @apply w-9 h-9 rounded-full border border-ocean text-ocean-text flex items-center
          justify-center text-[0.65rem] font-bold;
   background: var(--ocean-glow);
 }

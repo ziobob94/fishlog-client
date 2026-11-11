@@ -1,8 +1,15 @@
 <template>
   <div class="auth-page">
-    <div class="auth-card card">
-      <div class="auth-logo" style="display:inline-flex;align-items:center;gap:.4rem"><Fish :size="22" /> FishLog</div>
-      <h2>{{ t('register.title') }}</h2>
+    <div class="auth-card card overflow-hidden">
+      <div class="auth-hero">
+        <IsobathBg />
+        <Bobber class="auth-bobber" :size="44" />
+        <FishLogo :size="44" />
+        <div>
+          <h2>{{ t('register.title') }}</h2>
+          <p class="auth-sub">{{ t('register.subtitle') }}</p>
+        </div>
+      </div>
 
       <div class="oauth-buttons">
         <a :href="apiBase + '/auth/google'" class="btn btn-oauth">
@@ -54,7 +61,7 @@
           </label>
           <div v-if="error" class="error-msg">{{ error }}</div>
           <button type="submit" class="btn btn-primary w-full" :disabled="loading || !acceptTerms">
-            <span v-if="loading" class="spinner" style="width:15px;height:15px"></span>
+            <span v-if="loading" class="m-spinner" style="width:15px;height:15px"></span>
             {{ loading ? t('register.loading') : t('register.submit') }}
           </button>
         </form>
@@ -69,10 +76,12 @@
 </template>
 
 <script setup>
+import IsobathBg from '../components/IsobathBg.vue'
+import Bobber from '../components/Bobber.vue'
+import FishLogo from '../components/FishLogo.vue'
 import { ref } from 'vue'
 import { useRouter, RouterLink } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { Fish } from 'lucide-vue-next'
 import { useAuthStore } from '../stores/auth.js'
 import { useFeaturesStore } from '../stores/features.js'
 import PasswordInput from '../components/PasswordInput.vue'
@@ -107,6 +116,8 @@ async function handleRegister() {
 <style scoped>
 .auth-page  { @apply flex items-center justify-center min-h-[80vh]; }
 .auth-card  { @apply max-w-sm w-full p-8; }
+.auth-hero { @apply relative -mx-8 -mt-8 mb-4 px-8 pt-8 pb-6 bg-sea-deep flex flex-col gap-3 items-start; }
+.auth-bobber { @apply absolute top-6 right-6; }
 .auth-logo  { @apply text-2xl font-extrabold mb-1; }
 .oauth-buttons { @apply flex flex-col gap-4 mt-4; }
 .btn-oauth  {
@@ -125,9 +136,16 @@ async function handleRegister() {
   @apply flex items-start gap-2 text-xs text-muted mb-3 cursor-pointer;
 }
 .terms-check input { @apply mt-0.5 shrink-0; }
-.terms-check a { @apply text-ocean hover:underline; }
+.terms-check a { @apply text-ocean-text hover:underline; }
 .oauth-terms-note { @apply text-[0.68rem] text-muted text-center mt-2; }
-.oauth-terms-note a { @apply text-ocean hover:underline; }
+.oauth-terms-note a { @apply text-ocean-text hover:underline; }
 .auth-switch { @apply text-muted text-sm text-center mt-5; }
 .coming-soon { @apply flex items-center gap-2 text-muted text-sm; }
+
+.auth-sub { @apply text-muted text-sm mt-1; }
+@media (max-width: 639px) {
+  .auth-page { @apply -mx-4 -mt-6 items-start min-h-0; }
+  .auth-card { @apply max-w-none rounded-none border-0 bg-transparent shadow-none px-5 pb-8 pt-0; }
+  .auth-hero { @apply -mx-5 mb-6 px-5 pt-10 pb-7; border-radius: 0 0 24px 24px; }
+}
 </style>

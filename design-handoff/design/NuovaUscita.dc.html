@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<title>FishLog Nuova uscita</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+body{margin:0;font-family:'Manrope',system-ui,sans-serif;background:#111c2c;color:#f1f5f9}
+.i{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+button,input,textarea{font-family:inherit}
+button{cursor:pointer}
+a{color:inherit;text-decoration:none}
+.lab{display:block;margin:0 0 6px;font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#9db0c8}
+.in{width:100%;box-sizing:border-box;height:52px;border-radius:14px;border:1px solid #33486a;background:#111c2c;color:#f1f5f9;font-size:16px;padding:0 16px;outline:none}
+.chip{flex:none;min-height:44px;padding:0 16px;border-radius:22px;border:1px solid #33486a;background:#111c2c;color:#cbd5e1;font-weight:600;font-size:14px}
+.chip.on{border-color:#0ea5e9;background:#0ea5e9;color:#0b1623;font-weight:700}
+.sec{display:flex;align-items:center;gap:12px;background:#1a293d;border:1px solid #33486a;border-radius:18px;padding:12px 16px;min-height:44px;color:inherit}
+</style>
+</helmet>
+<div style="width:390px;height:1420px;box-sizing:border-box;background:#111c2c;display:flex;flex-direction:column;overflow:hidden">
+
+  <header style="display:flex;align-items:center;gap:8px;padding:8px 16px 8px 8px;min-height:64px;box-sizing:border-box;border-bottom:1px solid #33486a">
+    <a href="Uscite.dc.html" aria-label="Chiudi" style="width:44px;height:44px;display:flex;align-items:center;justify-content:center"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></a>
+    <h1 style="margin:0;font-size:18px;font-weight:800;letter-spacing:-.02em">Nuova uscita</h1>
+    <span style="margin-left:auto;font-size:12px;color:#9db0c8">Bozza salvata</span>
+  </header>
+
+  <!-- Avanzamento -->
+  <div aria-hidden="true" style="display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:4px;padding:12px 16px 0">
+    <span style="height:4px;border-radius:2px;background:#0ea5e9"></span><span style="height:4px;border-radius:2px;background:#0ea5e9"></span><span style="height:4px;border-radius:2px;background:#33486a"></span><span style="height:4px;border-radius:2px;background:#33486a"></span><span style="height:4px;border-radius:2px;background:#33486a"></span><span style="height:4px;border-radius:2px;background:#33486a"></span>
+  </div>
+
+  <main style="flex:1;overflow:hidden;padding:16px;display:flex;flex-direction:column;gap:12px">
+
+    <!-- 1 Dati uscita (aperta) -->
+    <section style="background:#1a293d;border:1px solid #0ea5e9;border-radius:20px;padding:16px;display:flex;flex-direction:column;gap:16px">
+      <div style="display:flex;align-items:center;gap:12px">
+        <span style="width:32px;height:32px;border-radius:50%;background:#0ea5e9;color:#0b1623;font-weight:800;font-size:14px;display:flex;align-items:center;justify-content:center">1</span>
+        <div style="display:flex;flex-direction:column;gap:1px"><h2 style="margin:0;font-size:18px;font-weight:800;letter-spacing:-.02em">Dati uscita</h2><span style="font-size:13px;color:#9db0c8">Basta la data, il resto è facoltativo.</span></div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px">
+        <div><label class="lab" for="d">Data</label><input id="d" class="in" value="09/11/2026"></div>
+        <div><label class="lab" for="h">Ora</label><input id="h" class="in" value="06:10"></div>
+      </div>
+      <div><span class="lab">Tecnica</span>
+        <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="chip on">Spinning</button><button class="chip">Surfcasting</button><button class="chip">Bolentino</button><button class="chip">Feeder</button><button class="chip">Mosca</button></div></div>
+      <div><label class="lab" for="t">Titolo (opzionale)</label><input id="t" class="in" placeholder="es. Alba alla foce"></div>
+    </section>
+
+    <!-- 2 Luogo (aperta, compatta) -->
+    <section style="background:#1a293d;border:1px solid #33486a;border-radius:20px;padding:16px;display:flex;flex-direction:column;gap:14px">
+      <div style="display:flex;align-items:center;gap:12px">
+        <span style="width:32px;height:32px;border-radius:50%;background:#243650;color:#cbd5e1;font-weight:800;font-size:14px;display:flex;align-items:center;justify-content:center">2</span>
+        <div style="display:flex;flex-direction:column;gap:1px"><h2 style="margin:0;font-size:18px;font-weight:800;letter-spacing:-.02em">Luogo</h2><span style="font-size:13px;color:#9db0c8">Scrivi il nome oppure tocca la mappa.</span></div>
+      </div>
+      <div><label class="lab" for="l">Nome del posto</label><input id="l" class="in" placeholder="es. Molo di Senigallia"></div>
+      <button style="min-height:52px;border-radius:14px;border:1px solid #0ea5e9;background:rgba(14,165,233,.16);color:#7dd3fc;font-weight:800;font-size:15px;display:flex;align-items:center;justify-content:center;gap:8px"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg>Usa la mia posizione</button>
+      <div style="height:140px;border-radius:16px;background:#111c2c;border:1px dashed #46617f;color:#6f89a8;display:flex;align-items:center;justify-content:center;font-size:13px;gap:8px"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7-6.200-7-11a7 7 0 0 1 14 0c0 4.800-7 11-7 11Z"/><circle cx="12" cy="10" r="2.500"/></svg>mappa: tocca per indicare il punto</div>
+    </section>
+
+    <!-- 3-6 chiuse -->
+    <a href="NuovaUscita.dc.html" class="sec"><span style="width:32px;height:32px;border-radius:50%;background:#243650;color:#cbd5e1;font-weight:800;font-size:14px;display:flex;align-items:center;justify-content:center">3</span><span style="flex:1;font-size:16px;font-weight:700">Condizioni acqua</span><svg class="i" viewBox="0 0 24 24" style="color:#9db0c8" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></a>
+    <a href="NuovaUscita.dc.html" class="sec"><span style="width:32px;height:32px;border-radius:50%;background:#243650;color:#cbd5e1;font-weight:800;font-size:14px;display:flex;align-items:center;justify-content:center">4</span><span style="flex:1;font-size:16px;font-weight:700">Meteo</span><svg class="i" viewBox="0 0 24 24" style="color:#9db0c8" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></a>
+    <a href="NuovaUscita.dc.html" class="sec"><span style="width:32px;height:32px;border-radius:50%;background:#243650;color:#cbd5e1;font-weight:800;font-size:14px;display:flex;align-items:center;justify-content:center">5</span><span style="flex:1;font-size:16px;font-weight:700">Catture</span><svg class="i" viewBox="0 0 24 24" style="color:#9db0c8" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></a>
+    <a href="NuovaUscita.dc.html" class="sec"><span style="width:32px;height:32px;border-radius:50%;background:#243650;color:#cbd5e1;font-weight:800;font-size:14px;display:flex;align-items:center;justify-content:center">6</span><span style="flex:1;font-size:16px;font-weight:700">Note e visibilità</span><svg class="i" viewBox="0 0 24 24" style="color:#9db0c8" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></a>
+  </main>
+
+  <div style="display:flex;gap:10px;padding:12px 16px 20px;background:#1a293d;border-top:1px solid #33486a">
+    <button style="flex:1;min-height:52px;border-radius:16px;border:1px solid #46617f;background:transparent;color:#f1f5f9;font-weight:700;font-size:15px">Salva e chiudi</button>
+    <a href="Dettaglio.dc.html" style="flex:1.4;min-height:52px;border-radius:16px;background:#0ea5e9;color:#0b1623;font-weight:800;font-size:16px;display:flex;align-items:center;justify-content:center">Avvia uscita</a>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":1420}}'>
+class Component extends DCLogic {
+renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

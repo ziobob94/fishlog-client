@@ -4,7 +4,7 @@
       <RouterLink to="/market" class="btn btn-ghost btn-sm">{{ t('common.back') }}</RouterLink>
     </div>
 
-    <div v-if="loading" class="state-center"><div class="spinner"></div></div>
+    <div v-if="loading" class="state-center"><div class="m-spinner"></div></div>
 
     <div v-else-if="!shop" class="state-center">
       <p class="text-muted">{{ t('market.shops.notFound') }}</p>
@@ -12,7 +12,7 @@
 
     <template v-else>
       <div class="card shop-head">
-        <img v-if="shop.avatar" :src="shop.avatar" class="avatar" />
+        <img v-if="shop.logo || shop.avatar" :src="shop.logo || shop.avatar" class="avatar" alt="" />
         <span v-else class="avatar-placeholder">{{ initials }}</span>
         <div class="min-w-0">
           <h2 class="truncate">{{ shop.name || shop.displayName }}</h2>
@@ -33,6 +33,7 @@
 </template>
 
 <script setup>
+import { toInitials } from '../utils/initials.js'
 import { ref, computed, onMounted, watch } from 'vue'
 import { useRoute, RouterLink } from 'vue-router'
 import { useI18n } from 'vue-i18n'
@@ -50,7 +51,7 @@ const loading  = ref(true)
 
 const initials = computed(() => {
   const name = shop.value?.name || shop.value?.displayName || '?'
-  return name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2)
+return toInitials(name)
 })
 
 async function load() {
@@ -75,9 +76,9 @@ onMounted(load)
 .page-header { @apply mb-4; }
 .shop-head { @apply flex items-start gap-3; }
 
-.avatar { @apply w-16 h-16 rounded-full object-cover shrink-0; }
+.avatar { @apply w-16 h-16 rounded-xl object-cover shrink-0; }
 .avatar-placeholder {
-  @apply w-16 h-16 shrink-0 rounded-full border border-ocean text-ocean flex items-center
+  @apply w-16 h-16 shrink-0 rounded-full border border-ocean text-ocean-text flex items-center
          justify-center text-lg font-bold;
   background: var(--ocean-glow);
 }

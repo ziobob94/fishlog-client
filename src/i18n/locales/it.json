@@ -16,9 +16,16 @@
 		"none": "—",
 		"fieldInfo": "Informazioni sul campo",
 		"showPassword": "Mostra password",
-		"hidePassword": "Nascondi password"
+		"hidePassword": "Nascondi password",
+		"close": "Chiudi",
+		"fileTooLarge": "Il file è troppo grande. Scegli una foto più piccola o un video più corto.",
+		"uploadTimeout": "Caricamento troppo lento. Controlla la connessione e riprova.",
+		"retry": "Riprova"
 	},
 	"nav": {
+		"mainNavigation": "Navigazione principale",
+		"menu": "Apri il menu",
+		"community": "Social",
 		"home": "Home",
 		"sessions": "Uscite",
 		"newSession": "Nuova uscita",
@@ -26,7 +33,7 @@
 		"groups": "Gruppi",
 		"friends": "Amici",
 		"feed": "Bacheca",
-		"board": "La mia bacheca",
+		"board": "Il mio profilo",
 		"market": "Market",
 		"myListings": "I miei annunci",
 		"chat": "Chat",
@@ -36,15 +43,21 @@
 		"forum": "Forum",
 		"culture": "Cultura",
 		"profile": "Profilo",
+		"settings": "Impostazioni",
 		"admin": "Admin",
 		"logout": "Esci",
+		"install": "Installa app",
+		"installIosTitle": "Aggiungi FishLog alla Home",
+		"installIosSteps": "Tocca il pulsante Condividi in Safari, poi scegli «Aggiungi alla schermata Home».",
+		"installClose": "Ho capito",
 		"lock": "Blocca",
 		"unlock": "Sblocca",
 		"sections": {
 			"fishing": "Pesca",
-			"community": "Community",
+			"community": "Social",
 			"account": "Account"
-		}
+		},
+		"weather": "Meteo e mare"
 	},
 	"createMenu": {
 		"title": "Crea nuovo",
@@ -54,10 +67,28 @@
 		"newListing": "Nuovo annuncio",
 		"newMessage": "Nuovo messaggio",
 		"newGroup": "Nuovo gruppo pesca",
-		"newChatGroup": "Nuovo gruppo chat"
+		"newChatGroup": "Nuovo gruppo chat",
+		"sheetTitle": "Cosa vuoi condividere?",
+		"post": "Post",
+		"postSub": "Foto o video con una descrizione",
+		"session": "Uscita",
+		"sessionSub": "Registra una nuova uscita di pesca",
+		"listing": "Annuncio",
+		"listingSub": "Vendi o scambia attrezzatura",
+		"close": "Chiudi",
+		"story": "Storia",
+		"storySub": "Sparisce dopo 24 ore",
+		"event": "Evento",
+		"eventSub": "Organizza un'uscita con altri pescatori"
 	},
 	"admin": {
-		"tabs": { "users": "Utenti", "sessions": "Sessioni", "shops": "Negozi", "config": "Configurazioni", "regulations": "Normativa" },
+		"tabs": {
+			"users": "Utenti",
+			"sessions": "Sessioni",
+			"shops": "Negozi",
+			"config": "Configurazioni",
+			"regulations": "Normativa"
+		},
 		"users": {
 			"searchPlaceholder": "Cerca utente...",
 			"table": {
@@ -90,6 +121,9 @@
 			"empty": "Nessuna richiesta di negozio in attesa",
 			"approve": "Approva",
 			"reject": "Rifiuta",
+			"document": "Vedi documento",
+			"noDocument": "Nessun documento",
+			"rejectReason": "Motivo del rifiuto (lo vedrà il venditore)",
 			"table": {
 				"name": "Negozio",
 				"owner": "Proprietario",
@@ -117,7 +151,10 @@
 			"saved": "Norma salvata",
 			"saveError": "Errore nel salvataggio della norma",
 			"confirmDelete": "Eliminare questa norma?",
-			"scope": { "species": "Specie", "general": "Generale" },
+			"scope": {
+				"species": "Specie",
+				"general": "Generale"
+			},
 			"fields": {
 				"scope": "Tipo",
 				"speciesName": "Specie",
@@ -144,6 +181,13 @@
 				"source": "Fonte",
 				"actions": "Azioni"
 			}
+		},
+		"quota": {
+			"title": "Google Weather: richieste del mese",
+			"warning": "Quota Google Weather in esaurimento.",
+			"blocked": "Quota Google Weather bloccata.",
+			"line": "{count} su {quota} richieste ({percent}%)",
+			"rules": "Avvisi per email al {warn}%; blocco automatico al {stop}% (restano {remaining} richieste). Da lì solo cache e Open-Meteo. Si azzera a inizio mese."
 		}
 	},
 	"auth": {
@@ -155,6 +199,7 @@
 	},
 	"login": {
 		"welcomeBack": "Bentornato",
+		"subtitle": "Accedi per ritrovare le tue uscite.",
 		"google": "Continua con Google",
 		"facebook": "Continua con Facebook",
 		"emailLabel": "Email",
@@ -169,6 +214,7 @@
 	},
 	"register": {
 		"title": "Crea account",
+		"subtitle": "Registrati per tenere il diario delle tue uscite.",
 		"google": "Registrati con Google",
 		"facebook": "Registrati con Facebook",
 		"nameLabel": "Nome",
@@ -241,10 +287,27 @@
 		"types": {
 			"friend_request": "{name} ti ha inviato una richiesta di amicizia",
 			"friend_accept": "{name} ha accettato la tua richiesta di amicizia",
-			"chat_message": "Nuovo messaggio da {name}"
-		}
+			"chat_message": "Nuovo messaggio da {name}",
+			"post_like": "{name} ha messo mi piace a un tuo post",
+			"post_comment": "{name} ha commentato un tuo post"
+		},
+		"messages": {
+			"friend_request": "ti ha inviato una richiesta di amicizia",
+			"friend_accept": "ha accettato la tua richiesta di amicizia",
+			"chat_message": "ti ha inviato un nuovo messaggio",
+			"post_like": "ha messo mi piace al tuo post",
+			"post_comment": "ha commentato il tuo post"
+		},
+		"groups": {
+			"new": "Nuove",
+			"earlier": "Prima"
+		},
+		"accepted": "Richiesta accettata",
+		"declined": "Richiesta rifiutata",
+		"unread": "Da leggere"
 	},
 	"chat": {
+		"title": "Chat",
 		"empty": "Nessuna conversazione: cerca un amico qui sopra per iniziare",
 		"friendsLink": "Vai ai tuoi amici",
 		"search": {
@@ -285,42 +348,47 @@
 			"micDenied": "Permesso microfono negato",
 			"micUnsupported": "Registrazione vocale non supportata su questo dispositivo",
 			"voiceEmpty": "Registrazione troppo breve, riprova"
-			},
-			"group": {
-				"back": "Indietro",
-				"newTitle": "Nuovo gruppo chat",
-				"nameLabel": "Nome del gruppo",
-				"namePlaceholder": "Es. Uscite al lago",
-				"membersLabel": "Aggiungi almeno due amici",
-				"noFriends": "Non hai ancora amici da aggiungere: fatti prima qualche amicizia",
-				"create": "Crea gruppo",
-				"creating": "Creazione...",
-				"nameRequired": "Il nome del gruppo \u00e8 obbligatorio",
-				"minMembers": "Servono almeno due amici da aggiungere",
-				"membersCount": "{n} membri",
-				"owner": "Admin",
-				"you": "Tu",
-				"manageMembers": "Gestisci membri",
-				"addMembers": "Aggiungi amici",
-				"add": "Aggiungi",
-				"removeMember": "Rimuovi dal gruppo",
-				"confirmRemoveMember": "Rimuovere questo membro dal gruppo?",
-				"leave": "Esci dal gruppo",
-				"confirmLeave": "Uscire da questo gruppo?",
-				"rename": "Rinomina",
-				"renamePlaceholder": "Nome del gruppo",
-				"save": "Salva",
-				"notFound": "Gruppo non trovato o non ne fai pi\u00f9 parte"
-			}
 		},
+		"group": {
+			"back": "Indietro",
+			"newTitle": "Nuovo gruppo chat",
+			"nameLabel": "Nome del gruppo",
+			"namePlaceholder": "Es. Uscite al lago",
+			"selected": "{n} selezionati",
+			"membersLabel": "Aggiungi almeno due amici",
+			"noFriends": "Non hai ancora amici da aggiungere: fatti prima qualche amicizia",
+			"create": "Crea gruppo",
+			"creating": "Creazione...",
+			"nameRequired": "Il nome del gruppo è obbligatorio",
+			"minMembers": "Servono almeno due amici da aggiungere",
+			"membersCount": "{n} membri",
+			"owner": "Admin",
+			"you": "Tu",
+			"manageMembers": "Gestisci membri",
+			"addMembers": "Aggiungi amici",
+			"add": "Aggiungi",
+			"removeMember": "Rimuovi dal gruppo",
+			"confirmRemoveMember": "Rimuovere questo membro dal gruppo?",
+			"leave": "Esci dal gruppo",
+			"confirmLeave": "Uscire da questo gruppo?",
+			"rename": "Rinomina",
+			"renamePlaceholder": "Nome del gruppo",
+			"save": "Salva",
+			"notFound": "Gruppo non trovato o non ne fai più parte"
+		}
+	},
 	"friends": {
 		"search": {
 			"label": "Cerca persone",
-			"placeholder": "Nome o email...",
+			"placeholder": "Cerca per nome o email",
 			"noResults": "Nessun utente trovato"
 		},
-		"received": { "title": "Richieste ricevute" },
-		"sent": { "title": "Richieste inviate" },
+		"received": {
+			"title": "Richieste ricevute"
+		},
+		"sent": {
+			"title": "Richieste inviate"
+		},
 		"list": {
 			"title": "Amici",
 			"empty": "Non hai ancora amici: cercali qui sopra"
@@ -329,6 +397,7 @@
 			"add": "Aggiungi",
 			"accept": "Accetta",
 			"decline": "Rifiuta",
+			"message": "Scrivi un messaggio",
 			"cancel": "Annulla richiesta",
 			"remove": "Rimuovi amicizia",
 			"confirmRemove": "Rimuovere {name} dai tuoi amici?"
@@ -344,10 +413,16 @@
 			"accepted": "Richiesta accettata"
 		},
 		"profile": {
+			"more": "Altro",
 			"notFound": "Utente non trovato.",
 			"memberSince": "Su FishLog dal {date}",
 			"commonGroups": "Gruppi in comune",
-			"noCommonGroups": "Nessun gruppo in comune"
+			"noCommonGroups": "Nessun gruppo in comune",
+			"sessions": "Uscite",
+			"catches": "Catture",
+			"posts": "Post",
+			"postsTitle": "Post",
+			"noPosts": "Nessun post visibile."
 		}
 	},
 	"home": {
@@ -362,7 +437,14 @@
 		},
 		"zones": {
 			"title": "Scegli la zona",
-			"items": { "here": "La mia posizione", "adriatic": "Adriatico", "tyrrhenian": "Tirreno", "ligurian": "Mar Ligure", "ionian": "Ionio", "sicily": "Canale di Sicilia" }
+			"items": {
+				"here": "La mia posizione",
+				"adriatic": "Adriatico",
+				"tyrrhenian": "Tirreno",
+				"ligurian": "Mar Ligure",
+				"ionian": "Ionio",
+				"sicily": "Canale di Sicilia"
+			}
 		},
 		"sea": {
 			"title": "Oggi in mare",
@@ -370,11 +452,35 @@
 			"unavailable": "Dati non disponibili per questa zona in questo momento."
 		},
 		"stories": {
-			"community": { "title": "Community", "text": "Racconta le tue uscite, confrontati con gli altri pescatori e scala la classifica.", "cta": "Vai alla community" },
-			"market": { "title": "Market", "text": "Compra e vendi attrezzatura nuova e usata tra appassionati.", "cta": "Apri il market" },
-			"species": { "title": "Specie e stagioni", "text": "Calendario delle catture, esche, attrezzatura e normativa con la fonte citata, per ogni specie.", "cta": "Esplora le specie" }
+			"community": {
+				"title": "Social",
+				"text": "Racconta le tue uscite, confrontati con gli altri pescatori e scala la classifica.",
+				"cta": "Vai al Social"
+			},
+			"market": {
+				"title": "Market",
+				"text": "Compra e vendi attrezzatura nuova e usata tra appassionati.",
+				"cta": "Apri il market"
+			},
+			"species": {
+				"title": "Specie e stagioni",
+				"text": "Calendario delle catture, esche, attrezzatura e normativa con la fonte citata, per ogni specie.",
+				"cta": "Esplora le specie"
+			}
 		},
-		"quick": { "title": "Accessi rapidi", "sessions": "Uscite", "stats": "Statistiche", "leaderboard": "Classifica", "friends": "Amici", "profile": "Profilo" },
+		"tiles": {
+			"species": "Specie e stagioni",
+			"stats": "Le mie statistiche"
+		},
+		"quick": {
+			"title": "Accessi rapidi",
+			"weather": "Meteo e mare",
+			"sessions": "Uscite",
+			"stats": "Statistiche",
+			"leaderboard": "Classifica",
+			"friends": "Amici",
+			"profile": "Il mio profilo"
+		},
 		"liveConditions": {
 			"title": "Oggi dove sei",
 			"subtitle": "Condizioni attuali in base alla tua posizione",
@@ -382,7 +488,13 @@
 			"enable": "Attiva la posizione per vedere le condizioni di oggi",
 			"enableCta": "Attiva posizione",
 			"disclaimer": "Dati indicativi da Open-Meteo, non per la navigazione. Verifica sempre le condizioni reali prima di uscire.",
-			"labels": { "wind": "Vento", "wave": "Onda", "water": "Acqua", "air": "Aria", "pressure": "Pressione" }
+			"labels": {
+				"wind": "Vento",
+				"wave": "Onda",
+				"water": "Acqua",
+				"air": "Aria",
+				"pressure": "Pressione"
+			}
 		},
 		"empty": {
 			"title": "Nessuna uscita trovata",
@@ -391,20 +503,30 @@
 		},
 		"hub": {
 			"comingSoon": "Prossimamente",
-			"groups": { "diary": "Il tuo diario", "community": "Community", "more": "Altro" },
+			"groups": {
+				"diary": "Il tuo diario",
+				"community": "Social",
+				"more": "Altro"
+			},
 			"sections": {
-				"species": { "title": "Specie", "text": "Schede, calendario, attrezzatura e normativa" },
-				"leaderboard": { "title": "Classifica", "text": "I pescatori più attivi della community" },
+				"species": {
+					"title": "Specie",
+					"text": "Schede, calendario, attrezzatura e normativa"
+				},
+				"leaderboard": {
+					"title": "Classifica",
+					"text": "I pescatori più attivi del Social"
+				},
 				"sessions": {
 					"title": "Uscite",
 					"text": "Registra e rivedi le tue sessioni di pesca"
 				},
 				"feed": {
 					"title": "Bacheca generale",
-					"text": "Post ed eventi della community e dei tuoi gruppi"
+					"text": "Post ed eventi del Social e dei tuoi gruppi"
 				},
 				"board": {
-					"title": "La mia bacheca",
+					"title": "Il mio profilo",
 					"text": "I tuoi post ed eventi, pubblici, di gruppo o privati"
 				},
 				"groups": {
@@ -427,9 +549,12 @@
 					"title": "Cultura della pesca",
 					"text": "Articoli e approfondimenti"
 				},
-				"chat": { "title": "Chat", "text": "Messaggi privati e chat globale" },
+				"chat": {
+					"title": "Chat",
+					"text": "Messaggi privati e chat globale"
+				},
 				"profile": {
-					"title": "Profilo",
+					"title": "Impostazioni",
 					"text": "Credenziali, privacy e impostazioni account"
 				},
 				"stats": {
@@ -440,17 +565,90 @@
 		}
 	},
 	"session": {
-		"edit": { "viewSummary": "Riepilogo" },
+		"edit": {
+			"title": "Modifica uscita",
+			"viewSummary": "Riepilogo"
+		},
 		"untitled": "Uscita",
 		"ongoing": {
 			"close": "Chiudi uscita",
 			"closed": "Uscita chiusa",
-			"editFull": "Modifica altri dati"
+			"editFull": "Modifica luogo, meteo e note",
+			"live": "In corso · dalle {time}",
+			"statCatches": "catture",
+			"statKg": "kg totali",
+			"statHours": "ore a pesca",
+			"addCatch": "Aggiungi cattura",
+			"catchesTitle": "Catture",
+			"releasedLower": "rilasciata",
+			"dataLink": "Dati uscita",
+			"newCatch": "Nuova cattura",
+			"editCatch": "Modifica cattura",
+			"whichFish": "Che pesce è?",
+			"measures": "Misure",
+			"photos": "Foto",
+			"takePhoto": "Scatta",
+			"gallery": "Dalla galleria",
+			"releasedSub": "L'hai rimesso in acqua",
+			"otherDetails": "Altri dettagli",
+			"otherDetailsSub": "Ora, esca, montatura, distanza, note",
+			"saveCatch": "Salva cattura",
+			"saveAndAnother": "Salva e aggiungine un'altra",
+			"howWent": "Com'è andata?",
+			"notesOptional": "Note (facoltative)",
+			"notesPlaceholder": "Esche che hanno funzionato, mare, cosa ricordare...",
+			"whoCanSee": "Chi può vederla",
+			"canEditLater": "Potrai modificarla anche dopo.",
+			"badge": "Uscita in corso",
+			"backToList": "Torna alle uscite",
+			"emptyTitle": "Ancora nessun pesce",
+			"emptyText": "Quando abbocca, tocca «Aggiungi cattura».",
+			"saved": "Salvate",
+			"addFish": "Aggiungi pesce",
+			"newFish": "Nuovo pesce",
+			"editFish": "Modifica pesce",
+			"useName": "Usa questo nome",
+			"changeSpecies": "Cambia specie",
+			"optional": "facoltativo",
+			"released": "Rilasciato",
+			"noDetails": "Nessun peso o misura",
+			"saveFish": "Salva pesce",
+			"fishSaved": "Cattura salvata",
+			"photosToAdd": "{n} foto da aggiungere",
+			"photosSaved": "{n} foto già salvate",
+			"photosOffline": "Pesce salvato, ma le foto si possono aggiungere solo con connessione: riapri il pesce quando sei online.",
+			"moreDetails": "Più dettagli (esca, ora, note)",
+			"lessDetails": "Meno dettagli",
+			"rigHint": "Montatura, lenza e altri dettagli tecnici: dal pulsante «Modifica luogo, meteo e note».",
+			"listTitle": "Pesci catturati ({n})",
+			"emptyList": "Ancora nessuna cattura. Tocca «Aggiungi cattura» per registrare la prima.",
+			"closeHint": "Hai finito di pescare? Termina l'uscita: potrai sempre modificarla dopo.",
+			"count": "Nessun pesce | 1 pesce | {n} pesci",
+			"hint": "Cerca la specie o tocca Aggiungi: ogni pesce si salva da solo.",
+			"saving": "Salvataggio…",
+			"savedAuto": "Salvato automaticamente",
+			"needsSpecies": "Indica la specie per salvare questo pesce.",
+			"backToSummary": "Vedi riepilogo",
+			"closeDialogTitle": "Chiudere l'uscita?",
+			"closeDialogText": "L'uscita sarà segnata come conclusa, con {n} pesci registrati. Potrai comunque modificarla dopo. | L'uscita sarà segnata come conclusa, con {n} pesci registrati. Potrai comunque modificarla dopo.",
+			"keepFishing": "Continua a pescare",
+			"weight": "Peso",
+			"length": "Lunghezza",
+			"weightAria": "Peso in chilogrammi",
+			"lengthAria": "Lunghezza in centimetri",
+			"fight": "Combattimento",
+			"fightAria": "Durata del combattimento in minuti",
+			"releasedShort": "Rilasciato",
+			"hoursLabel": "ore",
+			"visPrivateHint": "Solo tu la vedi.",
+			"visUsersHint": "Visibile a tutti gli utenti.",
+			"visGroupHint": "Visibile ai gruppi scelti."
 		},
 		"view": {
 			"notFound": "Sessione non trovata.",
 			"backToList": "← Torna alla lista",
 			"allSessions": "← Tutte le uscite",
+			"linkedSession": "Uscita collegata",
 			"visibility": {
 				"private": "Privata",
 				"users": "Tutti gli utenti",
@@ -539,7 +737,17 @@
 			"statLabels": {
 				"time": "Orario",
 				"catches": "Catture",
-				"best": "Migliore"
+				"best": "Migliore",
+				"bestCm": "Migliore",
+				"duration": "Durata"
+			},
+			"photoWord": "foto",
+			"conditions": "Condizioni",
+			"speciesCard": "Scheda specie",
+			"conditionLabels": {
+				"tide": "Marea",
+				"wind": "Vento",
+				"waterAir": "Acqua / Aria"
 			}
 		}
 	},
@@ -561,16 +769,59 @@
 			"confirm": "L'operazione non è reversibile."
 		}
 	},
+	"sessions": {
+		"since": "dalle {time}",
+		"resume": "Riprendi",
+		"catchesCount": "{n} cattura | {n} catture"
+	},
 	"sessionFilters": {
+		"dates": "Date",
 		"searchPlaceholder": "Cerca luogo, note...",
+		"all": "Tutte",
 		"allTechniques": "Tutte le tecniche",
 		"reset": "Reset"
 	},
 	"sessionForm": {
+		"essential": {
+			"detect": "Rileva luogo e meteo",
+			"detectSub": "Usa la tua posizione per compilare luogo, acqua e meteo.",
+			"where": "Dove",
+			"detected": "posizione rilevata",
+			"when": "Quando",
+			"alreadyDone": "Uscita già conclusa",
+			"water": "Dove peschi",
+			"start": "Inizia a pescare",
+			"save": "Salva uscita",
+			"later": "Acqua, meteo e note li aggiungi dopo, quando vuoi.",
+			"detectedHere": "Posizione rilevata",
+			"required": "obbligatorio",
+			"whereRequired": "Scrivi dove stai pescando: il luogo è obbligatorio.",
+			"dateRequired": "Indica la data dell'uscita."
+		},
+		"menu": {
+			"filled": "Compilato",
+			"toAdd": "Da aggiungere",
+			"catchesCount": "{n} catture",
+			"sub": {
+				"base": "Titolo, data, orari, tecnica, voto",
+				"location": "Luogo, spot, coordinate, mappa",
+				"water": "Mare, onde, marea, colore, temperatura",
+				"weather": "Tempo, vento, pressione, temperatura",
+				"catches": "Pesci catturati e dettagli",
+				"notes": "Visibilità e note"
+			},
+			"back": "Tutte le sezioni",
+			"pageTitle": "Dati dell'uscita",
+			"done": "Fatto",
+			"delete": "Elimina uscita",
+			"deleteConfirm": "Eliminare questa uscita? L'operazione non si può annullare.",
+			"autofill": "Compila luogo e meteo",
+			"autofillSub": "Dal GPS, in un tocco"
+		},
 		"requiredToContinue": "Completa i campi obbligatori per continuare",
 		"blocked": {
-			"base": "Prima di chiudere questa sezione, inserisci la data dell'uscita.",
-			"location": "Prima di chiudere questa sezione, scrivi il nome del luogo dove hai pescato."
+			"base": "Inserisci la data dell'uscita.",
+			"location": "Scrivi il nome del luogo dove hai pescato."
 		},
 		"sections": {
 			"base": "Dati uscita",
@@ -669,11 +920,11 @@
 		"visibility": {
 			"private": "Solo io",
 			"users": "Tutti gli utenti",
-			"group": "Gruppi specifici"
+			"group": "Gruppi"
 		},
 		"autoFill": {
 			"title": "Compila posizione, meteo e condizioni acqua automaticamente",
-			"subtitle": "Rileva la tua posizione GPS e recupera i dati storici del giorno selezionato tramite Open-Meteo",
+			"subtitle": "Recupera meteo e condizioni acqua per luogo, data e ora indicati. Puoi ricalcolarli dopo aver cambiato luogo, data o ora.",
 			"collapsedHint": "Compilazione automatica di posizione, meteo e condizioni acqua",
 			"disclaimer": "I dati sono una stima basata sulla zona e sulla data: possono non rispecchiare esattamente le condizioni reali nel punto in cui hai pescato.",
 			"loading": "Recupero...",
@@ -695,7 +946,10 @@
 				"seaState": "stato mare",
 				"waveHeight": "altezza onde",
 				"wavePeriod": "periodo onde"
-			}
+			},
+			"recalc": "Ricalcola",
+			"noPlace": "Imposta il luogo o usa il GPS per recuperare i dati",
+			"offline": "Sei offline: riprova quando c'è connessione"
 		},
 		"waterSection": {
 			"sea": "Condizioni mare",
@@ -705,6 +959,9 @@
 		},
 		"saving": "Salvataggio...",
 		"saved": "Modifiche salvate.",
+		"expandAll": "Espandi tutte le sezioni",
+		"collapseAll": "Comprimi sezioni",
+		"ongoingRedirect": "Hai già un'uscita in corso: continua da qui.",
 		"submitCreate": "Salva uscita",
 		"submitEdit": "Aggiorna uscita"
 	},
@@ -767,7 +1024,7 @@
 		"takePhoto": "Scatta foto",
 		"uploadPhoto": "Carica foto",
 		"photoHint": "Le foto scelte qui verranno caricate quando salvi l'uscita.",
-		"add": "+ Aggiungi cattura",
+		"add": "+ Aggiungi pesce",
 		"empty": "Nessuna cattura registrata. Usa la ricerca o i suggerimenti qui sopra.",
 		"alreadyEmpty": "C'è già una cattura senza specie: completa quella prima di aggiungerne un'altra.",
 		"deleteDialog": {
@@ -776,18 +1033,43 @@
 		}
 	},
 	"speciesQuickAdd": {
-		"caughtHere": "{n} volte qui",
+		"label": "Che pesce hai preso?",
+		"resultsTitle": "Risultati. Tocca per scegliere.",
+		"suggestionsTitle": "Le tue più frequenti. Tocca per scegliere.",
+		"caughtHere": "{n} qui | {n} qui",
 		"popularFallback": "Specie comune",
-		"searchPlaceholder": "Cerca un'altra specie...",
+		"searchPlaceholder": "Cerca la specie",
+		"searchAria": "Cerca specie",
 		"noResults": "Nessun pesce trovato",
 		"reportMissing": "Segnala pesce mancante",
 		"reportNotePlaceholder": "Note per il supporto (opzionale)",
 		"reportSend": "Invia segnalazione",
 		"reportSent": "Segnalazione inviata, grazie!"
 	},
+	"placeInput": {
+		"useMyPosition": "Usa la mia posizione",
+		"pickOnMap": "Scegli sulla mappa",
+		"useThisPoint": "Usa questo punto",
+		"noGps": "Il dispositivo non fornisce la posizione.",
+		"gpsDenied": "Non riesco a leggere la posizione: controlla i permessi.",
+		"keyMissing": "Google Maps non è configurato: manca la chiave VITE_GOOGLE_MAPS_KEY (dopo averla aggiunta serve rifare il build del client).",
+		"keyRejected": "Google ha rifiutato la chiave: controlla che Maps JavaScript, Places e Geocoding siano abilitati, la fatturazione attiva e il dominio consentito.",
+		"errReferer": "Google rifiuta questo dominio ({origin}): aggiungilo ai referrer HTTP consentiti della chiave (es. {origin}/*) nella Google Cloud Console.",
+		"errApi": "Una delle API non è abilitata o la chiave non può usarla: abilita Maps JavaScript API, Places API (New) e Geocoding API e consentile nelle restrizioni della chiave.",
+		"errBilling": "La fatturazione del progetto Google non è attiva (o la quota è esaurita): attivala nella Cloud Console.",
+		"errInvalid": "La chiave Google non è valida o è scaduta: controlla VITE_GOOGLE_MAPS_KEY e rifai il build.",
+		"errEmpty": "Google ha risposto ma non ha fornito la mappa: di solito la chiave ha restrizioni che non includono questo sito ({origin}). Nei referrer HTTP consentiti metti sia il dominio senza sottodominio (es. fishlog.it/*) sia quello con (*.fishlog.it/*) e controlla che Maps JavaScript, Places (New) e Geocoding siano abilitate. Se è tutto giusto, prova senza ad-blocker.",
+		"errBlocked": "Lo script di Google Maps è bloccato (rete, ad-blocker o Content-Security-Policy del server): consenti maps.googleapis.com e maps.gstatic.com.",
+		"errTimeout": "Google Maps non risponde: controlla la connessione e riprova.",
+		"errInit": "Errore imprevisto nel caricamento di Google Maps: ",
+		"loadFailed": "Non riesco a contattare Google Maps, riprova tra poco.",
+		"noResults": "Nessun luogo trovato."
+	},
 	"locationPicker": {
 		"hint": "Cerca un luogo o clicca sulla mappa per impostare le coordinate",
-		"namePlaceholder": "Cerca un luogo..."
+		"namePlaceholder": "Cerca un luogo...",
+		"searchError": "Ricerca non disponibile, riprova tra poco.",
+		"mapError": "Non riesco a caricare la mappa."
 	},
 	"offline": {
 		"offlineBanner": "Sei offline — le modifiche restano salvate sul dispositivo e verranno inviate al server alla riconnessione",
@@ -798,6 +1080,22 @@
 		"sessionPendingNotice": "Questa uscita è salvata solo su questo dispositivo. I media potranno essere caricati dopo la sincronizzazione con il server."
 	},
 	"posts": {
+		"linkedSession": "Uscita collegata",
+		"more": "Altre azioni",
+		"save": "Salva",
+		"unsave": "Rimuovi dai salvati",
+		"like": "Mi piace",
+		"comment": "Commenta",
+		"share": "Condividi",
+		"likesCount": "{n} mi piace | {n} mi piace | {n} mi piace",
+		"viewComments": "Vedi il commento | Vedi tutti i {n} commenti",
+		"addComment": "Aggiungi un commento",
+		"time": {
+			"now": "ora",
+			"minutes": "{n} min fa",
+			"hours": "{n} h fa",
+			"yesterday": "ieri"
+		},
 		"eventBadge": "Evento",
 		"comments": {
 			"placeholder": "Scrivi un commento...",
@@ -829,6 +1127,12 @@
 			}
 		},
 		"form": {
+			"linkedSession": "Uscita collegata",
+			"noSession": "Nessuna uscita",
+			"linkedHint": "Luogo, specie e misure della cattura vengono mostrati sul post. Le coordinate esatte restano nascoste.",
+			"featuredCatch": "Cattura in evidenza",
+			"noCatch": "Nessuna",
+			"whoCanSee": "Chi lo vede",
 			"typePost": "Post",
 			"typeEvent": "Evento",
 			"titlePlaceholder": "Titolo (es. Cerco compagni di pesca)",
@@ -836,11 +1140,25 @@
 			"locationPlaceholder": "Luogo",
 			"submit": "Pubblica",
 			"saving": "...",
-			"bodyRequired": "Testo obbligatorio",
-			"groupRequired": "Seleziona un gruppo"
+			"bodyRequired": "Scrivi il testo del post",
+			"groupRequired": "Seleziona un gruppo",
+			"pageTitle": "Nuovo post",
+			"bodyLabel": "Cosa vuoi raccontare?",
+			"chooseGroup": "Scegli un gruppo",
+			"mediaLabel": "Foto e video",
+			"eventName": "Nome evento",
+			"eventDesc": "Descrizione",
+			"eventDate": "Data e ora",
+			"onlyMe": "Solo io",
+			"eventNameRequired": "Dai un nome all'evento",
+			"savingPct": "Pubblico… {n}%"
 		},
 		"tabs": {
 			"posts": "Post",
+			"forYou": "Per te",
+			"friends": "Amici",
+			"groups": "Gruppi",
+			"saved": "Salvati",
 			"events": "Eventi"
 		},
 		"filters": {
@@ -880,12 +1198,48 @@
 			"empty": {
 				"title": "Nessun post",
 				"text": "Pubblica il tuo primo post o evento"
-			}
+			},
+			"statPosts": "post",
+			"statEvents": "eventi",
+			"statFriends": "amici",
+			"filter": "Filtra",
+			"filterAll": "Tutti",
+			"filterPosts": "Post",
+			"filterEvents": "Eventi",
+			"errorTitle": "Non riesco a caricare la bacheca",
+			"errorText": "Controlla la connessione e riprova."
+		},
+		"composePrompt": "Cosa hai pescato oggi?",
+		"detail": {
+			"title": "Post",
+			"notFound": "Post non trovato"
 		}
 	},
 	"market": {
+		"viewsCount": "{n} visualizzazioni | {n} visualizzazione | {n} visualizzazioni",
+		"visibility": {
+			"all": "Tutti",
+			"friends": "Amici",
+			"groups": "Gruppi",
+			"allHint": "Visibile a tutti. Chi non è tuo amico può scriverti, se lo permetti in Privacy.",
+			"friendsHint": "Solo i tuoi amici vedono l'annuncio.",
+			"groupsHint": "Solo i membri dei gruppi scelti vedono l'annuncio."
+		},
+		"view": {
+			"label": "Come vedere gli elenchi",
+			"grid": "Griglia",
+			"list": "Elenco",
+			"large": "Schede grandi",
+			"grid3": "Griglia fitta"
+		},
+		"title": "Market",
+		"sell": "Vendi",
 		"newListing": "Nuovo annuncio",
 		"contactSeller": "Contatta venditore",
+		"description": "Descrizione",
+		"seller": "Venditore",
+		"photo": "Foto",
+		"share": "Condividi",
 		"deleteConfirm": "Eliminare questo annuncio?",
 		"tabs": {
 			"listings": "Annunci",
@@ -930,6 +1284,7 @@
 			"unverified": "Negozio (in verifica)"
 		},
 		"status": {
+			"label": "Stato dell'annuncio",
 			"active": "Disponibile",
 			"reserved": "Prenotato",
 			"sold": "Venduto",
@@ -937,6 +1292,8 @@
 		},
 		"filters": {
 			"title": "Filtri",
+			"all": "Tutte",
+			"active": "Filtro attivo:",
 			"searchPlaceholder": "Cerca annunci...",
 			"allCategories": "Tutte le categorie",
 			"allConditions": "Nuovo o usato",
@@ -953,7 +1310,15 @@
 			"price": "Prezzo (€)",
 			"location": "Zona",
 			"locationPlaceholder": "Es. Genova",
+			"whoCanSee": "Chi può vedere l'annuncio",
+			"chooseGroups": "Scegli i gruppi",
+			"noGroups": "Non fai ancora parte di nessun gruppo.",
+			"groupRequired": "Scegli almeno un gruppo.",
 			"photos": "Foto",
+			"cover": "Copertina",
+			"add": "Aggiungi",
+			"titlePlaceholder": "es. Canna spinning 2,70 m",
+			"descriptionPlaceholder": "Stato, accessori inclusi, modalità di ritiro",
 			"addPhotos": "Aggiungi foto",
 			"publish": "Pubblica annuncio",
 			"saving": "Salvataggio..."
@@ -1010,10 +1375,17 @@
 			"title": "Aspetto",
 			"hint": "Scegli come vuoi vedere l'app",
 			"light": "Chiaro",
-			"dark": "Scuro"
+			"dark": "Scuro",
+			"motion": "Riduci animazioni",
+			"motionAuto": "Auto",
+			"motionYes": "Sì",
+			"motionNo": "No",
+			"motionHint": "Auto segue l'impostazione del telefono. Con \"Sì\" le schermate si dissolvono soltanto."
 		},
 		"privacy": {
 			"title": "Privacy",
+			"marketMessages": "Messaggi dal Market",
+			"marketMessagesHint": "Chi non è tuo amico può scriverti a proposito dei tuoi annunci pubblici.",
 			"defaultVisibilityLabel": "Visibilità di default",
 			"hint": "Usata come preselezione quando crei una nuova uscita o un nuovo post"
 		},
@@ -1046,12 +1418,67 @@
 			"text": "Azione irreversibile: verranno eliminati account, uscite e post.",
 			"deleteAccount": "Elimina il mio account",
 			"confirm": "Sei sicuro? L'operazione non è reversibile."
+		},
+		"settingsTitle": "Impostazioni",
+		"menu": {
+			"title": "Menu",
+			"edit": "Impostazioni profilo",
+			"editSub": "Nome, foto, bio, luogo",
+			"privacy": "Privacy",
+			"privacySub": "Chi vede post, storie e uscite",
+			"notifications": "Notifiche",
+			"notificationsSub": "Cosa vuoi ricevere",
+			"logout": "Esci",
+			"logoutSub": "Torna alla schermata di accesso"
+		},
+		"board": {
+			"sessions": "uscite",
+			"catches": "catture",
+			"friends": "amici",
+			"edit": "Modifica profilo",
+			"share": "Condividi profilo",
+			"linkCopied": "Link copiato",
+			"tabPosts": "Post",
+			"tabSessions": "Uscite",
+			"tabSaved": "Salvati",
+			"createFirst": "Crea il primo post",
+			"empty": {
+				"posts": {
+					"title": "Nessun post",
+					"text": "Condividi la tua prima cattura o pescata."
+				},
+				"sessions": {
+					"title": "Nessuna uscita",
+					"text": "Le tue uscite di pesca compariranno qui."
+				},
+				"saved": {
+					"title": "Nessun post salvato",
+					"text": "Salva i post che vuoi ritrovare: li vedi solo tu."
+				}
+			}
+		},
+		"settings": {
+			"title": "Impostazioni profilo",
+			"changePhoto": "Cambia foto",
+			"photoHint": "JPG o PNG, fino a 5 MB",
+			"photoTooBig": "La foto supera i 5 MB",
+			"name": "Nome",
+			"username": "Nome utente",
+			"usernameHint": "Lo vedono tutti, anche fuori dagli amici.",
+			"usernameFormat": "3-30 caratteri: lettere, numeri, punto e trattino basso",
+			"bio": "Bio",
+			"location": "Luogo",
+			"locationHint": "Mostrato sotto il nome, con le coordinate della tua zona.",
+			"save": "Salva modifiche"
 		}
 	},
 	"stats": {
 		"totalSessions": "Uscite totali",
 		"totalCatches": "Catture totali",
-		"avgRating": "Voto medio"
+		"avgRating": "Voto medio",
+		"byMonth": "Catture per mese",
+		"last12": "ultimi 12 mesi",
+		"topSpecies": "Specie più catturate"
 	},
 	"profileStats": {
 		"label": "Numeri del profilo",
@@ -1092,11 +1519,15 @@
 	},
 	"leaderboard": {
 		"title": "Classifica",
-		"periods": { "week": "Settimana", "month": "Mese", "all": "Sempre" },
+		"periods": {
+			"week": "Settimana",
+			"month": "Mese",
+			"all": "Sempre"
+		},
 		"formula": "+10 per uscita pubblica, +3 per cattura registrata, +5 se l'uscita ha foto o video. Conta solo quello che è già visibile a tutti.",
 		"empty": "Nessuna uscita pubblica in questo periodo",
-		"sessionsCount": "{n} uscite",
-		"catchesCount": "{n} catture",
+		"sessionsCount": "{n} uscita | {n} uscite",
+		"catchesCount": "{n} cattura | {n} catture",
 		"you": "Tu"
 	},
 	"species": {
@@ -1137,12 +1568,348 @@
 			"source": "Fonte",
 			"disclaimer": "Il testo vincolante è sempre il provvedimento ufficiale citato, non questo riassunto."
 		},
-		"badges": { "seasonNow": "Stagione ora", "minSize": "Minima {n} cm" },
+		"badges": {
+			"seasonNow": "Stagione ora",
+			"minSize": "Minima {n} cm"
+		},
 		"catchCount": "{n} catture registrate",
 		"scientificName": "Nome scientifico",
 		"months": {
-			"1": "Gen", "2": "Feb", "3": "Mar", "4": "Apr", "5": "Mag", "6": "Giu",
-			"7": "Lug", "8": "Ago", "9": "Set", "10": "Ott", "11": "Nov", "12": "Dic"
+			"1": "Gen",
+			"2": "Feb",
+			"3": "Mar",
+			"4": "Apr",
+			"5": "Mag",
+			"6": "Giu",
+			"7": "Lug",
+			"8": "Ago",
+			"9": "Set",
+			"10": "Ott",
+			"11": "Nov",
+			"12": "Dic"
+		}
+	},
+	"seller": {
+		"title": "Diventa venditore",
+		"verified": "Verificato",
+		"backToMarket": "Torna al market",
+		"intro": {
+			"title": "Prima la verifica",
+			"text": "Per tutelare chi compra, i venditori vengono controllati dal team prima di pubblicare annunci.",
+			"step1": "Invii i tuoi dati",
+			"step2": "Il team li controlla",
+			"step3": "Se approvato, configuri il profilo e pubblichi"
+		},
+		"who": "Chi sei",
+		"type": {
+			"privato": {
+				"name": "Privato",
+				"hint": "Vendo la mia attrezzatura"
+			},
+			"negozio": {
+				"name": "Negozio",
+				"hint": "Attività con P.IVA"
+			}
+		},
+		"business": "Dati dell'attività",
+		"legalName": "Ragione sociale",
+		"fullName": "Nome e cognome",
+		"vat": "Partita IVA",
+		"vatPlaceholder": "11 cifre",
+		"city": "Città",
+		"phone": "Telefono",
+		"document": {
+			"label": "Documento per la verifica",
+			"hint": "PDF o foto (massimo 10 MB), per esempio la visura camerale o un documento d'identità. Lo vede solo il team e non viene mostrato agli altri utenti.",
+			"already": "Documento già caricato: scegline un altro solo se vuoi sostituirlo."
+		},
+		"confirm": "Confermo che i dati sono veritieri e accetto le condizioni per i venditori.",
+		"submit": "Invia richiesta",
+		"resubmit": "Modifica e reinvia",
+		"pending": {
+			"title": "Richiesta in revisione",
+			"text": "Il team sta controllando i tuoi dati. Ti avvisiamo appena c'è una risposta.",
+			"noPublish": "Finché la richiesta non è approvata non puoi pubblicare come negozio: nel frattempo puoi vendere come privato."
+		},
+		"rejected": {
+			"title": "Richiesta non approvata",
+			"reason": "Motivo:",
+			"hint": "Correggi i dati qui sotto e reinvia la richiesta."
+		},
+		"shop": {
+			"title": "Il tuo negozio",
+			"intro": "La verifica è completata. Completa la scheda che vedranno i compratori.",
+			"uploadLogo": "Carica logo",
+			"logoHint": "JPG, PNG o WEBP, massimo 5 MB.",
+			"name": "Nome del negozio",
+			"nameHint": "È il nome che vedono i compratori negli annunci.",
+			"description": "Descrizione",
+			"legalTitle": "Ragione sociale e P.IVA (verificate)",
+			"legalHint": "Per cambiarle serve una nuova verifica.",
+			"website": "Sito web (se ce l'hai)",
+			"delivery": "Come consegni",
+			"deliveryOptions": {
+				"ritiro": "Ritiro in negozio",
+				"spedizione": "Spedizione"
+			},
+			"contact": "Contatto per i compratori",
+			"saveAndPublish": "Salva e pubblica un annuncio",
+			"saveAndBack": "Salva e torna al market"
+		},
+		"site": {
+			"title": "Vuoi un sito per il tuo negozio?",
+			"text": "Possiamo realizzarlo noi, con i tuoi prodotti e il tuo logo. Se ti interessa, lasciaci un contatto e ti scriviamo senza impegno.",
+			"yes": "Sì, contattatemi",
+			"no": "No, grazie",
+			"thanks": "Grazie, ti scriviamo presto."
+		},
+		"gate": {
+			"title": "Negozio in verifica",
+			"text": "Hai chiesto di vendere come negozio: potrai pubblicare appena il team approva. Intanto puoi vendere come privato."
+		},
+		"becomeSeller": "Vendi come privato o negozio",
+		"startPrivate": "Inizia a vendere",
+		"switchToPrivate": "Vendi come privato",
+		"private": {
+			"title": "Vendi subito, senza verifica",
+			"text": "Come privato non servono P.IVA né documenti: pubblica i tuoi annunci e gli acquirenti ti contattano in chat. I negozi con P.IVA possono chiedere la verifica per avere vetrina e badge."
+		}
+	},
+	"globe": {
+		"title": "Mappamondo delle tue pescate",
+		"eyebrow": "Le tue pescate",
+		"count": "Nessun luogo sul mappamondo | 1 luogo sul mappamondo | {n} luoghi sul mappamondo",
+		"you": "Tu sei qui",
+		"catchesLegend": "Pescate",
+		"dragHint": "Due dita per muovere la mappa",
+		"layer": "Satellite / mappa",
+		"tilesError": "Non riesco a caricare le immagini della mappa.",
+		"mapError": "Non riesco a caricare la mappa.",
+		"zoomIn": "Ingrandisci",
+		"zoomOut": "Riduci",
+		"myPosition": "Vai alla mia posizione",
+		"showCatches": "Mostra le mie pescate",
+		"sessionsHere": "Uscite in questo luogo",
+		"catches": "nessuna cattura | 1 cattura | {n} catture",
+		"aria": "Mappamondo senza uscite registrate | Mappamondo con 1 uscita registrata | Mappamondo con {n} uscite registrate",
+		"clusterLabel": "{n} uscite vicine",
+		"listToggle": "Mostra l'elenco delle uscite",
+		"empty": "Appena registri un'uscita con la posizione, la vedrai qui.",
+		"geoDenied": "Non posso usare la tua posizione: consenti l'accesso alla posizione nelle impostazioni del browser.",
+		"geoUnavailable": "Questo dispositivo non fornisce la posizione."
+	},
+	"stories": {
+		"rail": "Storie",
+		"yours": "La tua storia",
+		"new": "Nuova storia",
+		"new_title": "Nuova storia",
+		"close": "Chiudi",
+		"chooseMedia": "Scatta o scegli una foto",
+		"takePhoto": "Scatta",
+		"fromGallery": "Dalla galleria",
+		"stickers": "Adesivi della pesca",
+		"stickerCatch": "Cattura",
+		"stickerPlace": "Luogo",
+		"stickerWater": "Acqua e meteo",
+		"pickCatch": "Quale cattura?",
+		"noSession": "Registra prima un'uscita per aggiungere adesivi.",
+		"hookLabel": "Abboccata!",
+		"whoSees": "Chi la vede",
+		"everyone": "Tutti",
+		"friendsOnly": "Solo amici",
+		"ttlHint": "Resta visibile per 24 ore, poi sparisce. Puoi salvarla nell'uscita.",
+		"publish": "Pubblica la storia",
+		"publishing": "Pubblicazione…",
+		"redo": "Rifai",
+		"published": "Storia pubblicata",
+		"empty": "Aggiungi una foto o almeno un adesivo.",
+		"ago": "{n} h fa",
+		"agoMin": "{n} min fa",
+		"justNow": "ora",
+		"reply": "Rispondi a {name}…",
+		"sendReply": "Invia risposta",
+		"like": "Mi piace",
+		"more": "Altre azioni",
+		"delete": "Elimina storia",
+		"deleteConfirm": "Eliminare questa storia?",
+		"replySent": "Risposta inviata",
+		"replyPrefix": "Risposta alla tua storia",
+		"views": "{n} visualizzazioni",
+		"noStories": "Nessuna storia da mostrare.",
+		"openSession": "Apri l'uscita"
+	},
+	"validation": {
+		"required": "Campo obbligatorio",
+		"accept": "Devi accettare per continuare",
+		"file": "Seleziona un file",
+		"email": "Inserisci un'email valida",
+		"format": "Formato non valido",
+		"range": "Valore non valido",
+		"tooShort": "Testo troppo corto"
+	},
+	"weather": {
+		"title": "Meteo e mare",
+		"missing": "dato non disponibile",
+		"loading": "Carico meteo e mare…",
+		"updatedAt": "aggiornato alle",
+		"refresh": "Aggiorna meteo e mare",
+		"refreshing": "Aggiorno…",
+		"refreshShort": "Aggiorna",
+		"refreshingShort": "Aggiorno…",
+		"retry": "Riprova",
+		"yourPosition": "La tua posizione",
+		"partial": "Alcuni dati non sono disponibili in questo momento. Mostriamo «—» al posto dei valori mancanti.",
+		"degraded": "Servizio meteo in modalità ridotta: alcuni dati possono mancare o non essere aggiornati. Dati delle {time}.",
+		"disclaimer": "Dati indicativi da Google e Open-Meteo, non per la navigazione. Verifica sempre le condizioni reali prima di uscire.",
+		"mode": {
+			"label": "Dove guardare",
+			"here": "Qui",
+			"search": "Cerca un luogo"
+		},
+		"search": {
+			"placeholder": "Cerca un luogo, un porto, una spiaggia…",
+			"zones": "Zone di mare"
+		},
+		"now": {
+			"title": "Adesso",
+			"temp": "Aria",
+			"feels": "percepita",
+			"wind": "Vento",
+			"gust": "raffiche",
+			"pressure": "Pressione",
+			"humidity": "Umidità",
+			"rain": "Pioggia",
+			"expected": "attesa",
+			"uv": "Indice UV",
+			"clouds": "Nuvole",
+			"cover": "copertura"
+		},
+		"wind": {
+			"calm": "Calmo",
+			"from": "da"
+		},
+		"pressure": {
+			"falling": "In calo",
+			"fallingStrong": "In forte calo",
+			"steady": "Stabile",
+			"rising": "In aumento",
+			"risingStrong": "In forte aumento",
+			"noTrend": "Tendenza non disponibile",
+			"unavailable": "Tendenza non disponibile: senza questo dato non possiamo darti una lettura.",
+			"chartLabel": "Pressione delle ultime ore, {n} rilevazioni",
+			"read": {
+				"falling": "Un calo di pressione spesso accompagna un cambio di tempo. È uno spunto, non una previsione.",
+				"steady": "Pressione senza grandi variazioni: condizioni che tendono a restare simili. Lettura indicativa.",
+				"rising": "Un aumento di pressione spesso accompagna un miglioramento. È uno spunto, non una previsione."
+			}
+		},
+		"sea": {
+			"title": "Mare",
+			"model": "Previsione del modello",
+			"wave": "Onda",
+			"period": "periodo",
+			"swell": "Onda lunga",
+			"temp": "Acqua",
+			"current": "Corrente",
+			"toward": "verso",
+			"tides": "Maree · prossime 48 h",
+			"estimate": "Stima",
+			"high": "Alta",
+			"low": "Bassa",
+			"tideNote": "Stima del modello (livello del mare), non una tabella delle maree: nel Mediterraneo l'escursione è piccola. Non usarla per la navigazione.",
+			"tideAria": "Maree stimate nelle prossime 48 ore: {summary}",
+			"noExtremes": "nessun massimo o minimo previsto",
+			"none": "Qui non ci sono dati sul mare. Per laghi, fiumi e zone interne mostriamo solo il meteo.",
+			"waves": "Altezza dell'onda · prossime 48 h",
+			"waveMax": "Massimo {h} m alle {time}",
+			"waveAria": "Altezza dell'onda nelle prossime 48 ore: da {first} m a {last} m, massimo {max} m alle {time}",
+			"noTides": "Maree non disponibili per questo luogo: il modello non copre questo punto."
+		},
+		"glance": {
+			"title": "Colpo d'occhio per la pesca",
+			"moon": "Luna",
+			"lit": "illuminata",
+			"sun": "Alba e tramonto",
+			"dawn": "Alba",
+			"dusk": "Tramonto",
+			"ofLight": "di luce",
+			"pressure": "Pressione · ultime 6 ore"
+		},
+		"hourly": {
+			"title": "Ora per ora",
+			"region": "Previsione ora per ora di {day}, scorri con le frecce",
+			"legend": "Vento in km/h, la freccia indica dove soffia. Pioggia = probabilità.",
+			"days": "Giorno da mostrare",
+			"fromOm": "Da qui: Open-Meteo",
+			"source": "Le prime 48 ore vengono da Google, le successive da Open-Meteo: più lontano nel tempo, meno precise."
+		},
+		"daily": {
+			"title": "Prossimi 15 giorni",
+			"day": "Giorno",
+			"sky": "Cielo",
+			"temp": "Max / min",
+			"wind": "Vento",
+			"rain": "Pioggia",
+			"wave": "Onda max",
+			"fromOm": "Da qui: previsioni Open-Meteo",
+			"source": "Dal giorno {n} le previsioni vengono da Open-Meteo (Google arriva a 10 giorni). Oltre una settimana sono indicative."
+		},
+		"denied": {
+			"title": "Posizione non consentita",
+			"text": "Non possiamo leggere la tua posizione. Puoi cercare un luogo a mano oppure riattivare il permesso."
+		},
+		"unavailable": {
+			"title": "Posizione non trovata",
+			"text": "Non riusciamo a trovare dove sei. Riprova all'aperto o cerca un luogo a mano."
+		},
+		"offline": {
+			"title": "Sei offline.",
+			"empty": "Non ci sono dati salvati per questo luogo. Si caricheranno appena torni online.",
+			"banner": "Dati non aggiornati: ultimo aggiornamento alle {time}. Si aggiornano da soli appena torni online.",
+			"cardShort": "Non aggiornato · dati delle {time}"
+		},
+		"error": {
+			"title": "Meteo non disponibile",
+			"text": "Il servizio meteo non risponde. Riprova tra poco.",
+			"stale": "Non riusciamo ad aggiornare: mostriamo i dati delle {time}."
+		},
+		"noPlace": {
+			"title": "Dove vuoi guardare il meteo?",
+			"text": "Usa la tua posizione oppure cerca un luogo."
+		},
+		"help": {
+			"open": "Come riattivare",
+			"title": "Come riattivare la posizione",
+			"intro": "Il permesso si cambia dalle impostazioni del dispositivo o del browser.",
+			"close": "Ho capito",
+			"ios": {
+				"name": "iPhone e iPad",
+				"s1": "Apri Impostazioni → Privacy e sicurezza → Localizzazione.",
+				"s2": "Cerca Safari (o l'app FishLog) e scegli «Mentre usi l'app».",
+				"s3": "Torna in FishLog e tocca «Qui»."
+			},
+			"android": {
+				"name": "Android",
+				"s1": "Tocca il lucchetto accanto all'indirizzo nel browser → Autorizzazioni.",
+				"s2": "Imposta Posizione su «Consenti».",
+				"s3": "Ricarica la pagina e tocca «Qui»."
+			},
+			"desktop": {
+				"name": "Computer",
+				"s1": "Clicca l'icona accanto all'indirizzo (lucchetto o impostazioni del sito).",
+				"s2": "Imposta Posizione su «Consenti».",
+				"s3": "Ricarica la pagina e clicca «Qui»."
+			}
+		},
+		"card": {
+			"label": "Meteo e mare",
+			"title": "Meteo e mare",
+			"noPlace": "Scegli un luogo per vedere meteo e mare.",
+			"setPlace": "Imposta il luogo",
+			"open": "Apri meteo e mare",
+			"windKmh": "km/h",
+			"waveM": "onda m",
+			"rain": "pioggia"
 		}
 	}
 }

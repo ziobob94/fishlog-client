@@ -1,11 +1,11 @@
 <template>
   <RouterLink :to="`/market/shop/${shop._id}`"
-    class="group block bg-surface border border-border rounded-lg p-4
+    class="group block bg-surface border border-border rounded-signature p-4
            transition-all duration-200 hover:border-ocean hover:-translate-y-0.5
            hover:shadow-[0_4px_24px_rgba(14,165,233,0.1)]"
   >
     <div class="flex items-center gap-3">
-      <img v-if="shop.avatar" :src="shop.avatar" class="w-12 h-12 rounded-full object-cover shrink-0" />
+      <img v-if="shop.shop?.logo || shop.avatar" :src="shop.shop?.logo || shop.avatar" class="w-12 h-12 rounded-lg object-cover shrink-0" alt="" />
       <span v-else class="avatar-placeholder">{{ initials }}</span>
       <div class="min-w-0">
         <h3 class="font-bold text-sm truncate text-foam">{{ shop.shop?.name || shop.displayName }}</h3>
@@ -18,6 +18,7 @@
 </template>
 
 <script setup>
+import { toInitials } from '../../utils/initials.js'
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { Tag } from 'lucide-vue-next'
@@ -27,13 +28,13 @@ const props = defineProps({ shop: { type: Object, required: true } })
 
 const initials = computed(() => {
   const name = props.shop.shop?.name || props.shop.displayName || '?'
-  return name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2)
+return toInitials(name)
 })
 </script>
 
 <style scoped>
 .avatar-placeholder {
-  @apply w-12 h-12 shrink-0 rounded-full border border-ocean text-ocean flex items-center
+  @apply w-12 h-12 shrink-0 rounded-full border border-ocean text-ocean-text flex items-center
          justify-center text-sm font-bold;
   background: var(--ocean-glow);
 }

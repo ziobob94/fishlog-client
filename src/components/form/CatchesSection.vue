@@ -7,6 +7,8 @@
       </template>
     </SpeciesQuickAdd>
 
+    <slot name="list-title" />
+
     <div v-if="modelValue.length" class="catches-table">
       <div class="catches-row catches-head">
         <span>{{ t('catchesSection.speciesLabel') }}</span>
@@ -37,16 +39,17 @@
             </div>
             <div class="field">
               <span class="mobile-label">{{ t('catchesSection.weightLabel') }}</span>
-              <input v-model.number="c.weightKg" type="number" step="0.01" min="0" :placeholder="t('catchesSection.weightPlaceholder')" @click.stop />
+              <input v-model.number="c.weightKg" :data-weight="i" type="number" inputmode="decimal" step="0.01" min="0" :placeholder="t('catchesSection.weightPlaceholder')" @click.stop />
             </div>
             <div class="field">
               <span class="mobile-label">{{ t('catchesSection.lengthLabel') }}</span>
-              <input v-model.number="c.lengthCm" type="number" step="0.5" min="0" :placeholder="t('catchesSection.lengthPlaceholder')" @click.stop />
+              <input v-model.number="c.lengthCm" type="number" inputmode="decimal" step="0.5" min="0" :placeholder="t('catchesSection.lengthPlaceholder')" @click.stop />
             </div>
           </div>
 
           <div class="row-actions">
-            <span v-show="c.released" class="released-badge" @click.stop :title="t('catchesSection.releasedLabel')">↺</span>
+            <button type="button" class="row-icon-btn row-released" :class="{ on: c.released }" :aria-pressed="!!c.released"
+              @click.stop="c.released = !c.released" :title="t('catchesSection.releasedLabel')">↺</button>
             <div class="row-photo-actions" @click.stop>
               <label class="row-icon-btn" :title="t('catchesSection.takePhoto')">
                 <Camera :size="18" />
@@ -73,11 +76,11 @@
             <div class="form-grid" v-if="isSubOpen(i, 'details')">
               <div class="form-group">
                 <label>{{ t('catchesSection.timeLabel') }}<FieldInfo :text="t('catchesSection.timeInfo')" /></label>
-                <input v-model="c.time" type="time" />
+                <input v-model="c.time" type="time" v-ph="'--:--'" />
               </div>
               <div class="form-group">
                 <label>{{ t('catchesSection.distanceLabel') }}<FieldInfo :text="t('catchesSection.distanceInfo')" /></label>
-                <input v-model.number="c.distance" type="number" min="0" />
+                <input v-model.number="c.distance" type="number" min="0" placeholder="metri" />
               </div>
               <div class="form-group">
                 <label>{{ t('catchesSection.directionLabel') }}<FieldInfo :text="t('catchesSection.directionInfo')" /></label>
@@ -111,7 +114,7 @@
               </div>
               <div class="form-group">
                 <label>{{ t('catchesSection.baitPresentationLabel') }}<FieldInfo :text="t('catchesSection.baitPresentationInfo')" /></label>
-                <input v-model="c.baitPresentation" type="text" />
+                <input v-model="c.baitPresentation" type="text" placeholder="es. a fondo, a galla" />
               </div>
             </div>
           </div>
@@ -124,39 +127,39 @@
             <div class="form-grid" v-if="isSubOpen(i, 'rig')">
               <div class="form-group">
                 <label>{{ t('catchesSection.rigUsedLabel') }}<FieldInfo :text="t('catchesSection.rigUsedInfo')" /></label>
-                <input v-model="c.rigUsed" type="text" />
+                <input v-model="c.rigUsed" type="text" placeholder="es. montatura a spigola" />
               </div>
               <div class="form-group">
                 <label>{{ t('catchesSection.rigTypeLabel') }}<FieldInfo :text="t('catchesSection.rigTypeInfo')" /></label>
-                <input v-model="c.rigType" type="text" />
+                <input v-model="c.rigType" type="text" placeholder="es. scorrevole" />
               </div>
               <div class="form-group">
                 <label>{{ t('catchesSection.hookSizeLabel') }}<FieldInfo :text="t('catchesSection.hookSizeInfo')" /></label>
-                <input v-model="c.hookSize" type="text" />
+                <input v-model="c.hookSize" type="text" placeholder="es. n. 2" />
               </div>
               <div class="form-group">
                 <label>{{ t('catchesSection.hookTypeLabel') }}<FieldInfo :text="t('catchesSection.hookTypeInfo')" /></label>
-                <input v-model="c.hookType" type="text" />
+                <input v-model="c.hookType" type="text" placeholder="es. a occhiello" />
               </div>
               <div class="form-group">
                 <label>{{ t('catchesSection.sinkerWeightLabel') }}<FieldInfo :text="t('catchesSection.sinkerWeightInfo')" /></label>
-                <input v-model.number="c.sinkerWeight" type="number" min="0" />
+                <input v-model.number="c.sinkerWeight" type="number" min="0" placeholder="grammi" />
               </div>
               <div class="form-group">
                 <label>{{ t('catchesSection.sinkerTypeLabel') }}<FieldInfo :text="t('catchesSection.sinkerTypeInfo')" /></label>
-                <input v-model="c.sinkerType" type="text" />
+                <input v-model="c.sinkerType" type="text" placeholder="es. a piramide" />
               </div>
               <div class="form-group">
                 <label>{{ t('catchesSection.lineMainLabel') }}<FieldInfo :text="t('catchesSection.lineMainInfo')" /></label>
-                <input v-model.number="c.lineMainLb" type="number" step="0.1" min="0" />
+                <input v-model.number="c.lineMainLb" type="number" step="0.1" min="0" placeholder="lb" />
               </div>
               <div class="form-group">
                 <label>{{ t('catchesSection.leaderLabel') }}<FieldInfo :text="t('catchesSection.leaderInfo')" /></label>
-                <input v-model.number="c.leaderLb" type="number" step="0.1" min="0" />
+                <input v-model.number="c.leaderLb" type="number" step="0.1" min="0" placeholder="lb" />
               </div>
               <div class="form-group">
                 <label>{{ t('catchesSection.swivelLabel') }}<FieldInfo :text="t('catchesSection.swivelInfo')" /></label>
-                <input v-model="c.swivel" type="text" />
+                <input v-model="c.swivel" type="text" placeholder="es. girella n. 10" />
               </div>
             </div>
           </div>
@@ -199,7 +202,7 @@
       </template>
     </div>
 
-    <p v-else class="catches-empty">{{ t('catchesSection.empty') }}</p>
+    <p v-else-if="!hideEmpty" class="catches-empty">{{ t('catchesSection.empty') }}</p>
 
     <datalist id="bait-suggestions">
       <option v-for="b in baitSuggestions" :key="b" :value="b" />
@@ -222,7 +225,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onBeforeUnmount, computed } from 'vue'
+import { ref, onMounted, onBeforeUnmount, computed, nextTick } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { Camera, Trash2, X, Upload, ChevronDown } from 'lucide-vue-next'
 import SpeciesQuickAdd from './SpeciesQuickAdd.vue'
@@ -257,12 +260,13 @@ function applyBaitType(c) {
 }
 const props = defineProps({
   modelValue: { type: Array, default: () => [] },
-  location:   { type: Object, default: () => ({}) }
+  location:   { type: Object, default: () => ({}) },
+  hideEmpty:  { type: Boolean, default: false }
 })
 const emit = defineEmits(['update:modelValue'])
 
 const empty = () => ({
-  species: '', weightKg: null, lengthCm: null, released: false,
+  species: '', weightKg: null, lengthCm: null, fightMinutes: null, released: false,
   time: '', distance: null, direction: '', notes: '',
   baitUsed: '', baitType: '', baitPresentation: '',
   rigUsed: '', rigType: '', hookSize: '', hookType: '',
@@ -401,6 +405,9 @@ function addCatch(species) {
   expanded.value = new Set([index]) // apre solo la nuova riga, in modo compatto
   openSubs.value = new Map([[index, new Set(['details'])]])
   searchQuery.value = ''
+  // Scelta la specie, il campo successivo da compilare è il peso: ci si
+  // porta il cursore (se la specie manca, resta alla compilazione del nome).
+  if (species) nextTick(() => document.querySelector(`[data-weight="${index}"]`)?.focus())
 }
 
 function add() {
@@ -505,6 +512,8 @@ function confirmRemove() {
 }
 .catches-head span:nth-child(1) { padding-left: .1rem; }
 
+.row-released { font-size: 1.05rem; }
+.row-released.on { background: rgba(92, 217, 138, .15); border-color: var(--success, #5cd98a); color: var(--success, #5cd98a); }
 .released-badge {
   align-items: center; color: var(--success, #5cd98a); cursor: default;
   display: flex; font-size: 1.05rem; justify-content: center;
@@ -529,7 +538,7 @@ function confirmRemove() {
 
 .row-photo-actions { align-items: center; display: flex; gap: .5rem; position: relative; }
 .row-photo-count {
-  background: var(--ocean, #0ea5e9); border-radius: 999px; color: #fff;
+  background: var(--ocean, #0ea5e9); border-radius: 999px; color: rgb(var(--color-on-primary));
   font-size: .62rem; font-weight: 700; line-height: 1; padding: .15rem .35rem;
   position: absolute; right: -.4rem; top: -.4rem;
 }

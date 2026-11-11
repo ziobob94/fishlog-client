@@ -3,7 +3,7 @@
 
   <div v-else class="thread">
     <div ref="scrollEl" class="messages-list">
-      <div v-if="chatStore.loading && !chatStore.messages.length" class="state-center"><div class="spinner"></div></div>
+      <div v-if="chatStore.loading && !chatStore.messages.length" class="state-center"><div class="m-spinner"></div></div>
 
       <template v-for="(m, i) in chatStore.messages" :key="m._id">
         <div v-if="showDateSeparator(m, i)" class="date-separator"><span>{{ formatDateSeparator(m.createdAt) }}</span></div>
@@ -12,8 +12,9 @@
           class="message-row"
           :class="{ mine: m.sender?._id === auth.user?._id }"
         >
-          <div class="message-bubble" :class="{ deleted: m.deleted }">
-            <span v-if="showSender(m)" class="message-sender">{{ m.sender?.displayName || m.sender?.email }}</span>
+          <div class="message-bubble" :class="[{ deleted: m.deleted }, !m.deleted && m.type ? `type-${m.type}` : '']">
+            <RouterLink v-if="showSender(m) && m.sender?._id" :to="`/users/${m.sender._id}`" class="message-sender">{{ m.sender?.displayName || m.sender?.email }}</RouterLink>
+            <span v-else-if="showSender(m)" class="message-sender">{{ m.sender?.displayName || m.sender?.email }}</span>
 
             <span v-if="m.deleted" class="message-text message-deleted-text">
               <Ban :size="14" /> {{ t('chat.deletedMessage') }}
@@ -22,13 +23,14 @@
             <template v-else>
               <span v-if="!m.type || m.type === 'text'" class="message-text">{{ m.body }}</span>
 
-              <a v-else-if="m.type === 'image'" :href="m.media?.url" target="_blank" rel="noopener">
-                <img :src="m.media?.url" class="message-media-image" />
+              <a v-else-if="m.type === 'image'" :href="m.media?.url" target="_blank" rel="noopener" class="message-image-card">
+                <ImageIcon :size="40" class="message-image-ph" />
+                <img :src="m.media?.url" class="message-media-image" alt="" @error="$event.target.style.display = 'none'" />
               </a>
 
               <video v-else-if="m.type === 'video'" :src="m.media?.url" controls class="message-media-video"></video>
 
-              <audio v-else-if="m.type === 'audio'" :src="m.media?.url" controls class="message-audio"></audio>
+              <AudioMessage v-else-if="m.type === 'audio'" :src="m.media?.url" :seed="m._id" />
 
               <a v-else-if="m.type === 'file'" :href="m.media?.url" target="_blank" rel="noopener" class="message-file">
                 <FileText :size="20" />
@@ -74,12 +76,13 @@
     <div class="message-input-row" ref="attachWrapper">
       <div v-if="!editingId" class="attach-wrap">
         <button class="icon-btn" type="button" :title="t('chat.attach.label')" @click="attachMenuOpen = !attachMenuOpen">
-          <Paperclip :size="18" />
+          <Plus :size="20" />
         </button>
         <div v-if="attachMenuOpen" class="attach-menu">
-          <button type="button" @click="triggerMediaInput">{{ t('chat.attach.media') }}</button>
-          <button type="button" @click="triggerFileInput">{{ t('chat.attach.file') }}</button>
-          <button type="button" @click="shareLocation">{{ t('chat.attach.location') }}</button>
+          <button type="button" @click="triggerMediaInput"><ImageIcon :size="18" /> {{ t('chat.attach.media') }}</button>
+          <button type="button" @click="triggerFileInput"><FileText :size="18" /> {{ t('chat.attach.file') }}</button>
+          <button type="button" @click="shareLocation"><MapPin :size="18" /> {{ t('chat.attach.location') }}</button>
+          <button type="button" @click="startVoiceFromMenu"><Mic :size="18" class="ic-voice" /> {{ t('chat.attach.voice') }}</button>
         </div>
         <input ref="mediaInputEl" type="file" accept="image/*,video/*" class="hidden-input" @change="onFileChosen" />
         <input ref="fileInputEl" type="file" class="hidden-input" @change="onFileChosen" />
@@ -97,8 +100,10 @@
           :placeholder="t('chat.messagePlaceholder')"
           @keydown.enter="send"
         />
-        <button v-if="draft.trim() || editingId" class="btn btn-primary btn-sm" type="button" :disabled="!draft.trim()" @click="send">{{ t('chat.send') }}</button>
-        <button v-else class="icon-btn" type="button" :title="t('chat.attach.voice')" @click="startVoice">
+        <button v-if="draft.trim() || editingId" class="send-btn" type="button" :disabled="!draft.trim()" :aria-label="t('chat.send')" @click="send">
+          <SendHorizontal :size="18" />
+        </button>
+        <button v-else class="send-btn" type="button" :title="t('chat.attach.voice')" :aria-label="t('chat.attach.voice')" @click="startVoice">
           <Mic :size="18" />
         </button>
       </template>
@@ -107,14 +112,16 @@
 </template>
 
 <script setup>
+import { confirmDialog } from '../../composables/useConfirm.js'
   import { ref, watch, onMounted, onBeforeUnmount, nextTick } from 'vue'
   import { useI18n } from 'vue-i18n'
-  import { AlertTriangle, Paperclip, Mic, MapPin, FileText, Check, CheckCheck, Pencil, Trash2, Ban, X } from 'lucide-vue-next'
+  import { AlertTriangle, Plus, Image as ImageIcon, SendHorizontal, Mic, MapPin, FileText, Check, CheckCheck, Pencil, Trash2, Ban, X } from 'lucide-vue-next'
   import { useChatStore } from '../../stores/chat.js'
   import { useAuthStore } from '../../stores/auth.js'
   import { useToast } from '../../composables/useToast.js'
   import { useVoiceRecorder } from '../../composables/useVoiceRecorder.js'
   import MapDisplay from '../MapDisplay.vue'
+  import AudioMessage from './AudioMessage.vue'
 
   // Vista di un thread singolo (diretto o di gruppo): riceve l'id della
   // conversazione già risolto e gestisce da sé cronologia, invio, allegati
@@ -152,7 +159,7 @@
   }
 
   async function removeMessage(messageId) {
-    if (!window.confirm(t('chat.confirmDelete'))) return
+    if (!(await confirmDialog(t('chat.confirmDelete')))) return
     await chatStore.deleteMessage(messageId)
   }
 
@@ -170,6 +177,7 @@
   }
 
   function triggerMediaInput() { attachMenuOpen.value = false; mediaInputEl.value?.click() }
+  function startVoiceFromMenu() { attachMenuOpen.value = false; startVoice() }
   function triggerFileInput() { attachMenuOpen.value = false; fileInputEl.value?.click() }
 
   async function onFileChosen(e) {
@@ -222,7 +230,7 @@
   }
 
   function formatTime(date) {
-    return new Date(date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    return new Date(date).toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' })
   }
 
   function isSameDay(a, b) {
@@ -353,15 +361,17 @@
   }
 
   .message-bubble {
-    @apply max-w-[84%] sm:max-w-[68%] min-w-[2.5rem] flex flex-col gap-0.5 bg-surface-2 border border-border rounded-2xl px-3 py-2 text-sm text-foam;
+    @apply max-w-[84%] sm:max-w-[68%] min-w-[2.5rem] flex flex-col gap-0.5 bg-surface-2 border border-border px-3.5 py-2.5 text-sm text-foam;
+    border-radius: 20px 20px 20px 6px;
   }
 
   .message-row.mine .message-bubble {
-    @apply bg-ocean border-ocean text-white;
+    @apply bg-ocean border-ocean text-on-primary;
+    border-radius: 20px 20px 6px 20px;
   }
 
   .message-sender {
-    @apply text-xs font-semibold text-ocean;
+    @apply text-xs font-semibold text-ocean-text no-underline;
   }
 
   .message-text {
@@ -381,7 +391,7 @@
   }
 
   .message-meta {
-    @apply self-end flex items-center gap-1 text-[0.65rem] opacity-90 mt-0.5 whitespace-nowrap;
+    @apply self-end flex items-center gap-1 text-[0.7rem] font-mono opacity-90 mt-0.5 whitespace-nowrap;
   }
 
   .message-edited {
@@ -405,12 +415,25 @@
   }
 
   .message-action-btn {
-    @apply flex items-center justify-center w-6 h-6 rounded text-muted bg-transparent border-none cursor-pointer hover:bg-surface-2 hover:text-ocean transition-colors;
+    @apply flex items-center justify-center w-11 h-11 rounded text-muted bg-transparent border-none cursor-pointer hover:bg-surface-2 hover:text-ocean transition-colors;
   }
 
-  .message-media-image {
-    @apply max-w-full rounded-sm max-h-72 object-cover cursor-pointer;
+  .message-bubble.type-image {
+    @apply bg-transparent border-none p-0 w-[72%] max-w-[300px];
   }
+  .message-bubble.type-image .message-meta { @apply hidden; }
+  .message-image-card {
+    @apply relative block w-full rounded-[20px] overflow-hidden bg-ocean/20 border border-border;
+    aspect-ratio: 6 / 5;
+  }
+  .message-image-ph { @apply absolute inset-0 m-auto text-ocean-text/60; }
+  .message-media-image { @apply absolute inset-0 w-full h-full object-cover cursor-pointer; }
+
+  .message-bubble.type-location, .message-row.mine .message-bubble.type-location {
+    @apply bg-ocean border-ocean p-1 border-[3px];
+  }
+  .message-bubble.type-location .message-meta { @apply px-2 pb-1 text-on-primary; }
+  .message-location-map :deep(.map-display) { border-radius: 14px; overflow: hidden; }
 
   .message-media-video {
     @apply max-w-full rounded-sm max-h-72;
@@ -441,7 +464,7 @@
   }
 
   .message-location-map :deep(.map-display) {
-    height: 140px;
+    height: 160px;
     width: 220px;
   }
 
@@ -450,7 +473,7 @@
   }
 
   .editing-banner {
-    @apply flex items-center gap-2 text-xs text-ocean bg-ocean/10 border-l-2 border-ocean px-3 py-1.5 rounded-sm;
+    @apply flex items-center gap-2 text-xs text-ocean-text bg-ocean/10 border-l-2 border-ocean px-3 py-1.5 rounded-sm;
   }
 
   .editing-banner .icon-btn-sm {
@@ -458,15 +481,18 @@
   }
 
   .message-input-row {
-    @apply flex items-center gap-2 border-t border-border pt-3 relative shrink-0;
+    @apply flex items-center gap-2 border-t border-border pt-3 pb-1 relative shrink-0;
   }
 
   .message-input-row input {
-    @apply text-sm flex-1;
+    @apply text-sm flex-1 min-h-[44px] rounded-full px-4;
+  }
+  .send-btn {
+    @apply flex items-center justify-center w-11 h-11 shrink-0 rounded-full bg-ocean text-on-primary border-none cursor-pointer disabled:opacity-50;
   }
 
   .icon-btn {
-    @apply flex items-center justify-center w-9 h-9 rounded-lg text-muted bg-transparent border-none cursor-pointer hover:bg-surface-2 hover:text-ocean transition-colors shrink-0;
+    @apply flex items-center justify-center w-11 h-11 rounded-full text-foam bg-surface-2 border border-border cursor-pointer hover:text-ocean-text transition-colors shrink-0;
   }
 
   .icon-btn-sm {
@@ -482,11 +508,17 @@
   }
 
   .attach-menu {
-    @apply absolute bottom-11 left-0 flex flex-col gap-0.5 bg-surface border border-border rounded-lg p-1 z-10 min-w-[160px] shadow-lg;
+    @apply absolute bottom-14 left-0 flex flex-col gap-0.5 bg-surface-2 border border-border rounded-xl p-2 z-10 min-w-[220px] shadow-lg;
   }
 
   .attach-menu button {
-    @apply text-left text-sm px-3 py-2 rounded bg-transparent border-none text-foam cursor-pointer hover:bg-surface-2 transition-colors;
+    @apply flex items-center gap-3 text-left text-sm font-semibold px-3 min-h-[44px] rounded-lg bg-transparent border-none text-foam cursor-pointer hover:bg-surface transition-colors;
+  }
+  .attach-menu button svg {
+    @apply text-ocean-text;
+  }
+  .attach-menu button svg.ic-voice {
+    @apply text-sand-text;
   }
 
   .recording-indicator {

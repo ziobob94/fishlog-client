@@ -122,9 +122,9 @@ onMounted(() => {
 .legal-placeholder-notice {
   @apply bg-sand/10 border border-sand text-sand text-sm rounded-sm px-3 py-2 mb-5;
 }
-.legal-card h2 { @apply text-base font-bold mt-6 mb-2 text-foam; }
+.legal-card h2 { font-family: var(--font-sans); @apply text-base font-bold mt-6 mb-2 text-foam; }
 .legal-card p  { @apply text-sm leading-relaxed mb-3 text-muted; }
 .legal-card ul { @apply list-disc pl-5 text-sm leading-relaxed mb-3 text-muted; }
 .legal-card li { @apply mb-1.5; }
-.legal-card a  { @apply text-ocean hover:underline; }
+.legal-card a  { @apply text-ocean-text hover:underline; }
 </style>

@@ -22,6 +22,7 @@ npm run dev            # http://localhost:5173
 | Variabile            | Default                    |
 |----------------------|----------------------------|
 | `VITE_API_BASE_URL`  | `http://localhost:3001`    |
+| `VITE_IMAGE_COMPRESS` / `VITE_IMAGE_MAX_SIDE` / `VITE_IMAGE_QUALITY` / `VITE_IMAGE_SKIP_BELOW_KB` | `true` / `1920` / `0.8` / `800` |
 
 ## Pagine
 
@@ -61,4 +62,9 @@ Puntare il web server (nginx, Caddy...) sulla cartella `dist/` e fare proxy `/ap
 - **Capacitor**: wrappare `dist/` per iOS/Android nativo con `npx cap init`
 - **PWA**: aggiungere `vite-plugin-pwa` per offline support e install su mobile
 - **Auth**: interceptor JWT già commentato in `utils/api.js`
-- **Mappa**: aggiungere Leaflet/MapLibre su `SessionView` per visualizzare le coordinate spot
+- **Mappa**: aggiungere una mappa Google su `SessionView` per visualizzare le coordinate spot
+
+
+## Mappe
+
+Tutte le mappe e i campi luogo usano Google (Maps JavaScript, Places, Geocoding): imposta `VITE_GOOGLE_MAPS_KEY` (vedi `.env.example`) e rifai il build. Senza chiave l'app mostra un avviso.

@@ -8,6 +8,12 @@ import { getAllOutboxItems, putOutboxItem, removeOutboxItem } from '../utils/off
 // meta serve solo a chi legge la coda (es. sessions.js) per ricostruire un
 // placeholder locale — questo store resta agnostico rispetto al dominio.
 
+// L'utente corrente si legge da localStorage (come fa auth.js) per non creare
+// una dipendenza circolare tra gli store.
+function currentUserId() {
+  try { return JSON.parse(localStorage.getItem('fl_user') || 'null')?._id || null } catch { return null }
+}
+
 function isNetworkError(err) {
   return !err.response
 }
@@ -27,8 +33,31 @@ export const useOfflineStore = defineStore('offline', () => {
   const pendingCount = computed(() => outbox.value.filter(i => i.status !== 'error').length)
   const hasErrors    = computed(() => outbox.value.some(i => i.status === 'error'))
 
+  // La coda in IndexedDB è condivisa da tutti gli account dello stesso
+  // dispositivo: ogni item porta il suo userId e qui si vedono (e si inviano)
+  // solo quelli dell'utente collegato. Gli item senza userId (versioni
+  // precedenti) non sono attribuibili e vengono scartati, così non finiscono
+  // mai sull'account di un altro.
+  async function loadForCurrentUser() {
+    const uid = currentUserId()
+    const all = await getAllOutboxItems()
+    const mine = []
+    for (const item of all) {
+      if (!item.userId) await removeOutboxItem(item.localId)
+      else if (uid && item.userId === uid) mine.push(item)
+    }
+    outbox.value = mine
+  }
+
+  // Da chiamare a login/registrazione/logout: la coda in memoria torna a
+  // contenere solo gli item dell'utente attuale.
+  async function reloadForUser() {
+    await loadForCurrentUser()
+    if (online.value) sync()
+  }
+
   async function init() {
-    outbox.value = await getAllOutboxItems()
+    await loadForCurrentUser()
     window.addEventListener('online',  () => { online.value = true;  sync() })
     window.addEventListener('offline', () => { online.value = false })
     // rete instabile: retry periodico anche senza evento 'online' esplicito
@@ -40,6 +69,7 @@ export const useOfflineStore = defineStore('offline', () => {
     const item = {
       localId: crypto.randomUUID(),
       method, url, data, meta,
+      userId: currentUserId(),
       createdAt: Date.now(),
       status: 'pending',
     }
@@ -68,6 +98,7 @@ export const useOfflineStore = defineStore('offline', () => {
     try {
       for (const item of [...outbox.value]) {
         if (item.status === 'error') continue
+        if (item.userId !== currentUserId()) continue // mai inviare con il token di un altro utente
         try {
           const { data: serverData } = await api[item.method](item.url, item.data)
           await removeOutboxItem(item.localId)
@@ -97,6 +128,6 @@ export const useOfflineStore = defineStore('offline', () => {
 
   return {
     online, outbox, syncing, lastSync, pendingCount, hasErrors,
-    init, enqueue, patchQueuedPayload, findQueuedCreate, sync, removeFromQueue, onSynced,
+    init, reloadForUser, enqueue, patchQueuedPayload, findQueuedCreate, sync, removeFromQueue, onSynced,
   }
 })

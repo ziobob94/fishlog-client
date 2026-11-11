@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<title>FishLog Chat lista</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+body{margin:0;font-family:'Manrope',system-ui,sans-serif;background:#111c2c;color:#f1f5f9}
+.i{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+button,input{font-family:inherit}
+button{cursor:pointer}
+a{color:inherit;text-decoration:none}
+.chips::-webkit-scrollbar{display:none}
+</style>
+</helmet>
+<div style="width:390px;height:900px;box-sizing:border-box;background:#111c2c;display:flex;flex-direction:column;overflow:hidden">
+
+  <header style="display:flex;align-items:center;gap:8px;padding:12px 16px;min-height:64px;box-sizing:border-box">
+    <a href="Community.dc.html" aria-label="Torna alla community" style="width:44px;height:44px;border-radius:14px;display:flex;align-items:center;justify-content:center;margin-left:-8px"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></a>
+    <h1 style="margin:0;font-size:26px;font-weight:800;letter-spacing:-.03em">Chat</h1>
+    <button aria-label="Nuovo gruppo" style="margin-left:auto;width:44px;height:44px;border-radius:14px;border:1px solid #33486a;background:#1a293d;color:#f1f5f9;display:flex;align-items:center;justify-content:center"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3"/><path d="M3 20c0-3.300 2.700-6 6-6s6 2.700 6 6M19 8v6M16 11h6"/></svg></button>
+  </header>
+
+  <div style="padding:0 16px 12px;display:flex;flex-direction:column;gap:12px">
+    <label style="position:relative;display:block">
+      <span style="position:absolute;left:14px;top:50%;transform:translateY(-50%);color:#9db0c8;display:flex"><svg class="i" viewBox="0 0 24 24" style="width:20px;height:20px" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.500-3.500"/></svg></span>
+      <input type="search" placeholder="Cerca conversazioni o persone" aria-label="Cerca conversazioni o persone" style="width:100%;box-sizing:border-box;height:48px;border-radius:14px;border:1px solid #33486a;background:#1a293d;color:#f1f5f9;font-size:15px;padding:0 14px 0 44px;outline:none">
+    </label>
+    <div class="chips" style="display:flex;gap:8px;overflow-x:auto;margin:0 -16px;padding:0 16px;scrollbar-width:none">
+      <button style="flex:none;min-height:44px;padding:0 16px;border-radius:22px;border:1px solid #0ea5e9;background:#0ea5e9;color:#0b1623;font-weight:700;font-size:14px">Tutte</button>
+      <button style="flex:none;min-height:44px;padding:0 16px;border-radius:22px;border:1px solid #33486a;background:#1a293d;color:#cbd5e1;font-weight:600;font-size:14px">Da leggere · 3</button>
+      <button style="flex:none;min-height:44px;padding:0 16px;border-radius:22px;border:1px solid #33486a;background:#1a293d;color:#cbd5e1;font-weight:600;font-size:14px">Preferiti · 2</button>
+      <button style="flex:none;min-height:44px;padding:0 16px;border-radius:22px;border:1px solid #33486a;background:#1a293d;color:#cbd5e1;font-weight:600;font-size:14px">Gruppi</button>
+    </div>
+  </div>
+
+  <main style="flex:1;overflow:hidden;display:flex;flex-direction:column">
+    <sc-for list="{{chats}}" as="c" hint-placeholder-count="6">
+    <a href="ChatThread.dc.html" style="display:flex;align-items:center;gap:12px;padding:10px 16px;min-height:68px;box-sizing:border-box;border-top:1px solid #243650">
+      <span style="position:relative;width:48px;height:48px;border-radius:50%;flex:none;background:{{c.avatarBg}};color:{{c.avatarFg}};border:1px solid {{c.avatarFg}};display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px">{{c.initials}}
+        <sc-if value="{{c.online}}" hint-placeholder-val="{{ false }}"><span style="position:absolute;right:0;bottom:0;width:12px;height:12px;border-radius:50%;background:#4ade80;border:2px solid #111c2c"></span></sc-if>
+      </span>
+      <span style="flex:1;min-width:0;display:flex;flex-direction:column;gap:3px">
+        <span style="display:flex;align-items:center;gap:6px">
+          <span style="font-size:16px;font-weight:{{c.nameWeight}};white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{c.name}}</span>
+          <sc-if value="{{c.fav}}" hint-placeholder-val="{{ false }}"><svg class="i" viewBox="0 0 24 24" style="width:14px;height:14px;fill:#fbbf24;stroke:#fbbf24" aria-label="Preferito" role="img"><path d="M11.100 3.700a1 1 0 0 1 1.800 0L15 8l4.700.7a1 1 0 0 1 .6 1.700l-3.400 3.300.8 4.700a1 1 0 0 1-1.500 1L12 17.200l-4.200 2.200a1 1 0 0 1-1.500-1l.8-4.700L3.700 10.400a1 1 0 0 1 .6-1.700L9 8l2.100-4.300Z"/></svg></sc-if>
+        </span>
+        <span style="font-size:14px;color:{{c.previewColor}};font-weight:{{c.previewWeight}};white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{c.preview}}</span>
+      </span>
+      <span style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex:none">
+        <span style="font-size:12px;color:{{c.timeColor}}">{{c.time}}</span>
+        <sc-if value="{{c.unread}}" hint-placeholder-val="{{ false }}"><span style="min-width:20px;height:20px;padding:0 6px;box-sizing:border-box;border-radius:999px;background:#0ea5e9;color:#0b1623;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center">{{c.unread}}</span></sc-if>
+      </span>
+    </a>
+    </sc-for>
+  </main>
+
+  <nav aria-label="Navigazione principale" style="display:grid;grid-template-columns:repeat(5,minmax(0,1fr));align-items:end;background:#1a293d;border-top:1px solid #33486a;padding:8px 8px 14px;min-height:68px;box-sizing:border-box">
+    <a href="Main.dc.html" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:48px;color:#b4c3d6;font-size:11px;font-weight:600"><svg class="i" viewBox="0 0 24 24" style="width:20px;height:20px" aria-hidden="true"><path d="M4 11.2a2 2 0 0 1 .7-1.5l6-5.2a2 2 0 0 1 2.6 0l6 5.2a2 2 0 0 1 .7 1.5V18a3 3 0 0 1-3 3h-2.5a1 1 0 0 1-1-1v-3.5a1 1 0 0 0-1-1h-1a1 1 0 0 0-1 1V20a1 1 0 0 1-1 1H7a3 3 0 0 1-3-3v-6.8Z"/></svg>Home</a>
+    <a href="Uscite.dc.html" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:48px;color:#b4c3d6;font-size:11px;font-weight:600"><svg class="i" viewBox="0 0 24 24" style="width:20px;height:20px" aria-hidden="true"><path d="M2.5 12.4c0-3.7 3.7-6.4 8.3-6.4s7.2 2.6 7.2 6.4-3 6.4-7.2 6.4-8.3-2.7-8.3-6.4Z"/><path d="M17.5 12.4l3.4-3.7a.8.8 0 0 1 1.3.5v6.4a.8.8 0 0 1-1.3.5l-3.4-3.7ZM7.2 11h.01"/></svg>Uscite</a>
+    <a href="NuovoPost.dc.html" aria-label="Nuovo post" style="display:flex;justify-content:center;margin-top:-30px"><span style="width:56px;height:56px;border-radius:50%;background:#0ea5e9;color:#0b1623;display:flex;align-items:center;justify-content:center;border:4px solid #111c2c;box-shadow:0 6px 18px rgba(14,165,233,.35)"><svg class="i" viewBox="0 0 24 24" style="width:26px;height:26px;stroke-width:2.400" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></span></a>
+    <a href="Community.dc.html" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:48px;color:#7dd3fc;font-size:11px;font-weight:700"><svg class="i" viewBox="0 0 24 24" style="width:20px;height:20px" aria-hidden="true"><path d="M6 4h12a3 3 0 0 1 3 3v7a3 3 0 0 1-3 3h-6.5l-3.7 3.3a.6.6 0 0 1-1-.45V17H6a3 3 0 0 1-3-3V7a3 3 0 0 1 3-3Z"/></svg>Community</a>
+    <a href="Main.dc.html" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:48px;color:#b4c3d6;font-size:11px;font-weight:600"><svg class="i" viewBox="0 0 24 24" style="width:20px;height:20px" aria-hidden="true"><path d="M5.5 8h13a1 1 0 0 1 1 1.1l-1 9.2a2.5 2.5 0 0 1-2.5 2.2H8a2.5 2.5 0 0 1-2.5-2.2l-1-9.2A1 1 0 0 1 5.500 8Z"/><path d="M8.5 8V7a3.5 3.5 0 0 1 7 0v1"/></svg>Market</a>
+  </nav>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":900}}'>
+class Component extends DCLogic {
+renderVals() {
+  const user = { avatarBg: 'rgba(14,165,233,.16)', avatarFg: '#7dd3fc' };
+  const group = { avatarBg: 'rgba(245,158,11,.14)', avatarFg: '#fbbf24' };
+  const raw = [
+    { ...user, initials: 'GR', name: 'giorgio.r', preview: 'Foto: Spigola 52 cm', time: '13:12', unread: 2, fav: true, online: true },
+    { ...group, initials: 'UL', name: 'Uscite al lago', preview: 'Luca: sabato si va a Comacchio?', time: '12:40', unread: 1, fav: false, online: false },
+    { ...user, initials: 'LB', name: 'luca_bolentino', preview: 'Posizione condivisa', time: '11:05', unread: 0, fav: true, online: false },
+    { ...user, initials: 'MS', name: 'marco.surf', preview: 'Tu: ok, porto io le canne', time: 'Ieri', unread: 0, fav: false, online: true },
+    { ...group, initials: 'RA', name: 'Ravenna Surfcasting', preview: 'Anna: nessuna mangiata stasera', time: 'Ieri', unread: 0, fav: false, online: false },
+    { ...user, initials: 'SF', name: 'sara_feeder', preview: 'Messaggio vocale · 0:24', time: 'Lun', unread: 0, fav: false, online: false }
+  ];
+  return { chats: raw.map(c => ({ ...c,
+    nameWeight: c.unread ? 800 : 700,
+    previewColor: c.unread ? '#f1f5f9' : '#9db0c8',
+    previewWeight: c.unread ? 600 : 400,
+    timeColor: c.unread ? '#7dd3fc' : '#9db0c8' })) };
+}
+}
+</script>
+</body>
+</html>

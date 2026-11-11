@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<title>FishLog Dettaglio uscita</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+body{margin:0;font-family:'Manrope',system-ui,sans-serif;background:#111c2c;color:#f1f5f9}
+.i{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+button{font-family:inherit}
+a{color:inherit;text-decoration:none}
+summary{list-style:none;cursor:pointer}
+summary::-webkit-details-marker{display:none}
+</style>
+</helmet>
+<div style="width:390px;height:1640px;box-sizing:border-box;background:#111c2c;display:flex;flex-direction:column;overflow:hidden">
+
+  <!-- Foto di copertina con azioni sopra -->
+  <div style="position:relative;height:250px;flex:none;background:#243650;display:flex;align-items:center;justify-content:center;color:#5f7897">
+    <svg class="i" viewBox="0 0 24 24" style="width:64px;height:64px" aria-hidden="true"><rect x="3" y="4.5" width="18" height="15" rx="4"/><circle cx="9" cy="10.5" r="1.8"/><path d="m21 15-3.8-3.8a1.5 1.5 0 0 0-2.1 0L7 19.5"/></svg>
+    <a href="Uscite.dc.html" aria-label="Torna alle uscite" style="position:absolute;top:12px;left:16px;width:44px;height:44px;border-radius:14px;background:rgba(17,28,44,.82);color:#f1f5f9;display:flex;align-items:center;justify-content:center"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></a>
+    <button aria-label="Modifica uscita" style="position:absolute;top:12px;right:16px;width:44px;height:44px;border-radius:14px;border:0;background:rgba(17,28,44,.82);color:#f1f5f9;display:flex;align-items:center;justify-content:center"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h3.5a1 1 0 0 0 .7-.3L19 8.9a2 2 0 0 0 0-2.8L17.900 5a2 2 0 0 0-2.800 0L4.300 15.800a1 1 0 0 0-.3.700V20Z"/></svg></button>
+    <div style="position:absolute;left:0;right:0;bottom:0;height:40px;background:linear-gradient(0deg,rgba(11,22,35,.7),rgba(11,22,35,0));pointer-events:none"></div><div style="position:absolute;left:12px;right:12px;bottom:10px;height:10px;background:repeating-linear-gradient(90deg,rgba(241,245,249,.85) 0 2px,transparent 2px 10px);pointer-events:none"></div><div style="position:absolute;left:12px;right:12px;bottom:10px;height:18px;background:repeating-linear-gradient(90deg,#fbbf24 0 2px,transparent 2px 50px);pointer-events:none"></div><span style="position:absolute;left:16px;bottom:40px;font-size:12px;font-weight:700;color:#e2e8f0;background:rgba(17,28,44,.82);padding:5px 10px;border-radius:999px">1 / 6 foto</span>
+  </div>
+
+  <main style="flex:1;padding:20px 16px 24px;display:flex;flex-direction:column;gap:24px">
+
+    <!-- Titolo -->
+    <header style="position:relative;display:flex;flex-direction:column;gap:8px"><div style="position:absolute;right:0;top:-6px;width:88px;height:88px;border-radius:50%;border:2px dashed #fbbf24;color:#fbbf24;display:flex;flex-direction:column;align-items:center;justify-content:center;transform:rotate(-8deg)"><span style="font-size:10px;font-weight:800;letter-spacing:.16em">RECORD</span><span style="font-family:'JetBrains Mono',monospace;font-size:22px;line-height:1.1">52</span><span style="font-size:10px;font-weight:700">cm · spigola</span></div>
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+        <span style="font-family:'JetBrains Mono',monospace;font-size:13px;color:#9db0c8">02 nov 2026</span>
+        <span style="font-size:12px;font-weight:700;color:#7dd3fc;background:rgba(14,165,233,.14);border-radius:999px;padding:3px 10px">Spinning</span>
+        <span style="font-size:14px;color:#fbbf24;letter-spacing:.06em">★★★★</span>
+      </div>
+      <h1 style="margin:0;font-size:30px;line-height:1.1;letter-spacing:-.03em;font-weight:800">Alba al molo</h1>
+      <p style="margin:0;display:flex;align-items:center;gap:6px;font-size:15px;color:#9db0c8"><svg class="i" viewBox="0 0 24 24" style="width:16px;height:16px" aria-hidden="true"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg>Molo di Senigallia · Marche</p><span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#7dd3fc;border:1px solid #33486a;border-radius:999px;padding:4px 12px;align-self:flex-start">43.72°N · 13.22°E</span>
+    </header>
+
+    <!-- Numeri chiave -->
+    <section aria-label="Riepilogo" style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));background:#1a293d;border:1px solid #33486a;border-radius:20px;overflow:hidden">
+      <div style="padding:14px 12px;display:flex;flex-direction:column;gap:4px">
+        <span style="font-size:12px;color:#9db0c8;font-weight:600">Catture</span>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:30px;font-weight:500;letter-spacing:-.04em;line-height:1">4</span>
+      </div>
+      <div style="padding:14px 12px;display:flex;flex-direction:column;gap:4px;border-left:1px solid #33486a">
+        <span style="font-size:12px;color:#9db0c8;font-weight:600">Migliore</span>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:30px;font-weight:500;letter-spacing:-.04em;line-height:1;color:#fbbf24">52<span style="font-size:13px;color:#9db0c8;letter-spacing:0"> cm</span></span>
+      </div>
+      <div style="padding:14px 12px;display:flex;flex-direction:column;gap:4px;border-left:1px solid #33486a">
+        <span style="font-size:12px;color:#9db0c8;font-weight:600">Durata</span>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:30px;font-weight:500;letter-spacing:-.04em;line-height:1">3h<span style="font-size:13px;color:#9db0c8;letter-spacing:0"> 30</span></span>
+      </div>
+    </section>
+
+    <!-- Condizioni -->
+    <section style="display:flex;flex-direction:column;gap:12px">
+      <div style="display:flex;align-items:center;gap:12px"><h2 style="margin:0;font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#9db0c8">Condizioni</h2><svg height="12" width="100%" style="flex:1;min-width:0" aria-hidden="true"><defs><pattern id="dw1" width="24" height="12" patternUnits="userSpaceOnUse"><path d="M0 6c3 0 3-4 6-4s3 4 6 4 3 4 6 4 3-4 6-4" fill="none" stroke="#33486a" stroke-opacity="1" stroke-width="2" stroke-linecap="round"/></pattern></defs><rect width="100%" height="12" fill="url(#dw1)"/></svg></div>
+      <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px">
+        <div style="background:#1a293d;border:1px solid #33486a;border-radius:16px;padding:12px 14px;display:flex;flex-direction:column;gap:2px"><span style="font-size:12px;color:#9db0c8">Mare</span><span style="font-size:16px;font-weight:700">Poco mosso</span></div>
+        <div style="background:#1a293d;border:1px solid #33486a;border-radius:16px;padding:12px 14px;display:flex;flex-direction:column;gap:2px"><span style="font-size:12px;color:#9db0c8">Marea</span><span style="font-size:16px;font-weight:700">Crescente</span></div>
+        <div style="background:#1a293d;border:1px solid #33486a;border-radius:16px;padding:12px 14px;display:flex;flex-direction:column;gap:2px"><span style="font-size:12px;color:#9db0c8">Vento</span><span style="font-size:16px;font-weight:700">NE · 12 km/h</span></div>
+        <div style="background:#1a293d;border:1px solid #33486a;border-radius:16px;padding:12px 14px;display:flex;flex-direction:column;gap:2px"><span style="font-size:12px;color:#9db0c8">Acqua / Aria</span><span style="font-size:16px;font-weight:700">17° / 11°C</span></div>
+      </div>
+    </section>
+
+    <!-- Catture -->
+    <section style="display:flex;flex-direction:column;gap:12px">
+      <div style="display:flex;align-items:center;gap:12px"><h2 style="margin:0;font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#9db0c8">Catture · 4</h2><svg height="12" width="100%" style="flex:1;min-width:0" aria-hidden="true"><defs><pattern id="dw2" width="24" height="12" patternUnits="userSpaceOnUse"><path d="M0 6c3 0 3-4 6-4s3 4 6 4 3 4 6 4 3-4 6-4" fill="none" stroke="#33486a" stroke-opacity="1" stroke-width="2" stroke-linecap="round"/></pattern></defs><rect width="100%" height="12" fill="url(#dw2)"/></svg></div>
+
+      <sc-for list="{{catches}}" as="c" hint-placeholder-count="3">
+      <details style="background:#1a293d;border:1px solid #33486a;border-radius:20px;overflow:hidden">
+        <summary style="padding:14px 16px;display:flex;align-items:center;gap:14px;min-height:44px">
+          <span style="width:44px;height:44px;border-radius:14px;background:#243650;color:#7dd3fc;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:13px">{{c.time}}</span>
+          <span style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px">
+            <span style="font-size:17px;font-weight:800;letter-spacing:-.01em">{{c.species}}</span>
+            <span style="font-size:13px;color:#9db0c8">{{c.size}} · {{c.bait}}</span>
+          </span>
+          <span style="color:#9db0c8"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span>
+        </summary>
+        <div style="padding:0 16px 16px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;border-top:1px solid #33486a;padding-top:14px">
+          <div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:12px;color:#9db0c8">Montatura</span><span style="font-size:14px;font-weight:600">{{c.rig}}</span></div>
+          <div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:12px;color:#9db0c8">Terminale</span><span style="font-size:14px;font-weight:600">{{c.leader}}</span></div>
+          <div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:12px;color:#9db0c8">Distanza</span><span style="font-size:14px;font-weight:600">{{c.dist}}</span></div>
+          <div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:12px;color:#9db0c8">Esito</span><span style="font-size:14px;font-weight:600;color:#86efac">{{c.outcome}}</span></div>
+        </div>
+      </details>
+      </sc-for>
+    </section>
+
+    <!-- Luogo -->
+    <section style="display:flex;flex-direction:column;gap:12px">
+      <div style="display:flex;align-items:center;gap:12px"><h2 style="margin:0;font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#9db0c8">Luogo</h2><svg height="12" width="100%" style="flex:1;min-width:0" aria-hidden="true"><defs><pattern id="dw3" width="24" height="12" patternUnits="userSpaceOnUse"><path d="M0 6c3 0 3-4 6-4s3 4 6 4 3 4 6 4 3-4 6-4" fill="none" stroke="#33486a" stroke-opacity="1" stroke-width="2" stroke-linecap="round"/></pattern></defs><rect width="100%" height="12" fill="url(#dw3)"/></svg></div>
+      <div style="position:relative;overflow:hidden;height:160px;border-radius:24px 24px 24px 8px;background:#10304d;border:1px solid #33486a;display:flex;align-items:center;justify-content:center;color:#5f7897;flex-direction:column;gap:6px">
+        <svg width="100%" height="100%" viewBox="0 0 400 240" preserveAspectRatio="xMaxYMid slice" style="position:absolute;inset:0;pointer-events:none" aria-hidden="true"><g fill="none" stroke="#7dd3fc" stroke-width="1.5" stroke-linejoin="round"><path opacity=".12" d="M250-10c80 0 160 45 170 120s-40 140-120 150-170-20-190-100S170-10 250-10Z"/><path opacity=".2" d="M255 14c60 0 125 38 132 96s-30 110-95 124-135-12-152-80S198 14 255 14Z"/><path opacity=".3" d="M260 40c40 0 80 30 85 70s-20 80-70 90-100-10-110-55 55-105 95-105Z"/><path opacity=".42" d="M262 66c28 0 55 22 58 50s-14 56-48 62-70-8-76-38 38-74 66-74Z"/></g></svg><svg class="i" viewBox="0 0 24 24" style="position:relative;width:32px;height:32px;color:#fbbf24" aria-hidden="true"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg>
+        <span style="position:relative;font-size:12px;font-family:'JetBrains Mono',monospace;color:#7dd3fc">mappa · 43.7165, 13.2263</span>
+      </div>
+    </section>
+
+    <!-- Note -->
+    <section style="display:flex;flex-direction:column;gap:8px">
+      <div style="display:flex;align-items:center;gap:12px"><h2 style="margin:0;font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#9db0c8">Note</h2><svg height="12" width="100%" style="flex:1;min-width:0" aria-hidden="true"><defs><pattern id="dw4" width="24" height="12" patternUnits="userSpaceOnUse"><path d="M0 6c3 0 3-4 6-4s3 4 6 4 3 4 6 4 3-4 6-4" fill="none" stroke="#33486a" stroke-opacity="1" stroke-width="2" stroke-linecap="round"/></pattern></defs><rect width="100%" height="12" fill="url(#dw4)"/></svg></div>
+      <p style="margin:0;font-size:15px;line-height:1.55;color:#cbd5e1;text-wrap:pretty">Le mangiate sono partite con l'alba, tutte sul lato sinistro del molo. Meglio il minnow da 9 cm; il rapala ha fatto una sola abboccata.</p>
+    </section>
+
+    <!-- Azioni -->
+    <div style="display:flex;gap:10px">
+      <button style="flex:1;min-height:48px;border-radius:14px;border:1px solid #33486a;background:#1a293d;color:#f1f5f9;font-weight:700;font-size:15px">Modifica</button>
+      <button style="flex:1;min-height:48px;border-radius:14px;border:1px solid #f87171;background:transparent;color:#fca5a5;font-weight:700;font-size:15px">Elimina</button>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":1640}}'>
+class Component extends DCLogic {
+renderVals() {
+  return { catches: [
+    { time: '06:25', species: 'Spigola', size: '52 cm · 1,6 kg', bait: 'Minnow 9 cm', rig: 'Spinning leggero', leader: 'Fluoro 0,30 mm', dist: '25 m', outcome: 'Trattenuta' },
+    { time: '06:48', species: 'Spigola', size: '41 cm', bait: 'Minnow 9 cm', rig: 'Spinning leggero', leader: 'Fluoro 0,30 mm', dist: '30 m', outcome: 'Rilasciata' },
+    { time: '07:15', species: 'Sgombro', size: '28 cm', bait: 'Jig 20 g', rig: 'Spinning leggero', leader: 'Fluoro 0,30 mm', dist: '40 m', outcome: 'Trattenuta' },
+    { time: '08:02', species: 'Spigola', size: '36 cm', bait: 'Rapala 11 cm', rig: 'Spinning leggero', leader: 'Fluoro 0,30 mm', dist: '20 m', outcome: 'Rilasciata' }
+  ] };
+}
+}
+</script>
+</body>
+</html>

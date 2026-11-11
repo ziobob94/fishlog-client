@@ -7,10 +7,8 @@
     <div class="flex items-center justify-between px-5 py-4 border-b border-border">
       <RouterLink
         to="/"
-        class="flex items-center gap-2 text-foam text-lg font-extrabold tracking-tight hover:text-ocean"
-        @click="$emit('close')"
-      >
-        <Fish :size="20" /> <span>FishLog</span>
+        class="inline-flex items-center" aria-label="FishLog" @click="$emit('close')">
+        <FishLogo :size="32" />
       </RouterLink>
       <button
         class="p-1 bg-transparent border-none cursor-pointer text-base transition-opacity duration-200"
@@ -29,6 +27,9 @@
       <div class="nav-section-label">{{ t('nav.sections.fishing') }}</div>
       <RouterLink to="/sessions" class="nav-item" @click="$emit('close')">
         <span class="w-5 text-center flex justify-center"><Fish :size="16" /></span> {{ t('nav.sessions') }}
+      </RouterLink>
+      <RouterLink to="/meteo" class="nav-item" @click="$emit('close')">
+        <span class="w-5 text-center flex justify-center"><CloudSun :size="16" /></span> {{ t('nav.weather') }}
       </RouterLink>
       <RouterLink to="/stats" class="nav-item" @click="$emit('close')">
         <span class="w-5 text-center flex justify-center"><BarChart3 :size="16" /></span> {{ t('nav.stats') }}
@@ -57,7 +58,7 @@
         <span v-if="friends.pendingCount" class="nav-badge">{{ friends.pendingCount }}</span>
       </RouterLink>
       <RouterLink to="/chat" class="nav-item" @click="$emit('close')">
-        <span class="w-5 text-center flex justify-center"><MessagesSquare :size="16" /></span> {{ t('nav.chat') }}
+        <span class="w-5 text-center flex justify-center"><MessageCircle :size="16" /></span> {{ t('nav.chat') }}
         <span v-if="chat.unreadCount" class="nav-badge">{{ chat.unreadCount }}</span>
       </RouterLink>
       <div class="nav-item nav-item-disabled" :title="t('home.hub.comingSoon')">
@@ -77,8 +78,11 @@
       </RouterLink>
 
       <div class="nav-section-label">{{ t('nav.sections.account') }}</div>
+      <RouterLink to="/board" class="nav-item" @click="$emit('close')">
+        <span class="w-5 text-center flex justify-center"><UserCircle :size="16" /></span> {{ t('nav.board') }}
+      </RouterLink>
       <RouterLink to="/profile" class="nav-item" @click="$emit('close')">
-        <span class="w-5 text-center flex justify-center"><UserCircle :size="16" /></span> {{ t('nav.profile') }}
+        <span class="w-5 text-center flex justify-center"><Settings :size="16" /></span> {{ t('nav.settings') }}
       </RouterLink>
       <RouterLink
         v-if="auth.user?.role === 'admin'"
@@ -90,10 +94,22 @@
       </RouterLink>
     </nav>
 
+    <!-- Installa app -->
+    <div v-if="canInstall" class="px-3 pb-2">
+      <button class="btn btn-ghost btn-sm w-full flex items-center justify-center gap-2" @click="onInstall">
+        <Download :size="16" /> {{ t('nav.install') }}
+      </button>
+      <div v-if="showIosHelp" class="mt-2 p-3 rounded-sm bg-surface-2 text-xs text-muted">
+        <p class="font-bold text-foam mb-1">{{ t('nav.installIosTitle') }}</p>
+        <p>{{ t('nav.installIosSteps') }}</p>
+        <button class="btn btn-ghost btn-sm w-full mt-2" @click="showIosHelp = false">{{ t('nav.installClose') }}</button>
+      </div>
+    </div>
+
     <!-- Footer -->
     <div class="border-t border-border p-4 flex flex-col gap-3">
       <template v-if="auth.isLoggedIn">
-        <RouterLink to="/profile" class="flex items-center gap-2.5" @click="$emit('close')">
+        <RouterLink to="/board" class="flex items-center gap-2.5" @click="$emit('close')">
           <img
             v-if="auth.user?.avatar"
             :src="auth.user.avatar"
@@ -101,7 +117,7 @@
           />
           <span
             v-else
-            class="w-9 h-9 shrink-0 rounded-full border border-ocean text-ocean flex items-center justify-center text-xs font-bold"
+            class="w-9 h-9 shrink-0 rounded-full border border-ocean text-ocean-text flex items-center justify-center text-xs font-bold"
             style="background: var(--ocean-glow)"
           >{{ initials }}</span>
           <div class="flex flex-col gap-0.5 min-w-0">
@@ -121,10 +137,13 @@
 </template>
 
 <script setup>
-  import { computed, onMounted } from 'vue'
+import { toInitials } from '../utils/initials.js'
+  import { computed, onMounted, ref } from 'vue'
+  import FishLogo from '../components/FishLogo.vue'
+  import { useInstallPrompt } from '../composables/useInstallPrompt.js'
   import { RouterLink, useRouter } from 'vue-router'
   import { useI18n } from 'vue-i18n'
-  import { Fish, Home, Pin, MapPin, Users, UserPlus, Newspaper, MessagesSquare, Settings, BarChart3, UserCircle, Plus, Waves, ShoppingBag, Tag, MessageSquare, BookOpen, Trophy } from 'lucide-vue-next'
+  import { Fish, Home, Pin, MapPin, Users, UserPlus, Newspaper, MessageCircle, Settings, BarChart3, UserCircle, Plus, Waves, ShoppingBag, Tag, MessageSquare, BookOpen, Trophy, Download, CloudSun } from 'lucide-vue-next'
   import { useAuthStore } from '../stores/auth.js'
   import { useSessionStore } from '../stores/sessions.js'
   import { usePostStore } from '../stores/posts.js'
@@ -145,6 +164,13 @@
   const chat = useChatStore()
   const friends = useFriendStore()
 
+  const { canInstall, isIos, install } = useInstallPrompt()
+  const showIosHelp = ref(false)
+  async function onInstall() {
+    if (isIos.value) showIosHelp.value = true
+    else await install()
+  }
+
   onMounted(() => { if (auth.isLoggedIn) sessions.fetchOngoing() })
 
   const newSessionTarget = computed(() =>
@@ -155,12 +181,13 @@
 
   const initials = computed(() => {
     const name = auth.user?.displayName || auth.user?.email || '?'
-    return name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2)
+return toInitials(name)
   })
 
   function logout() {
     auth.logout()
-    router.push('/login')
+    // ricarica: azzera gli store in memoria (vedi ProfileView)
+    window.location.assign('/login')
   }
 </script>
 
@@ -170,17 +197,17 @@
   }
 
   .nav-item.router-link-active {
-    @apply text-ocean;
+    @apply text-ocean-text;
     background: var(--ocean-glow);
   }
 
   .nav-accent {
     background: var(--ocean-glow);
-    @apply border border-ocean/20 text-ocean hover:bg-ocean hover:text-white;
+    @apply border border-ocean/20 text-ocean-text hover:bg-ocean hover:text-on-primary;
   }
 
   .nav-accent.router-link-active {
-    @apply bg-ocean text-white;
+    @apply bg-ocean text-on-primary;
   }
 
   .nav-badge {

@@ -1,23 +1,23 @@
 <template>
   <div>
-    <div class="page-header">
-      <RouterLink to="/sessions" class="btn btn-ghost btn-sm">{{ t('common.back') }}</RouterLink>
-    </div>
+    <PageHeader :title="t('nav.newSession')" back compact />
 
     <div v-if="error" class="error-banner" style="display:inline-flex;align-items:center;gap:.4rem"><AlertTriangle :size="16" /> {{ error }}</div>
 
-    <div v-if="checkingOngoing" class="state-center"><div class="spinner"></div></div>
+    <div v-if="checkingOngoing" class="state-center"><div class="m-spinner"></div></div>
 
-    <SessionForm v-else :saving="store.loading" @submit="onSubmit" @cancel="router.push('/sessions')" />
+    <SessionForm v-else mode="essential" :saving="store.loading" @submit="onSubmit" @cancel="router.push('/sessions')" />
   </div>
 </template>
 
 <script setup>
+import PageHeader from '../components/PageHeader.vue'
 import { computed, ref, onMounted } from 'vue'
 import { useRouter, RouterLink } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { AlertTriangle } from 'lucide-vue-next'
 import { useSessionStore } from '../stores/sessions.js'
+import { useToast } from '../composables/useToast.js'
 import SessionForm from '../components/form/SessionForm.vue'
 
 const { t }  = useI18n()
@@ -25,19 +25,21 @@ const store  = useSessionStore()
 const router = useRouter()
 const error  = computed(() => store.error)
 const checkingOngoing = ref(true)
+const { toast } = useToast()
 
 // Non si può aprire una nuova uscita se ce n'è già una in corso: si viene
 // rimandati dritti lì, invece di lasciare che la creazione la chiuda.
 onMounted(async () => {
   const ongoing = await store.fetchOngoing()
   if (ongoing) {
+    toast(t('sessionForm.ongoingRedirect'), { type: 'info' })
     router.replace(`/session/${ongoing._id}/edit`)
     return
   }
   checkingOngoing.value = false
 })
 
-async function onSubmit(payload, pendingPhotosByIndex) {
+async function onSubmit(payload, pendingPhotosByIndex, { concluded } = {}) {
   const session = await store.createSession(payload)
   if (!session) {
     // Race condition (es. due schede aperte): il server ha rifiutato perché
@@ -51,6 +53,13 @@ async function onSubmit(payload, pendingPhotosByIndex) {
       const catchId = session.catches?.[index]?._id
       if (catchId && files.length) await store.uploadCatchMedia(session._id, catchId, files)
     }
+  }
+
+  // «Uscita già conclusa»: il server crea sempre l'uscita in corso, quindi la si chiude subito.
+  if (concluded) {
+    const closed = await store.updateSession(session._id, { status: 'closed' })
+    router.push(`/session/${(closed || session)._id}`)
+    return
   }
 
   // Un'uscita appena creata è "ongoing": si va sulla scheda dedicata per

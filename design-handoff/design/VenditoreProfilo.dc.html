@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<title>FishLog Profilo venditore</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+body{margin:0;font-family:'Manrope',system-ui,sans-serif;background:#111c2c;color:#f1f5f9}
+.i{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+button,input,textarea{font-family:inherit}
+button{cursor:pointer}
+a{color:inherit;text-decoration:none}
+.lab{display:block;margin:0 0 6px;font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#9db0c8}
+.inp{width:100%;box-sizing:border-box;height:52px;border-radius:14px;border:1px solid #33486a;background:#1a293d;color:#f1f5f9;font-size:16px;padding:0 16px;outline:none}
+.inp:focus,.ta:focus{border-color:#0ea5e9}
+.ta{width:100%;box-sizing:border-box;min-height:96px;border-radius:14px;border:1px solid #33486a;background:#1a293d;color:#f1f5f9;font-size:16px;padding:14px 16px;outline:none;resize:none;line-height:1.45}
+.hint{margin:6px 0 0;font-size:12px;color:#9db0c8}
+.sec{display:flex;flex-direction:column;gap:14px}
+.opt{display:flex;align-items:center;gap:12px;min-height:56px;box-sizing:border-box;border-radius:16px;padding:10px 14px;cursor:pointer;background:#1a293d;border:1px solid #33486a;font-size:15px;font-weight:700}
+</style>
+</helmet>
+<div style="width:390px;height:1760px;box-sizing:border-box;background:#111c2c;display:flex;flex-direction:column;overflow:hidden">
+
+  <header style="display:flex;align-items:center;gap:8px;padding:8px 16px 8px 8px;min-height:64px;box-sizing:border-box;border-bottom:1px solid #33486a">
+    <a href="StatoVerifica.dc.html" aria-label="Indietro" style="width:44px;height:44px;display:flex;align-items:center;justify-content:center"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></a>
+    <h1 style="margin:0;font-size:18px;font-weight:800;letter-spacing:-.02em">Il tuo negozio</h1>
+    <span style="margin-left:auto;display:flex;align-items:center;gap:6px;font-size:12px;font-weight:800;color:#86efac;background:rgba(74,222,128,.14);border-radius:999px;padding:6px 10px"><svg class="i" viewBox="0 0 24 24" style="width:16px;height:16px" aria-hidden="true"><path d="m5 12 5 5 9-10"/></svg>Verificato</span>
+  </header>
+
+  <main style="flex:1;overflow:hidden;padding:20px 16px;display:flex;flex-direction:column;gap:26px">
+
+    <p style="margin:0;font-size:15px;line-height:1.5;color:#9db0c8">La verifica è completata. Completa la scheda che vedranno i compratori.</p>
+
+    <!-- Identità -->
+    <section class="sec">
+      <span class="lab" style="margin:0">Identità</span>
+      <div style="display:flex;align-items:center;gap:14px">
+        <span style="width:72px;height:72px;border-radius:20px;background:rgba(14,165,233,.16);border:1px dashed #7dd3fc;color:#7dd3fc;display:flex;align-items:center;justify-content:center;flex:none"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8.5A2.500 2.500 0 0 1 6.500 6h1.200l1.100-1.600A1.500 1.500 0 0 1 10 3.800h4a1.500 1.500 0 0 1 1.200.6L16.300 6h1.200A2.500 2.500 0 0 1 20 8.500v8a2.500 2.500 0 0 1-2.500 2.500h-11A2.500 2.500 0 0 1 4 16.500Z"/><circle cx="12" cy="12.500" r="3.200"/></svg></span>
+        <button style="min-height:44px;padding:0 16px;border-radius:14px;border:1px solid #46617f;background:#1a293d;color:#f1f5f9;font-weight:700;font-size:14px">Carica logo</button>
+      </div>
+      <div><label class="lab" for="nm">Nome del negozio</label><input id="nm" class="inp" value="Pesca &amp; Mare di Marco"><p class="hint">È il nome che vedono i compratori negli annunci.</p></div>
+      <div><label class="lab" for="bio">Descrizione</label><textarea id="bio" class="ta">Attrezzatura per surfcasting e spinning, nuova e usata. Consigli da pescatori.</textarea></div>
+    </section>
+
+    <!-- Dati attività -->
+    <section class="sec">
+      <span class="lab" style="margin:0">Dati dell'attività</span>
+      <div style="background:#1a293d;border:1px solid #33486a;border-radius:16px;padding:12px 14px;display:flex;flex-direction:column;gap:2px">
+        <span style="font-size:12px;color:#9db0c8">Ragione sociale e P.IVA (verificate)</span>
+        <span style="font-size:15px;font-weight:700">Pesca &amp; Mare di Marco S.r.l.</span>
+        <span style="font-size:13px;color:#9db0c8">Per cambiarle serve una nuova verifica.</span>
+      </div>
+      <div><label class="lab" for="web">Sito web (se ce l'hai)</label><input id="web" class="inp" placeholder="www.tuonegozio.it" inputmode="url"></div>
+      <div style="display:grid;grid-template-columns:minmax(0,1fr) 96px;gap:10px">
+        <div><label class="lab" for="ct">Città</label><input id="ct" class="inp" value="Senigallia"></div>
+        <div><label class="lab" for="pv">Prov.</label><input id="pv" class="inp" value="AN" maxlength="2"></div>
+      </div>
+      <div><label class="lab" for="ind">Indirizzo del negozio (facoltativo)</label><input id="ind" class="inp" placeholder="Via, numero civico"></div>
+    </section>
+
+    <!-- Consegna -->
+    <section class="sec">
+      <span class="lab" style="margin:0">Come consegni</span>
+      <label class="opt" style="border-color:#0ea5e9;background:rgba(14,165,233,.12)"><input type="checkbox" checked style="width:24px;height:24px;margin:0;accent-color:#0ea5e9"><span style="flex:1">Ritiro in negozio</span></label>
+      <label class="opt" style="border-color:#0ea5e9;background:rgba(14,165,233,.12)"><input type="checkbox" checked style="width:24px;height:24px;margin:0;accent-color:#0ea5e9"><span style="flex:1">Spedizione</span></label>
+    </section>
+
+    <!-- Contatto -->
+    <section class="sec">
+      <span class="lab" style="margin:0">Contatto</span>
+      <label class="opt"><input type="checkbox" checked style="width:24px;height:24px;margin:0;accent-color:#0ea5e9"><span style="flex:1">Ricevi messaggi dai compratori nella chat di FishLog</span></label>
+      <label class="opt"><input type="checkbox" style="width:24px;height:24px;margin:0;accent-color:#0ea5e9"><span style="flex:1">Mostra il numero di telefono del negozio</span></label>
+    </section>
+
+    <!-- Proposta sito -->
+    <section style="background:#2a2314;border:1px solid #f59e0b;border-radius:22px;padding:18px;display:flex;flex-direction:column;gap:12px">
+      <span style="width:44px;height:44px;border-radius:13px;background:rgba(245,158,11,.18);color:#fbbf24;display:flex;align-items:center;justify-content:center"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.500 2.700 3.700 5.700 3.700 9S14.500 18.300 12 21c-2.500-2.700-3.700-5.700-3.700-9S9.500 5.700 12 3Z"/></svg></span>
+      <h2 style="margin:0;font-size:20px;line-height:1.2;letter-spacing:-.02em;font-weight:800">Vuoi un sito per il tuo negozio?</h2>
+      <p style="margin:0;font-size:14px;line-height:1.5;color:#e7dcc0">Possiamo realizzarlo noi, con i tuoi prodotti e il tuo logo. Se ti interessa, lasciaci un contatto e ti scriviamo senza impegno.</p>
+      <a href="VenditoreProfilo.dc.html" style="min-height:48px;border-radius:14px;background:#f59e0b;color:#1a1204;font-weight:800;font-size:15px;display:flex;align-items:center;justify-content:center">Sì, contattatemi</a>
+      <a href="VenditoreProfilo.dc.html" style="min-height:44px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#fbbf24">No, grazie</a>
+    </section>
+  </main>
+
+  <div style="padding:12px 16px 20px;background:#1a293d;border-top:1px solid #33486a;display:flex;flex-direction:column;gap:6px">
+    <a href="NuovoAnnuncio.dc.html" style="min-height:54px;border-radius:16px;background:#0ea5e9;color:#0b1623;font-weight:800;font-size:16px;display:flex;align-items:center;justify-content:center">Salva e pubblica un annuncio</a>
+    <a href="MarketNegozi.dc.html" style="min-height:44px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#7dd3fc">Salva e torna al market</a>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":1760}}'>
+class Component extends DCLogic {
+renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

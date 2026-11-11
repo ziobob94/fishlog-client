@@ -1,10 +1,11 @@
 <template>
   <div class="species-quickadd">
 
-    <!-- Barra ricerca + azioni (slot per il bottone "Aggiungi cattura") -->
+    <label v-if="showLabel" class="fl-lab" for="species-quickadd-input">{{ t('speciesQuickAdd.label') }}</label>
     <div class="quickadd-toolbar">
       <div class="species-search-bar">
-        <input v-model="query" type="text" :placeholder="t('speciesQuickAdd.searchPlaceholder')" />
+        <Search :size="22" class="search-icon" aria-hidden="true" />
+        <input id="species-quickadd-input" v-model="query" type="text" autocomplete="off" class="fl-inp search-input" :aria-label="t('speciesQuickAdd.searchAria')" :placeholder="t('speciesQuickAdd.searchPlaceholder')" />
       </div>
       <slot name="actions" />
     </div>
@@ -17,21 +18,23 @@
     </div>
     <p v-if="reportSent" class="report-sent">{{ t('speciesQuickAdd.reportSent') }}</p>
 
-    <!-- Le stesse card mostrano i suggerimenti per posizione a riposo, e i
-         risultati della ricerca live non appena si digita qualcosa. -->
-    <div v-if="isSearching" class="suggestion-row">
-      <button v-for="r in results" :key="r.gbifKey || r._id" type="button" class="suggestion-card" @click="pick(r)">
-        <span class="suggestion-species">{{ r.commonNameIt || r.commonNameEn || r.scientificName }}</span>
-        <span class="suggestion-count scientific">{{ r.scientificName }}</span>
-      </button>
+    <!-- Risultati della ricerca live oppure specie frequenti: chip tappabili (la scelta è evidenziata) -->
+    <div v-if="isSearching" class="chip-block">
+      <p class="fl-hint chip-title">{{ t('speciesQuickAdd.resultsTitle') }}</p>
+      <div class="chip-row">
+        <button v-for="r in results" :key="r.gbifKey || r._id" type="button" class="fl-chip" :class="{ on: isSelected(r.commonNameIt || r.commonNameEn || r.scientificName) }" @click="pick(r)">
+          {{ r.commonNameIt || r.commonNameEn || r.scientificName }}
+        </button>
+      </div>
     </div>
-    <div v-else-if="suggestions.length" class="suggestion-row">
-      <button v-for="s in suggestions" :key="s.species" type="button" class="suggestion-card" @click="pick({ commonNameIt: s.species })">
-        <span class="suggestion-species">{{ s.species }}</span>
-        <span class="suggestion-count">
-          {{ s.count != null ? t('speciesQuickAdd.caughtHere', { n: s.count }) : t('speciesQuickAdd.popularFallback') }}
-        </span>
-      </button>
+    <div v-else-if="suggestions.length || selected" class="chip-block">
+      <p class="fl-hint chip-title">{{ t('speciesQuickAdd.suggestionsTitle') }}</p>
+      <div class="chip-row">
+        <button v-if="selected && !suggestions.some(s => isSelected(s.species))" type="button" class="fl-chip on" aria-pressed="true">{{ selected }}</button>
+        <button v-for="s in suggestions" :key="s.species" type="button" class="fl-chip" :class="{ on: isSelected(s.species) }" :aria-pressed="isSelected(s.species)" @click="pick({ commonNameIt: s.species })">
+          {{ s.species }}<template v-if="s.count != null"> · {{ t('speciesQuickAdd.caughtHere', { n: s.count }, s.count) }}</template>
+        </button>
+      </div>
     </div>
 
     <p v-if="isSearching && !loadingSearch && results.length === 0" class="no-results">
@@ -44,6 +47,7 @@
 
 <script setup>
 import { ref, watch, computed } from 'vue'
+import { Search } from 'lucide-vue-next'
 import { useI18n } from 'vue-i18n'
 import { useSpecies } from '../../composables/useSpecies.js'
 import { useDebouncedFn } from '../../composables/useDebouncedFn.js'
@@ -53,8 +57,11 @@ const { fetchSuggestions, searchSpecies, reportMissingSpecies } = useSpecies()
 
 const props = defineProps({
   location: { type: Object, default: () => ({}) },
-  modelValue: { type: String, default: '' }
+  modelValue: { type: String, default: '' },
+  selected: { type: String, default: '' },     // specie già scelta: evidenziata tra i chip
+  showLabel: { type: Boolean, default: true }
 })
+const isSelected = name => !!props.selected && (name || '').toLowerCase() === props.selected.toLowerCase()
 const emit = defineEmits(['add', 'update:modelValue'])
 
 // ─── Suggerimenti per posizione ────────────────────────────────────────────
@@ -129,41 +136,15 @@ async function submitReport() {
 </script>
 
 <style scoped>
-.species-quickadd { display: flex; flex-direction: column; gap: .75rem; margin-bottom: 1rem; }
-
+.species-quickadd { display: flex; flex-direction: column; gap: .5rem; margin-bottom: 0; }
 .quickadd-toolbar { align-items: flex-start; display: flex; gap: .75rem; }
 .species-search-bar { flex: 1; position: relative; }
-
-.no-results {
-  align-items: center; color: var(--text-muted, #6b8fa8); cursor: default;
-  display: flex; font-size: .82rem; gap: .5rem; justify-content: space-between;
-}
-.btn-link {
-  background: none; border: none; color: var(--ocean, #0ea5e9);
-  cursor: pointer; font-size: .8rem; text-decoration: underline;
-}
-
+.search-icon { color: var(--text-muted); left: 14px; pointer-events: none; position: absolute; top: 15px; }
+.search-input { padding-left: 46px; }
+.chip-title { margin: 0 0 10px; }
+.chip-row { display: flex; flex-wrap: wrap; gap: 8px; }
+.no-results { align-items: center; color: var(--text-muted); display: flex; font-size: .82rem; gap: .5rem; justify-content: space-between; }
+.btn-link { background: none; border: none; color: var(--ocean); cursor: pointer; font-size: .8rem; text-decoration: underline; }
 .report-box { display: flex; flex-wrap: wrap; gap: .5rem; }
-.report-sent { color: var(--success, #5cd98a); font-size: .8rem; }
-
-.suggestion-row {
-  display: grid; gap: .6rem;
-  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-}
-.suggestion-card {
-  background: var(--surface, #0a1929);
-  border: 1px solid var(--border, #2a3f55);
-  border-radius: 10px;
-  cursor: pointer;
-  display: flex;
-  flex-direction: column;
-  gap: .3rem;
-  padding: .9rem .75rem;
-  text-align: left;
-  transition: border-color .15s, transform .15s;
-}
-.suggestion-card:hover  { border-color: var(--ocean, #0ea5e9); transform: translateY(-2px); }
-.suggestion-species { color: var(--foam, #cde); font-size: .9rem; font-weight: 700; }
-.suggestion-count   { color: var(--text-muted, #6b8fa8); font-size: .72rem; text-transform: uppercase; letter-spacing: .04em; }
-.suggestion-count.scientific { font-style: italic; text-transform: none; letter-spacing: 0; }
+.report-sent { color: var(--success); font-size: .8rem; }
 </style>

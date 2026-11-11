@@ -1,16 +1,17 @@
 <template>
   <div>
-    <div class="page-header">
-      <h2>{{ t('species.searchTitle') }}</h2>
+    <PageHeader :title="t('species.searchTitle')" back />
+
+    <div class="search-wrap mb-3">
+      <Search :size="16" class="search-icon" />
+      <input
+        v-model="query" type="search" :placeholder="t('species.searchPlaceholder')" :aria-label="t('species.searchPlaceholder')"
+        class="search-input" @input="onInput"
+      />
     </div>
 
-    <input
-      v-model="query" type="search" :placeholder="t('species.searchPlaceholder')"
-      class="search-input mb-4" @input="onInput"
-    />
-
     <p v-if="!query.trim()" class="text-muted text-sm">{{ t('species.searchHint') }}</p>
-    <div v-else-if="loading" class="state-center"><div class="spinner"></div></div>
+    <div v-else-if="loading" class="state-center"><div class="m-spinner"></div></div>
     <p v-else-if="!results.length" class="text-muted text-sm">{{ t('species.noResults') }}</p>
 
     <div v-else class="species-grid">
@@ -25,16 +26,18 @@
           <strong>{{ displayName(r) }}</strong>
           <span class="scientific">{{ r.scientificName }}</span>
         </div>
+        <ChevronRight :size="18" class="text-muted ml-auto shrink-0" />
       </RouterLink>
     </div>
   </div>
 </template>
 
 <script setup>
+import PageHeader from '../components/PageHeader.vue'
 import { ref } from 'vue'
 import { RouterLink } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { Fish } from 'lucide-vue-next'
+import { Fish, Search, ChevronRight } from 'lucide-vue-next'
 import { useSpecies } from '../composables/useSpecies.js'
 import { useDebouncedFn } from '../composables/useDebouncedFn.js'
 
@@ -66,13 +69,13 @@ function onInput() {
   @apply flex items-center gap-4 mb-4;
 }
 
-.search-input {
-  @apply w-full max-w-sm;
-}
+.search-wrap { @apply relative; }
+.search-icon { @apply absolute left-3.5 top-1/2 -translate-y-1/2 text-muted pointer-events-none; }
+.search-input { @apply w-full min-h-[48px] rounded-xl pl-10 pr-4; }
 
 .species-grid {
   @apply grid gap-3;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
 }
 
 .species-card {
@@ -82,13 +85,15 @@ function onInput() {
 .species-card-text {
   @apply flex flex-col min-w-0;
 }
+.species-card-text strong { @apply text-base text-foam; }
+.scientific { @apply italic text-sm text-muted; }
 
 .species-thumb {
-  @apply w-12 h-12 rounded-full object-cover shrink-0;
+  @apply w-12 h-12 rounded-xl object-cover shrink-0;
 }
 
 .species-thumb-placeholder {
-  @apply flex items-center justify-center border border-ocean text-ocean;
+  @apply flex items-center justify-center border border-ocean text-ocean-text;
   background: var(--ocean-glow);
 }
 

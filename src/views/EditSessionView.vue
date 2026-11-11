@@ -1,13 +1,12 @@
 <template>
   <div>
-    <div class="page-header">
-      <RouterLink :to="`/session/${route.params.id}`" class="btn btn-ghost btn-sm icon-inline">
-        <FileText :size="14" /> {{ t('session.edit.viewSummary') }}
-      </RouterLink>
-    </div>
+    <!-- Uscita in corso: la testata con i pulsanti è dentro la scheda (mockup 34) -->
+    <PageHeader v-if="!isOngoingCard" :title="t('sessionForm.menu.pageTitle')" back compact>
+      <RouterLink :to="`/session/${route.params.id}`" class="fl-iconbtn" :aria-label="t('session.edit.viewSummary')" :title="t('session.edit.viewSummary')"><FileText :size="20" /></RouterLink>
+    </PageHeader>
 
     <div v-if="store.loading && !store.current" class="state-center">
-      <div class="spinner"></div>
+      <div class="m-spinner"></div>
     </div>
 
     <div v-else-if="error" class="error-banner" style="display:inline-flex;align-items:center;gap:.4rem"><AlertTriangle :size="16" /> {{ error }}</div>
@@ -16,10 +15,8 @@
          form completo resta un'eccezione esplicita, richiesta con "Modifica
          altri dati" per intervenire su meteo/luogo/altre info. -->
     <OngoingCatchForm
-      v-else-if="store.current?.status === 'ongoing' && !showFullForm"
+      v-else-if="isOngoingCard"
       :session="store.current"
-      @cancel="router.push(`/session/${route.params.id}`)"
-      @closed="onClosed"
       @edit-full="showFullForm = true"
     />
 
@@ -30,11 +27,14 @@
       :is-edit="true"
       @submit="onSubmit"
       @cancel="onCancelFullForm"
+      @delete="onDelete"
     />
   </div>
 </template>
 
 <script setup>
+import { confirmDialog } from '../composables/useConfirm.js'
+import PageHeader from '../components/PageHeader.vue'
 import { computed, ref, onMounted } from 'vue'
 import { useRouter, useRoute, RouterLink } from 'vue-router'
 import { useI18n } from 'vue-i18n'
@@ -55,6 +55,7 @@ const { toast } = useToast()
 // meteo/luogo/altre info, "annulla" deve tornare alla scheda catture
 // invece che al riepilogo — l'uscita resta comunque in corso.
 const showFullForm = ref(false)
+const isOngoingCard = computed(() => store.current?.status === 'ongoing' && !showFullForm.value)
 
 onMounted(() => store.fetchSession(route.params.id))
 
@@ -65,6 +66,11 @@ function onClosed() {
 function onCancelFullForm() {
   if (store.current?.status === 'ongoing') showFullForm.value = false
   else router.push(`/session/${route.params.id}`)
+}
+
+async function onDelete() {
+  if (!(await confirmDialog(t('sessionForm.menu.deleteConfirm')))) return
+  if (await store.deleteSession(route.params.id)) router.replace('/sessions')
 }
 
 async function onSubmit(payload, pendingPhotosByIndex) {
@@ -89,6 +95,8 @@ async function onSubmit(payload, pendingPhotosByIndex) {
 </script>
 
 <style scoped>
+.ph-label { @apply text-sm font-semibold ml-1.5; }
+.ph-icon { @apply flex items-center justify-center h-11 px-3 rounded-xl text-foam bg-surface border border-border no-underline; }
 .page-header  { @apply flex items-center gap-4 mb-4; }
 .icon-inline  { display: inline-flex; align-items: center; gap: .35rem; }
 .error-banner { @apply bg-danger/10 border border-danger rounded-sm text-danger px-4 py-3 mb-4; }

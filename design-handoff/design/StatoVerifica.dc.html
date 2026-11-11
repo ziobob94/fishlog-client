@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<title>FishLog Stato verifica</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+body{margin:0;font-family:'Manrope',system-ui,sans-serif;background:#111c2c;color:#f1f5f9}
+.i{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+button{font-family:inherit;cursor:pointer}
+a{color:inherit;text-decoration:none}
+.lab{display:block;margin:0;font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#9db0c8}
+</style>
+</helmet>
+<div style="width:390px;height:900px;box-sizing:border-box;background:#111c2c;display:flex;flex-direction:column;overflow:hidden">
+
+  <header style="display:flex;align-items:center;gap:8px;padding:8px 16px 8px 8px;min-height:64px;box-sizing:border-box;border-bottom:1px solid #33486a">
+    <a href="MarketNegozi.dc.html" aria-label="Indietro" style="width:44px;height:44px;display:flex;align-items:center;justify-content:center"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></a>
+    <h1 style="margin:0;font-size:18px;font-weight:800;letter-spacing:-.02em">Verifica venditore</h1>
+  </header>
+
+  <main style="flex:1;overflow:hidden;padding:20px 16px;display:flex;flex-direction:column;gap:24px">
+
+    <!-- Selettore anteprima (solo per il design) -->
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <span class="lab">Anteprima stato</span>
+      <div role="group" aria-label="Anteprima stato" style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px">
+        <button aria-pressed="{{t0.on}}" onClick="{{set0}}" style="min-height:44px;border-radius:12px;font-size:13px;font-weight:700;color:{{t0.fg}};background:{{t0.bg}};border:1px solid {{t0.bd}}">In revisione</button>
+        <button aria-pressed="{{t1.on}}" onClick="{{set1}}" style="min-height:44px;border-radius:12px;font-size:13px;font-weight:700;color:{{t1.fg}};background:{{t1.bg}};border:1px solid {{t1.bd}}">Approvato</button>
+        <button aria-pressed="{{t2.on}}" onClick="{{set2}}" style="min-height:44px;border-radius:12px;font-size:13px;font-weight:700;color:{{t2.fg}};background:{{t2.bg}};border:1px solid {{t2.bd}}">Rifiutato</button>
+      </div>
+    </div>
+
+    <!-- Stato -->
+    <section style="background:{{card.bg}};border:1px solid {{card.bd}};border-radius:24px;padding:20px;display:flex;flex-direction:column;gap:12px">
+      <span style="width:48px;height:48px;border-radius:14px;background:{{card.ib}};color:{{card.fg}};display:flex;align-items:center;justify-content:center"><svg class="i" viewBox="0 0 24 24" style="width:26px;height:26px" aria-hidden="true"><path d="{{card.icon}}"/></svg></span>
+      <h2 style="margin:0;font-size:24px;line-height:1.15;letter-spacing:-.03em;font-weight:800">{{card.title}}</h2>
+      <p style="margin:0;font-size:15px;line-height:1.5;color:#cbd5e1">{{card.text}}</p>
+    </section>
+
+    <!-- Passi -->
+    <section style="display:flex;flex-direction:column;gap:14px">
+      <span class="lab">Percorso</span>
+      <sc-for list="{{steps}}" as="s" hint-placeholder-count="3">
+      <div style="display:flex;align-items:center;gap:12px">
+        <span style="width:28px;height:28px;border-radius:50%;background:{{s.bg}};color:{{s.fg}};font-size:13px;font-weight:800;display:flex;align-items:center;justify-content:center;flex:none">{{s.n}}</span>
+        <span style="flex:1;font-size:15px;font-weight:{{s.w}};color:{{s.tc}}">{{s.text}}</span>
+        <span style="font-size:12px;color:#9db0c8">{{s.when}}</span>
+      </div>
+      </sc-for>
+    </section>
+
+    <!-- Motivo (rifiutato) -->
+    <sc-if value="{{rejected}}" hint-placeholder-val="{{ false }}">
+    <section style="background:#1a293d;border:1px solid #33486a;border-radius:18px;padding:14px 16px;display:flex;flex-direction:column;gap:4px">
+      <span class="lab">Motivo indicato dal team</span>
+      <span style="font-size:15px;line-height:1.5">La partita IVA non risulta corrispondere alla ragione sociale. Controlla i dati e allega una visura aggiornata.</span>
+    </section>
+    </sc-if>
+  </main>
+
+  <div style="padding:12px 16px 20px;background:#1a293d;border-top:1px solid #33486a;display:flex;flex-direction:column;gap:6px">
+    <a href="{{cta.href}}" style="min-height:54px;border-radius:16px;background:{{cta.bg}};color:{{cta.fg}};font-weight:800;font-size:16px;display:flex;align-items:center;justify-content:center">{{cta.label}}</a>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":900}}'>
+class Component extends DCLogic {
+constructor(props) {
+  super(props);
+  this.state = { s: 0 };
+}
+renderVals() {
+  const s = this.state.s;
+  const tab = (i) => i === s
+    ? { on: true, fg: '#0b1623', bg: '#0ea5e9', bd: '#0ea5e9' }
+    : { on: false, fg: '#cbd5e1', bg: '#1a293d', bd: '#33486a' };
+  const cards = [
+    { bg: '#2a2314', bd: '#f59e0b', ib: 'rgba(245,158,11,.18)', fg: '#fbbf24',
+      icon: 'M12 7v5l3 2M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z',
+      title: 'Richiesta in revisione',
+      text: 'Il team sta controllando i tuoi dati. Di solito serve qualche giorno: ti avvisiamo con una notifica e una email. Fino ad allora non puoi pubblicare annunci.' },
+    { bg: 'rgba(74,222,128,.10)', bd: '#4ade80', ib: 'rgba(74,222,128,.16)', fg: '#86efac',
+      icon: 'M11.100 3.200 5.100 5.800A1.600 1.600 0 0 0 4 7.300V12c0 4.400 3 7.500 7.700 8.900a1 1 0 0 0 .6 0C17 19.500 20 16.400 20 12V7.300a1.600 1.600 0 0 0-1.100-1.500l-6-2.600a2 2 0 0 0-1.800 0ZM9 12l2 2 4-4',
+      title: 'Sei un venditore verificato',
+      text: 'Ora puoi configurare il profilo del tuo negozio e pubblicare annunci nel market.' },
+    { bg: 'rgba(248,113,113,.10)', bd: '#f87171', ib: 'rgba(248,113,113,.16)', fg: '#fca5a5',
+      icon: 'M12 8v4M12 16h.01M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z',
+      title: 'Richiesta non approvata',
+      text: 'Non abbiamo potuto verificare i dati inviati. Puoi correggerli e inviare di nuovo la richiesta.' }
+  ];
+  const ctas = [
+    { label: 'Torna al market', href: 'MarketNegozi.dc.html', bg: '#243650', fg: '#f1f5f9' },
+    { label: 'Configura il tuo negozio', href: 'VenditoreProfilo.dc.html', bg: '#0ea5e9', fg: '#0b1623' },
+    { label: 'Modifica e reinvia', href: 'RichiestaVenditore.dc.html', bg: '#0ea5e9', fg: '#0b1623' }
+  ];
+  const done = { bg: '#0ea5e9', fg: '#0b1623', w: 700, tc: '#f1f5f9' };
+  const cur = { bg: '#f59e0b', fg: '#1a1204', w: 800, tc: '#f1f5f9' };
+  const todo = { bg: '#243650', fg: '#cbd5e1', w: 600, tc: '#9db0c8' };
+  const bad = { bg: '#f87171', fg: '#1a0a0a', w: 800, tc: '#f1f5f9' };
+  const steps = [
+    { n: '1', text: 'Richiesta inviata', when: '09 nov', ...done },
+    s === 0 ? { n: '2', text: 'Controllo del team', when: 'in corso', ...cur }
+      : s === 1 ? { n: '2', text: 'Controllo del team', when: '11 nov', ...done }
+      : { n: '2', text: 'Controllo del team', when: '11 nov', ...bad },
+    s === 1 ? { n: '3', text: 'Profilo e annunci', when: 'ora', ...cur } : { n: '3', text: 'Profilo e annunci', when: '', ...todo }
+  ];
+  return {
+    t0: tab(0), t1: tab(1), t2: tab(2),
+    card: cards[s], cta: ctas[s], steps, rejected: s === 2,
+    set0: () => this.setState({ s: 0 }),
+    set1: () => this.setState({ s: 1 }),
+    set2: () => this.setState({ s: 2 })
+  };
+}
+}
+</script>
+</body>
+</html>

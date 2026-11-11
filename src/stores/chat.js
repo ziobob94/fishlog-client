@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import api from '../utils/api.js'
+import { compressAll, compressImage } from '../utils/image.js'
 
 export const useChatStore = defineStore('chat', () => {
   const conversations = ref([])
@@ -87,7 +88,7 @@ export const useChatStore = defineStore('chat', () => {
   async function sendMedia(conversationId, file) {
     try {
       const form = new FormData()
-      form.append('file', file)
+      form.append('file', await compressImage(file))
       const { data } = await api.post(`/chat/${conversationId}/messages/media`, form, {
         headers: { 'Content-Type': 'multipart/form-data' }
       })

@@ -1,24 +1,23 @@
 <template>
   <div>
-    <p v-if="route.query.user" class="text-muted text-sm mb-2">{{ t('profileStats.publicOnly') }}</p>
-
-    <section v-if="store.ongoing && !route.query.user" class="ongoing-section">
-      <h2 class="ongoing-heading">
-        <span class="pulse-dot"></span> {{ t('home.ongoingTitle') }}
-      </h2>
-      <div class="sessions-grid">
-        <SessionCard :session="store.ongoing" />
-      </div>
-    </section>
+    <PageHeader :title="t('nav.sessions')" bell />
 
     <SessionFilters v-model="filters" @reset="resetFilters" />
 
-    <h2 v-if="store.ongoing && historySessions.length" class="ongoing-heading text-muted mb-2">
-      {{ t('home.historyTitle') }}
-    </h2>
+    <RouterLink v-if="store.ongoing && !otherUser" :to="newSessionTarget" class="ongoing-panel">
+      <span class="pulse-dot"></span>
+      <span class="ongoing-text">
+        <span class="ongoing-eyebrow">{{ t('home.ongoingTitle') }}<template v-if="store.ongoing.startTime"> · {{ t('sessions.since', { time: store.ongoing.startTime }) }}</template></span>
+        <span class="ongoing-name">{{ store.ongoing.title || store.ongoing.location?.name || t('session.untitled') }}</span>
+        <span class="ongoing-sub">{{ [store.ongoing.technique, store.ongoing.totalCatches != null ? t('sessions.catchesCount', { n: store.ongoing.totalCatches }) : ''].filter(Boolean).join(' · ') }}</span>
+      </span>
+      <span class="btn btn-sand">{{ t('sessions.resume') }}</span>
+    </RouterLink>
+
+    <TideDivider v-if="store.ongoing && !otherUser && historySessions.length">{{ t('home.historyTitle') }}</TideDivider>
 
     <div v-if="infiniteLoading" class="state-center">
-      <div class="spinner"></div>
+      <div class="m-spinner"></div>
     </div>
 
     <div v-else-if="!historySessions.length" class="state-center">
@@ -39,6 +38,8 @@
 </template>
 
 <script setup>
+import PageHeader from '../components/PageHeader.vue'
+import TideDivider from '../components/TideDivider.vue'
 import { ref, computed, watch, onMounted } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
@@ -53,6 +54,8 @@ import InfiniteSentinel from '../components/InfiniteSentinel.vue'
 const { t } = useI18n()
 const store = useSessionStore()
 const route = useRoute()
+// /sessions?user=ID: uscite di un altro utente (il server restituisce solo quelle visibili a chi guarda)
+const otherUser = computed(() => (route.query.user ? String(route.query.user) : ''))
 
 const filters = ref({ search: '', technique: '', dateFrom: '', dateTo: '' })
 
@@ -70,11 +73,12 @@ const pagesRef = computed(() => store.pagination.pages)
 const { loading: infiniteLoading, loadingMore, hasMore, reset, loadMore } = useInfiniteScroll(
   (page, { append }) => store.fetchSessions({
     page,
+    mine:      otherUser.value ? undefined : 'true',
+    userId:    otherUser.value || undefined,
     search:    filters.value.search    || undefined,
     technique: filters.value.technique || undefined,
     dateFrom:  filters.value.dateFrom  || undefined,
-    dateTo:    filters.value.dateTo    || undefined,
-    userId:    route.query.user || undefined
+    dateTo:    filters.value.dateTo    || undefined
   }, { append }),
   pagesRef
 )
@@ -82,7 +86,7 @@ const { loading: infiniteLoading, loadingMore, hasMore, reset, loadMore } = useI
 const debouncedReset = useDebouncedFn(() => reset(), 320)
 
 watch(filters, debouncedReset, { deep: true })
-watch(() => route.query.user, () => reset())
+watch(otherUser, () => reset())
 
 function resetFilters() {
   filters.value = { search: '', technique: '', dateFrom: '', dateTo: '' }
@@ -100,14 +104,17 @@ onMounted(() => {
   @apply grid gap-3 sm:gap-4;
   grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
 }
-.ongoing-section {
-  @apply mb-8;
+.ongoing-panel {
+  @apply flex items-center gap-3 p-4 mb-5 rounded-xl border border-sand no-underline text-foam;
+  background: rgb(var(--color-sand) / 0.1);
 }
-.ongoing-heading {
-  @apply flex items-center gap-2 font-bold text-sm uppercase tracking-wide mb-3 text-sand;
-}
+.ongoing-text { @apply flex flex-col min-w-0 flex-1; }
+.ongoing-eyebrow { @apply text-xs font-bold uppercase text-sand-text; letter-spacing: 0.08em; }
+.ongoing-name { @apply font-bold text-lg truncate; }
+.ongoing-sub { @apply text-sm text-muted; }
+.btn-sand { @apply inline-flex items-center justify-center min-h-[44px] px-5 rounded-xl bg-sand text-on-primary font-bold shrink-0; }
 .pulse-dot {
-  @apply relative inline-flex h-2 w-2 rounded-full bg-sand;
+  @apply relative inline-flex h-3 w-3 rounded-full bg-sand shrink-0;
 }
 .pulse-dot::before {
   content: '';

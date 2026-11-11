@@ -1,6 +1,6 @@
 <template>
   <div v-if="value != null && value !== ''" class="flex flex-col gap-0.5">
-    <span class="text-muted text-[0.7rem] font-bold uppercase tracking-wide">{{ label }}</span>
+    <span class="text-muted text-xs font-bold uppercase" style="letter-spacing:0.14em">{{ label }}</span>
     <span class="text-sm text-foam" :class="{ 'font-mono': mono }">{{ value }}</span>
   </div>
 </template>

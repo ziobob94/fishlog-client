@@ -1,33 +1,42 @@
 <template>
-  <div>
-    <div class="feed-toolbar">
-      <div class="tabs" role="tablist">
-        <button
-          type="button" role="tab" :aria-selected="tab === 'post'"
-          class="tab-pill" :class="{ active: tab === 'post' }"
-          @click="setTab('post')"
-        ><Newspaper :size="14" /> {{ t('posts.tabs.posts') }}</button>
-        <button
-          type="button" role="tab" :aria-selected="tab === 'event'"
-          class="tab-pill" :class="{ active: tab === 'event' }"
-          @click="setTab('event')"
-        ><CalendarDays :size="14" /> {{ t('posts.tabs.events') }}</button>
-      </div>
-      <div class="toolbar-actions">
-        <button
-          type="button" class="icon-btn" :class="{ active: showFilters }"
-          :title="t('posts.filters.title')" :aria-pressed="showFilters"
-          @click="showFilters = !showFilters"
-        ><Filter :size="17" /></button>
-      </div>
+  <div class="feed-page">
+    <PageHeader :title="currentTabLabel" bell>
+      <template #title>
+        <div ref="tabMenuWrap" class="tab-title-wrap">
+          <button type="button" class="tab-title" :aria-expanded="tabMenuOpen" aria-haspopup="menu" @click="tabMenuOpen = !tabMenuOpen">
+            {{ currentTabLabel }} <ChevronDown :size="20" :class="{ flip: tabMenuOpen }" />
+          </button>
+          <div v-if="tabMenuOpen" class="tab-menu" role="menu">
+            <button v-for="tb in TABS" :key="tb.id" type="button" role="menuitemradio" :aria-checked="tab === tb.id" class="tab-menu-item" :class="{ on: tab === tb.id }" @click="pickTab(tb.id)">
+              {{ t(tb.label) }}<Check v-if="tab === tb.id" :size="18" />
+            </button>
+          </div>
+        </div>
+      </template>
+      <RouterLink to="/chat" class="ph-icon" :title="t('nav.chat')" :aria-label="t('nav.chat')">
+        <MessageCircle :size="16" />
+        <span v-if="chat.unreadCount" class="ph-count">{{ chat.unreadCount }}</span>
+      </RouterLink>
+      <button
+        type="button" class="ph-icon" :class="{ active: showFilters }"
+        :title="t('posts.filters.title')" :aria-pressed="showFilters"
+        @click="showFilters = !showFilters"
+      ><Filter :size="16" /></button>
+    </PageHeader>
+
+    <!-- Un solo scroll verticale: quello del feed (storie e riga di creazione ne fanno parte) -->
+    <div class="feed-scroll" data-scroll>
+    <PullToRefresh :refreshing="refreshing" @refresh="doRefresh">
+    <StoriesRail />
+
+    <div class="compose-row">
+      <UserAvatar :user="auth.user" :size="36" />
+      <button type="button" class="compose-btn" @click="openCompose">
+        <span class="compose-text">{{ t('posts.composePrompt') }}</span>
+        <ImageIcon :size="22" class="compose-ic" />
+      </button>
     </div>
 
-    <template v-if="showForm">
-      <div class="post-form-wrap">
-        <PostForm :create-fn="store.createPost" :initial-type="tab" @created="onCreated" />
-      </div>
-      <div class="section-separator"></div>
-    </template>
 
     <div v-if="showFilters" class="filters-panel">
       <p class="filters-desc">{{ t('posts.filters.description') }}</p>
@@ -46,9 +55,9 @@
         <div class="filter-field">
           <label>{{ t('posts.filters.dateRangeLabel') }}</label>
           <div class="date-range">
-            <input type="date" v-model="filters.dateFrom" :title="t('posts.filters.dateFrom')" @change="reload" />
+            <input type="date" v-ph="'Dal  gg/mm/aaaa'" v-model="filters.dateFrom" :title="t('posts.filters.dateFrom')" @change="reload" />
             <span class="date-range-sep">{{ t('posts.filters.dateRangeSep') }}</span>
-            <input type="date" v-model="filters.dateTo" :title="t('posts.filters.dateTo')" @change="reload" />
+            <input type="date" v-ph="'Al  gg/mm/aaaa'" v-model="filters.dateTo" :title="t('posts.filters.dateTo')" @change="reload" />
           </div>
         </div>
 
@@ -129,7 +138,7 @@
 
     <div class="section-separator"></div>
 
-    <div v-if="infiniteLoading" class="state-center mt-4"><div class="spinner"></div></div>
+    <div v-if="infiniteLoading" class="state-center mt-4"><div class="m-spinner"></div></div>
 
     <div v-else-if="!store.feed.length" class="state-center mt-4">
       <div style="font-size:3rem; display:flex; justify-content:center"><Newspaper :size="48" /></div>
@@ -137,34 +146,45 @@
       <p class="text-muted mt-1">{{ t('posts.feed.empty.text') }}</p>
     </div>
 
-    <div v-else class="posts-list mt-4">
+    <StaggerList v-else class="posts-list mt-4 -mx-4 sm:mx-0">
       <PostCard
-        v-for="p in store.feed"
+        v-for="(p, i) in store.feed"
         :key="p._id"
         :post="p"
+        :style="{ '--i': i }"
         @delete="onDelete"
         @close-event="onCloseEvent"
         @respond="onRespond"
         @like="onLike"
+        @save="po => store.toggleSave(po._id)"
         @comment="onComment"
         @delete-comment="onDeleteComment"
         @attend="onAttend"
       />
       <InfiniteSentinel :active="hasMore" :loading="loadingMore" @trigger="loadMore" />
+    </StaggerList>
+    </PullToRefresh>
     </div>
   </div>
 </template>
 
 <script setup>
-  import { computed, onMounted, reactive, ref, watch } from 'vue'
+import PageHeader from '../components/PageHeader.vue'
+  import { computed, onMounted, onBeforeUnmount, reactive, ref, watch } from 'vue'
   import { useI18n } from 'vue-i18n'
   import { useRoute, useRouter } from 'vue-router'
-  import { Newspaper, CalendarDays, MapPin, Map as MapIcon, X, Filter } from 'lucide-vue-next'
+  import { MessageCircle, Newspaper, MapPin, Map as MapIcon, X, Filter, ChevronDown, Check, Image as ImageIcon } from 'lucide-vue-next'
+  import { toInitials } from '../utils/initials.js'
   import { usePostStore } from '../stores/posts.js'
+  import { useStoryStore } from '../stores/stories.js'
+  import { useChatStore } from '../stores/chat.js'
   import { useAuthStore } from '../stores/auth.js'
   import { useUserStore } from '../stores/users.js'
   import { useInfiniteScroll } from '../composables/useInfiniteScroll.js'
-  import PostForm from '../components/post/PostForm.vue'
+  import PullToRefresh from '../components/motion/PullToRefresh.vue'
+  import StaggerList from '../components/motion/StaggerList.vue'
+  import UserAvatar from '../components/UserAvatar.vue'
+  import StoriesRail from '../components/StoriesRail.vue'
   import PostCard from '../components/post/PostCard.vue'
   import LocationPicker from '../components/form/LocationPicker.vue'
   import InfiniteSentinel from '../components/InfiniteSentinel.vue'
@@ -173,11 +193,20 @@
   const route = useRoute()
   const router = useRouter()
   const store = usePostStore()
+  const chat = useChatStore()
   const auth = useAuthStore()
   const userStore = useUserStore()
 
+  const TABS = [
+    { id: 'post', label: 'posts.tabs.forYou' },
+    { id: 'friends', label: 'posts.tabs.friends' },
+    { id: 'groups', label: 'posts.tabs.groups' },
+    { id: 'event', label: 'posts.tabs.events' },
+    { id: 'saved', label: 'posts.tabs.saved' }
+  ]
   const tab = ref('post')
-  const showForm = ref(false)
+  const tabMenuOpen = ref(false)
+  const tabMenuWrap = ref(null)
   const showFilters = ref(false)
   const filters = reactive({
     visibility: '',
@@ -227,7 +256,9 @@
   }
 
   function buildParams() {
-    const params = { type: tab.value }
+    const params = {}
+    if (tab.value === 'post' || tab.value === 'event') params.type = tab.value
+    else params.scope = tab.value
     if (filters.visibility) params.visibility = filters.visibility
     if (filters.dateFrom) params.dateFrom = filters.dateFrom
     if (filters.dateTo) params.dateTo = filters.dateTo
@@ -247,10 +278,20 @@
   )
 
   function reload() { return reset() }
+  const stories = useStoryStore()
+  const refreshing = ref(false)
+  async function doRefresh() { refreshing.value = true; try { await Promise.all([reload(), stories.fetchRail()]) } finally { refreshing.value = false } }
+
+  const currentTabLabel = computed(() => t(TABS.find(x => x.id === tab.value)?.label || 'nav.community'))
+  const initials = computed(() => toInitials(auth.user?.displayName || auth.user?.email || '?'))
+  function pickTab(id) { tabMenuOpen.value = false; setTab(id) }
+  function onDocClick(e) { if (tabMenuOpen.value && tabMenuWrap.value && !tabMenuWrap.value.contains(e.target)) tabMenuOpen.value = false }
+  onMounted(() => document.addEventListener('click', onDocClick))
+  onBeforeUnmount(() => document.removeEventListener('click', onDocClick))
 
   function setTab(value) {
     tab.value = value
-    if (value === 'post') {
+    if (value !== 'event') {
       filters.near = ''
       filters.radiusKm = 25
       filters.sort = 'date'
@@ -320,11 +361,14 @@
   // tramite un cambio di query invece che con un evento diretto.
   watch(() => route.query.compose, (value) => {
     if (!value) return
-    showForm.value = true
-    router.replace({ query: { ...route.query, compose: undefined } })
+    openCompose(true)
   }, { immediate: true })
 
-  function onCreated() { showForm.value = false; reload() }
+  // La creazione del post sta in una pagina dedicata.
+  function openCompose(replace = false) {
+    const to = { path: '/post/new', query: tab.value === 'event' ? { type: 'event' } : {} }
+    return replace === true ? router.replace(to) : router.push(to)
+  }
   async function onDelete(post) { await store.deletePost(post._id) }
   async function onCloseEvent(post) { await store.setEventStatus(post._id, 'closed') }
   async function onRespond(post, message) { await store.respond(post._id, message) }
@@ -335,48 +379,40 @@
 </script>
 
 <style scoped>
-  .feed-toolbar {
-    @apply flex items-center justify-between gap-2;
-  }
-
-  .tabs {
-    @apply flex flex-1 sm:flex-initial gap-1 p-1 bg-surface-2 rounded-full;
-  }
-
+  .feed-page { display: flex; flex-direction: column; min-height: 0; }
+  .feed-scroll { flex: 1; min-height: 0; overflow-y: auto; overflow-x: hidden; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; margin: 0 -1rem; padding: 0 1rem; }
+  @media (min-width: 640px) { .feed-scroll { margin: 0 -1.5rem; padding: 0 1.5rem; } }
   .posts-list {
-    @apply flex flex-col gap-3 sm:gap-4;
+    @apply flex flex-col gap-5;
   }
 
-  .tab-pill {
-    @apply flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 text-xs font-semibold text-muted bg-transparent border-none rounded-full cursor-pointer px-3 py-1.5 transition-colors;
+  .tab-title-wrap { position: relative; display: inline-block; }
+  .tab-title { display: inline-flex; align-items: center; gap: 6px; background: none; border: 0; color: inherit; font: inherit; letter-spacing: inherit; cursor: pointer; padding: 0; min-height: 44px; }
+  .tab-title svg { color: rgb(var(--color-ocean-text)); transition: transform .15s; }
+  .tab-title svg.flip { transform: rotate(180deg); }
+  .tab-menu { position: absolute; left: 0; top: calc(100% + 4px); z-index: 120; min-width: 200px; padding: 6px; background: var(--surface); border: 1px solid var(--border-light); border-radius: 16px; box-shadow: 0 12px 30px rgba(0,0,0,.3); }
+  .tab-menu-item { display: flex; align-items: center; justify-content: space-between; gap: 12px; width: 100%; min-height: 44px; padding: 0 12px; background: none; border: 0; border-radius: 12px; color: var(--foam); font-family: var(--font-sans); font-size: 15px; font-weight: 600; cursor: pointer; text-align: left; }
+  .tab-menu-item:hover { background: var(--surface-2); }
+  .tab-menu-item.on { color: rgb(var(--color-ocean-text)); font-weight: 800; }
+  .compose-row { display: flex; align-items: center; gap: 12px; width: 100%; min-height: 56px; margin-bottom: 16px; padding: 8px 14px; background: var(--surface); border: 1px solid var(--border); border-radius: 20px; color: var(--text-muted); font-size: 15px; }
+  .compose-btn { flex: 1; display: flex; align-items: center; gap: 12px; min-height: 44px; background: none; border: 0; color: inherit; cursor: pointer; text-align: left; font: inherit; }
+  .compose-avatar { width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--ocean); background: var(--ocean-glow); color: rgb(var(--color-ocean-text)); font-size: 12px; font-weight: 800; display: flex; align-items: center; justify-content: center; overflow: hidden; flex: none; }
+  .compose-avatar img { width: 100%; height: 100%; object-fit: cover; }
+  .compose-text { flex: 1; }
+  .compose-ic { color: rgb(var(--color-ocean-text)); }
+  .chips { @apply flex gap-1.5 overflow-x-auto pb-1 mb-2; scrollbar-width: none; }
+  .chips::-webkit-scrollbar { display: none; }
+  .chip {
+    @apply inline-flex items-center shrink-0 min-h-[32px] px-3 rounded-full border border-border bg-surface text-foam text-[0.8125rem] font-semibold cursor-pointer whitespace-nowrap;
   }
+  .chip.active { @apply bg-ocean border-ocean text-on-primary; }
 
-  .tab-pill:hover {
-    @apply text-foam;
+  .ph-icon {
+    @apply relative flex items-center justify-center w-9 h-9 rounded-xl text-foam bg-surface border border-border cursor-pointer no-underline;
   }
-
-  .tab-pill.active {
-    @apply text-ink bg-ocean;
-  }
-
-  .toolbar-actions {
-    @apply flex items-center gap-1;
-  }
-
-  .icon-btn {
-    @apply flex items-center justify-center w-8 h-8 rounded-lg text-muted bg-transparent border-none cursor-pointer transition-colors;
-  }
-
-  .icon-btn:hover {
-    @apply text-foam bg-surface-2;
-  }
-
-  .icon-btn.active {
-    @apply text-ocean bg-ocean/10;
-  }
-
-  .post-form-wrap {
-    @apply mt-3 bg-surface border border-border/60 rounded-lg p-3.5;
+  .ph-icon.active { @apply text-ocean-text border-ocean; }
+  .ph-count {
+    @apply absolute -top-1.5 -right-1.5 min-w-[1.1rem] h-[1.1rem] px-1 rounded-full bg-ocean text-on-primary text-[0.65rem] font-bold inline-flex items-center justify-center;
   }
 
   .section-separator {

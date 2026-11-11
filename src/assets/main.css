@@ -1,45 +1,39 @@
-@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&family=Fraunces:opsz,wght@9..144,600;9..144,700;9..144,800&display=swap');
-@import './motion.css';
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700;9..144,800&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  /* Token aggiuntivi del nuovo design (design-handoff/tokens/tokens.css): non cambiano i colori esistenti */
-  --color-ocean-text: 125 211 252;
-  --color-sand-text: 251 191 36;
-  --color-danger-text: 252 165 165;
-  --color-on-primary: 11 22 35;
   --font-display: 'Fraunces', Georgia, serif;
   --font-sans: 'Manrope', system-ui, sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
-}
-:root[data-theme='light'] {
-  --color-ocean-text: 3 105 161;
-  --color-sand-text: 146 64 14;
-  --color-danger-text: 185 28 28;
-  --color-on-primary: 255 255 255;
-}
-
-:root {
   --ocean-glow: rgba(14, 165, 233, 0.14);
 
   /* Dark theme (default) */
-  --color-ink: 24 36 52;
-  --color-ink-light: 32 47 66;
-  --color-surface: 34 50 71;
-  --color-surface-2: 46 65 90;
-  --color-border: 66 88 116;
-  --color-border-light: 90 114 144;
+  --color-ink: 17 28 44;
+  --color-ink-light: 22 35 52;
+  --color-surface: 26 41 61;
+  --color-surface-2: 36 54 80;
+  --color-border: 51 72 106;
+  --color-border-light: 70 97 127;
   --color-ocean: 14 165 233;
   --color-ocean-dark: 3 105 161;
   --color-sand: 245 158 11;
   --color-sand-light: 252 211 77;
   --color-foam: 241 245 249;
-  --color-muted: 156 172 192;
+  --color-muted: 157 176 200;
   --color-danger: 239 68 68;
   --color-success: 34 197 94;
+
+  /* Varianti per il TESTO su fondo scuro (contrasto >= 4,5:1) */
+  --color-ocean-text: 125 211 252;
+  --color-sand-text: 251 191 36;
+  --color-danger-text: 252 165 165;
+  --color-success-text: 134 239 172;
+  --color-on-primary: 11 22 35;
+  --color-sea-deep: 16 48 77;
+  --radius-signature: 24px 24px 24px 8px;
 }
 
 :root[data-theme='light'] {
@@ -59,6 +53,13 @@
   --color-muted: 86 102 124;
   --color-danger: 220 38 38;
   --color-success: 22 163 74;
+
+  --color-ocean-text: 3 105 161;
+  --color-sand-text: 180 83 9;
+  --color-danger-text: 185 28 28;
+  --color-success-text: 21 128 61;
+  --color-on-primary: 255 255 255;
+  --color-sea-deep: 224 240 250;
 }
 
 /*
@@ -87,16 +88,18 @@
   /* Altezza della bottom nav mobile (AppBottomNav.vue, sotto i 768px):
      unico riferimento condiviso da chi deve lasciarle spazio sopra
      (ToastContainer, LocalStorageNotice, padding di App.vue). */
-  --bottom-nav-h: 3.75rem;
+  --bottom-nav-h: 4rem;
 }
 
 @layer base {
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-  html { font-size: 18px; @apply overflow-x-hidden; }
+  html { font-size: 18px; overflow-x: clip; }
 
   body {
-    @apply bg-ink text-foam font-display antialiased min-h-screen overflow-x-hidden;
+    @apply bg-ink text-foam font-sans antialiased min-h-screen;
+    /* clip (non hidden): hidden fa di body un contenitore di scroll e rompe i sticky (top bar) */
+    overflow-x: clip;
   }
 
   ::-webkit-scrollbar { width: 5px; }
@@ -104,15 +107,60 @@
   ::-webkit-scrollbar-thumb { @apply bg-border-light rounded; }
 
   h1, h2, h3, h4 { @apply font-bold tracking-tight leading-tight; }
+  /* Fraunces solo su titoli grandi (h1, h2 da 20px in su), mai su etichette piccole */
+  h1, h2 { font-family: var(--font-display); letter-spacing: -.01em; }
   h1 { font-size: clamp(1.7rem, 4vw, 2.6rem); }
   h2 { font-size: clamp(1.2rem, 3vw, 1.7rem); }
 
-  a { @apply text-ocean no-underline transition-colors duration-200; }
-  a:hover { @apply text-sand; }
+  a { @apply text-ocean-text no-underline transition-colors duration-200; }
+  a:hover { @apply text-sand-text; }
 
   input, textarea, select {
-    @apply w-full bg-surface-2 border border-border rounded-sm text-foam font-display text-sm
+    @apply w-full min-w-0 bg-surface-2 border border-border rounded-xl text-foam font-sans text-sm
            px-3 py-2 outline-none transition-all duration-200;
+  }
+  input:not([type='checkbox']):not([type='radio']):not([type='range']):not([type='file']), select { min-height: 44px; }
+  /* Caselle e radio: dimensione propria, non quella dei campi di testo */
+  input[type='checkbox'], input[type='radio'] {
+    width: 1.25rem; height: 1.25rem; min-height: 0; padding: 0; flex: none;
+    accent-color: rgb(var(--color-ocean)); cursor: pointer;
+  }
+  /* Caselle: stesso stile dei campi (niente quadrato bianco di iOS) */
+  input[type='checkbox'] {
+    -webkit-appearance: none; appearance: none;
+    background-color: rgb(var(--color-surface-2)); border: 1.5px solid rgb(var(--color-border-light));
+    border-radius: 7px; display: inline-grid; place-content: center; padding: 0;
+  }
+  input[type='checkbox']:checked {
+    background-color: rgb(var(--color-ocean)); border-color: rgb(var(--color-ocean));
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m5 12.5 4.5 4.5L19 7.5'/%3E%3C/svg%3E");
+    background-size: 78%; background-position: center; background-repeat: no-repeat;
+  }
+  /* Select: freccia propria, stessa altezza e raggio degli altri campi */
+  select {
+    -webkit-appearance: none; appearance: none; padding-right: 2.5rem;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%239db0c8' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right .85rem center; background-size: 1.1rem;
+  }
+  input[type='checkbox']:focus-visible, input[type='radio']:focus-visible { outline: 2px solid rgb(var(--color-ocean-text)); outline-offset: 2px; }
+  input[type='file'] { min-height: 44px; }
+  /* iOS Safari: i campi data/ora nativi ignorano larghezza e raggio e
+     centrano il testo; li riportiamo a campi normali. */
+  input[type='date'], input[type='time'], input[type='datetime-local'], input[type='month'] {
+    -webkit-appearance: none; appearance: none;
+    display: block; width: 100%; min-width: 0; max-width: 100%;
+    box-sizing: border-box; min-height: 44px; border-radius: 12px;
+    text-align: left; line-height: 1.5;
+  }
+  input[type='date']::-webkit-date-and-time-value,
+  input[type='time']::-webkit-date-and-time-value,
+  input[type='datetime-local']::-webkit-date-and-time-value { text-align: left; min-height: 1.5em; margin: 0; }
+  input[type='date']::-webkit-datetime-edit, input[type='time']::-webkit-datetime-edit,
+  input[type='datetime-local']::-webkit-datetime-edit { padding: 0; }
+  /* Segnaposto per i campi ora vuoti (iOS li mostra completamente bianchi) */
+  @supports (-webkit-touch-callout: none) {
+    input.is-empty[type='time']::before, input.is-empty[type='date']::before { content: attr(data-placeholder); color: rgb(var(--color-muted)); }
+    input.is-empty:focus::before { content: ''; }
   }
   input:focus, textarea:focus, select:focus {
     @apply border-ocean;
@@ -123,33 +171,52 @@
   select option { @apply bg-surface-2; }
 
   label {
-    @apply block text-muted text-xs font-semibold uppercase tracking-widest mb-1;
+    @apply block text-muted font-semibold uppercase mb-1.5;
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
   }
+
+  /* Focus sempre visibile da tastiera */
+  :focus-visible { outline: 2px solid rgb(var(--color-ocean-text)); outline-offset: 2px; }
+  input:not([type='checkbox']):not([type='radio']):focus-visible, textarea:focus-visible, select:focus-visible { outline: none; }
+
+  /* Rete di sicurezza per le animazioni che non usano i token di motion.css. Rispetta l'impostazione dell'app:
+     con «Animazioni complete» (data-motion="full") non si applica, altrimenti su molti telefoni (iOS «Riduci movimento»,
+     Android «Rimuovi animazioni» / risparmio energetico) la preferenza di sistema spegneva tutto senza via d'uscita. */
+  @media (prefers-reduced-motion: reduce) {
+    :root:not([data-motion='full']) *, :root:not([data-motion='full']) *::before, :root:not([data-motion='full']) *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+  }
+  :root[data-motion='reduce'] *, :root[data-motion='reduce'] *::before, :root[data-motion='reduce'] *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
 }
 
 @layer components {
   .btn {
     @apply inline-flex items-center justify-center gap-1.5 px-4 py-2
-           rounded-sm font-display text-sm font-semibold
+           rounded-sm font-sans text-sm font-semibold min-h-[44px]
            border-0 cursor-pointer transition-all duration-200 whitespace-nowrap;
   }
-  .btn-primary   { @apply bg-ocean text-white hover:bg-ocean-dark hover:-translate-y-px; }
+  .btn-primary   { @apply bg-ocean text-on-primary hover:bg-ocean-dark hover:-translate-y-px; }
   .btn-secondary { @apply bg-surface-2 border border-border text-foam hover:border-ocean; }
   .btn-ghost     { @apply bg-transparent border border-border text-muted hover:border-border-light hover:text-foam; }
-  .btn-danger    { @apply bg-transparent border border-danger text-danger hover:bg-danger hover:text-white; }
-  .btn-sm        { @apply text-xs px-3 py-1.5; }
+  .btn-danger    { @apply bg-transparent border border-danger text-danger-text hover:bg-danger hover:text-white; }
+  .btn-sm        { @apply text-xs px-3 py-1.5 min-h-[44px]; }
   .btn:disabled  { @apply opacity-40 cursor-not-allowed translate-y-0; }
 
   .card {
     @apply bg-surface border border-border/60 rounded-lg p-4;
   }
+  .rounded-signature { border-radius: var(--radius-signature); }
+  .card-signature {
+    @apply bg-surface border border-border/60 p-4;
+    border-radius: var(--radius-signature);
+  }
 
   .badge {
     @apply inline-block rounded px-1.5 py-0.5 text-[0.68rem] font-bold uppercase tracking-wide;
   }
-  .badge-ocean   { background: var(--ocean-glow); @apply border border-ocean text-ocean; }
-  .badge-sand    { @apply bg-amber-500/10 border border-sand text-sand; }
-  .badge-success { @apply bg-green-500/10 border border-success text-success; }
+  .badge-ocean   { background: var(--ocean-glow); @apply border border-ocean text-ocean-text; }
+  .badge-sand    { @apply bg-amber-500/10 border border-sand text-sand-text; }
+  .badge-success { @apply bg-green-500/10 border border-success text-success-text; }
   .badge-danger  { @apply bg-danger text-white border border-danger normal-case tracking-normal; }
 
   .form-grid {
@@ -168,13 +235,8 @@
     @apply flex-1 h-px bg-border;
   }
 
-  .stars { @apply text-sand tracking-wide; }
+  .stars { @apply text-sand-text tracking-wide; }
 
-  .spinner {
-    @apply inline-block rounded-full border-2 border-border border-t-ocean;
-    width: 18px; height: 18px;
-    animation: spin .7s linear infinite;
-  }
 
   .state-center {
     @apply flex flex-col items-center gap-2 py-16 text-center;
@@ -186,3 +248,69 @@
 @media (max-width: 640px) {
   .form-grid { grid-template-columns: 1fr; }
 }
+
+/* ── Transizioni di pagina e finestre ── */
+.page-fill { @apply flex flex-col flex-1 min-h-0; }
+
+@keyframes overlay-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes sheet-up { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: none; } }
+.dialog-overlay, .lightbox, .user-modal-overlay { animation: overlay-in 180ms ease-out; }
+.dialog-overlay > *, .user-modal, .lightbox-img { animation: sheet-up 240ms cubic-bezier(.2, .8, .2, 1); }
+
+
+/* App installata su iOS (viewport-fit=cover): il contenuto parte sotto la
+   barra di stato e non scorre più sotto l'orologio. */
+#app { padding-top: env(safe-area-inset-top); padding-left: env(safe-area-inset-left); padding-right: env(safe-area-inset-right); }
+/* Pagine a scroll interno: l'altezza esclude la fascia della barra di stato */
+#app > .h-dvh { height: calc(100dvh - env(safe-area-inset-top)); }
+body::before {
+  content: ''; position: fixed; top: 0; left: 0; right: 0; height: env(safe-area-inset-top);
+  background: rgb(var(--color-ink)); z-index: 1000; pointer-events: none;
+}
+
+
+/* ── Flusso uscita (design 68171f0): componenti condivisi dalle schermate
+   Nuova uscita, Uscita in corso, Aggiungi cattura, Chiudi uscita, Dati uscita.
+   Non stanno in @layer così battono lo stile globale dei campi. ── */
+.fl-mono { font-family: 'JetBrains Mono', monospace; font-weight: 500; }
+.fl-lab { display: block; margin: 0 0 8px; font-size: 12px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--text-muted); }
+.req { color: var(--danger); margin-left: 2px; font-weight: 800; }
+.fl-error { margin: 6px 0 0; font-size: 13px; font-weight: 600; color: var(--danger); }
+input[aria-invalid="true"], select[aria-invalid="true"], textarea[aria-invalid="true"] { border-color: var(--danger) !important; }
+.fl-hint { margin: 6px 0 0; font-size: 13px; color: var(--text-muted); }
+.fl-inp {
+  width: 100%; box-sizing: border-box; min-height: 52px; border-radius: 14px; border: 1px solid var(--border);
+  background: var(--surface); color: var(--foam); font-size: 16px; line-height: 1.5; padding: .8rem 1rem; outline: none;
+}
+.fl-inp:focus { border-color: var(--ocean); box-shadow: none; }
+.fl-inp.fl-err, .fl-inp.fl-err:focus { border-color: var(--danger); }
+textarea.fl-inp { min-height: 96px; resize: none; line-height: 1.45; padding: 14px 16px; }
+.fl-card { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 16px; box-sizing: border-box; }
+.fl-chip {
+  flex: none; min-height: 44px; padding: 0 16px; border-radius: 22px; border: 1px solid var(--border);
+  background: var(--surface); color: rgb(var(--color-foam) / .85); font-weight: 600; font-size: 15px; cursor: pointer;
+}
+.fl-chip.on { border-color: var(--ocean); background: var(--ocean); color: rgb(var(--color-on-primary)); font-weight: 800; }
+.fl-btn1 {
+  min-height: 54px; border-radius: 16px; background: var(--ocean); color: rgb(var(--color-on-primary)); font-weight: 800; font-size: 16px;
+  display: flex; align-items: center; justify-content: center; gap: 8px; border: 0; width: 100%; box-sizing: border-box; cursor: pointer;
+}
+.fl-btn1.danger { background: var(--danger); color: #fff; }
+.fl-btn1:disabled { opacity: .6; }
+.fl-btn2 {
+  min-height: 48px; border-radius: 14px; background: transparent; color: var(--foam); border: 1px solid var(--border-light);
+  font-weight: 700; font-size: 15px; display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; box-sizing: border-box; cursor: pointer;
+}
+.fl-bar {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 160; padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
+  background: var(--surface); border-top: 1px solid var(--border); display: flex; flex-direction: column; gap: 2px;
+}
+.fl-bar .fl-btn1, .fl-bar .fl-btn2 { min-height: 50px; }
+.fl-switch { width: 52px; height: 32px; border-radius: 16px; border: 0; background: var(--border-light); position: relative; flex: none; padding: 0; cursor: pointer; transition: background .15s; }
+.fl-switch.on { background: var(--ocean); }
+.fl-switch::after { content: ''; position: absolute; top: 4px; left: 4px; width: 24px; height: 24px; border-radius: 50%; background: #fff; transition: left .15s; }
+.fl-switch.on::after { left: 24px; }
+.fl-iconbtn { width: 44px; height: 44px; border-radius: 14px; border: 1px solid var(--border); background: var(--surface); color: var(--foam); display: flex; align-items: center; justify-content: center; flex: none; cursor: pointer; text-decoration: none; }
+
+/* Etichette di sezione: mai Fraunces (solo titoli da 20px in su) */
+.section-label { font-family: var(--font-sans); }

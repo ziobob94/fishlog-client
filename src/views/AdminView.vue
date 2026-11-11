@@ -1,5 +1,10 @@
 <template>
   <div>
+    <!-- Quota Google Weather: sempre visibile da 70% in su (o se bloccata), con i dettagli nella scheda Configurazione. -->
+    <div v-if="quotaAlert" class="card mb-3 quota-alert" :class="{ 'quota-blocked': quota.blocked }" role="alert">
+      <b>{{ quota.blocked ? t('admin.quota.blocked') : t('admin.quota.warning') }}</b>
+      {{ t('admin.quota.line', { count: quota.count, quota: quota.quota, percent: quota.percent }) }}
+    </div>
     <div class="admin-tabs">
       <button class="btn" :class="tab === 'users' ? 'btn-primary' : 'btn-ghost'" @click="tab = 'users'">{{ t('admin.tabs.users') }}</button>
       <button class="btn" :class="tab === 'sessions' ? 'btn-primary' : 'btn-ghost'" @click="tab = 'sessions'">{{ t('admin.tabs.sessions') }}</button>
@@ -17,7 +22,7 @@
         <input v-model="userSearch" type="search" :placeholder="t('admin.users.searchPlaceholder')" style="max-width:280px" @input="debouncedSearchUsers" />
       </div>
 
-      <div v-if="pagination.loading.value" class="state-center"><div class="spinner"></div></div>
+      <div v-if="pagination.loading.value" class="state-center"><div class="m-spinner"></div></div>
       <div v-else class="table-scroll">
         <table class="admin-table">
           <thead>
@@ -73,7 +78,7 @@
         </label>
       </div>
 
-      <div v-if="loadingSessions" class="state-center"><div class="spinner"></div></div>
+      <div v-if="loadingSessions" class="state-center"><div class="m-spinner"></div></div>
       <div v-else class="table-scroll">
         <table class="admin-table">
           <thead>
@@ -102,7 +107,7 @@
 
     <!-- NEGOZI -->
     <div v-if="tab === 'shops'">
-      <div v-if="loadingShops" class="state-center"><div class="spinner"></div></div>
+      <div v-if="loadingShops" class="state-center"><div class="m-spinner"></div></div>
 
       <div v-else-if="!pendingShops.length" class="state-center">
         <p class="text-muted">{{ t('admin.shops.empty') }}</p>
@@ -117,7 +122,13 @@
             <tr v-for="u in pendingShops" :key="u._id">
               <td>{{ u.shop.name || t('common.none') }}</td>
               <td class="text-muted" style="font-size:.82rem">{{ u.displayName || u.email }}</td>
-              <td class="text-muted" style="font-size:.82rem;max-width:280px">{{ u.shop.description }}</td>
+              <td class="text-muted" style="font-size:.82rem;max-width:280px">
+                <div>{{ u.shop.description }}</div>
+                <div v-if="u.shop.legalName">{{ u.shop.sellerType }} · {{ u.shop.legalName }}<template v-if="u.shop.vatNumber"> · P.IVA {{ u.shop.vatNumber }}</template></div>
+                <div v-if="u.shop.city || u.shop.phone">{{ [u.shop.city, u.shop.phone].filter(Boolean).join(' · ') }}</div>
+                <button v-if="u.shop.document?.filename" type="button" class="btn btn-ghost btn-sm mt-1" @click="openShopDocument(u)">{{ t('admin.shops.document') }}</button>
+                <span v-else>{{ t('admin.shops.noDocument') }}</span>
+              </td>
               <td class="text-mono text-muted" style="font-size:.78rem">{{ fmtDate(u.shop.verificationRequestedAt) }}</td>
               <td>
                 <div class="flex gap-1.5">
@@ -133,9 +144,15 @@
 
     <!-- CONFIGURAZIONI -->
     <div v-if="tab === 'config'">
+      <section v-if="quota" class="card mb-3">
+        <h3>{{ t('admin.quota.title') }}</h3>
+        <p class="text-sm" style="margin:6px 0">{{ t('admin.quota.line', { count: quota.count, quota: quota.quota, percent: quota.percent }) }}</p>
+        <div class="quota-bar" role="progressbar" :aria-valuenow="Math.min(100, quota.percent)" aria-valuemin="0" aria-valuemax="100" :aria-label="t('admin.quota.title')"><span :style="{ width: Math.min(100, quota.percent) + '%' }" :class="{ 'quota-blocked': quota.blocked }"></span></div>
+        <p class="text-muted text-xs" style="margin:8px 0 0">{{ t('admin.quota.rules', { warn: quota.warnAt.join('% e '), stop: quota.stopPct, remaining: quota.remaining }) }}</p>
+      </section>
       <p class="text-muted text-sm mb-3">{{ t('admin.config.intro') }}</p>
 
-      <div v-if="loadingConfig" class="state-center"><div class="spinner"></div></div>
+      <div v-if="loadingConfig" class="state-center"><div class="m-spinner"></div></div>
       <template v-else>
         <section v-for="group in configGroups" :key="group.name" class="card mb-3">
           <h3>{{ group.name }}</h3>
@@ -182,7 +199,7 @@
           </div>
           <div class="form-group">
             <label>{{ t('admin.regulations.fields.region') }}</label>
-            <input v-model="regulationForm.region" type="text" :placeholder="t('admin.regulations.fields.regionPlaceholder')" />
+            <PlaceInput v-model="regulationForm.region" mode="region" :placeholder="t('admin.regulations.fields.regionPlaceholder')" />
           </div>
           <div class="form-group full">
             <label>{{ t('admin.regulations.fields.title') }}</label>
@@ -232,7 +249,7 @@
         style="max-width:280px" class="mb-3" @input="debouncedSearchRegulations"
       />
 
-      <div v-if="loadingRegulations" class="state-center"><div class="spinner"></div></div>
+      <div v-if="loadingRegulations" class="state-center"><div class="m-spinner"></div></div>
       <div v-else-if="!regulations.length" class="state-center"><p class="text-muted">{{ t('admin.regulations.empty') }}</p></div>
       <div v-else class="table-scroll">
         <table class="admin-table">
@@ -285,6 +302,8 @@
 </template>
 
 <script setup>
+import PlaceInput from '../components/form/PlaceInput.vue'
+import { confirmDialog } from '../composables/useConfirm.js'
 import { ref, reactive, computed, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useAuthStore } from '../stores/auth.js'
@@ -361,8 +380,15 @@ async function approveShop(u) {
   pendingShops.value = pendingShops.value.filter(x => x._id !== u._id)
 }
 
+async function openShopDocument(u) {
+  const res = await api.get(`/admin/shops/${u._id}/document`, { responseType: 'blob' })
+  window.open(URL.createObjectURL(res.data), '_blank', 'noopener')
+}
+
 async function rejectShop(u) {
-  await api.post(`/admin/shops/${u._id}/reject`)
+  const reason = window.prompt(t('admin.shops.rejectReason'))
+  if (reason === null) return
+  await api.post(`/admin/shops/${u._id}/reject`, { reason })
   pendingShops.value = pendingShops.value.filter(x => x._id !== u._id)
 }
 
@@ -451,15 +477,24 @@ async function saveRegulation() {
 }
 
 async function deleteRegulation(r) {
-  if (!window.confirm(t('admin.regulations.confirmDelete'))) return
+  if (!(await confirmDialog(t('admin.regulations.confirmDelete')))) return
   await api.delete(`/regulations/admin/${r._id}`)
   regulations.value = regulations.value.filter(x => x._id !== r._id)
 }
 
+const quota = ref(null)
+const quotaAlert = computed(() => quota.value && (quota.value.blocked || quota.value.percent >= (quota.value.warnAt?.[0] ?? 70)))
+async function loadQuota() { try { quota.value = (await api.get('/admin/weather-usage')).data } catch { quota.value = null } }
+onMounted(loadQuota)
 onMounted(() => { pagination.load(); fetchSessions(); fetchPendingShops(); fetchConfig(); fetchRegulations() })
 </script>
 
 <style scoped>
+.quota-alert { border-color: rgb(var(--color-sand-text)); }
+.quota-alert.quota-blocked { border-color: rgb(var(--color-danger-text)); }
+.quota-bar { height: 8px; border-radius: 999px; background: rgb(var(--color-surface-2)); overflow: hidden; }
+.quota-bar span { display: block; height: 100%; background: rgb(var(--color-ocean)); }
+.quota-bar span.quota-blocked { background: rgb(var(--color-danger)); }
 .admin-tabs { @apply flex flex-wrap gap-2 my-5; }
 .toolbar    { @apply flex flex-wrap items-center gap-4 mb-4; }
 

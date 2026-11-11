@@ -1,6 +1,6 @@
 <template>
   <div ref="el" class="infinite-sentinel">
-    <div v-if="loading" class="spinner"></div>
+    <div v-if="loading" class="m-spinner"></div>
   </div>
 </template>
 

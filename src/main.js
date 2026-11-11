@@ -8,6 +8,10 @@ import { useThemeStore } from './stores/theme.js'
 import App from './App.vue'
 import i18n from './i18n/index.js'
 import './assets/main.css'
+import './assets/motion.css'
+import { initMotion } from './components/motion/motion.js'
+import { setupFormA11y } from './utils/formA11y.js'
+import { setupFormValidation } from './utils/formValidation.js'
 
 const app   = createApp(App)
 const pinia = createPinia()
@@ -22,10 +26,32 @@ auth.initAuth()
 setupGuards(router)
 
 useThemeStore().init()
+initMotion()
 
 // Carica la coda offline da IndexedDB e prova subito a sincronizzarla
 useOfflineStore().init()
 
 useFeaturesStore().fetchFeatures()
 
+if ('serviceWorker' in navigator && import.meta.env.PROD) {
+  window.addEventListener('load', () => navigator.serviceWorker.register('/sw.js').catch(() => {}))
+}
+
+// Segnaposto per i campi data/ora: iOS Safari li mostra completamente vuoti.
+// Uso: <input type="date" v-ph="'gg/mm/aaaa'" />  (stile in main.css, solo iOS)
+function syncPh(el, binding) {
+  el.dataset.placeholder = binding.value || ''
+  el.classList.toggle('is-empty', !el.value)
+}
+app.directive('ph', {
+  mounted(el, binding) {
+    syncPh(el, binding)
+    el.addEventListener('input', () => syncPh(el, binding))
+    el.addEventListener('change', () => syncPh(el, binding))
+  },
+  updated: syncPh
+})
+
 app.mount('#app')
+setupFormA11y()
+setupFormValidation()

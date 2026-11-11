@@ -14,7 +14,7 @@
       <div class="flex flex-col items-center gap-1.5 text-center px-4">
         <Paperclip :size="28" class="text-muted" />
         <p class="text-sm text-foam">
-          {{ t('mediaUploader.dropHint') }} <span class="text-ocean">{{ t('mediaUploader.dropHintClick') }}</span>
+          {{ t('mediaUploader.dropHint') }} <span class="text-ocean-text">{{ t('mediaUploader.dropHintClick') }}</span>
         </p>
         <span class="text-xs text-muted">{{ t('mediaUploader.formatsHint') }}</span>
       </div>
@@ -90,6 +90,7 @@ import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { Paperclip, Search, Trash2, Camera, Clapperboard, X } from 'lucide-vue-next'
 import api from '../utils/api.js'
+import { compressAll } from '../utils/image.js'
 
 const { t } = useI18n()
 const props = defineProps({
@@ -119,7 +120,7 @@ async function upload(files) {
   if (!files.length) return
   uploading.value = true; progress.value = 0
   const fd = new FormData()
-  for (const f of files) fd.append('files', f)
+  for (const f of await compressAll(files)) fd.append('files', f)
   try {
     // Niente Content-Type esplicito: senza il boundary generato dal browser
     // per il FormData, il multipart non è più parsabile lato server.

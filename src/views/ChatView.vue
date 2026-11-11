@@ -2,17 +2,17 @@
   <div :class="{ 'chat-fullheight': route.params.userId }">
     <!-- Lista conversazioni -->
     <template v-if="!route.params.userId">
-      <div class="page-header">
-        <div class="chat-search-wrap">
-          <Search :size="16" class="chat-search-icon" />
-          <input
-            v-model="query" type="text" class="chat-search"
-            :placeholder="t('chat.search.placeholder')" @input="onSearch"
-          />
-        </div>
-        <RouterLink to="/friends" class="icon-btn shrink-0" :title="t('chat.friendsLink')">
-          <Users :size="18" />
+      <PageHeader :title="t('chat.title')" back="/feed">
+        <RouterLink to="/friends" class="icon-btn" :title="t('chat.friendsLink')" :aria-label="t('chat.friendsLink')">
+          <UserPlus :size="18" />
         </RouterLink>
+      </PageHeader>
+      <div class="chat-search-wrap mb-3">
+        <Search :size="16" class="chat-search-icon" />
+        <input
+          v-model="query" type="text" class="chat-search" :aria-label="t('chat.search.placeholder')"
+          :placeholder="t('chat.search.placeholder')" @input="onSearch"
+        />
       </div>
 
       <!-- Ricerca attiva: stessa lista sia per amici già in chat (aprono il
@@ -44,29 +44,29 @@
       </div>
 
       <template v-else>
-        <div v-if="chatStore.conversations.length" class="tabs" role="tablist">
+        <div v-if="chatStore.conversations.length" class="chips" role="tablist">
           <button
             type="button" role="tab" :aria-selected="filterMode === 'all'"
-            class="tab-pill" :class="{ active: filterMode === 'all' }" @click="filterMode = 'all'"
+            class="chip" :class="{ active: filterMode === 'all' }" @click="filterMode = 'all'"
           >{{ t('chat.filters.all') }}</button>
           <button
             type="button" role="tab" :aria-selected="filterMode === 'unread'"
-            class="tab-pill" :class="{ active: filterMode === 'unread' }" @click="filterMode = 'unread'"
+            class="chip" :class="{ active: filterMode === 'unread' }" @click="filterMode = 'unread'"
           >{{ t('chat.filters.unread') }}<span v-if="unreadConversationsCount"> {{ unreadConversationsCount }}</span></button>
           <button
             type="button" role="tab" :aria-selected="filterMode === 'favorites'"
-            class="tab-pill" :class="{ active: filterMode === 'favorites' }" @click="filterMode = 'favorites'"
+            class="chip" :class="{ active: filterMode === 'favorites' }" @click="filterMode = 'favorites'"
           >{{ t('chat.filters.favorites') }}<span v-if="favoriteConversationsCount"> {{ favoriteConversationsCount }}</span></button>
           <button
             type="button" role="tab" :aria-selected="filterMode === 'groups'"
-            class="tab-pill" :class="{ active: filterMode === 'groups' }" @click="filterMode = 'groups'"
+            class="chip" :class="{ active: filterMode === 'groups' }" @click="filterMode = 'groups'"
           >{{ t('chat.filters.groups') }}<span v-if="groupConversationsCount"> {{ groupConversationsCount }}</span></button>
         </div>
 
-        <div v-if="chatStore.loading" class="state-center"><div class="spinner"></div></div>
+        <div v-if="chatStore.loading" class="state-center"><div class="m-spinner"></div></div>
 
         <div v-else-if="!chatStore.conversations.length" class="state-center">
-          <div style="font-size:3rem; display:flex; justify-content:center"><MessagesSquare :size="48" /></div>
+          <div style="font-size:3rem; display:flex; justify-content:center"><MessageCircle :size="48" /></div>
           <p class="text-muted mt-1">{{ t('chat.empty') }}</p>
         </div>
 
@@ -90,7 +90,8 @@
             <div class="conversation-body">
               <div class="conversation-info">
                 <span class="conversation-name" :class="{ unread: c.unreadCount }">
-                  {{ c.type === 'group' ? c.name : (c.user?.displayName || c.user?.email) }}
+                  <span class="truncate">{{ c.type === 'group' ? c.name : (c.user?.displayName || c.user?.email) }}</span>
+                  <Star v-if="c.favorite" :size="14" fill="currentColor" class="fav-star shrink-0" :aria-label="t('chat.favorite')" />
                 </span>
                 <span class="conversation-preview" :class="{ unread: c.unreadCount }">
                   <CheckCheck v-if="messageTick(c) === 'read'" :size="14" class="tick tick-read shrink-0" />
@@ -99,12 +100,7 @@
                 </span>
               </div>
               <div class="conversation-meta">
-                <button
-                  type="button" class="conversation-favorite" :class="{ active: c.favorite }"
-                  :title="t(c.favorite ? 'chat.unfavorite' : 'chat.favorite')"
-                  @click.stop="toggleFavorite(c)"
-                ><Star :size="15" :fill="c.favorite ? 'currentColor' : 'none'" /></button>
-                <span class="conversation-time">{{ formatRelativeTime(c.lastMessageAt) }}</span>
+                <span class="conversation-time" :class="{ 'conversation-time-unread': c.unreadCount }">{{ formatRelativeTime(c.lastMessageAt) }}</span>
                 <span v-if="c.unreadCount" class="badge badge-ocean conversation-badge">{{ c.unreadCount }}</span>
               </div>
             </div>
@@ -116,36 +112,45 @@
     <!-- Thread con un amico -->
     <template v-else>
       <div class="page-header chat-thread-header pt-4">
-        <RouterLink to="/chat" class="btn btn-ghost btn-sm">{{ t('common.back') }}</RouterLink>
+        <RouterLink to="/chat" class="icon-btn" :aria-label="t('common.back')"><ArrowLeft :size="18" /></RouterLink>
         <RouterLink v-if="friend" :to="`/users/${friend._id}`" class="chat-header-info">
-          <img v-if="friend.avatar" :src="friend.avatar" class="mini-avatar" />
-          <span v-else class="mini-placeholder">{{ initials(friend) }}</span>
+          <span class="chat-avatar">
+            <img v-if="friend.avatar" :src="friend.avatar" class="mini-avatar" />
+            <span v-else class="mini-placeholder">{{ initials(friend) }}</span>
+            <span v-if="friend.online" class="online-dot"></span>
+          </span>
           <span class="chat-header-text">
             <span class="chat-header-name">{{ friend.displayName || friend.email }}</span>
-            <span v-if="friend.email" class="chat-header-email">{{ friend.email }}</span>
+            <span v-if="friend.online" class="chat-header-online">online</span>
+            <span v-else-if="friend.email" class="chat-header-email">{{ friend.email }}</span>
           </span>
         </RouterLink>
         <h2 v-else>...</h2>
+        <button v-if="currentConversation" type="button" class="icon-btn ml-auto" :class="{ 'is-fav': currentConversation.favorite }" :aria-pressed="!!currentConversation.favorite" :aria-label="t(currentConversation.favorite ? 'chat.unfavorite' : 'chat.favorite')" @click="toggleFavorite(currentConversation)">
+          <Star :size="18" :fill="currentConversation.favorite ? 'currentColor' : 'none'" />
+        </button>
       </div>
 
       <div v-if="threadError" class="error-banner"><AlertTriangle :size="16" /> {{ threadError }}</div>
-      <div v-else-if="!conversationId" class="state-center"><div class="spinner"></div></div>
+      <div v-else-if="!conversationId" class="state-center"><div class="m-spinner"></div></div>
       <ChatThread v-else :conversation-id="conversationId" />
     </template>
   </div>
 </template>
 
 <script setup>
+import { toInitials } from '../utils/initials.js'
   import { ref, reactive, computed, watch, onMounted, onBeforeUnmount } from 'vue'
   import { useRoute, useRouter, RouterLink } from 'vue-router'
   import { useI18n } from 'vue-i18n'
-  import { MessagesSquare, AlertTriangle, Users, UsersRound, Search, Star, Check, CheckCheck } from 'lucide-vue-next'
+  import { MessageCircle, AlertTriangle, UserPlus, ArrowLeft, UsersRound, Search, Star, Check, CheckCheck } from 'lucide-vue-next'
   import { useChatStore } from '../stores/chat.js'
   import { useFriendStore } from '../stores/friends.js'
   import { useUserStore } from '../stores/users.js'
   import { useAuthStore } from '../stores/auth.js'
   import { useDebouncedFn } from '../composables/useDebouncedFn.js'
   import { useToast } from '../composables/useToast.js'
+  import PageHeader from '../components/PageHeader.vue'
   import ChatThread from '../components/chat/ChatThread.vue'
 
   const { t } = useI18n()
@@ -183,7 +188,7 @@
     const startOfDay = (x) => new Date(x.getFullYear(), x.getMonth(), x.getDate())
     const diffDays = Math.round((startOfDay(new Date()) - startOfDay(d)) / 86400000)
 
-    if (diffDays === 0) return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    if (diffDays === 0) return d.toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' })
     if (diffDays === 1) return t('chat.yesterday')
     if (diffDays < 7) return d.toLocaleDateString('it-IT', { weekday: 'short' })
     return d.toLocaleDateString('it-IT', { day: '2-digit', month: '2-digit' })
@@ -266,11 +271,12 @@
     }
   }
 
-  const friend = computed(() => friendStore.friends.find(f => f._id === route.params.userId))
+  const currentConversation = computed(() => chatStore.conversations.find(c => c._id === conversationId.value))
+  const friend = computed(() => friendStore.friends.find(f => f._id === route.params.userId) || (currentConversation.value?.type !== 'group' ? currentConversation.value?.user : null))
 
   function initials(u) {
     const name = u?.displayName || u?.email || '?'
-    return name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2)
+return toInitials(name)
   }
 
   function goToThread(userId) {
@@ -308,11 +314,14 @@
   .page-header {
     @apply flex items-center justify-between gap-4 mb-4;
   }
+  .chat-title { @apply text-3xl font-bold text-foam; }
 
   .chat-thread-header {
     @apply border-b border-border pb-4 justify-start;
   }
 
+  .chat-thread-header .icon-btn { @apply bg-transparent border-transparent; }
+  .chat-thread-header .icon-btn.is-fav { @apply text-sand-text; }
   .chat-header-info {
     @apply flex items-center gap-2.5 no-underline text-inherit min-w-0;
   }
@@ -322,9 +331,12 @@
   }
 
   .chat-header-name {
-    @apply font-semibold text-foam truncate;
+    @apply font-bold text-foam truncate;
   }
 
+  .chat-avatar { @apply relative shrink-0; }
+  .online-dot { @apply absolute bottom-0 right-0 w-3 h-3 rounded-full bg-success border-2 border-surface; }
+  .chat-header-online { @apply text-xs text-success-text truncate; }
   .chat-header-email {
     @apply text-xs text-muted truncate;
   }
@@ -342,17 +354,15 @@
   }
 
   .chat-search {
-    @apply w-full rounded-full bg-surface-2 border-none pl-9 pr-4 py-2 text-sm;
+    @apply w-full min-h-[40px] h-10 rounded-xl bg-surface border border-border pl-9 pr-3 text-sm;
   }
 
-  .tabs {
-    @apply flex gap-1 p-1 mb-3 bg-surface-2 rounded-full w-full sm:w-auto;
+  .chips { @apply flex gap-1.5 overflow-x-auto pb-1 mb-2; scrollbar-width: none; }
+  .chips::-webkit-scrollbar { display: none; }
+  .chip {
+    @apply inline-flex items-center gap-1 shrink-0 min-h-[32px] px-3 rounded-full border border-border bg-surface text-foam text-[0.8125rem] font-semibold cursor-pointer whitespace-nowrap;
   }
-  .tab-pill {
-    @apply flex-1 sm:flex-initial inline-flex items-center justify-center gap-1 text-xs font-semibold text-muted bg-transparent border-none rounded-full cursor-pointer px-3 py-1.5 transition-colors;
-  }
-  .tab-pill:hover { @apply text-foam; }
-  .tab-pill.active { @apply text-ink bg-ocean; }
+  .chip.active { @apply bg-ocean border-ocean text-on-primary; }
 
   .search-results {
     @apply flex flex-col gap-1;
@@ -401,52 +411,45 @@
   }
 
   .conversation-name {
-    @apply text-sm font-medium text-foam truncate;
+    @apply flex items-center gap-1.5 text-base font-bold text-foam min-w-0;
   }
-  .conversation-name.unread {
-    @apply font-bold;
-  }
+  .fav-star { @apply text-sand-text; }
 
   .conversation-preview {
-    @apply flex items-center gap-1 text-xs text-muted min-w-0;
+    @apply flex items-center gap-1 text-sm text-muted min-w-0;
   }
   .conversation-preview.unread {
-    @apply text-foam font-medium;
+    @apply text-foam font-bold;
   }
   .conversation-preview-text {
     @apply truncate min-w-0;
   }
 
   .conversation-meta {
-    @apply flex flex-col items-end gap-1 shrink-0 self-stretch;
+    @apply flex flex-col items-end justify-center gap-1.5 shrink-0 self-stretch;
   }
 
-  .conversation-favorite {
-    @apply flex items-center justify-center w-5 h-5 text-muted bg-transparent border-none cursor-pointer p-0 hover:text-sand transition-colors;
-  }
-  .conversation-favorite.active {
-    @apply text-sand;
-  }
-
+  
   .conversation-time {
-    @apply text-[0.7rem] text-muted;
+    @apply text-xs text-muted font-mono;
   }
+  .conversation-time-unread { @apply text-ocean-text; }
 
   .conversation-badge {
-    @apply mt-auto;
+    @apply bg-ocean text-on-primary border-ocean rounded-full min-w-[1.5rem] h-6 inline-flex items-center justify-center font-bold;
   }
 
   .conversation-avatar {
-    @apply w-12 h-12 sm:w-14 sm:h-14 rounded-full object-cover shrink-0 my-2.5;
+    @apply w-[52px] h-[52px] rounded-full object-cover shrink-0 my-2.5;
   }
 
   .conversation-avatar-placeholder {
-    @apply w-12 h-12 sm:w-14 sm:h-14 rounded-full border border-ocean text-ocean flex items-center justify-center text-base font-bold shrink-0 my-2.5;
+    @apply w-[52px] h-[52px] rounded-full border border-ocean text-ocean-text flex items-center justify-center text-base font-bold shrink-0 my-2.5;
     background: var(--ocean-glow);
   }
 
   .group-avatar {
-    @apply text-sand border-sand;
+    @apply text-sand-text border-sand;
     background: rgb(var(--color-sand) / 0.15);
   }
 
@@ -455,13 +458,15 @@
   }
 
   .mini-placeholder {
-    @apply w-9 h-9 rounded-full border border-ocean text-ocean flex items-center justify-center text-xs font-bold shrink-0;
+    @apply w-9 h-9 rounded-full border border-ocean text-ocean-text flex items-center justify-center text-xs font-bold shrink-0;
     background: var(--ocean-glow);
   }
 
   .icon-btn {
-    @apply flex items-center justify-center w-9 h-9 rounded-lg text-muted bg-transparent border-none cursor-pointer hover:bg-surface-2 hover:text-ocean transition-colors shrink-0;
+    @apply flex items-center justify-center w-11 h-11 rounded-xl text-foam bg-surface border border-border cursor-pointer hover:border-ocean hover:text-ocean-text transition-colors shrink-0;
   }
+
+  .icon-btn.is-fav { @apply text-sand-text; }
 
   .chat-fullheight {
     @apply flex flex-col flex-1 min-h-0;

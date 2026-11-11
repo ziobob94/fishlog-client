@@ -1,31 +1,8 @@
 <template>
   <div>
+    <PageHeader :title="t('profile.settingsTitle')" back />
+
     <div class="profile-grid">
-      <!-- Account -->
-      <section class="card">
-        <h3>{{ t('profile.account.title') }}</h3>
-        <div class="avatar-row">
-          <img v-if="auth.user?.avatar" :src="auth.user.avatar" class="avatar" />
-          <span v-else class="avatar-placeholder">{{ initials }}</span>
-          <div class="flex flex-col gap-1">
-            <input ref="fileInput" type="file" accept="image/jpeg,image/png,image/webp" class="hidden" @change="onAvatarChange" />
-            <button class="btn btn-secondary btn-sm" :disabled="uploadingAvatar" @click="fileInput.click()">
-              {{ uploadingAvatar ? t('profile.account.uploading') : t('profile.account.changeAvatar') }}
-            </button>
-          </div>
-        </div>
-
-        <div class="form-group mt-3">
-          <label>{{ t('profile.account.nameLabel') }}</label>
-          <input v-model="displayName" type="text" />
-        </div>
-        <p v-if="accountError" class="error-msg mt-2">{{ accountError }}</p>
-        <p v-if="accountSaved" class="success-msg mt-2">{{ t('common.save') }} ✓</p>
-        <button class="btn btn-primary btn-sm mt-2" :disabled="savingAccount" @click="saveAccount">
-          {{ savingAccount ? t('profile.account.saving') : t('common.save') }}
-        </button>
-      </section>
-
       <!-- Credenziali -->
       <section class="card">
         <h3>{{ t('profile.credentials.title') }}</h3>
@@ -35,43 +12,43 @@
           {{ t('profile.credentials.disabled') }}
         </p>
 
-        <div v-if="features.passwordAuthEnabled && auth.user?.hasPassword" class="credential-block">
+        <form v-if="features.passwordAuthEnabled && auth.user?.hasPassword" class="credential-block" @submit.prevent="savePassword">
           <h4>{{ t('profile.credentials.passwordTitle') }}</h4>
           <div class="form-group">
             <label>{{ t('profile.credentials.currentPassword') }}</label>
-            <PasswordInput v-model="pwForm.currentPassword" />
+            <PasswordInput v-model="pwForm.currentPassword" required />
           </div>
           <div class="form-group mt-1">
             <label>{{ t('profile.credentials.newPassword') }}</label>
-            <PasswordInput v-model="pwForm.newPassword" />
+            <PasswordInput v-model="pwForm.newPassword" required />
           </div>
           <p v-if="pwError" class="error-msg mt-1">{{ pwError }}</p>
           <p v-if="pwSaved" class="success-msg mt-1">{{ t('profile.credentials.passwordUpdated') }}</p>
-          <button class="btn btn-secondary btn-sm mt-2" :disabled="savingPw" @click="savePassword">
+          <button type="submit" class="btn btn-secondary btn-sm mt-2" :disabled="savingPw">
             {{ savingPw ? t('profile.account.saving') : t('profile.credentials.changePassword') }}
           </button>
-        </div>
+        </form>
         <p v-else-if="features.passwordAuthEnabled" class="text-muted text-sm">{{ t('profile.credentials.oauthOnly') }}</p>
 
-        <div v-if="features.passwordAuthEnabled" class="credential-block mt-3">
+        <form v-if="features.passwordAuthEnabled" class="credential-block mt-3" @submit.prevent="saveEmail">
           <h4>{{ t('profile.credentials.emailTitle') }}</h4>
           <p v-if="auth.user?.pendingEmail" class="success-msg mb-2">
             {{ t('profile.credentials.pendingEmail', { email: auth.user.pendingEmail }) }}
           </p>
           <div class="form-group">
             <label>{{ t('profile.credentials.newEmail') }}</label>
-            <input v-model="emailForm.newEmail" type="email" :placeholder="auth.user?.email" />
+            <input v-model="emailForm.newEmail" type="email" required :placeholder="auth.user?.email" />
           </div>
           <div v-if="auth.user?.hasPassword" class="form-group mt-1">
             <label>{{ t('profile.credentials.currentPassword') }}</label>
-            <PasswordInput v-model="emailForm.currentPassword" />
+            <PasswordInput v-model="emailForm.currentPassword" required />
           </div>
           <p v-if="emailError" class="error-msg mt-1">{{ emailError }}</p>
           <p v-if="emailSaved" class="success-msg mt-1">{{ t('profile.credentials.emailPending') }}</p>
-          <button class="btn btn-secondary btn-sm mt-2" :disabled="savingEmail" @click="saveEmail">
+          <button type="submit" class="btn btn-secondary btn-sm mt-2" :disabled="savingEmail">
             {{ savingEmail ? t('profile.account.saving') : t('profile.credentials.changeEmail') }}
           </button>
-        </div>
+        </form>
 
         <div v-if="auth.user?.providers?.google || auth.user?.providers?.facebook" class="credential-block mt-3">
           <h4>{{ t('profile.credentials.linkedProviders') }}</h4>
@@ -83,7 +60,7 @@
       </section>
 
       <!-- Notifiche -->
-      <section class="card">
+      <section id="notifications" class="card">
         <h3>{{ t('profile.notifications.title') }}</h3>
         <p class="text-muted text-sm mb-3">{{ t('profile.notifications.hint') }}</p>
 
@@ -106,28 +83,25 @@
       <section class="card">
         <h3>{{ t('profile.appearance.title') }}</h3>
         <p class="text-muted text-sm mb-3">{{ t('profile.appearance.hint') }}</p>
-        <div class="theme-toggle">
-          <button
-            type="button"
-            class="btn btn-sm"
-            :class="theme.mode === 'light' ? 'btn-primary' : 'btn-ghost'"
-            @click="theme.setMode('light')"
-          >
-            <Sun :size="15" /> {{ t('profile.appearance.light') }}
-          </button>
-          <button
-            type="button"
-            class="btn btn-sm"
-            :class="theme.mode === 'dark' ? 'btn-primary' : 'btn-ghost'"
-            @click="theme.setMode('dark')"
-          >
+        <div class="theme-toggle" role="radiogroup" :aria-label="t('profile.appearance.title')">
+          <button type="button" role="radio" :aria-checked="theme.mode === 'dark'" class="theme-opt" :class="{ active: theme.mode === 'dark' }" @click="theme.setMode('dark')">
             <Moon :size="15" /> {{ t('profile.appearance.dark') }}
           </button>
+          <button type="button" role="radio" :aria-checked="theme.mode === 'light'" class="theme-opt" :class="{ active: theme.mode === 'light' }" @click="theme.setMode('light')">
+            <Sun :size="15" /> {{ t('profile.appearance.light') }}
+          </button>
         </div>
+        <p class="text-muted text-sm mt-4 mb-2">{{ t('profile.appearance.motion') }}</p>
+        <div class="theme-toggle" role="radiogroup" :aria-label="t('profile.appearance.motion')">
+          <button v-for="o in motionOptions" :key="o.value" type="button" role="radio" :aria-checked="motionPref === o.value" class="theme-opt m-color" :class="{ active: motionPref === o.value }" @click="pickMotion(o.value)">
+            {{ t(o.label) }}
+          </button>
+        </div>
+        <p class="text-muted text-sm mt-2">{{ t('profile.appearance.motionHint') }}</p>
       </section>
 
       <!-- Privacy -->
-      <section class="card">
+      <section id="privacy" class="card">
         <h3>{{ t('profile.privacy.title') }}</h3>
         <div class="form-group">
           <label>{{ t('profile.privacy.defaultVisibilityLabel') }}</label>
@@ -142,11 +116,22 @@
         <button class="btn btn-primary btn-sm mt-2" :disabled="savingAccount" @click="saveAccount">
           {{ t('common.save') }}
         </button>
+        <div class="notification-row mt-4">
+          <div>
+            <strong>{{ t('profile.privacy.marketMessages') }}</strong>
+            <p class="text-muted text-sm">{{ t('profile.privacy.marketMessagesHint') }}</p>
+          </div>
+          <label class="switch">
+            <input type="checkbox" v-model="marketMessages" :aria-label="t('profile.privacy.marketMessages')" @change="saveMarketMessages" />
+            <span class="switch-track"></span>
+          </label>
+        </div>
       </section>
 
       <!-- Negozio / Market -->
       <section class="card">
         <h3>{{ t('profile.shop.title') }}</h3>
+        <RouterLink to="/market/sell" class="btn btn-secondary btn-sm mb-2">{{ t('seller.becomeSeller') }}</RouterLink>
         <div class="notification-row">
           <div>
             <strong>{{ t('profile.shop.enable') }}</strong>
@@ -271,14 +256,28 @@
         </div>
       </div>
     </Teleport>
+  
+    <nav class="more-links" :aria-label="t('profile.more')">
+      <RouterLink to="/groups" class="more-link">{{ t('nav.groups') }} <ChevronRight :size="18" /></RouterLink>
+      <RouterLink to="/board" class="more-link">{{ t('nav.board') }} <ChevronRight :size="18" /></RouterLink>
+      <RouterLink to="/classifica" class="more-link">{{ t('nav.leaderboard') }} <ChevronRight :size="18" /></RouterLink>
+      <RouterLink to="/species" class="more-link">{{ t('nav.species') }} <ChevronRight :size="18" /></RouterLink>
+      <RouterLink v-if="auth.user?.role === 'admin'" to="/admin" class="more-link">{{ t('nav.admin') }} <ChevronRight :size="18" /></RouterLink>
+    </nav>
+
+    <button type="button" class="logout-btn" @click="doLogout">{{ t('nav.logout') }}</button>
   </div>
 </template>
 
 <script setup>
+import { ref as motionRef } from 'vue'
+import { setMotionPreference } from '../components/motion/motion.js'
+import { toInitials } from '../utils/initials.js'
+import PageHeader from '../components/PageHeader.vue'
 import { ref, computed, onMounted } from 'vue'
-import { useRouter, RouterLink } from 'vue-router'
+import { useRouter, useRoute, RouterLink } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { Sun, Moon } from 'lucide-vue-next'
+import { Sun, Moon, Pencil, ChevronRight } from 'lucide-vue-next'
 import { useAuthStore } from '../stores/auth.js'
 import { useFeaturesStore } from '../stores/features.js'
 import { useMarketStore } from '../stores/market.js'
@@ -289,22 +288,39 @@ import api from '../utils/api.js'
 const { t } = useI18n()
 const auth  = useAuthStore()
 const features = useFeaturesStore()
+const motionOptions = [
+  { value: 'auto', label: 'profile.appearance.motionAuto' },
+  { value: 'reduce', label: 'profile.appearance.motionYes' },
+  { value: 'full', label: 'profile.appearance.motionNo' }
+]
+const motionPref = motionRef((() => { try { return localStorage.getItem('fishlog.motion') || 'auto' } catch { return 'auto' } })())
+function pickMotion(v) { motionPref.value = v; setMotionPreference(v) }
 const theme = useThemeStore()
 const market = useMarketStore()
 const router = useRouter()
+const route = useRoute()
+function doLogout() { auth.logout(); window.location.assign('/login') }
 
 onMounted(() => {
   if (!market.categories.length) market.fetchCategories()
+  // Privacy / Notifiche dal menù del profilo portano direttamente alla sezione
+  const sec = route.query.section
+  if (sec) setTimeout(() => document.getElementById(String(sec))?.scrollIntoView({ block: 'start', behavior: 'smooth' }), 150)
 })
 
 const initials = computed(() => {
   const name = auth.user?.displayName || auth.user?.email || '?'
-  return name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2)
+return toInitials(name)
 })
 
 // ── account ──
 const displayName = ref(auth.user?.displayName || '')
 const defaultVisibility = ref(auth.user?.defaultVisibility || 'public')
+const marketMessages = ref(auth.user?.marketMessagesFromStrangers !== false)
+async function saveMarketMessages() {
+  try { await auth.updateProfile({ marketMessagesFromStrangers: marketMessages.value }) }
+  catch { marketMessages.value = !marketMessages.value; accountError.value = t('common.error') }
+}
 const savingAccount = ref(false)
 const accountError  = ref('')
 const accountSaved  = ref(false)
@@ -314,7 +330,7 @@ async function saveAccount() {
   accountSaved.value = false
   savingAccount.value = true
   try {
-    await auth.updateProfile({ displayName: displayName.value, defaultVisibility: defaultVisibility.value })
+    await auth.updateProfile({ defaultVisibility: defaultVisibility.value })
     accountSaved.value = true
     setTimeout(() => accountSaved.value = false, 2000)
   } catch (e) {
@@ -494,7 +510,9 @@ const deleting = ref(false)
 // ── sessione ──
 function logout() {
   auth.logout()
-  router.push('/login')
+  // ricarica: azzera gli store in memoria così un altro account sullo stesso
+  // dispositivo non vede dati del precedente
+  window.location.assign('/login')
 }
 
 async function doDeleteAccount() {
@@ -512,19 +530,31 @@ async function doDeleteAccount() {
 <style scoped>
 .profile-grid { @apply grid gap-4; grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr)); }
 
-.theme-toggle { @apply flex gap-2; }
-.theme-toggle .btn { @apply gap-1.5; }
+.theme-toggle { @apply flex gap-1 p-1 bg-surface-2 border border-border rounded-xl; }
+.theme-opt { @apply flex-1 inline-flex items-center justify-center gap-1.5 min-h-[44px] rounded-lg bg-transparent border-none text-sm font-semibold text-foam cursor-pointer; }
+.theme-opt.active { @apply bg-ocean text-on-primary; }
 
-.avatar-row { @apply flex items-center gap-4; }
-.avatar { @apply w-16 h-16 rounded-full object-cover; }
+.identity { @apply flex items-center gap-4 mb-5; }
+.avatar-wrap { @apply relative shrink-0; }
+.identity-text { @apply min-w-0; }
+.identity-name { @apply text-xl font-bold text-foam truncate; }
+.identity-email { @apply text-sm text-muted truncate; }
+.avatar-edit {
+  @apply absolute bottom-0 right-0 w-9 h-9 flex items-center justify-center rounded-full bg-ocean text-on-primary border-2 border-ink cursor-pointer;
+}
+.more-links { @apply flex flex-col mt-4 rounded-xl border border-border bg-surface overflow-hidden; }
+.more-link { @apply flex items-center justify-between px-4 min-h-[52px] text-foam font-bold no-underline border-b border-border; }
+.more-link:last-child { @apply border-b-0; }
+.logout-btn { @apply w-full min-h-[48px] mt-4 rounded-xl border border-danger text-danger bg-transparent font-bold cursor-pointer; }
+.avatar { @apply w-[104px] h-[104px] rounded-full object-cover border-2 border-ocean; }
 .avatar-placeholder {
-  @apply w-16 h-16 rounded-full border border-ocean text-ocean flex items-center
-         justify-center text-lg font-bold;
+  @apply w-[104px] h-[104px] rounded-full border-2 border-ocean text-ocean-text flex items-center
+         justify-center text-3xl font-bold;
   background: var(--ocean-glow);
 }
 .hidden { display: none; }
 
-.credential-block h4 { @apply text-sm font-semibold text-muted uppercase tracking-wide mb-2; }
+.credential-block h4 { @apply text-xs font-semibold text-muted uppercase mb-2; letter-spacing: 0.14em; }
 .coming-soon { @apply flex items-center gap-2 text-muted text-sm; }
 
 .error-msg   { @apply bg-danger/10 border border-danger rounded-sm text-danger text-xs px-2.5 py-1.5; }

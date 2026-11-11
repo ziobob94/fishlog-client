@@ -1,6 +1,13 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import api from '../utils/api.js'
+import { compressAll, compressImage } from '../utils/image.js'
+
+// Evita righe doppie se due richieste della stessa pagina si sovrappongono.
+function dedupeById(list) {
+  const seen = new Set()
+  return list.filter(x => (seen.has(x._id) ? false : (seen.add(x._id), true)))
+}
 
 export const useMarketStore = defineStore('market', () => {
   const listings   = ref([])
@@ -24,7 +31,7 @@ export const useMarketStore = defineStore('market', () => {
     loading.value = true
     try {
       const { data } = await api.get('/listings', { params })
-      listings.value = append ? [...listings.value, ...data.data] : data.data
+      listings.value = dedupeById(append ? [...listings.value, ...data.data] : data.data)
       pagination.value = data.pagination
       return pagination.value.pages
     } finally {
@@ -52,7 +59,7 @@ export const useMarketStore = defineStore('market', () => {
     shopsLoading.value = true
     try {
       const { data } = await api.get('/listings/shops', { params })
-      shops.value = append ? [...shops.value, ...data.data] : data.data
+      shops.value = dedupeById(append ? [...shops.value, ...data.data] : data.data)
       shopsPagination.value = data.pagination
       return shopsPagination.value.pages
     } finally {
@@ -101,7 +108,7 @@ export const useMarketStore = defineStore('market', () => {
 
   async function uploadMedia(id, files) {
     const form = new FormData()
-    for (const f of files) form.append('file', f)
+    for (const f of await compressAll(files)) form.append('file', f)
     // Niente Content-Type esplicito: senza il boundary generato dal browser
     // per il FormData, il multipart non è più parsabile lato server.
     const { data } = await api.post(`/media/upload/listing/${id}`, form)

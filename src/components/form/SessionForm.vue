@@ -1,8 +1,86 @@
 <template>
-  <form @submit.prevent="handleSubmit" class="session-form">
+  <form @submit.prevent="handleSubmit" class="session-form" novalidate>
 
+    <!-- ═══ NUOVA USCITA: solo l'essenziale (luogo, quando, ambiente, tecnica) ═══ -->
+    <div v-if="mode === 'essential'" class="essential">
+      <button type="button" class="detect-card" :disabled="!canAutoFill || autoFilling || gpsLoading" @click="autoFillWeatherAndSea">
+        <span class="detect-icon"><span v-if="autoFilling || gpsLoading" class="m-spinner" style="width:18px;height:18px"></span><RefreshCw v-else-if="hasAutoData" :size="22" /><MapPin v-else :size="22" /></span>
+        <span class="detect-text">
+          <strong>{{ gpsLoading ? t('sessionForm.fields.gpsDetecting') : (autoFilling ? t('sessionForm.autoFill.loading') : (hasAutoData ? t('sessionForm.autoFill.recalc') : t('sessionForm.essential.detect'))) }}</strong>
+          <small>{{ t('sessionForm.essential.detectSub') }}</small>
+        </span>
+      </button>
+      <p v-if="autoFillMsg" class="autofill-result" :class="autoFillMsg.type">{{ autoFillMsg.text }}</p>
+      <p v-if="geocodeMsg" class="autofill-hint">{{ geocodeMsg }}</p>
+
+      <section>
+        <label class="fl-lab" for="ess-where">{{ t('sessionForm.essential.where') }} <span class="req" :title="t('sessionForm.essential.required')">*</span></label>
+        <PlaceInput id="ess-where" v-model="f.location.name" v-model:lat="f.location.coords.lat" v-model:lng="f.location.coords.lng" :invalid="!!essErr.where" required :placeholder="t('sessionForm.fields.locationNamePlaceholder')" @place="applyPlace" />
+        <p v-if="essErr.where" id="ess-where-err" class="fl-error" role="alert">{{ t('sessionForm.essential.whereRequired') }}</p>
+        <p v-if="f.location.coords.lat && f.location.coords.lng" class="fl-hint fl-mono">{{ f.location.coords.lat }}°N · {{ f.location.coords.lng }}°E · {{ t('sessionForm.essential.detected') }}</p>
+      </section>
+
+      <section>
+        <span class="fl-lab">{{ t('sessionForm.essential.when') }} <span class="req" :title="t('sessionForm.essential.required')">*</span></span>
+        <div class="ess-two">
+          <input id="ess-date" v-model="f.date" type="date" v-ph="'gg/mm/aaaa'" class="fl-inp" :class="{ 'fl-err': essErr.date }" :aria-label="t('sessionForm.fields.dateLabel')" />
+          <input v-model="f.startTime" type="time" v-ph="'--:--'" class="fl-inp" :aria-label="t('sessionForm.fields.startTimeLabel')" />
+        </div>
+        <p v-if="essErr.date" class="fl-error" role="alert">{{ t('sessionForm.essential.dateRequired') }}</p>
+        <div class="ess-switch">
+          <span>{{ t('sessionForm.essential.alreadyDone') }}</span>
+          <button type="button" class="fl-switch" :class="{ on: concluded }" role="switch" :aria-checked="concluded" :aria-label="t('sessionForm.essential.alreadyDone')" @click="concluded = !concluded"></button>
+        </div>
+        <div v-if="concluded" class="ess-end">
+          <label class="fl-lab" for="ess-end">{{ t('sessionForm.fields.endTimeLabel') }}</label>
+          <input id="ess-end" v-model="f.endTime" type="time" v-ph="'--:--'" class="fl-inp" />
+        </div>
+      </section>
+
+      <section>
+        <span class="fl-lab">{{ t('sessionForm.essential.water') }}</span>
+        <div class="ess-chips">
+          <button v-for="w in WATER_TYPES" :key="w.v" type="button" class="fl-chip" :class="{ on: f.waterType === w.v }" :aria-pressed="f.waterType === w.v" @click="f.waterType = f.waterType === w.v ? '' : w.v">{{ w.l }}</button>
+        </div>
+      </section>
+
+      <section>
+        <span class="fl-lab">{{ t('sessionForm.fields.techniqueLabel') }}</span>
+        <div class="ess-chips">
+          <button v-for="t2 in TECHNIQUES" :key="t2.v" type="button" class="fl-chip" :class="{ on: f.technique === t2.v }" :aria-pressed="f.technique === t2.v" @click="f.technique = f.technique === t2.v ? '' : t2.v">{{ t2.l }}</button>
+        </div>
+      </section>
+      <p class="ess-foot">{{ t('sessionForm.essential.later') }}</p>
+    </div>
+
+    <!-- ═══ DATI USCITA: elenco di righe → una schermata per sezione ═══ -->
+    <div v-else-if="menuMode && !activeSection" class="data-menu">
+      <button type="button" class="detect-card" :disabled="!canAutoFill || autoFilling || gpsLoading" @click="autoFillWeatherAndSea">
+        <span class="detect-icon"><span v-if="autoFilling || gpsLoading" class="m-spinner" style="width:18px;height:18px"></span><RefreshCw v-else-if="hasAutoData" :size="22" /><MapPin v-else :size="22" /></span>
+        <span class="detect-text">
+          <strong>{{ gpsLoading ? t('sessionForm.fields.gpsDetecting') : (autoFilling ? t('sessionForm.autoFill.loading') : (hasAutoData ? t('sessionForm.autoFill.recalc') : t('sessionForm.menu.autofill'))) }}</strong>
+          <small>{{ t('sessionForm.menu.autofillSub') }}</small>
+        </span>
+        <ChevronRight :size="20" class="menu-go" />
+      </button>
+      <p v-if="autoFillMsg" class="autofill-result" :class="autoFillMsg.type">{{ autoFillMsg.text }}</p>
+      <button v-for="row in menuRows" :key="row.id" type="button" class="menu-row" @click="openSection(row.id)">
+        <span class="menu-icon" :class="{ done: row.done }"><component :is="MENU_ICONS[row.id]" :size="22" /></span>
+        <span class="menu-text"><strong>{{ row.title }}</strong><small>{{ row.sub }}</small></span>
+        <span class="menu-status" :class="{ done: row.done }">{{ row.status }}</span>
+        <ChevronRight :size="18" class="menu-go" />
+      </button>
+      <button type="button" class="delete-link" @click="$emit('delete')"><Trash2 :size="18" /> {{ t('sessionForm.menu.delete') }}</button>
+    </div>
+
+    <div v-else-if="menuMode" class="section-bar">
+      <button type="button" class="link-back" @click="activeSection = null"><ArrowLeft :size="18" /> {{ t('sessionForm.menu.back') }}</button>
+      <h3>{{ sectionLabel(activeSection) }}</h3>
+    </div>
+
+    <div v-show="mode !== 'essential' && (!menuMode || activeSection)" :class="{ 'single-section': menuMode }">
     <!-- BOTTONE AUTO-FILL (sempre visibile, sopra a tutte le sezioni) -->
-    <div class="autofill-bar" v-if="!autofillCollapsed">
+    <div class="autofill-bar" v-if="showAutofill">
       <div>
         <p class="autofill-title">{{ t('sessionForm.autoFill.title') }}</p>
         <p class="autofill-sub">{{ t('sessionForm.autoFill.subtitle') }}</p>
@@ -10,22 +88,22 @@
       </div>
       <button type="button" class="btn btn-secondary btn-sm"
         :disabled="!canAutoFill || autoFilling || gpsLoading" @click="autoFillWeatherAndSea">
-        <span v-if="autoFilling || gpsLoading" class="spinner" style="width:13px;height:13px"></span>
-        {{ gpsLoading ? t('sessionForm.fields.gpsDetecting') : (autoFilling ? t('sessionForm.autoFill.loading') : t('sessionForm.autoFill.button')) }}
+        <span v-if="autoFilling || gpsLoading" class="m-spinner" style="width:13px;height:13px"></span>
+        <RefreshCw v-else-if="hasAutoData" :size="14" />
+        {{ gpsLoading ? t('sessionForm.fields.gpsDetecting') : (autoFilling ? t('sessionForm.autoFill.loading') : (hasAutoData ? t('sessionForm.autoFill.recalc') : t('sessionForm.autoFill.button'))) }}
       </button>
     </div>
-    <div v-else class="autofill-bar autofill-bar-collapsed">
-      <span class="autofill-collapsed-btn" role="button" tabindex="0"
-        @click="autofillCollapsed = false" @keydown.enter="autofillCollapsed = false">
-        {{ t('sessionForm.autoFill.button') }}
-        <FieldInfo :text="t('sessionForm.autoFill.collapsedHint')" />
-      </span>
+    <p v-if="!canAutoFill" class="autofill-warning">{{ t('sessionForm.autoFill.warning') }}</p>
+    <div v-if="autoFillMsg" class="autofill-result" :class="autoFillMsg.type" role="status">{{ autoFillMsg.text }}</div>
+
+    <div class="expand-all-row">
+      <button type="button" class="btn btn-ghost btn-sm" @click="toggleAll">
+        {{ allOpen ? t('sessionForm.collapseAll') : t('sessionForm.expandAll') }}
+      </button>
     </div>
-    <p v-if="!autofillCollapsed && !canAutoFill" class="autofill-warning">{{ t('sessionForm.autoFill.warning') }}</p>
-    <div v-if="!autofillCollapsed && autoFillMsg" class="autofill-result" :class="autoFillMsg.type">{{ autoFillMsg.text }}</div>
 
     <!-- BASE -->
-    <div class="accordion-section">
+    <div class="accordion-section" v-show="sectionVisible('base')">
     <button type="button" class="section-divider accordion-header" :class="{ incomplete: !canLeaveSection('base') }" @click="toggleSection('base')">
       <span>{{ t('sessionForm.sections.base') }}</span>
       <span v-if="!canLeaveSection('base')" class="required-badge" :title="t('sessionForm.requiredToContinue')">*</span>
@@ -39,15 +117,15 @@
       </div>
       <div class="form-group">
         <label>{{ t('sessionForm.fields.dateLabel') }} <span class="required-mark">*</span><FieldInfo :text="t('sessionForm.fields.dateInfo')" /></label>
-        <input v-model="f.date" type="date" required :class="{ 'field-missing': !f.date }" />
+        <input v-model="f.date" type="date" v-ph="'gg/mm/aaaa'" required :class="{ 'field-missing': !f.date }" />
       </div>
       <div class="form-group">
         <label>{{ t('sessionForm.fields.startTimeLabel') }}<FieldInfo :text="t('sessionForm.fields.startTimeInfo')" /></label>
-        <input v-model="f.startTime" type="time" />
+        <input v-model="f.startTime" type="time" v-ph="'--:--'" />
       </div>
       <div class="form-group">
         <label>{{ t('sessionForm.fields.endTimeLabel') }}<FieldInfo :text="t('sessionForm.fields.endTimeInfo')" /></label>
-        <input v-model="f.endTime" type="time" />
+        <input v-model="f.endTime" type="time" v-ph="'--:--'" />
       </div>
       <div class="form-group">
         <label>{{ t('sessionForm.fields.techniqueLabel') }}<FieldInfo :text="t('sessionForm.fields.techniqueInfo')" /></label>
@@ -75,7 +153,7 @@
     </div>
 
     <!-- LUOGO -->
-    <div class="accordion-section">
+    <div class="accordion-section" v-show="sectionVisible('location')">
     <button type="button" class="section-divider accordion-header" :class="{ incomplete: !canLeaveSection('location') }" @click="toggleSection('location')">
       <span>{{ t('sessionForm.sections.location') }}</span>
       <span v-if="!canLeaveSection('location')" class="required-badge" :title="t('sessionForm.requiredToContinue')">*</span>
@@ -87,7 +165,7 @@
     <div class="form-grid">
       <div class="form-group">
         <label>{{ t('sessionForm.fields.locationNameLabel') }} <span class="required-mark">*</span><FieldInfo :text="t('sessionForm.fields.locationNameInfo')" /></label>
-        <input v-model="f.location.name" type="text" :placeholder="t('sessionForm.fields.locationNamePlaceholder')" required :class="{ 'field-missing': !f.location.name }" />
+        <PlaceInput id="loc-name" v-model="f.location.name" v-model:lat="f.location.coords.lat" v-model:lng="f.location.coords.lng" required :placeholder="t('sessionForm.fields.locationNamePlaceholder')" @place="applyPlace" />
       </div>
       <div class="form-group">
         <label>{{ t('sessionForm.fields.spotLabel') }}<FieldInfo :text="t('sessionForm.fields.spotInfo')" /></label>
@@ -95,15 +173,15 @@
       </div>
       <div class="form-group">
         <label>{{ t('sessionForm.fields.regionLabel') }}<FieldInfo :text="t('sessionForm.fields.regionInfo')" /></label>
-        <input v-model="f.location.region" type="text" :placeholder="t('sessionForm.fields.regionPlaceholder')" />
+        <input :value="f.location.region" type="text" readonly class="derived" :placeholder="t('sessionForm.fields.regionPlaceholder')" />
       </div>
       <div class="form-group">
         <label>{{ t('sessionForm.fields.latLabel') }}<FieldInfo :text="t('sessionForm.fields.latInfo')" /></label>
-        <input v-model.number="f.location.coords.lat" type="number" step="0.000001" placeholder="43.123456" />
+        <input :value="f.location.coords.lat ?? ''" type="text" readonly class="derived" placeholder="43.123456" />
       </div>
       <div class="form-group">
         <label>{{ t('sessionForm.fields.lngLabel') }}<FieldInfo :text="t('sessionForm.fields.lngInfo')" /></label>
-        <input v-model.number="f.location.coords.lng" type="number" step="0.000001" placeholder="10.123456" />
+        <input :value="f.location.coords.lng ?? ''" type="text" readonly class="derived" placeholder="10.123456" />
       </div>
       <div class="form-group full">
         <label>{{ t('sessionForm.fields.locationNotesLabel') }}<FieldInfo :text="t('sessionForm.fields.locationNotesInfo')" /></label>
@@ -118,6 +196,7 @@
           :lng="f.location.coords.lng"
           @update:lat="v => f.location.coords.lat = v"
           @update:lng="v => f.location.coords.lng = v"
+          @place="p => applyPlace(p, true)"
         />
       </div>
     </div>
@@ -125,7 +204,7 @@
     </div>
 
     <!-- CONDIZIONI ACQUA (adattive) -->
-    <div class="accordion-section">
+    <div class="accordion-section" v-show="sectionVisible('water')">
     <button type="button" class="section-divider accordion-header" @click="toggleSection('water')">
       <span>{{ waterSectionTitle }}</span>
       <span class="chevron" :class="{ open: isOpen('water') }">▸</span>
@@ -184,7 +263,7 @@
       </div>
       <div class="form-group">
         <label>{{ t('sessionForm.fields.waterTempLabel') }}<FieldInfo :text="t('sessionForm.fields.waterTempInfo')" /></label>
-        <input v-model.number="f.sea.waterTemp" type="number" step="0.5" />
+        <input v-model.number="f.sea.waterTemp" type="number" step="0.5" placeholder="°C" />
       </div>
 
       <!-- MARE: marea -->
@@ -207,7 +286,7 @@
     </div>
 
     <!-- METEO -->
-    <div class="accordion-section">
+    <div class="accordion-section" v-show="sectionVisible('weather')">
     <button type="button" class="section-divider accordion-header" @click="toggleSection('weather')">
       <span>{{ t('sessionForm.sections.weather') }}</span>
       <span class="chevron" :class="{ open: isOpen('weather') }">▸</span>
@@ -231,15 +310,15 @@
       </div>
       <div class="form-group">
         <label>{{ t('sessionForm.fields.windSpeedLabel') }}<FieldInfo :text="t('sessionForm.fields.windSpeedInfo')" /></label>
-        <input v-model.number="f.weather.windSpeed" type="number" min="0" />
+        <input v-model.number="f.weather.windSpeed" type="number" min="0" placeholder="km/h" />
       </div>
       <div class="form-group">
         <label>{{ t('sessionForm.fields.tempAirLabel') }}<FieldInfo :text="t('sessionForm.fields.tempAirInfo')" /></label>
-        <input v-model.number="f.weather.tempAir" type="number" step="0.5" />
+        <input v-model.number="f.weather.tempAir" type="number" step="0.5" placeholder="°C" />
       </div>
       <div class="form-group">
         <label>{{ t('sessionForm.fields.pressureLabel') }}<FieldInfo :text="t('sessionForm.fields.pressureInfo')" /></label>
-        <input v-model.number="f.weather.pressure" type="number" />
+        <input v-model.number="f.weather.pressure" type="number" placeholder="hPa" />
       </div>
       <div class="form-group full">
         <label>{{ t('sessionForm.fields.weatherNotesLabel') }}<FieldInfo :text="t('sessionForm.fields.weatherNotesInfo')" /></label>
@@ -250,7 +329,7 @@
     </div>
 
     <!-- CATTURE (esca, montatura e lancio sono caratteristiche di ogni cattura) -->
-    <div id="section-catches" class="accordion-section">
+    <div id="section-catches" class="accordion-section" v-show="sectionVisible('catches')">
     <button type="button" class="section-divider accordion-header" @click="toggleSection('catches')">
       <span>{{ t('sessionForm.sections.catches') }}</span>
       <span class="chevron" :class="{ open: isOpen('catches') }">▸</span>
@@ -262,7 +341,7 @@
     </div>
 
     <!-- NOTE -->
-    <div class="accordion-section">
+    <div class="accordion-section" v-show="sectionVisible('notes')">
     <button type="button" class="section-divider accordion-header" @click="toggleSection('notes')">
       <span>{{ t('sessionForm.sections.notes') }}</span>
       <span class="chevron" :class="{ open: isOpen('notes') }">▸</span>
@@ -298,14 +377,21 @@
     </template>
     </div>
 
+    </div>
+
     <!-- AZIONI -->
     <div class="form-actions">
-      <div class="form-actions-inner">
-        <button type="button" class="btn btn-ghost" @click="$emit('cancel')">{{ t('common.cancel') }}</button>
-        <button type="submit" class="btn btn-primary" :disabled="saving">
-          <span v-if="saving" class="spinner" style="width:15px;height:15px"></span>
-          {{ saving ? t('sessionForm.saving') : (isEdit ? t('sessionForm.submitEdit') : t('sessionForm.submitCreate')) }}
-        </button>
+      <div class="form-actions-inner" :class="{ 'ess-actions': mode === 'essential' }">
+        <template v-if="menuMode && activeSection">
+          <button type="button" class="btn btn-primary" @click="activeSection = null">{{ t('sessionForm.menu.done') }}</button>
+        </template>
+        <template v-else>
+          <button v-if="mode !== 'essential'" type="button" class="btn btn-ghost" @click="$emit('cancel')">{{ t('common.cancel') }}</button>
+          <button type="submit" :class="mode === 'essential' ? 'fl-btn1' : 'btn btn-primary'" :disabled="saving">
+            <span v-if="saving" class="m-spinner" style="width:15px;height:15px"></span>
+            {{ saving ? t('sessionForm.saving') : (mode === 'essential' ? (concluded ? t('sessionForm.essential.save') : t('sessionForm.essential.start')) : (isEdit ? t('sessionForm.submitEdit') : t('sessionForm.submitCreate'))) }}
+          </button>
+        </template>
       </div>
     </div>
 
@@ -313,13 +399,18 @@
 </template>
 
 <script setup>
-  import { ref, computed, watch, onMounted } from 'vue'
+  import { ref, reactive, computed, watch, onMounted, nextTick } from 'vue'
+  import { ChevronRight, ArrowLeft, MapPin, RefreshCw, Trash2, FileText, Waves, CloudSun, Fish, StickyNote } from 'lucide-vue-next'
+  const MENU_ICONS = { base: FileText, location: MapPin, water: Waves, weather: CloudSun, catches: Fish, notes: StickyNote }
   import { useI18n } from 'vue-i18n'
   import { useGroupStore } from '../../stores/groups.js'
   import { useAuthStore } from '../../stores/auth.js'
   import { RouterLink } from 'vue-router'
   import { storeToRefs } from 'pinia'
   import LocationPicker from './LocationPicker.vue'
+  import PlaceInput from './PlaceInput.vue'
+  import api from '../../utils/api.js'
+  import { reverseGeocode, geocodeText } from '../../utils/places.js'
   import CatchesSection from './CatchesSection.vue'
   import FieldInfo from '../FieldInfo.vue'
   import { useToast } from '../../composables/useToast.js'
@@ -334,9 +425,51 @@
   const props = defineProps({
     initialData: { type: Object, default: null },
     saving: { type: Boolean, default: false },
-    isEdit: { type: Boolean, default: false }
+    isEdit: { type: Boolean, default: false },
+    // 'essential' = nuova uscita (solo luogo/quando/ambiente/tecnica); 'full' = modifica a sezioni
+    mode: { type: String, default: 'full' }
   })
-  const emit = defineEmits(['submit', 'cancel'])
+  const emit = defineEmits(['submit', 'cancel', 'delete'])
+
+  // ─── Nuova uscita essenziale e menu «Dati uscita» ─────────────────────────────
+
+  const concluded = ref(false)
+  // Nuova uscita: l'ora di inizio parte da adesso (modificabile)
+  onMounted(() => {
+    if (props.mode === 'essential' && !f.value.startTime) {
+      const d = new Date()
+      f.value.startTime = `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`
+    }
+  })
+  const activeSection = ref(null)
+  const menuMode = computed(() => props.isEdit && props.mode !== 'essential')
+
+  function openSection(id) {
+    activeSection.value = id
+    openSections.value = new Set(ALL_SECTIONS)
+    nextTick(() => window.scrollTo({ top: 0 }))
+  }
+  const sectionVisible = id => !menuMode.value || activeSection.value === id
+  function sectionLabel(id) {
+    return id === 'water' ? waterSectionTitle.value : t(`sessionForm.sections.${id}`)
+  }
+  const menuRows = computed(() => {
+    const done = t('sessionForm.menu.filled'), todo = t('sessionForm.menu.toAdd')
+    const hasObj = o => Object.values(o || {}).some(v => v && typeof v === 'object' ? hasObj(v) : (v !== '' && v !== null && v !== undefined && v !== 0))
+    const n = f.value.catches?.length || 0
+    const rows = [
+      { id: 'base', ok: !!f.value.date },
+      { id: 'location', ok: !!f.value.location.name },
+      { id: 'water', ok: hasObj(f.value.sea) },
+      { id: 'weather', ok: hasObj(f.value.weather) },
+      { id: 'catches', ok: n > 0, status: n ? t('sessionForm.menu.catchesCount', { n }, n) : todo },
+      { id: 'notes', ok: !!f.value.notes }
+    ]
+    return rows.map(r => ({
+      id: r.id, title: sectionLabel(r.id), sub: t(`sessionForm.menu.sub.${r.id}`),
+      done: r.ok, status: r.status || (r.ok ? done : todo)
+    }))
+  })
 
   // ─── Costanti ─────────────────────────────────────────────────────────────────
 
@@ -400,7 +533,7 @@
   const defaultForm = () => ({
     title: '', date: new Date().toISOString().split('T')[0],
     startTime: '', endTime: '', technique: '', waterType: '', rating: 0,
-    location: { name: '', spot: '', region: '', coords: { lat: null, lng: null }, notes: '' },
+    location: { name: '', spot: '', region: '', municipality: '', province: '', country: '', coords: { lat: null, lng: null }, notes: '' },
     sea: { seaState: '', waveHeight: '', wavePeriod: '', current: '', waterLevel: '', waterColor: '', waterTemp: null, tide: { state: '', notes: '' } },
     weather: { condition: '', windDirection: '', windSpeed: null, tempAir: null, pressure: null, notes: '' },
     catches: [], notes: '', visibility: defaultVisibility(), allowedGroups: []
@@ -432,6 +565,15 @@
     location: () => t('sessionForm.blocked.location')
   }
 
+  const allOpen = computed(() => ALL_SECTIONS.every(id => openSections.value.has(id)))
+
+  // Apre tutto, oppure richiude solo le sezioni non obbligatorie compilate.
+  function toggleAll() {
+    openSections.value = allOpen.value
+      ? new Set(ALL_SECTIONS.filter(id => !canLeaveSection(id) || id === 'catches'))
+      : new Set(ALL_SECTIONS)
+  }
+
   function isOpen(id) {
     return openSections.value.has(id)
   }
@@ -456,24 +598,15 @@
   const autoFilling = ref(false)
   const geocodeMsg = ref('')
   const autoFillMsg = ref(null)
-  const autofillCollapsed = ref(false)
+  const autofillDone = ref(false)
+  // già compilato (in questa sessione di modifica o salvato in precedenza): l'azione diventa «Ricalcola»
+  const hasAutoData = computed(() => autofillDone.value || f.value.weather?.windSpeed != null || f.value.weather?.tempAir != null || !!f.value.weather?.condition)
   let geocodeTimer = null
 
   const canAutoFill = computed(() => !!f.value.date)
+  const showAutofill = computed(() => !menuMode.value || ['location', 'water', 'weather'].includes(activeSection.value))
 
   // ─── Helpers ──────────────────────────────────────────────────────────────────
-
-  function wmoToCondition(code, windSpeed) {
-    if (windSpeed >= 30) return 'vento'
-    if (code === 0) return 'sole'
-    if (code <= 2) return 'nuvoloso'
-    if (code === 3) return 'coperto'
-    if (code === 45 || code === 48) return 'nebbia'
-    if (code >= 51 && code <= 82) return 'pioggia'
-    if (code >= 85 && code <= 86) return 'pioggia'
-    if (code >= 95) return 'pioggia'
-    return 'nuvoloso'
-  }
 
   function degToWindName(deg) {
     if (deg == null) return ''
@@ -510,6 +643,7 @@
         pos => {
           f.value.location.coords.lat = parseFloat(pos.coords.latitude.toFixed(6))
           f.value.location.coords.lng = parseFloat(pos.coords.longitude.toFixed(6))
+          forceNameNext = true; appliedKey = ''
           gpsLoading.value = false
           resolve(true)
         },
@@ -524,21 +658,29 @@
     })
   }
 
-  // ─── Reverse geocoding ────────────────────────────────────────────────────────
+  // ─── Luogo (Google, vedi utils/places.js) ─────────────────────────────────────
+  // Nome, regione e coordinate si calcolano sempre insieme dallo stesso luogo, così non
+  // possono contraddirsi. Regione e coordinate nel form non si digitano: arrivano dal luogo.
 
-  async function reverseGeocode(lat, lng) {
-    try {
-      const res = await fetch(
-        `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json&accept-language=it`,
-        { headers: { 'Accept-Language': 'it' } }
-      )
-      const data = await res.json()
-      const a = data.address || {}
-      return {
-        name: a.city || a.town || a.village || a.hamlet || a.county || '',
-        region: a.state || a.county || '',
-      }
-    } catch { return null }
+  let skipNameGeocode = false
+  let appliedKey = ''
+  let forceNameNext = false
+
+  function applyPlace(p, overwriteName = false) {
+    if (!p) return
+    skipNameGeocode = true
+    appliedKey = `${p.lat},${p.lng}`
+    if (overwriteName && p.name) f.value.location.name = p.name
+    f.value.location.region = p.region || p.province || p.country || ''
+    // Zone per le classifiche locali, sempre allineate al luogo scelto.
+    f.value.location.municipality = p.municipality || p.city || ''
+    f.value.location.province = p.province || ''
+    f.value.location.country = p.country || ''
+    if (p.lat != null && p.lng != null) {
+      f.value.location.coords.lat = parseFloat(Number(p.lat).toFixed(6))
+      f.value.location.coords.lng = parseFloat(Number(p.lng).toFixed(6))
+    }
+    geocodeMsg.value = ''
   }
 
   watch(
@@ -546,120 +688,110 @@
     ([lat, lng]) => {
       clearTimeout(geocodeTimer)
       if (!lat || !lng) return
+      if (appliedKey === `${lat},${lng}`) return   // già calcolati dal luogo scelto
       geocodeTimer = setTimeout(async () => {
         geocodeMsg.value = t('sessionForm.autoFill.geocoding')
         const result = await reverseGeocode(lat, lng)
         if (!result) { geocodeMsg.value = ''; return }
-        if (!f.value.location.name) f.value.location.name = result.name
-        if (!f.value.location.region) f.value.location.region = result.region
+        appliedKey = `${lat},${lng}`
+        skipNameGeocode = true
+        if (!f.value.location.name || forceNameNext) f.value.location.name = result.name
+        forceNameNext = false
+        f.value.location.region = result.region || result.province || result.country || ''
+        f.value.location.municipality = result.municipality || result.city || ''
+        f.value.location.province = result.province || ''
+        f.value.location.country = result.country || ''
         geocodeMsg.value = result.name ? t('sessionForm.autoFill.geocodeFound', { name: result.name }) : ''
-      }, 800)
+      }, 400)
     }
   )
 
-  // ─── Forward geocoding (name → coords) ─────────────────────────────────────────
-
-  async function forwardGeocode(query) {
-    try {
-      const res = await fetch(
-        `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=1&accept-language=it`,
-        { headers: { 'Accept-Language': 'it' } }
-      )
-      const data = await res.json()
-      if (!data.length) return null
-      return { lat: parseFloat(data[0].lat), lng: parseFloat(data[0].lon) }
-    } catch { return null }
-  }
-
+  // Nome scritto a mano senza scegliere un suggerimento: coordinate e regione dal Geocoding.
   let nameGeocodeTimer = null
+  let nameGeocodePending = false
+  async function geocodeName(name) {
+    const r = await geocodeText(name)
+    if (!r) return
+    applyPlace(r)
+  }
   watch(
     () => f.value.location.name,
     (name) => {
       clearTimeout(nameGeocodeTimer)
+      if (skipNameGeocode) { skipNameGeocode = false; return }
       if (!name || name.trim().length < 3) return
+      nameGeocodePending = true
       nameGeocodeTimer = setTimeout(async () => {
+        nameGeocodePending = false
         geocodeMsg.value = t('sessionForm.autoFill.geocoding')
-        const result = await forwardGeocode(name)
-        if (!result) { geocodeMsg.value = ''; return }
-        f.value.location.coords.lat = parseFloat(result.lat.toFixed(6))
-        f.value.location.coords.lng = parseFloat(result.lng.toFixed(6))
+        await geocodeName(name)
         geocodeMsg.value = ''
-      }, 800)
+      }, 900)
     }
   )
 
   // ─── Weather + Marine auto-fill ───────────────────────────────────────────────
 
+  // Se il luogo è stato appena cambiato, le coordinate vanno aggiornate prima di ricalcolare.
+  async function flushNameGeocode() {
+    if (!nameGeocodePending) return
+    clearTimeout(nameGeocodeTimer)
+    nameGeocodePending = false
+    const name = f.value.location.name
+    if (!name || name.trim().length < 3) return
+    geocodeMsg.value = t('sessionForm.autoFill.geocoding')
+    await geocodeName(name)
+    geocodeMsg.value = ''
+  }
+
+  // Compila (o ricalcola) meteo e condizioni acqua con i valori correnti di luogo, data e ora.
   async function autoFillWeatherAndSea() {
     const date = f.value.date
-    if (!date) return
+    autoFillMsg.value = null
+    if (!date) { autoFillMsg.value = { type: 'error', text: t('sessionForm.autoFill.warning') }; return }
 
+    await flushNameGeocode()
     if (!f.value.location.coords.lat || !f.value.location.coords.lng) {
       await detectGPS()
     }
 
     const { lat, lng } = f.value.location.coords
-    if (!lat || !lng) return
+    if (!lat || !lng) { autoFillMsg.value = { type: 'error', text: t('sessionForm.autoFill.noPlace') }; return }
 
     autoFilling.value = true
-    autoFillMsg.value = null
-
-    const today = new Date().toISOString().split('T')[0]
-    const weatherBase = date < today
-      ? 'https://archive-api.open-meteo.com/v1/archive'
-      : 'https://api.open-meteo.com/v1/forecast'
 
     try {
       const isSaltwater = f.value.waterType === 'mare'
-      const [weatherRes, marineRes] = await Promise.allSettled([
-        fetch(`${weatherBase}?latitude=${lat}&longitude=${lng}&start_date=${date}&end_date=${date}&daily=weather_code,temperature_2m_max,temperature_2m_min,wind_speed_10m_max,wind_direction_10m_dominant&hourly=surface_pressure,relative_humidity_2m&timezone=auto`).then(r => r.json()),
-        isSaltwater
-          ? fetch(`https://marine-api.open-meteo.com/v1/marine?latitude=${lat}&longitude=${lng}&start_date=${date}&end_date=${date}&daily=wave_height_max,wave_period_max&timezone=auto`).then(r => r.json())
-          : Promise.resolve(null),
-      ])
+      const hour = Math.min(23, Math.max(0, parseInt(String(f.value.startTime || '12').split(':')[0], 10) || 12))
+      // Meteo da Google (server), mare e ripiego da Open-Meteo: /api/weather/day
+      const { data: w } = await api.get('/weather/day', { params: { lat, lng, date, hour, marine: isSaltwater ? 1 : 0 } })
 
       const filled = []
 
-      if (weatherRes.status === 'fulfilled' && weatherRes.value?.daily) {
-        const d = weatherRes.value.daily
-        const h = weatherRes.value.hourly
-        const code = d.weather_code?.[0]
-        const tMax = d.temperature_2m_max?.[0]
-        const tMin = d.temperature_2m_min?.[0]
-        const windSpeed = d.wind_speed_10m_max?.[0]
-        const windDeg = d.wind_direction_10m_dominant?.[0]
-        const pressure = h?.surface_pressure?.[12]
+      if (w.condition != null) { f.value.weather.condition = w.condition; filled.push(t('sessionForm.autoFill.filledFields.condition')) }
+      if (w.tempAir != null) { f.value.weather.tempAir = w.tempAir; filled.push(t('sessionForm.autoFill.filledFields.temperature')) }
+      if (w.windSpeed != null) { f.value.weather.windSpeed = Math.round(w.windSpeed); filled.push(t('sessionForm.autoFill.filledFields.wind')) }
+      if (w.windDeg != null) { f.value.weather.windDirection = degToWindName(w.windDeg); filled.push(t('sessionForm.autoFill.filledFields.windDirection')) }
+      if (w.pressure != null) { f.value.weather.pressure = Math.round(w.pressure); filled.push(t('sessionForm.autoFill.filledFields.pressure')) }
 
-        if (code != null) { f.value.weather.condition = wmoToCondition(code, windSpeed); filled.push(t('sessionForm.autoFill.filledFields.condition')) }
-        if (tMax != null && tMin != null) { f.value.weather.tempAir = Math.round((tMax + tMin) / 2); filled.push(t('sessionForm.autoFill.filledFields.temperature')) }
-        if (windSpeed != null) { f.value.weather.windSpeed = Math.round(windSpeed); filled.push(t('sessionForm.autoFill.filledFields.wind')) }
-        if (windDeg != null) { f.value.weather.windDirection = degToWindName(windDeg); filled.push(t('sessionForm.autoFill.filledFields.windDirection')) }
-        if (pressure != null) { f.value.weather.pressure = Math.round(pressure); filled.push(t('sessionForm.autoFill.filledFields.pressure')) }
+      if (isSaltwater && w.waveHeight != null) {
+        f.value.sea.seaState = waveHeightToSeaState(w.waveHeight)
+        f.value.sea.waveHeight = `${w.waveHeight.toFixed(1)}m`
+        filled.push(t('sessionForm.autoFill.filledFields.seaState'), t('sessionForm.autoFill.filledFields.waveHeight'))
       }
-
-      if (isSaltwater && marineRes.status === 'fulfilled' && marineRes.value?.daily) {
-        const m = marineRes.value.daily
-        const waveH = m.wave_height_max?.[0]
-        const wavePeriod = m.wave_period_max?.[0]
-        if (waveH != null) {
-          f.value.sea.seaState = waveHeightToSeaState(waveH)
-          f.value.sea.waveHeight = `${waveH.toFixed(1)}m`
-          filled.push(t('sessionForm.autoFill.filledFields.seaState'), t('sessionForm.autoFill.filledFields.waveHeight'))
-        }
-        if (wavePeriod != null) {
-          f.value.sea.wavePeriod = `${Math.round(wavePeriod)}s`
-          filled.push(t('sessionForm.autoFill.filledFields.wavePeriod'))
-        }
+      if (isSaltwater && w.wavePeriod != null) {
+        f.value.sea.wavePeriod = `${Math.round(w.wavePeriod)}s`
+        filled.push(t('sessionForm.autoFill.filledFields.wavePeriod'))
       }
 
       autoFillMsg.value = filled.length
         ? { type: 'success', text: t('sessionForm.autoFill.success', { fields: filled.join(', ') }) }
         : { type: 'warn', text: t('sessionForm.autoFill.noData') }
 
-      if (filled.length) autofillCollapsed.value = true
+      if (filled.length) autofillDone.value = true
 
     } catch (err) {
-      autoFillMsg.value = { type: 'error', text: t('sessionForm.autoFill.error') }
+      autoFillMsg.value = { type: 'error', text: navigator.onLine === false ? t('sessionForm.autoFill.offline') : t('sessionForm.autoFill.error') }
       console.error('autoFill error', err)
     } finally {
       autoFilling.value = false
@@ -684,50 +816,103 @@
   }, { immediate: true })
 
   const catchesRef = ref(null)
+  const essErr = ref({ where: false, date: false })
+  watch(() => f.value.location.name, v => { if (v?.trim()) essErr.value.where = false })
+  watch(() => f.value.date, v => { if (v) essErr.value.date = false })
 
   function handleSubmit() {
+    // Campo obbligatorio vuoto: apre la sezione e porta lì l'utente, con
+    // messaggio chiaro (altrimenti il browser non può evidenziare un campo
+    // nascosto in una sezione chiusa e l'invio sembra non fare nulla).
+    if (props.mode === 'essential') {
+      essErr.value = { where: !f.value.location.name?.trim(), date: !f.value.date }
+      if (essErr.value.where || essErr.value.date) {
+        nextTick(() => document.getElementById(essErr.value.where ? 'ess-where' : 'ess-date')?.focus())
+        return
+      }
+    }
+    for (const id of ['base', 'location']) {
+      if (!canLeaveSection(id)) {
+        const next = new Set(openSections.value); next.add(id); openSections.value = next
+        if (menuMode.value) activeSection.value = id
+        toast(SECTION_BLOCKED_MSG[id](), { type: 'warning' })
+        nextTick(() => document.querySelector('.field-missing')?.focus())
+        return
+      }
+    }
     const payload = JSON.parse(JSON.stringify(f.value))
     if (!payload.location.coords?.lat && !payload.location.coords?.lng) delete payload.location.coords
     if (payload.visibility !== 'group') payload.allowedGroups = []
-    emit('submit', payload, catchesRef.value?.pendingPhotosByIndex)
+    emit('submit', payload, catchesRef.value?.pendingPhotosByIndex, { concluded: props.mode === 'essential' && concluded.value })
   }
 </script>
 
 <style scoped>
+  .expand-all-row { display: flex; justify-content: flex-end; margin: .25rem 0 .5rem; }
   .session-form {
     max-width: 920px;
     padding-bottom: 4.5rem;
   }
 
+  .session-form { counter-reset: sec; }
+
+  /* Ogni sezione è una card numerata («carta nautica») */
+  .accordion-section {
+    counter-increment: sec;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: .25rem .875rem .75rem;
+  }
+
   .accordion-section+.accordion-section {
-    margin-top: .5rem;
+    margin-top: .75rem;
   }
 
   .accordion-header {
     background: none;
     border: none;
-    border-radius: 6px;
+    border-radius: 12px;
     cursor: pointer;
-    margin: 0 -.5rem;
-    padding: .6rem .5rem;
+    margin: 0;
+    min-height: 44px;
+    padding: .5rem 0;
     transition: background var(--t);
-    width: calc(100% + 1rem);
+    width: 100%;
+    justify-content: flex-start;
+    text-align: left;
   }
 
   .accordion-header:hover {
-    background: var(--surface-2, #0d2035);
+    background: transparent;
   }
 
   .accordion-header.section-divider {
-    font-size: .95rem;
-    color: var(--foam, #cde);
+    font-size: 1rem;
+    letter-spacing: 0;
+    text-transform: none;
+    color: var(--foam);
   }
 
-  .accordion-header.section-divider::before,
-  .accordion-header.section-divider::after {
-    background: var(--ocean, #0ea5e9);
-    opacity: .35;
+  .accordion-header.section-divider::before {
+    content: counter(sec);
+    flex: none;
+    width: 28px;
+    height: 28px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: var(--surface-2);
+    color: var(--foam);
+    font-size: .8rem;
   }
+
+  .accordion-header.section-divider::after {
+    display: none;
+  }
+
+  .accordion-header .chevron { margin-left: auto; }
 
   .accordion-header + * {
     margin-top: .5rem;
@@ -745,7 +930,7 @@
   }
 
   .accordion-header.incomplete {
-    box-shadow: inset 3px 0 0 var(--danger, #f05050);
+    box-shadow: none;
   }
 
   .required-badge {
@@ -810,6 +995,8 @@
     bottom: 0;
     left: 0;
     padding-bottom: env(safe-area-inset-bottom);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
     position: fixed;
     right: 0;
     z-index: 160;
@@ -821,7 +1008,7 @@
        specie) resta permanentemente nascosto dietro di essa, non basta
        scrollare. */
     .session-form {
-      padding-bottom: calc(env(safe-area-inset-bottom) + 6rem);
+      padding-bottom: calc(env(safe-area-inset-bottom) + 7.5rem);
     }
   }
 
@@ -831,7 +1018,13 @@
     justify-content: flex-end;
     margin: 0 auto;
     max-width: 1100px;
-    padding: 1rem 1.5rem;
+    padding: .75rem 1rem;
+  }
+
+  @media (max-width: 767.98px) {
+    /* su telefono i due pulsanti riempiono la barra, a metà ciascuno */
+    .form-actions-inner > .btn { flex: 1 1 0; min-width: 0; justify-content: center; }
+    .form-actions-inner > .btn-primary { flex: 1.6 1 0; }
   }
 
   .group-checkboxes {
@@ -854,6 +1047,7 @@
     width: auto;
   }
 
+  .derived { opacity: .75; cursor: default; }
   .autofill-hint {
     color: var(--text-muted, #6b8fa8);
     font-size: .78rem;
@@ -938,4 +1132,37 @@
     border: 1px solid #5c1a1a;
     color: #f05050;
   }
+
+  /* ── Nuova uscita essenziale (mockup 12) ── */
+  .essential { display: flex; flex-direction: column; gap: 22px; padding-bottom: calc(110px + env(safe-area-inset-bottom)); }
+  .detect-card { align-items: center; background: rgb(var(--color-sea-deep)); border: 1px solid var(--border); border-radius: 24px 24px 24px 8px; color: var(--foam); cursor: pointer; display: flex; gap: 14px; min-height: 72px; padding: 14px 16px; text-align: left; width: 100%; box-sizing: border-box; }
+  .detect-card:disabled { opacity: .6; }
+  .detect-icon { width: 44px; height: 44px; border-radius: 14px; background: rgba(14, 165, 233, .16); color: rgb(var(--color-ocean-text)); display: flex; align-items: center; justify-content: center; flex: none; }
+  .detect-text { display: flex; flex: 1; flex-direction: column; gap: 2px; }
+  .detect-text strong { font-size: 16px; font-weight: 700; }
+  .detect-text small { color: var(--text-muted); font-size: 13px; }
+  .ess-two { display: grid; gap: 10px; grid-template-columns: 1.3fr 1fr; }
+  .ess-switch { align-items: center; color: var(--foam); display: flex; justify-content: space-between; gap: 12px; margin-top: 14px; min-height: 48px; font-size: 15px; font-weight: 600; }
+  .ess-end { margin-top: 10px; }
+  .ess-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .form-actions-inner.ess-actions { flex-direction: column; align-items: stretch; gap: 6px; padding: 10px 16px; }
+  .essential .field-missing { border-color: var(--border); }
+  .ess-foot { color: var(--text-muted); font-size: 13px; text-align: center; margin: 0; }
+  .fl-inp[type="date"], .fl-inp[type="time"] { display: flex; align-items: center; text-align: left; -webkit-appearance: none; appearance: none; }
+
+  /* ── Dati uscita (menu a righe, mockup 37) ── */
+  .data-menu { display: flex; flex-direction: column; gap: 10px; padding-bottom: calc(100px + env(safe-area-inset-bottom)); }
+  .menu-row { align-items: center; background: var(--surface); border: 1px solid var(--border); border-radius: 20px; color: var(--foam); cursor: pointer; display: flex; gap: 14px; min-height: 72px; padding: 14px 16px; text-align: left; width: 100%; box-sizing: border-box; }
+  .menu-icon { width: 44px; height: 44px; border-radius: 14px; background: var(--surface-2); color: rgb(var(--color-ocean-text)); display: flex; align-items: center; justify-content: center; flex: none; }
+  .menu-text { display: flex; flex: 1; min-width: 0; flex-direction: column; gap: 2px; }
+  .menu-text strong { font-size: 16px; font-weight: 700; }
+  .menu-text small { color: var(--text-muted); font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .menu-status { color: rgb(var(--color-sand-text)); font-size: 12px; font-weight: 700; flex: none; }
+  .menu-status.done { color: rgb(var(--color-success-text)); }
+  .menu-go { color: var(--text-muted); flex: none; }
+  .section-bar { align-items: center; display: flex; flex-direction: column; gap: .25rem; margin-bottom: 1rem; }
+  .section-bar h3 { color: var(--foam); font-size: 1.2rem; margin: 0; }
+  .link-back { align-items: center; align-self: flex-start; background: none; border: none; color: var(--ocean); cursor: pointer; display: inline-flex; font-weight: 600; gap: .3rem; padding: .4rem 0; }
+  .single-section .accordion-header, .single-section .section-desc { display: none; }
+  .delete-link { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; min-height: 52px; border-radius: 16px; background: transparent; border: 1px solid #7f1d1d; color: #fca5a5; cursor: pointer; font-size: 15px; font-weight: 700; margin-top: 18px; }
 </style>

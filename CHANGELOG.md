@@ -1,3 +1,231 @@
+## [1.51.1](https://github.com/ziobob94/fishlog-client/compare/client-v1.51.0...client-v1.51.1) (2026-11-11)
+
+
+### Bug Fixes
+
+* le animazioni tornano su mobile con l'impostazione «Animazioni complete» ([30e999a](https://github.com/ziobob94/fishlog-client/commit/30e999ac7b1d89cc00a764cc004db2345a03ebe4))
+
+# [1.51.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.50.0...client-v1.51.0) (2026-11-11)
+
+
+### Bug Fixes
+
+* conteggio visualizzazioni storie ([3b48012](https://github.com/ziobob94/fishlog-client/commit/3b480124ef4e3447dcae3566237bf10539f8fb95))
+
+
+### Features
+
+* ora per ora fino a 7 giorni (un giorno alla volta) e previsioni a 15 giorni con fonte dichiarata ([f9362d5](https://github.com/ziobob94/fishlog-client/commit/f9362d5b5e8a404615a60920a528c8117ba376df))
+
+# [1.50.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.49.0...client-v1.50.0) (2026-11-11)
+
+
+### Features
+
+* grafico dell'altezza dell'onda (48 h) e messaggio quando le maree non sono disponibili ([1a094be](https://github.com/ziobob94/fishlog-client/commit/1a094be1a4c896c89ef80ae57290d73187384c9d))
+
+# [1.49.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.48.0...client-v1.49.0) (2026-11-11)
+
+
+### Features
+
+* collegamenti al meteo nella Home (accesso rapido e titolo della scheda) ([4426ea8](https://github.com/ziobob94/fishlog-client/commit/4426ea8eee4b2c212cc31075844a4c3537bd39bf))
+* pannello Meteo e mare (pagina /meteo, scheda Home, cache offline, quota Google in Admin) ([2eb44ae](https://github.com/ziobob94/fishlog-client/commit/2eb44aec083cd38cda33180334ee63662305f24c))
+
+# [1.48.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.47.2...client-v1.48.0) (2026-11-11)
+
+
+### Features
+
+* meteo di uscita e Home dal server (/api/weather) invece di Open-Meteo diretto ([4cddd44](https://github.com/ziobob94/fishlog-client/commit/4cddd4418c03f4a5d71b2e724fd829abcb7e9123))
+
+## [1.47.2](https://github.com/ziobob94/fishlog-client/compare/client-v1.47.1...client-v1.47.2) (2026-11-11)
+
+
+### Bug Fixes
+
+* loader Google Maps non duplica i tag dopo un errore, pulsante Riprova senza ricaricare la pagina ([1d0826b](https://github.com/ziobob94/fishlog-client/commit/1d0826b81d805da1d709e9a63bd3f97df8fb2932))
+
+## [1.47.1](https://github.com/ziobob94/fishlog-client/compare/client-v1.47.0...client-v1.47.1) (2026-11-11)
+
+
+### Bug Fixes
+
+* loader Google Maps singleton con callback, errore 'script vuoto' distinto dal blocco di rete (referrer), debug aggiornato ([7878e02](https://github.com/ziobob94/fishlog-client/commit/7878e02b51ac4e58a29b3f24d36cc3920f0eaee5))
+
+# [1.47.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.46.1...client-v1.47.0) (2026-11-11)
+
+
+### Features
+
+* errori di Google Maps diagnosticabili (chiave, referrer, API, fatturazione, script bloccato, timeout) in UI e console ([26f94f7](https://github.com/ziobob94/fishlog-client/commit/26f94f706405dade638941da78765becf31638fb))
+
+## [1.46.1](https://github.com/ziobob94/fishlog-client/compare/client-v1.46.0...client-v1.46.1) (2026-11-11)
+
+
+### Bug Fixes
+
+* azioni dell'annuncio compatte e allineate a destra, pill di stato senza freccia sovrapposta ([e397dd9](https://github.com/ziobob94/fishlog-client/commit/e397dd9a17060583d40ec7d1cceb24a27fd4f787))
+
+# [1.46.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.45.0...client-v1.46.0) (2026-11-11)
+
+
+### Features
+
+* tutte le mappe su Google Maps (Home e dettaglio), controlli sotto la mappa, avviso se manca la chiave; rimosso MapLibre/Esri ([23998b6](https://github.com/ziobob94/fishlog-client/commit/23998b6419b6c77ff51ac9943b1b40aa69747d25))
+
+# [1.45.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.44.1...client-v1.45.0) (2026-11-11)
+
+
+### Features
+
+* luoghi con Google (Places, Geocoding, Maps) in tutti i campi, regione e coordinate coerenti; fix foglio mappa che si chiudeva con due dita ([360cd66](https://github.com/ziobob94/fishlog-client/commit/360cd66828ca452b2bd5dad772cb2d7ad860a336))
+
+## [1.44.1](https://github.com/ziobob94/fishlog-client/compare/client-v1.44.0...client-v1.44.1) (2026-11-11)
+
+
+### Bug Fixes
+
+* animazioni pagina visibili anche con Riduci movimento, transizione tra i tab del Market, visualizzazioni mostrate nel dettaglio annuncio ([6883ff1](https://github.com/ziobob94/fishlog-client/commit/6883ff1d73fb35c386ae563014f12ca82cf789f9))
+
+# [1.44.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.43.0...client-v1.44.0) (2026-11-11)
+
+
+### Features
+
+* azioni dell'annuncio come icone sotto la foto, a destra; barra in basso solo per Contatta ([32df799](https://github.com/ziobob94/fishlog-client/commit/32df7996ad3606b8f807b84601fb87e4d27b6fde))
+
+# [1.43.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.42.1...client-v1.43.0) (2026-11-11)
+
+
+### Features
+
+* input luogo unico con suggerimenti, posizione e scelta su mappa; nomi in italiano/latino ([f0edccf](https://github.com/ziobob94/fishlog-client/commit/f0edccfc02f5e2316b326d0c34f358494c98b263))
+
+## [1.42.1](https://github.com/ziobob94/fishlog-client/compare/client-v1.42.0...client-v1.42.1) (2026-11-11)
+
+
+### Bug Fixes
+
+* le pagine a tutta larghezza non vengono più tagliate ai bordi (contenitore delle transizioni) ([a2189fe](https://github.com/ziobob94/fishlog-client/commit/a2189fe7cc10c9b1c48302d9dfa3d0c6ffb9ec82))
+
+# [1.42.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.41.1...client-v1.42.0) (2026-11-11)
+
+
+### Features
+
+* visibilità annunci, privacy messaggi dal Market, azioni a icone, visualizzazioni uniche ([2e3854c](https://github.com/ziobob94/fishlog-client/commit/2e3854c7e5570277ca3dca1a9dd08349abcb48c1))
+
+## [1.41.1](https://github.com/ziobob94/fishlog-client/compare/client-v1.41.0...client-v1.41.1) (2026-11-11)
+
+
+### Bug Fixes
+
+* icona chat a bolla ovunque (il Social usava l'aeroplanino) ([ea7d141](https://github.com/ziobob94/fishlog-client/commit/ea7d1413bed7eb4effaed03f94d518698721f576))
+
+# [1.41.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.40.0...client-v1.41.0) (2026-11-11)
+
+
+### Features
+
+* sistema di movimento (token, transizioni di pagina, toast, fogli, dialoghi, like, pull to refresh) ([478a3de](https://github.com/ziobob94/fishlog-client/commit/478a3de9189541b2124fa7f16dd421f208557625))
+
+# [1.40.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.39.1...client-v1.40.0) (2026-11-11)
+
+
+### Features
+
+* UserAvatar con anello storia e tocco storia o profilo ([f6bd44c](https://github.com/ziobob94/fishlog-client/commit/f6bd44cdb62ae5821bef5099ceeac7d56dbae4ec))
+
+## [1.39.1](https://github.com/ziobob94/fishlog-client/compare/client-v1.39.0...client-v1.39.1) (2026-11-10)
+
+
+### Bug Fixes
+
+* **pwa:** icone di installazione dal nuovo logo (apple-touch-icon, manifest, maskable, favicon) con URL versionati ([18d7726](https://github.com/ziobob94/fishlog-client/commit/18d7726e12268b17d0d8cfe07ecea5bcecd25cac))
+
+# [1.39.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.38.1...client-v1.39.0) (2026-11-10)
+
+
+### Features
+
+* **market:** percorso venditore per privati senza P.IVA, documenti o verifica; i negozi restano verificati ([2dbf01e](https://github.com/ziobob94/fishlog-client/commit/2dbf01e601c31808857a64a87bbd05b18d6cad2c))
+
+## [1.38.1](https://github.com/ziobob94/fishlog-client/compare/client-v1.38.0...client-v1.38.1) (2026-11-10)
+
+
+### Bug Fixes
+
+* **nav:** menu hamburger di nuovo disponibile su mobile (Home e intestazioni delle schermate principali) ([1e1cc83](https://github.com/ziobob94/fishlog-client/commit/1e1cc832166a24e35a90d5f9e79e45629eea2177))
+
+# [1.38.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.37.0...client-v1.38.0) (2026-11-10)
+
+
+### Features
+
+* **design:** Dettaglio uscita, Modifica uscita, Specie, Classifica, Accesso, Registrazione, Venditore allineati ai mockup; iniziali a due lettere ([2e1d358](https://github.com/ziobob94/fishlog-client/commit/2e1d3582395c50492c1da5d6df2d09b3070bccc9))
+
+# [1.37.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.36.0...client-v1.37.0) (2026-11-10)
+
+
+### Features
+
+* **design:** intestazioni per schermata, Uscite, Chat, Amici, Nuovo gruppo, Nuovo annuncio, Home e Profilo allineati al design ([ecd95e0](https://github.com/ziobob94/fishlog-client/commit/ecd95e0c0e8f88932b23e08ae67fb1d9ebc1a2cd))
+
+# [1.36.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.35.0...client-v1.36.0) (2026-11-10)
+
+
+### Features
+
+* **design:** restyling Chat (lista, conversazione, allegati) e Market (testata, chip, filtri, card, dettaglio annuncio) ([719cd50](https://github.com/ziobob94/fishlog-client/commit/719cd503a82e424a0e12ff5460c1cbb3df577fac))
+
+# [1.35.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.34.0...client-v1.35.0) (2026-11-10)
+
+
+### Features
+
+* **design:** Nuovo post con uscita collegata e cattura in evidenza, cornice a metro sui post ([6ca8e5e](https://github.com/ziobob94/fishlog-client/commit/6ca8e5e0d5b3bf109666a72bd91ed843a748f247))
+* **design:** pagina Notifiche con gruppi, azioni sulle richieste e nuovi tipi ([9351b51](https://github.com/ziobob94/fishlog-client/commit/9351b51a938eae17ff6af031e2a40e1da560d033))
+* **design:** restyling Amici e Gruppi ([7fc88d4](https://github.com/ziobob94/fishlog-client/commit/7fc88d445f5e3b7d9e63cc7761eeb5ad273f64df))
+* **market:** logo del negozio (carica, scheda negozio e vetrina), commenti rifiniti ([1b11e5d](https://github.com/ziobob94/fishlog-client/commit/1b11e5daf73dcfb5becebda06579f84435d52841))
+
+# [1.34.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.33.0...client-v1.34.0) (2026-11-10)
+
+
+### Bug Fixes
+
+* **forms:** collega etichette e campi, caselle e radio con dimensione propria, hover link accessibile ([11fda94](https://github.com/ziobob94/fishlog-client/commit/11fda94f4062b750d73dfddbd48ff4194a27f9de))
+
+
+### Features
+
+* **design:** classifica con podio e punteggi in mono ([cc476bf](https://github.com/ziobob94/fishlog-client/commit/cc476bf2b96f10d4b4fecbda9754063a51d43ef7))
+* **design:** scelta tema a segmenti nel profilo ([cdce764](https://github.com/ziobob94/fishlog-client/commit/cdce7648a8cd234a5fa41b4ecb747c0b0cab1706))
+* **market:** caricamento del documento di verifica nel percorso venditore e vista admin ([69c7c43](https://github.com/ziobob94/fishlog-client/commit/69c7c43500cb205edddc9c63476945dbe18dcffd))
+
+# [1.33.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.32.0...client-v1.33.0) (2026-11-09)
+
+
+### Features
+
+* **design:** filtri uscite a chip, sezioni numerate del form, chat e specie rifiniti ([9800568](https://github.com/ziobob94/fishlog-client/commit/9800568b3f7afa73f83dca3b10382829cf7e65e8))
+* **design:** fondamenta, guscio e componenti distintivi del restyling ([c349449](https://github.com/ziobob94/fishlog-client/commit/c349449e39fd4858112acd7e0ae401e09d46b4dc))
+* **design:** restyling Accesso e Registrazione con isobate e galleggiante ([4e4517c](https://github.com/ziobob94/fishlog-client/commit/4e4517c3d5fdb33dc14aaaf44c6f00d83dd879d2))
+* **design:** restyling dettaglio uscita, card community/market, colori testo accessibili ([81de015](https://github.com/ziobob94/fishlog-client/commit/81de0154fed860d8699fc169616ac036df9948ae))
+* **design:** restyling Home, Uscite e card uscita; testo scuro sui riempimenti ocean ([df12a2d](https://github.com/ziobob94/fishlog-client/commit/df12a2d25188a4dc52390b2e4fb70427c0071f93))
+* **design:** statistiche con grafico per mese e specie più catturate ([514de68](https://github.com/ziobob94/fishlog-client/commit/514de688826b0f88d8ce556d27b02768eb738f44))
+* **design:** tab e icone a 44 px, focus visibile, reduced-motion, tab Market riordinate ([d965041](https://github.com/ziobob94/fishlog-client/commit/d9650418342874ad2f4b993695ed48dd37aeca6c))
+* **home:** mappamondo con le tue pescate (d3-geo + world-atlas), logo che segue il tema ([79582d4](https://github.com/ziobob94/fishlog-client/commit/79582d47b509fe0f2bca2332f734701ffae52c9c))
+* **market:** percorso venditore (richiesta, stato verifica, configura negozio) ([9854b1f](https://github.com/ziobob94/fishlog-client/commit/9854b1f5245a8fd178d485b4f0c4d225144b981d))
+* **market:** senza verifica «Vendi» porta al percorso venditore ([4dcfd7b](https://github.com/ziobob94/fishlog-client/commit/4dcfd7b164cc67dced410583b626bc19b928a32b))
+
+# [1.32.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.31.0...client-v1.32.0) (2026-11-09)
+
+
+### Features
+
+* tasto Installa app (PWA manifest, service worker, prompt Android e istruzioni iOS) ([#10](https://github.com/ziobob94/fishlog-client/issues/10)) ([0175d0a](https://github.com/ziobob94/fishlog-client/commit/0175d0af9b0c27182aec18d7d4b46f2f56447155))
+
 # [1.31.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.30.0...client-v1.31.0) (2026-10-07)
 
 

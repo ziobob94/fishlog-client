@@ -1,7 +1,7 @@
 <template>
   <div class="chat-fullheight">
     <div class="page-header chat-thread-header pt-4">
-      <RouterLink to="/chat" class="btn btn-ghost btn-sm">{{ t('chat.group.back') }}</RouterLink>
+      <RouterLink to="/chat" class="icon-btn" :aria-label="t('common.back')"><ArrowLeft :size="18" /></RouterLink>
       <button v-if="group" type="button" class="chat-header-info" @click="manageOpen = !manageOpen">
         <span class="conversation-avatar-placeholder group-avatar"><UsersRound :size="20" /></span>
         <span class="chat-header-text">
@@ -62,15 +62,17 @@
       <ChatThread :conversation-id="conversationId" show-sender-names />
     </template>
 
-    <div v-else class="state-center"><div class="spinner"></div></div>
+    <div v-else class="state-center"><div class="m-spinner"></div></div>
   </div>
 </template>
 
 <script setup>
+import { confirmDialog } from '../composables/useConfirm.js'
+import { toInitials } from '../utils/initials.js'
   import { ref, computed, onMounted } from 'vue'
   import { useRoute, useRouter, RouterLink } from 'vue-router'
   import { useI18n } from 'vue-i18n'
-  import { AlertTriangle, UsersRound, Settings, X } from 'lucide-vue-next'
+  import { AlertTriangle, ArrowLeft, UsersRound, Settings, X } from 'lucide-vue-next'
   import { useChatStore } from '../stores/chat.js'
   import { useFriendStore } from '../stores/friends.js'
   import { useAuthStore } from '../stores/auth.js'
@@ -100,7 +102,7 @@
 
   function initials(u) {
     const n = u?.displayName || u?.email || '?'
-    return n.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2)
+return toInitials(n)
   }
 
   async function loadGroup() {
@@ -138,7 +140,7 @@
   }
 
   async function removeMember(m) {
-    if (!window.confirm(t('chat.group.confirmRemoveMember'))) return
+    if (!(await confirmDialog(t('chat.group.confirmRemoveMember')))) return
     try {
       await chatStore.removeGroupMember(conversationId.value, m._id)
       await loadGroup()
@@ -148,7 +150,7 @@
   }
 
   async function leave() {
-    if (!window.confirm(t('chat.group.confirmLeave'))) return
+    if (!(await confirmDialog(t('chat.group.confirmLeave')))) return
     try {
       await chatStore.removeGroupMember(conversationId.value, auth.user._id)
       router.push('/chat')
@@ -193,11 +195,11 @@
   }
 
   .icon-btn {
-    @apply flex items-center justify-center w-9 h-9 rounded-lg text-muted bg-transparent border-none cursor-pointer hover:bg-surface-2 hover:text-ocean transition-colors shrink-0;
+    @apply flex items-center justify-center w-11 h-11 rounded-xl text-foam bg-surface border border-border cursor-pointer hover:border-ocean transition-colors shrink-0;
   }
 
   .conversation-avatar-placeholder {
-    @apply w-10 h-10 rounded-full border border-ocean text-ocean flex items-center justify-center text-sm font-bold shrink-0;
+    @apply w-10 h-10 rounded-full border border-ocean text-ocean-text flex items-center justify-center text-sm font-bold shrink-0;
     background: var(--ocean-glow);
   }
 
@@ -246,7 +248,7 @@
   }
 
   .mini-placeholder {
-    @apply w-9 h-9 rounded-full border border-ocean text-ocean flex items-center justify-center text-xs font-bold shrink-0;
+    @apply w-9 h-9 rounded-full border border-ocean text-ocean-text flex items-center justify-center text-xs font-bold shrink-0;
     background: var(--ocean-glow);
   }
 </style>

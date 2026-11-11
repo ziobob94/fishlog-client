@@ -12,6 +12,8 @@
   --motion-fast:   120ms;    /* colori di chip/segmented, uscita di toast e menu piccoli, dissolvenze */
   --motion-base:   200ms;    /* entrata di toast e menu, modali in uscita, fogli in uscita, indicatore del segmented */
   --motion-slow:   320ms;    /* cambio pagina, foglio in entrata, apertura del dettaglio, like */
+  --page-dist: var(--dist-lg);
+  --page-in: var(--motion-slow);
   --motion-loop-skeleton: 1400ms;
   --motion-loop-spinner:   800ms;
   --motion-loop-bobber:   2600ms;
@@ -47,11 +49,13 @@
 @media (prefers-reduced-motion: reduce) {
   :root:not([data-motion='full']) { --motion-press: 1ms; --motion-fast: 80ms; --motion-base: 120ms; --motion-slow: 120ms;
     --dist-xs: 0px; --dist-sm: 0px; --dist-md: 0px; --dist-lg: 0px; --dist-sheet: 0px;
-    --scale-press: 1; --scale-modal: 1; --scale-pop: 1; --scale-story: 1; --stagger-step: 0ms; }
+    --scale-press: 1; --scale-modal: 1; --scale-pop: 1; --scale-story: 1; --stagger-step: 0ms;
+    --page-dist: 12px; --page-in: 200ms; }
 }
 :root[data-motion='reduce'] { --motion-press: 1ms; --motion-fast: 80ms; --motion-base: 120ms; --motion-slow: 120ms;
   --dist-xs: 0px; --dist-sm: 0px; --dist-md: 0px; --dist-lg: 0px; --dist-sheet: 0px;
-  --scale-press: 1; --scale-modal: 1; --scale-pop: 1; --scale-story: 1; --stagger-step: 0ms; }
+  --scale-press: 1; --scale-modal: 1; --scale-pop: 1; --scale-story: 1; --stagger-step: 0ms;
+    --page-dist: 12px; --page-in: 200ms; }
 
 /* ───────── Pulsanti e controlli ───────── */
 .m-press { transition: transform var(--motion-fast) var(--ease-standard), background-color var(--motion-fast) var(--ease-standard); }
@@ -61,18 +65,24 @@
 
 /* ───────── Cambio pagina (classi per <Transition name="page-…">) ───────── */
 /* Avanti: la nuova pagina entra da destra, la vecchia sfuma e arretra appena. Indietro: inverso. */
-.page-forward-enter-active, .page-back-enter-active { transition: transform var(--motion-slow) var(--ease-enter), opacity var(--motion-slow) var(--ease-enter); }
+.page-forward-enter-active, .page-back-enter-active { transition: transform var(--page-in) var(--ease-enter), opacity var(--page-in) var(--ease-enter); }
 .page-forward-leave-active, .page-back-leave-active { transition: transform var(--motion-base) var(--ease-exit), opacity var(--motion-base) var(--ease-exit); position: absolute; inset: 0; }
-.page-forward-enter-from { transform: translateX(var(--dist-lg)); opacity: 0; }
-.page-forward-leave-to   { transform: translateX(calc(var(--dist-lg) * -.5)); opacity: 0; }
-.page-back-enter-from    { transform: translateX(calc(var(--dist-lg) * -.5)); opacity: 0; }
-.page-back-leave-to      { transform: translateX(var(--dist-lg)); opacity: 0; }
+.page-forward-enter-from { transform: translateX(var(--page-dist)); opacity: 0; }
+.page-forward-leave-to   { transform: translateX(calc(var(--page-dist) * -.5)); opacity: 0; }
+.page-back-enter-from    { transform: translateX(calc(var(--page-dist) * -.5)); opacity: 0; }
+.page-back-leave-to      { transform: translateX(var(--page-dist)); opacity: 0; }
+/* Cambio tab dentro una pagina (Annunci / Negozi / eBay): dissolvenza con piccola scivolata. */
+.tab-swap-enter-active { transition: opacity var(--motion-base) var(--ease-enter), transform var(--motion-base) var(--ease-enter); }
+.tab-swap-leave-active { transition: opacity var(--motion-fast) var(--ease-exit); }
+.tab-swap-enter-from { opacity: 0; transform: translateY(8px); }
+.tab-swap-leave-to { opacity: 0; }
 /* Tra tab della barra in basso: solo dissolvenza incrociata, nessun movimento. */
 .page-tab-enter-active { transition: opacity var(--motion-base) var(--ease-standard); }
 .page-tab-leave-active { transition: opacity var(--motion-fast) var(--ease-standard); position: absolute; inset: 0; }
 .page-tab-enter-from, .page-tab-leave-to { opacity: 0; }
-/* Contenitore: .page-stack { position: relative; overflow: hidden; contain: layout paint; } e scrollbar-gutter: stable sul body. */
-.page-stack { position: relative; overflow: hidden; contain: layout paint; }
+/* Contenitore delle pagine: senza contain né overflow:hidden (romperebbero position:fixed e sticky). */
+.page-stack { position: relative; }   /* niente overflow qui: tagliava i contenuti a tutta larghezza (margini negativi) */
+html, body { overflow-x: clip; }       /* la scivolata di 24 px delle pagine non crea scroll orizzontale   /* niente contain/overflow:hidden: romperebbero position:fixed e sticky nelle pagine */
 
 /* Apertura del dettaglio da card o griglia (View Transitions API, vedi useViewTransition.js).
    Sull'elemento condiviso: style="view-transition-name: card-<id>". Senza supporto: cambio pagina «avanti». */

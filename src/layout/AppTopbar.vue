@@ -1,63 +1,50 @@
 <template>
-  <header class="sticky top-0 z-[100] flex items-center gap-4 px-5 py-3 border-b border-border"
-    style="background: rgb(var(--color-ink) / 0.92); backdrop-filter: blur(12px)">
+  <header class="sticky z-[100] flex items-center gap-0 pl-2 pr-4 sm:pl-3 py-3 border-b border-border"
+    style="top: env(safe-area-inset-top); background: rgb(var(--color-ink) / 0.92); backdrop-filter: blur(12px)">
     <button
-      class="flex flex-col gap-1.5 p-1 bg-transparent border-none cursor-pointer group"
+      class="flex flex-col justify-center gap-1.5 w-10 h-11 items-center bg-transparent border-none cursor-pointer group"
+      :aria-label="t('nav.menu')"
       @click="$emit('toggle-sidebar')"
     >
       <span class="block w-5 h-0.5 bg-foam rounded group-hover:bg-ocean transition-colors duration-200"></span>
       <span class="block w-5 h-0.5 bg-foam rounded group-hover:bg-ocean transition-colors duration-200"></span>
       <span class="block w-5 h-0.5 bg-foam rounded group-hover:bg-ocean transition-colors duration-200"></span>
     </button>
-    <RouterLink to="/" class="text-foam text-lg font-extrabold tracking-tight hover:text-ocean transition-colors" style="display:inline-flex;align-items:center;gap:.4rem">
-      <Fish :size="18" /> FishLog
-    </RouterLink>
+    <RouterLink to="/" class="inline-flex items-center -ml-1" aria-label="FishLog"><FishLogo :size="30" /></RouterLink>
 
-    <div class="ml-auto flex items-center gap-2">
-      <div class="relative" ref="notifWrapper">
-        <button
-          class="relative flex items-center justify-center w-9 h-9 rounded-lg text-foam bg-surface-2 hover:bg-surface-2/70 transition-colors border-none cursor-pointer"
-          :title="t('notifications.title')"
-          @click="toggleNotifications"
-        >
-          <Bell :size="18" />
-          <span v-if="notifications.unreadCount" class="notif-dot">{{ notifications.unreadCount }}</span>
-        </button>
+    <div class="ml-auto flex items-center gap-1.5">
+      <RouterLink
+        to="/chat"
+        class="relative flex items-center justify-center w-9 h-9 rounded-lg text-foam bg-surface-2 hover:bg-surface-2/70 transition-colors border-none cursor-pointer"
+        :title="t('nav.chat')"
+        :aria-label="t('nav.chat')"
+      >
+        <MessageCircle :size="16" />
+        <span v-if="chat.unreadCount" class="notif-dot">{{ chat.unreadCount > 99 ? '99+' : chat.unreadCount }}</span>
+      </RouterLink>
 
-        <div v-if="notifPanelOpen" class="notif-panel card">
-          <div class="notif-panel-header">
-            <h4>{{ t('notifications.title') }}</h4>
-            <div class="notif-panel-actions">
-              <button v-if="notifications.unreadCount" class="btn btn-ghost btn-sm" @click="notifications.markAllRead()">
-                {{ t('notifications.markAllRead') }}
-              </button>
-              <button v-if="notifications.items.length" class="btn btn-ghost btn-sm" @click="notifications.removeAll()">
-                {{ t('notifications.deleteAll') }}
-              </button>
-            </div>
-          </div>
-          <p v-if="!notifications.items.length" class="text-muted text-sm p-3">{{ t('notifications.empty') }}</p>
-          <ul v-else class="notif-list">
-            <li v-for="n in notifications.items" :key="n._id" class="notif-row" :class="{ unread: !n.read }">
-              <RouterLink :to="notificationLink(n)" class="notif-row-link" @click="onNotificationClick(n)">
-                <span>{{ t(`notifications.types.${n.type}`, { name: n.actor?.displayName || n.actor?.email || '' }) }}</span>
-                <span class="text-muted text-xs">{{ formatTime(n.createdAt) }}</span>
-              </RouterLink>
-              <button class="notif-remove" :title="t('notifications.delete')" @click="notifications.remove(n._id)">
-                <X :size="14" />
-              </button>
-            </li>
-          </ul>
-        </div>
-      </div>
+      <RouterLink
+        to="/notifications"
+        class="relative flex items-center justify-center w-9 h-9 rounded-lg text-foam bg-surface-2 hover:bg-surface-2/70 transition-colors border-none cursor-pointer"
+        :title="t('notifications.title')"
+        :aria-label="t('notifications.title')"
+      >
+        <Bell :size="16" />
+        <span v-if="notifications.unreadCount" class="notif-dot">{{ notifications.unreadCount }}</span>
+      </RouterLink>
 
-      <div class="relative" ref="createWrapper">
+      <RouterLink to="/board" class="md:hidden topbar-avatar" :aria-label="t('nav.board')">
+        <img v-if="auth.user?.avatar" :src="auth.user.avatar" alt="" />
+        <span v-else>{{ userInitials }}</span>
+      </RouterLink>
+
+      <div class="relative max-md:hidden" ref="createWrapper">
         <button
           class="relative flex items-center justify-center w-9 h-9 rounded-lg text-ink bg-ocean hover:bg-ocean/90 transition-colors border-none cursor-pointer"
           :title="plusTitle"
           @click="onPlusClick"
         >
-          <Plus :size="18" />
+          <Plus :size="16" />
           <span v-if="sessions.ongoing && !onOngoingEditPage" class="absolute -top-0.5 -right-0.5 flex h-2.5 w-2.5">
             <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-sand/70"></span>
             <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-sand"></span>
@@ -83,7 +70,7 @@
             <ShoppingBag :size="16" /> {{ t('createMenu.newListing') }}
           </RouterLink>
           <RouterLink to="/chat" class="create-menu-item" @click="createMenuOpen = false">
-            <MessagesSquare :size="16" /> {{ t('createMenu.newMessage') }}
+            <MessageCircle :size="16" /> {{ t('createMenu.newMessage') }}
           </RouterLink>
           <RouterLink to="/chat/group/new" class="create-menu-item" @click="createMenuOpen = false">
             <UsersRound :size="16" /> {{ t('createMenu.newChatGroup') }}
@@ -112,14 +99,17 @@
 </template>
 
 <script setup>
+import { toInitials } from '../utils/initials.js'
 import { computed, onMounted, onBeforeUnmount, ref, watch } from 'vue'
 import { RouterLink, useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { Fish, WifiOff, RefreshCw, AlertTriangle, Hourglass, Plus, Bell, X, Newspaper, ShoppingBag, MessagesSquare, Users, UsersRound } from 'lucide-vue-next'
+import FishLogo from '../components/FishLogo.vue'
+import { Fish, WifiOff, RefreshCw, AlertTriangle, Hourglass, Plus, Bell, X, Newspaper, ShoppingBag, MessageCircle, Users, UsersRound } from 'lucide-vue-next'
 import { useOfflineStore } from '../stores/offline.js'
 import { useSessionStore } from '../stores/sessions.js'
 import { useAuthStore } from '../stores/auth.js'
 import { useNotificationStore } from '../stores/notifications.js'
+import { useChatStore } from '../stores/chat.js'
 
 defineEmits(['toggle-sidebar'])
 
@@ -128,8 +118,10 @@ const route = useRoute()
 const router = useRouter()
 const offline = useOfflineStore()
 const sessions = useSessionStore()
+const userInitials = computed(() => toInitials(auth.user?.displayName || auth.user?.email || '?'))
 const auth = useAuthStore()
 const notifications = useNotificationStore()
+const chat = useChatStore()
 
 const notifPanelOpen = ref(false)
 const notifWrapper = ref(null)
@@ -237,6 +229,11 @@ const statusTitle = computed(() => {
 </script>
 
 <style scoped>
+.topbar-avatar {
+  @apply flex items-center justify-center w-9 h-9 rounded-full border border-ocean text-ocean-text font-bold text-xs overflow-hidden no-underline;
+  background: var(--ocean-glow);
+}
+.topbar-avatar img { @apply w-full h-full object-cover; }
 .notif-dot {
   @apply absolute -top-1 -right-1 bg-danger text-white text-[0.65rem] font-bold rounded-full px-1.5 py-0.5 leading-none;
 }
@@ -260,7 +257,7 @@ const statusTitle = computed(() => {
 }
 .notif-row.unread .notif-row-link { @apply font-medium; }
 .notif-remove {
-  @apply flex items-center justify-center w-7 h-7 mr-2 rounded text-muted bg-transparent border-none
+  @apply flex items-center justify-center w-11 h-11 mr-2 rounded text-muted bg-transparent border-none
          cursor-pointer hover:text-danger hover:bg-danger/10 transition-colors shrink-0;
 }
 

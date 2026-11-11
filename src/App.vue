@@ -1,10 +1,11 @@
 <template>
   <div v-if="isPublicRoute" class="flex flex-col min-h-dvh">
     <main class="flex-1 w-full max-w-[1100px] mx-auto px-4 sm:px-6 py-6 sm:py-8">
-      <RouterView />
+      <PageTransition />
     </main>
     <LegalFooter />
-    <ToastContainer />
+    <ToastHost />
+    <ConfirmHost />
     <LocalStorageNotice />
   </div>
 
@@ -27,30 +28,33 @@
       class="flex flex-col flex-1 min-w-0 min-h-0 transition-[margin] duration-300"
       :class="sidebarLocked ? 'ml-60' : 'ml-0'"
     >
-      <AppTopbar @toggle-sidebar="toggleSidebar" />
+      <AppTopbar :class="{ 'max-md:hidden': route.meta.ownHeader }" @toggle-sidebar="toggleSidebar" />
       <main
         class="flex-1 w-full max-w-[1100px] mx-auto px-4 sm:px-6 min-w-0"
-        :class="[isFullHeight ? 'flex flex-col min-h-0 overflow-hidden' : 'py-8', showBottomNav ? 'pb-[calc(var(--bottom-nav-h)+1rem)] md:pb-8' : '']"
+        :class="[isFullHeight ? 'flex flex-col min-h-0 overflow-hidden' : (route.meta.ownHeader ? 'pt-4 pb-8 md:py-8' : 'py-8'), showBottomNav ? 'pb-[calc(var(--bottom-nav-h)+1rem)] md:pb-8' : '']"
       >
-        <RouterView />
+        <PageTransition />
       </main>
       <LegalFooter v-if="!isFullHeight" />
     </div>
 
     <AppBottomNav v-if="showBottomNav" />
-    <ToastContainer />
+    <ToastHost />
+    <ConfirmHost />
     <LocalStorageNotice />
     <MarketSurveyModal />
   </div>
 </template>
 
 <script setup>
-import { ref, computed, onMounted, watch } from 'vue'
-import { RouterView, useRoute } from 'vue-router'
+import { ref, computed, onMounted, onBeforeUnmount, watch, provide } from 'vue'
+import { useRoute } from 'vue-router'
 import AppSidebar from './layout/AppSidebar.vue'
 import AppTopbar  from './layout/AppTopbar.vue'
 import AppBottomNav from './layout/AppBottomNav.vue'
-import ToastContainer from './components/ToastContainer.vue'
+import ConfirmHost from './components/ConfirmHost.vue'
+import ToastHost from './components/motion/ToastHost.vue'
+import PageTransition from './components/motion/PageTransition.vue'
 import LegalFooter from './components/LegalFooter.vue'
 import LocalStorageNotice from './components/LocalStorageNotice.vue'
 import MarketSurveyModal from './components/MarketSurveyModal.vue'
@@ -59,13 +63,15 @@ import { usePostStore } from './stores/posts.js'
 import { useChatStore } from './stores/chat.js'
 import { useFriendStore } from './stores/friends.js'
 import { useNotificationStore } from './stores/notifications.js'
-import { connectWebSocket, disconnectWebSocket } from './services/ws.js'
+import { connectWebSocket, disconnectWebSocket, ensureConnected } from './services/ws.js'
 
 const route = useRoute()
+
 const isPublicRoute = computed(() => !!route.meta.public)
 const isFullHeight  = computed(() => !!route.meta.fullHeight)
 const showBottomNav = computed(() => !route.meta.hideBottomNav)
 
+provide('toggleSidebar', () => { sidebarOpen.value = !sidebarOpen.value })
 const sidebarOpen   = ref(false)
 const sidebarLocked = ref(localStorage.getItem('sidebar_locked') === 'true')
 const auth    = useAuthStore()
@@ -86,7 +92,38 @@ onMounted(() => {
 })
 
 watch(() => auth.isLoggedIn, (loggedIn) => {
-  if (!loggedIn) disconnectWebSocket()
+  if (!loggedIn) { disconnectWebSocket(); return }
+  syncBadges()
+  ensureConnected()
+})
+
+// Badge e richieste restano aggiornati anche se il websocket è stato sospeso
+// (app in background, rete assente): risincronizza al ritorno in primo piano,
+// quando torna la rete e ogni 30 s mentre l'app è visibile.
+function syncBadges() {
+  if (!auth.isLoggedIn) return
+  notifications.fetchUnreadCount()
+  chat.fetchUnreadCount()
+  posts.fetchUnreadCount()
+  friends.fetchRequests()
+}
+function resync() {
+  if (document.visibilityState === 'hidden') return
+  ensureConnected()
+  syncBadges()
+}
+let pollTimer = null
+onMounted(() => {
+  document.addEventListener('visibilitychange', resync)
+  window.addEventListener('focus', resync)
+  window.addEventListener('online', resync)
+  pollTimer = setInterval(resync, 30000)
+})
+onBeforeUnmount(() => {
+  document.removeEventListener('visibilitychange', resync)
+  window.removeEventListener('focus', resync)
+  window.removeEventListener('online', resync)
+  clearInterval(pollTimer)
 })
 
 function toggleSidebar() { sidebarOpen.value = !sidebarOpen.value }

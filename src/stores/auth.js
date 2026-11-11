@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import api from '../utils/api.js'
+import { useOfflineStore } from './offline.js'
 
 export const useAuthStore = defineStore('auth', () => {
   const token = ref(localStorage.getItem('fl_token') || null)
@@ -14,6 +15,7 @@ export const useAuthStore = defineStore('auth', () => {
     localStorage.setItem('fl_token', t)
     localStorage.setItem('fl_user', JSON.stringify(u))
     api.defaults.headers.common['Authorization'] = `Bearer ${t}`
+    useOfflineStore().reloadForUser() // la coda offline segue l'utente collegato
   }
 
   function clearAuth() {
@@ -22,6 +24,7 @@ export const useAuthStore = defineStore('auth', () => {
     localStorage.removeItem('fl_token')
     localStorage.removeItem('fl_user')
     delete api.defaults.headers.common['Authorization']
+    useOfflineStore().outbox = [] // la coda dell'utente uscito non deve restare visibile
   }
 
   function initAuth() {
@@ -84,6 +87,31 @@ export const useAuthStore = defineStore('auth', () => {
     return data
   }
 
+  async function uploadShopLogo(file) {
+    const body = new FormData()
+    body.append('file', file)
+    const { data } = await api.post('/auth/me/shop/logo', body)
+    user.value = data
+    localStorage.setItem('fl_user', JSON.stringify(data))
+    return data
+  }
+
+  async function uploadShopDocument(file) {
+    const body = new FormData()
+    body.append('file', file)
+    const { data } = await api.post('/auth/me/shop/document', body)
+    user.value = data
+    localStorage.setItem('fl_user', JSON.stringify(data))
+    return data
+  }
+
+  async function requestShopSite(requested) {
+    const { data } = await api.post('/auth/me/shop/site-request', { requested })
+    user.value = data
+    localStorage.setItem('fl_user', JSON.stringify(data))
+    return data
+  }
+
   async function updateShop(payload) {
     const { data } = await api.patch('/auth/me/shop', payload)
     persistUser(data)
@@ -115,7 +143,7 @@ export const useAuthStore = defineStore('auth', () => {
 
   return {
     token, user, isLoggedIn, setAuth, clearAuth, initAuth, login, register, fetchMe, logout,
-    updateProfile, updateNotificationPreferences, updateMarketPreferences, updateShop, uploadAvatar, changePassword, changeEmail, deleteAccount,
+    updateProfile, updateNotificationPreferences, updateMarketPreferences, updateShop, requestShopSite, uploadShopDocument, uploadShopLogo, uploadAvatar, changePassword, changeEmail, deleteAccount,
     forgotPassword, resetPassword
   }
 })
