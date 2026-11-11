@@ -70,7 +70,9 @@
 		"sessionSub": "Registra una nuova uscita di pesca",
 		"listing": "Annuncio",
 		"listingSub": "Vendi o scambia attrezzatura",
-		"close": "Chiudi"
+		"close": "Chiudi",
+		"story": "Storia",
+		"storySub": "Sparisce dopo 24 ore"
 	},
 	"admin": {
 		"tabs": {
@@ -1523,5 +1525,45 @@
 		"empty": "Appena registri un'uscita con la posizione, la vedrai qui.",
 		"geoDenied": "Non posso usare la tua posizione: consenti l'accesso alla posizione nelle impostazioni del browser.",
 		"geoUnavailable": "Questo dispositivo non fornisce la posizione."
+	},
+	"stories": {
+		"rail": "Storie",
+		"yours": "La tua storia",
+		"new": "Nuova storia",
+		"new_title": "Nuova storia",
+		"close": "Chiudi",
+		"chooseMedia": "Scatta o scegli una foto",
+		"takePhoto": "Scatta",
+		"fromGallery": "Dalla galleria",
+		"stickers": "Adesivi della pesca",
+		"stickerCatch": "Cattura",
+		"stickerPlace": "Luogo",
+		"stickerWater": "Acqua e meteo",
+		"pickCatch": "Quale cattura?",
+		"noSession": "Registra prima un'uscita per aggiungere adesivi.",
+		"hookLabel": "Abboccata!",
+		"whoSees": "Chi la vede",
+		"everyone": "Tutti",
+		"friendsOnly": "Solo amici",
+		"ttlHint": "Resta visibile per 24 ore, poi sparisce. Puoi salvarla nell'uscita.",
+		"publish": "Pubblica la storia",
+		"publishing": "Pubblicazione…",
+		"redo": "Rifai",
+		"published": "Storia pubblicata",
+		"empty": "Aggiungi una foto o almeno un adesivo.",
+		"ago": "{n} h fa",
+		"agoMin": "{n} min fa",
+		"justNow": "ora",
+		"reply": "Rispondi a {name}…",
+		"sendReply": "Invia risposta",
+		"like": "Mi piace",
+		"more": "Altre azioni",
+		"delete": "Elimina storia",
+		"deleteConfirm": "Eliminare questa storia?",
+		"replySent": "Risposta inviata",
+		"replyPrefix": "Risposta alla tua storia",
+		"views": "{n} visualizzazioni",
+		"noStories": "Nessuna storia da mostrare.",
+		"openSession": "Apri l'uscita"
 	}
 }

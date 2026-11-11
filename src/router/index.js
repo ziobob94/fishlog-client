@@ -28,6 +28,8 @@ export default createRouter({
     { path: '/groups', name: 'groups', component: () => import('../views/GroupsView.vue'), meta: { ownHeader: true } },
     { path: '/friends', name: 'friends', component: () => import('../views/FriendsView.vue'), meta: { ownHeader: true } },
     { path: '/users/:id', name: 'user-profile', component: () => import('../views/UserProfileView.vue'), meta: { ownHeader: true } },
+    { path: '/story/new', name: 'story-new', component: () => import('../views/StoryComposerView.vue'), meta: { ownHeader: true, hideBottomNav: true } },
+    { path: '/stories/:userId', name: 'story-view', component: () => import('../views/StoryViewerView.vue'), meta: { ownHeader: true, hideBottomNav: true } },
     { path: '/feed',  name: 'feed',  component: () => import('../views/FeedView.vue'), meta: { ownHeader: true } },
     { path: '/board', name: 'board', component: () => import('../views/MyBoardView.vue'), meta: { ownHeader: true } },
     { path: '/market', name: 'market', component: () => import('../views/MarketView.vue'), meta: { ownHeader: true } },

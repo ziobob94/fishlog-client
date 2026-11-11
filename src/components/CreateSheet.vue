@@ -21,7 +21,7 @@
 import { computed } from 'vue'
 import { RouterLink } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { X, ChevronRight, Image as ImageIcon, Fish, FileText } from 'lucide-vue-next'
+import { X, ChevronRight, Image as ImageIcon, Fish, FileText, Camera } from 'lucide-vue-next'
 import { useSessionStore } from '../stores/sessions.js'
 
 defineProps({ open: { type: Boolean, default: false } })
@@ -30,9 +30,10 @@ defineEmits(['close'])
 const { t } = useI18n()
 const sessions = useSessionStore()
 
-// Foglio «Crea» (schermata 39): post, uscita, annuncio. La storia si aggiunge quando c'è il server.
+// Foglio «Crea» (schermata 39): post, storia, uscita, annuncio.
 const options = computed(() => [
   { key: 'post', tone: 'ocean', icon: ImageIcon, title: t('createMenu.post'), sub: t('createMenu.postSub'), to: { path: '/feed', query: { compose: '1' } } },
+  { key: 'story', tone: 'sand', icon: Camera, title: t('createMenu.story'), sub: t('createMenu.storySub'), to: '/story/new' },
   { key: 'session', tone: 'green', icon: Fish, title: t('createMenu.session'),
     sub: sessions.ongoing ? t('createMenu.resumeSession') : t('createMenu.sessionSub'),
     to: sessions.ongoing ? `/session/${sessions.ongoing._id}/edit` : '/new' },

@@ -31,6 +31,7 @@
       </section>
 
       <div class="d-body">
+        <StampBadge v-if="session.record" class="d-stamp" title="RECORD" :value="session.record.lengthCm" :unit="`cm · ${(session.record.species || '').toLowerCase()}`" :size="92" />
         <div class="d-meta">
           <span class="fl-mono d-date">{{ fmtShort(session.date) }}</span>
           <span v-if="session.technique" class="badge badge-ocean">{{ session.technique }}</span>
@@ -169,6 +170,7 @@ import MediaUploader from '../components/MediaUploader.vue'
 import InfoItem      from '../components/InfoItem.vue'
 import MapDisplay    from '../components/MapDisplay.vue'
 import TideDivider   from '../components/TideDivider.vue'
+import StampBadge    from '../components/StampBadge.vue'
 
 const { t }  = useI18n()
 const store  = useSessionStore()
@@ -304,11 +306,12 @@ async function doDelete() {
 .hero-ticks { position: absolute; left: 12px; right: 12px; bottom: 10px; height: 10px; pointer-events: none; background: repeating-linear-gradient(90deg, rgba(241,245,249,.85) 0 2px, transparent 2px 10px); }
 .hero-major { position: absolute; left: 12px; right: 12px; bottom: 10px; height: 18px; pointer-events: none; background: repeating-linear-gradient(90deg, rgb(var(--color-sand-text)) 0 2px, transparent 2px 50px); }
 
-.d-body { padding: 16px 16px 8.5rem; display: flex; flex-direction: column; gap: 14px; }
+.d-body { position: relative; padding: 16px 16px 8.5rem; display: flex; flex-direction: column; gap: 14px; }
+.d-stamp { position: absolute; right: 16px; top: 12px; transform: rotate(8deg); }
 .d-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
 .d-date { font-size: 13px; color: var(--text-muted); }
 .stars { color: rgb(var(--color-sand-text)); letter-spacing: 2px; }
-.d-title { font-size: 30px; line-height: 1.1; margin: 0; color: var(--foam); }
+.d-title { font-size: 30px; line-height: 1.1; margin: 0; color: var(--foam); padding-right: 100px; }
 .d-place { display: flex; align-items: center; gap: 6px; font-size: 15px; color: var(--text-muted); margin: 0; }
 .coords-pill { align-self: flex-start; border: 1px solid rgb(var(--color-ocean-text) / .4); border-radius: 999px; padding: 4px 12px; font-size: 12px; color: rgb(var(--color-ocean-text)); margin: 0; }
 
