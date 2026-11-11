@@ -98,6 +98,7 @@
           </button>
         </div>
         <p class="text-muted text-sm mt-2">{{ t('profile.appearance.motionHint') }}</p>
+        <MotionDebug />
       </section>
 
       <!-- Privacy -->
@@ -272,6 +273,7 @@
 <script setup>
 import { ref as motionRef } from 'vue'
 import { setMotionPreference } from '../components/motion/motion.js'
+import MotionDebug from '../components/motion/MotionDebug.vue'
 import { toInitials } from '../utils/initials.js'
 import PageHeader from '../components/PageHeader.vue'
 import { ref, computed, onMounted } from 'vue'
