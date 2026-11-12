@@ -3,7 +3,7 @@
        Al «non mi piace» cambia solo colore (120 ms). Il numero è in mono e non sposta il layout (cifre tabulari, larghezza minima). -->
   <button class="like m-press" type="button" :aria-pressed="liked" :aria-label="liked ? 'Non mi piace più' : 'Mi piace'" @click="toggle">
     <span class="like-ic" :class="{ 'm-ripple': burst }" :style="{ color: liked ? 'rgb(var(--color-sand-text))' : 'inherit' }">
-      <svg :class="{ 'm-pop': burst }" viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"
+      <svg :class="{ 'm-pop': burst }" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"
            :style="{ fill: liked ? 'currentColor' : 'none', transition: 'fill var(--motion-fast) var(--ease-standard)' }">
         <path d="M12 20s-7.5-4.6-7.5-10A4.3 4.3 0 0 1 12 7.5 4.3 4.3 0 0 1 19.5 10c0 5.4-7.5 10-7.5 10Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round" />
       </svg>
@@ -24,7 +24,7 @@ function toggle() {
 </script>
 
 <style scoped>
-.like { min-width: 48px; min-height: 48px; display: inline-flex; align-items: center; gap: 6px; border: 0; background: transparent; color: rgb(var(--color-foam)); font-weight: 700; }
+.like { min-width: 44px; min-height: 44px; padding: 0 6px 0 10px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; border: 0; background: transparent; color: rgb(var(--color-foam)); font-size: 14px; font-weight: 600; }
 .like-ic { position: relative; display: inline-flex; }
-.like-n { min-width: 2ch; font-variant-numeric: tabular-nums; }
+.like-n { min-width: 1ch; line-height: 1; font-variant-numeric: tabular-nums; }
 </style>

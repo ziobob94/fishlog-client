@@ -50,10 +50,10 @@
     </div>
 
     <div class="action-row">
-      <LikeButton :liked="isLiked" :count="post.likes?.length || 0" @toggle="$emit('like', post)" />
+      <LikeButton :liked="isLiked" :count="post.likes?.length || undefined" @toggle="$emit('like', post)" />
       <button v-if="post.type !== 'event'" type="button" class="act-btn act-count" :aria-label="t('posts.comment')" :aria-expanded="showComments" @click="showComments = !showComments">
         <MessageCircle :size="24" />
-        <span class="font-mono act-n">{{ post.comments?.length || 0 }}</span>
+        <span v-if="post.comments?.length" class="font-mono act-n">{{ post.comments.length }}</span>
       </button>
       <button type="button" class="act-btn" :aria-label="t('posts.share')" @click="share">
         <Send :size="24" />
@@ -431,10 +431,10 @@ const featuredCatch = computed(() => {
   .media-coords { @apply left-3 font-mono text-[0.7rem] font-medium text-ocean-text; }
   .media-count { @apply right-3; }
 
-  .action-row { @apply flex items-center -ml-2.5; }
+  .action-row { @apply flex items-center -ml-2.5 gap-1; }
   .act-btn { @apply flex items-center justify-center w-11 h-11 bg-transparent border-none text-foam cursor-pointer; }
-  .act-btn.act-count { @apply w-auto min-w-[48px] gap-1.5 font-bold; }
-  .act-n { @apply text-base; min-width: 2ch; text-align: left; font-variant-numeric: tabular-nums; }
+  .act-btn.act-count { @apply w-auto min-w-[44px] gap-1.5 pl-2.5 pr-1.5; }
+  .act-n { @apply text-sm font-semibold leading-none; min-width: 1ch; font-variant-numeric: tabular-nums; }
   .act-btn.liked, .act-btn.saved { @apply text-sand-text; }
 
   .post-text { @apply flex flex-col gap-1.5; }
