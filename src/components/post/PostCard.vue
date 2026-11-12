@@ -38,7 +38,7 @@
           <template v-else>
             <!-- Letterbox: stessa foto sfocata e scurita come sfondo, la foto resta intera -->
             <img :src="m.url" class="media-backdrop" alt="" aria-hidden="true" loading="lazy" decoding="async" />
-            <img :src="m.url" class="media-thumb media-thumb-img" alt="" @click="lightboxItem = m" />
+            <img :src="m.url" class="media-thumb media-thumb-img" :class="{ 'is-loaded': loadedIds[m._id] }" alt="" decoding="async" @load="loadedIds[m._id] = true" @click="lightboxItem = m" />
           </template>
           <template v-if="i === 0 && featuredCatch" #badge>
             <span class="catch-pill">{{ featuredCatch.species }}{{ featuredCatch.lengthCm ? ` ${featuredCatch.lengthCm} cm` : '' }}</span>
@@ -263,7 +263,7 @@
 import { toInitials } from '../../utils/initials.js'
 import RulerFrame from '../RulerFrame.vue'
 import AppIcon from '../AppIcon.vue'
-  import { ref, computed, watch } from 'vue'
+  import { ref, reactive, computed, watch } from 'vue'
   import { useI18n } from 'vue-i18n'
   import { RouterLink } from 'vue-router'
   import { MapPin, Calendar, Heart, MessageCircle, X, Users, Trash2, Send, MoreHorizontal, ChevronRight, Bookmark } from 'lucide-vue-next'
@@ -284,6 +284,7 @@ import AppIcon from '../AppIcon.vue'
   const menuOpen = ref(false)
   const mediaEl = ref(null)
   const mediaIndex = ref(0)
+  const loadedIds = reactive({})
 
   const authorTo = computed(() => post_authorIsMe() ? '/board' : `/users/${props.post.author._id}`)
   function post_authorIsMe() { return String(props.post.author?._id) === String(auth.user?._id || auth.user?.id) }
@@ -477,7 +478,10 @@ const featuredCatch = computed(() => {
     filter: blur(24px) brightness(0.55) saturate(1.1);
     transform: scale(1.25) translateZ(0);
   }
-  .media-thumb-img { @apply relative bg-transparent; }
+  /* Prima del caricamento riserva una proporzione 4:5 (niente salti di layout); poi si adatta alla foto */
+  .media-thumb-img { @apply relative bg-transparent; opacity: 0; aspect-ratio: 4 / 5; transition: opacity 0.2s ease; }
+  .media-thumb-img.is-loaded { opacity: 1; aspect-ratio: auto; }
+  @media (prefers-reduced-motion: reduce) { .media-thumb-img { transition: none; } }
 
   .lightbox {
     @apply fixed inset-0 bg-black/90 flex items-center justify-center;
