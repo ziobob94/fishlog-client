@@ -76,9 +76,10 @@
 .tab-swap-leave-active { transition: opacity var(--motion-fast) var(--ease-exit); }
 .tab-swap-enter-from { opacity: 0; transform: translateY(8px); }
 .tab-swap-leave-to { opacity: 0; }
-/* Tra tab della barra in basso: solo dissolvenza incrociata, nessun movimento. */
-.page-tab-enter-active { transition: opacity var(--motion-base) var(--ease-standard); }
-.page-tab-leave-active { transition: opacity var(--motion-fast) var(--ease-standard); position: absolute; inset: 0; }
+/* Tra tab della barra in basso: dissolvenza in sequenza (mode out-in): prima la vecchia pagina sfuma, poi entra la nuova.
+   Niente sovrapposizione (testi doppi, intestazioni diverse che si vedevano insieme) e niente uscita in position:absolute. */
+.page-tab-enter-active { transition: opacity var(--motion-base) var(--ease-enter); }
+.page-tab-leave-active { transition: opacity var(--motion-fast) var(--ease-exit); }
 .page-tab-enter-from, .page-tab-leave-to { opacity: 0; }
 /* Contenitore delle pagine: senza contain né overflow:hidden (romperebbero position:fixed e sticky). */
 .page-stack { position: relative; }   /* niente overflow qui: tagliava i contenuti a tutta larghezza (margini negativi) */
