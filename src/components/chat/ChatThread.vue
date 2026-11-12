@@ -333,21 +333,21 @@ import { confirmDialog } from '../../composables/useConfirm.js'
   }
 
   .thread {
-    @apply flex flex-col gap-3 flex-1 min-h-0;
+    @apply flex flex-col gap-2 flex-1 min-h-0;
   }
 
   .messages-list {
-    @apply flex-1 min-h-0 overflow-y-auto flex flex-col gap-1.5 pr-1;
+    @apply flex-1 min-h-0 overflow-y-auto flex flex-col gap-1 pr-1;
     overscroll-behavior: contain;
     -webkit-overflow-scrolling: touch;
   }
 
   .date-separator {
-    @apply flex justify-center my-2;
+    @apply flex justify-center my-1;
   }
 
   .date-separator span {
-    @apply text-[0.7rem] font-medium text-muted bg-surface-2 rounded-full px-2.5 py-1;
+    @apply text-[0.7rem] font-medium text-muted bg-surface-2 rounded-full px-2 py-0.5;
   }
 
   .message-row {
@@ -363,7 +363,7 @@ import { confirmDialog } from '../../composables/useConfirm.js'
   }
 
   .message-bubble {
-    @apply max-w-[84%] sm:max-w-[68%] min-w-[2.5rem] flex flex-col gap-0.5 bg-surface-2 border border-border px-3.5 py-2.5 text-sm text-foam;
+    @apply max-w-[84%] sm:max-w-[68%] min-w-[2.5rem] flex flex-col gap-0.5 bg-surface-2 border border-border px-3 py-1.5 text-sm text-foam;
     border-radius: 20px 20px 20px 6px;
   }
 
@@ -417,15 +417,15 @@ import { confirmDialog } from '../../composables/useConfirm.js'
   }
 
   .message-action-btn {
-    @apply flex items-center justify-center w-11 h-11 rounded text-muted bg-transparent border-none cursor-pointer hover:bg-surface-2 hover:text-ocean transition-colors;
+    @apply flex items-center justify-center w-8 h-8 rounded text-muted bg-transparent border-none cursor-pointer hover:bg-surface-2 hover:text-ocean transition-colors;
   }
 
   .message-bubble.type-image {
-    @apply bg-transparent border-none p-0 w-[72%] max-w-[300px];
+    @apply bg-transparent border-none p-0 w-[60%] max-w-[220px];
   }
   .message-bubble.type-image .message-meta { @apply hidden; }
   .message-image-card {
-    @apply relative block w-full rounded-[20px] overflow-hidden bg-ocean/20 border border-border;
+    @apply relative block w-full rounded-[16px] overflow-hidden bg-ocean/20 border border-border;
     aspect-ratio: 6 / 5;
   }
   .message-image-ph { @apply absolute inset-0 m-auto text-ocean-text/60; }
@@ -438,7 +438,7 @@ import { confirmDialog } from '../../composables/useConfirm.js'
   .message-location-map :deep(.map-display) { border-radius: 14px; overflow: hidden; }
 
   .message-media-video {
-    @apply max-w-full rounded-sm max-h-72;
+    @apply max-w-full rounded-sm max-h-56;
   }
 
   .message-audio {
@@ -475,7 +475,7 @@ import { confirmDialog } from '../../composables/useConfirm.js'
   }
 
   .editing-banner {
-    @apply flex items-center gap-2 text-xs text-ocean-text bg-ocean/10 border-l-2 border-ocean px-3 py-1.5 rounded-sm;
+    @apply flex items-center gap-2 text-xs text-ocean-text bg-ocean/10 border-l-2 border-ocean px-2.5 py-1 rounded-sm;
   }
 
   .editing-banner .icon-btn-sm {
