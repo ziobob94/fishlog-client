@@ -196,7 +196,7 @@
       {{ post.comments?.length ? t('posts.viewComments', { n: post.comments.length }, post.comments.length) : t('posts.addComment') }}
     </button>
 
-    <div v-if="post.type !== 'event' && showComments" class="comments-block">
+    <div v-if="post.type !== 'event' && showComments" ref="commentsBlock" class="comments-block">
       <div v-if="threads.length" class="comments-list">
         <template v-for="th in threads" :key="th.root._id">
           <CommentItem
@@ -297,6 +297,11 @@ import AppIcon from '../AppIcon.vue'
     try { c.reactions = (await posts.reactToComment(props.post._id, c._id, emoji)).reactions } catch { /* ritenta */ }
   }
   const showComments = ref(false)
+  const commentsBlock = ref(null)
+  // Aprendo i commenti li porta in vista sopra la barra in basso, così campo e pulsanti restano raggiungibili
+  watch(showComments, open => {
+    if (open) nextTick(() => commentsBlock.value?.scrollIntoView({ block: 'nearest', behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }))
+  })
   const showAttendees = ref(false)
   const showResponses = ref(false)
   const lightboxItem = ref(null)
@@ -647,6 +652,7 @@ const featuredCatch = computed(() => {
   }
 
   .comments-block {
+    scroll-margin-bottom: calc(var(--bottom-nav-h, 4.5rem) + 1.5rem + env(safe-area-inset-bottom));
     @apply flex flex-col gap-2 border-t border-border pt-2;
   }
 
