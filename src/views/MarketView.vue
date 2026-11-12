@@ -1,7 +1,13 @@
 <template>
   <div>
-    <PageHeader :title="t('market.title')" sticky>
-      <RouterLink to="/market/new" class="btn btn-primary btn-sm"><Plus :size="16" /> {{ t('market.sell') }}</RouterLink>
+    <PageHeader :title="t('market.title')" sticky bell>
+      <RouterLink to="/chat" class="mk-icon" :title="t('nav.chat')" :aria-label="t('nav.chat')">
+        <MessageCircle :size="18" />
+        <span v-if="chat.unreadCount" class="mk-count">{{ chat.unreadCount }}</span>
+      </RouterLink>
+      <RouterLink to="/market/new" class="mk-icon mk-icon-primary" :title="t('market.sell')" :aria-label="t('market.sell')">
+        <Plus :size="20" />
+      </RouterLink>
     </PageHeader>
 
     <div class="segmented" role="tablist">
@@ -154,10 +160,11 @@ import PageHeader from '../components/PageHeader.vue'
 import { ref, computed, watch, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { RouterLink } from 'vue-router'
-import { Package, Store, Globe, Plus, Search, SlidersHorizontal, X, LayoutGrid, List, RectangleHorizontal, Grid3x3 } from 'lucide-vue-next'
+import { MessageCircle, Package, Store, Globe, Plus, Search, SlidersHorizontal, X, LayoutGrid, List, RectangleHorizontal, Grid3x3 } from 'lucide-vue-next'
 import { useListView, LIST_VIEWS } from '../composables/useListView.js'
 import { useDismissable } from '../composables/useDismissable.js'
 import { useMarketStore } from '../stores/market.js'
+import { useChatStore } from '../stores/chat.js'
 import { useAuthStore } from '../stores/auth.js'
 import { useInfiniteScroll } from '../composables/useInfiniteScroll.js'
 import { useDebouncedFn } from '../composables/useDebouncedFn.js'
@@ -175,6 +182,7 @@ const VIEW_ICONS = { grid: LayoutGrid, list: List, large: RectangleHorizontal, g
 const viewWrap = ref(null)
 useDismissable(viewMenu, viewWrap)
 const store = useMarketStore()
+const chat = useChatStore()
 const auth  = useAuthStore()
 
 const tab = ref('listings')
@@ -289,6 +297,15 @@ onMounted(() => {
 </script>
 
 <style scoped>
+/* Bottoni icona dell'intestazione: stesso aspetto di Social/campanella (36px visivi, area tocco 44px) */
+.mk-icon {
+  @apply relative flex items-center justify-center w-9 h-9 shrink-0 rounded-xl text-foam bg-surface border border-border cursor-pointer no-underline;
+}
+.mk-icon::before { content: ''; position: absolute; inset: -4px; }
+.mk-icon-primary { @apply bg-ocean border-ocean text-on-primary; }
+.mk-count {
+  @apply absolute -top-1.5 -right-1.5 min-w-[1.1rem] h-[1.1rem] px-1 rounded-full bg-ocean text-on-primary text-[0.65rem] font-bold inline-flex items-center justify-center;
+}
 .market-head { @apply flex items-center justify-between gap-2 mb-4; }
 .market-title { @apply text-3xl font-bold text-foam; }
 
