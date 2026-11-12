@@ -1,3 +1,10 @@
+# [1.60.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.59.2...client-v1.60.0) (2026-11-12)
+
+
+### Features
+
+* **home:** riassetto di legenda, suggerimento ed elenco uscite sotto la mappa ([0e0e18c](https://github.com/ziobob94/fishlog-client/commit/0e0e18ca10c64d75b41afe1bc0d7afb86ee8094b))
+
 ## [1.59.2](https://github.com/ziobob94/fishlog-client/compare/client-v1.59.1...client-v1.59.2) (2026-11-12)
 
 
