@@ -1,3 +1,10 @@
+## [1.68.2](https://github.com/ziobob94/fishlog-client/compare/client-v1.68.1...client-v1.68.2) (2026-11-12)
+
+
+### Bug Fixes
+
+* **storie:** animazione tra utenti e niente schermo vuoto al cambio ([0de0991](https://github.com/ziobob94/fishlog-client/commit/0de0991a7603d722c6f0b88b0267f24188ddc63c))
+
 ## [1.68.1](https://github.com/ziobob94/fishlog-client/compare/client-v1.68.0...client-v1.68.1) (2026-11-12)
 
 
