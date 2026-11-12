@@ -1,3 +1,10 @@
+# [1.62.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.61.1...client-v1.62.0) (2026-11-12)
+
+
+### Features
+
+* «In stagione» e «Tutte» nella ricerca specie ([ff01aa6](https://github.com/ziobob94/fishlog-client/commit/ff01aa6d213a8b4c225b6ffaddb771ef71bfaf35))
+
 ## [1.61.1](https://github.com/ziobob94/fishlog-client/compare/client-v1.61.0...client-v1.61.1) (2026-11-12)
 
 
