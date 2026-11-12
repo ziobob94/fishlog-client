@@ -562,7 +562,7 @@
 			"refreshWait": "Meteo appena aggiornato: riprova tra qualche secondo",
 			"refreshFailed": "Aggiornamento non riuscito: restano i dati di prima. Riprova tra poco.",
 			"feels": "percepita {n}°",
-			"next": "Prossime ore",
+			"next": "Prossime ore (scorri per i prossimi 7 giorni)",
 			"period": "periodo {n} s",
 			"expectedMm": "attesa {mm} mm",
 			"gust": "raffiche {n}",

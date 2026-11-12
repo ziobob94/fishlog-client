@@ -76,14 +76,17 @@
           </div>
         </div>
 
-        <div class="hw-hours" role="group" :aria-label="t('home.weather.next')">
-          <div v-for="h in s.hours" :key="h.key" class="hw-hour">
+        <div class="hw-hours" role="group" tabindex="0" :aria-label="t('home.weather.next')">
+          <template v-for="h in s.hours" :key="h.key">
+          <span v-if="h.dayLabel" class="wx-num hw-day">{{ h.dayLabel }}</span>
+          <div class="hw-hour">
             <span class="wx-num hw-h-t">{{ h.hour == null ? MISSING : String(h.hour).padStart(2, '0') + ':00' }}</span>
             <WeatherIcon :code="h.wmo" :is-day="h.isDay" :size="22" /><span class="wx-sr">{{ wmoLabel(h.wmo) }}</span>
             <span class="wx-num hw-h-v">{{ fmt(h.temp) }}°</span>
             <WindArrow v-if="h.wind != null" :speed="h.wind" :deg="h.windDeg" class="hw-h-w" />
             <span class="wx-num hw-h-wv">{{ fmt(h.wind) }}</span>
           </div>
+          </template>
         </div>
 
         <dl class="hw-grid">
@@ -182,12 +185,14 @@ const refreshLabel = computed(() => refreshing.value ? t('weather.refreshing') :
 .hw-deg { font-family: var(--font-mono); font-size: 2.2rem; margin-left: -8px; }
 .hw-feels { font-size: .8rem; color: rgb(var(--color-muted)); }
 .hw-cond { margin: 6px 0 0; font-weight: 700; color: rgb(var(--color-foam)); }
-.hw-hours { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 4px; padding: 10px 6px; border-radius: 14px; background: rgb(var(--color-surface-2)); }
-.hw-hour:nth-child(n+6) { display: none; }
+.hw-hours { --n: 5; display: flex; gap: 4px; padding: 10px 6px; border-radius: 14px; background: rgb(var(--color-surface-2)); overflow-x: auto; overscroll-behavior-x: contain; -webkit-overflow-scrolling: touch; scroll-snap-type: x proximity; scroll-padding-inline: 6px; scrollbar-width: none; }
+.hw-hours::-webkit-scrollbar { display: none; }
+.hw-hours:focus-visible { outline: 2px solid rgb(var(--color-ocean-text)); outline-offset: 2px; }
+.hw-hour { flex: 0 0 calc((100% - (var(--n) - 1) * 4px) / var(--n)); scroll-snap-align: start; }
+.hw-day { flex: none; scroll-snap-align: start; writing-mode: vertical-rl; transform: rotate(180deg); align-self: stretch; text-align: center; padding-inline: 4px; border-right: 1px solid rgb(var(--color-border)); font-size: .72rem; font-weight: 700; color: rgb(var(--color-ocean-text)); white-space: nowrap; }
 @media (min-width: 768px) {
   .hw-more-in { grid-template-columns: auto minmax(0, 1fr); grid-template-areas: 'now tiles' 'hours hours' 'open open'; column-gap: 20px; align-items: center; }
-  .hw-hours { grid-template-columns: repeat(8, minmax(0, 1fr)); }
-  .hw-hour:nth-child(n+6) { display: grid; }
+  .hw-hours { --n: 8; }
   .hw-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
   .hw-grid .hw-wide { grid-column: auto; }
   .hw-now { grid-area: now; } .hw-grid { grid-area: tiles; } .hw-hours { grid-area: hours; } .hw-open { grid-area: open; }
