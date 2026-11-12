@@ -16,7 +16,7 @@
         <h2 class="group-label">{{ t(`notifications.groups.${g.key}`) }}</h2>
         <ul class="list">
           <li v-for="n in g.items" :key="n._id" class="row" :class="{ unread: !n.read }">
-            <component :is="isLinked(n) ? 'RouterLink' : 'div'" :to="linkFor(n)" class="row-main" @click="onOpen(n)">
+            <component :is="isLinked(n) ? RouterLink : 'div'" :to="linkFor(n)" class="row-main" @click="onOpen(n)">
               <span class="avatar-wrap">
                 <img v-if="n.actor?.avatar" :src="n.actor.avatar" class="avatar" alt="" />
                 <span v-else class="avatar avatar-ph">{{ initials(n.actor) }}</span>
@@ -79,7 +79,11 @@ function linkFor(n) {
   if (n.type === 'chat_message') {
     return n.data?.conversationType === 'group' ? `/chat/group/${n.data.conversationId}` : `/chat/${n.actor?._id || ''}`
   }
-  if (n.type === 'post_like' || n.type === 'post_comment') return '/feed'
+  if (n.type === 'post_like' || n.type === 'post_comment') {
+    // Dettaglio del post (con i commenti); le notifiche senza postId ricadono sulla bacheca.
+    // Se il post è stato eliminato la pagina di dettaglio mostra "non disponibile".
+    return n.data?.postId ? `/post/${n.data.postId}` : '/feed'
+  }
   return n.actor?._id ? `/users/${n.actor._id}` : '/friends'
 }
 // Richiesta di amicizia: i pulsanti decidono, la riga non è un link
