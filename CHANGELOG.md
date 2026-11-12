@@ -1,3 +1,10 @@
+## [1.69.1](https://github.com/ziobob94/fishlog-client/compare/client-v1.69.0...client-v1.69.1) (2026-11-12)
+
+
+### Bug Fixes
+
+* **market:** annuncio mai più pagina vuota, stato di errore e venditore assente ([008fc29](https://github.com/ziobob94/fishlog-client/commit/008fc29be015dd27feb15a1a3c4cb8140ba065cc))
+
 # [1.69.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.68.2...client-v1.69.0) (2026-11-12)
 
 
