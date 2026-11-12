@@ -36,8 +36,8 @@
           <SlidersHorizontal :size="18" />
           <span v-if="activeFilterCount" class="filter-count-badge">{{ activeFilterCount }}</span>
         </button>
-        <div class="view-wrap">
-          <button type="button" class="filter-btn" :aria-label="t('market.view.label')" :aria-expanded="viewMenu" @click.stop="viewMenu = !viewMenu">
+        <div ref="viewWrap" class="view-wrap">
+          <button type="button" class="filter-btn" :aria-label="t('market.view.label')" :aria-expanded="viewMenu" @click="viewMenu = !viewMenu">
             <component :is="VIEW_ICONS[view]" :size="18" />
           </button>
           <div v-if="viewMenu" class="view-menu" role="menu">
@@ -156,6 +156,7 @@ import { useI18n } from 'vue-i18n'
 import { RouterLink } from 'vue-router'
 import { Package, Store, Globe, Plus, Search, SlidersHorizontal, X, LayoutGrid, List, RectangleHorizontal, Grid3x3 } from 'lucide-vue-next'
 import { useListView, LIST_VIEWS } from '../composables/useListView.js'
+import { useDismissable } from '../composables/useDismissable.js'
 import { useMarketStore } from '../stores/market.js'
 import { useAuthStore } from '../stores/auth.js'
 import { useInfiniteScroll } from '../composables/useInfiniteScroll.js'
@@ -171,7 +172,8 @@ const { t } = useI18n()
 const { view } = useListView()
 const viewMenu = ref(false)
 const VIEW_ICONS = { grid: LayoutGrid, list: List, large: RectangleHorizontal, grid3: Grid3x3 }
-if (typeof document !== 'undefined') document.addEventListener('click', () => { viewMenu.value = false })
+const viewWrap = ref(null)
+useDismissable(viewMenu, viewWrap)
 const store = useMarketStore()
 const auth  = useAuthStore()
 

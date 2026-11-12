@@ -119,6 +119,7 @@ import { confirmDialog } from '../../composables/useConfirm.js'
   import { useChatStore } from '../../stores/chat.js'
   import { useAuthStore } from '../../stores/auth.js'
   import { useToast } from '../../composables/useToast.js'
+  import { useDismissable } from '../../composables/useDismissable.js'
   import { useVoiceRecorder } from '../../composables/useVoiceRecorder.js'
   import MapDisplay from '../MapDisplay.vue'
   import AudioMessage from './AudioMessage.vue'
@@ -170,11 +171,7 @@ import { confirmDialog } from '../../composables/useConfirm.js'
   const fileInputEl = ref(null)
   const { recording, elapsedSeconds, start: startRecording, stop: stopRecording, cancel: cancelRecording } = useVoiceRecorder()
 
-  function closeAttachMenuOnOutsideClick(event) {
-    if (attachMenuOpen.value && attachWrapper.value && !attachWrapper.value.contains(event.target)) {
-      attachMenuOpen.value = false
-    }
-  }
+  useDismissable(attachMenuOpen, attachWrapper)
 
   function triggerMediaInput() { attachMenuOpen.value = false; mediaInputEl.value?.click() }
   function startVoiceFromMenu() { attachMenuOpen.value = false; startVoice() }
@@ -317,13 +314,8 @@ import { confirmDialog } from '../../composables/useConfirm.js'
     if (id) loadThread(id)
   }, { immediate: true })
 
-  onMounted(() => {
-    document.addEventListener('click', closeAttachMenuOnOutsideClick)
-  })
-
   onBeforeUnmount(() => {
     clearInterval(pollTimer)
-    document.removeEventListener('click', closeAttachMenuOnOutsideClick)
   })
 </script>
 
