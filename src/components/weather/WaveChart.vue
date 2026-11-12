@@ -2,12 +2,12 @@
   <figure class="wx-tide">
     <ScrollChart :width="W" :label="aria">
       <svg :viewBox="`0 0 ${W} ${H}`" :width="W" :height="H" class="wx-tide-svg wx-wave-svg" role="img" :aria-label="aria">
-        <line v-for="d in axis.days" :key="'d' + d.x" :x1="d.x" :y1="TOP - 8" :x2="d.x" :y2="H - BOTTOM" stroke="currentColor" stroke-opacity=".2" stroke-dasharray="3 4" />
+        <line v-for="d in axis.days" :key="'d' + d.x" :x1="d.x" :y1="16" :x2="d.x" :y2="H - BOTTOM" stroke="currentColor" stroke-opacity=".2" stroke-dasharray="3 4" />
         <path :d="area" fill="currentColor" fill-opacity=".14" />
         <polyline :points="line" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" />
         <circle :cx="peak.x" :cy="peak.y" r="3.5" fill="currentColor" />
-        <text :x="Math.min(Math.max(peak.x, 22), W - 22)" :y="Math.max(peak.y - 8, 10)" text-anchor="middle" class="wx-tide-t">{{ fmt(series.max, 1) }} m</text>
-        <text v-for="d in axis.days" :key="'l' + d.x" :x="d.x + 3" :y="TOP - 10" class="wx-tide-t wx-tide-day">{{ d.label }}</text>
+        <text :x="Math.min(Math.max(peak.x, 22), W - 22)" :y="peak.y - 8" text-anchor="middle" class="wx-tide-t">{{ fmt(series.max, 1) }} m</text>
+        <text v-for="d in axis.days" :key="'l' + d.x" :x="d.x + 3" :y="11" class="wx-tide-t wx-tide-day">{{ d.label }}</text>
         <text v-for="k in axis.ticks" :key="'t' + k.x" :x="k.x" :y="H - 2" text-anchor="middle" class="wx-tide-t">{{ k.label }}</text>
       </svg>
     </ScrollChart>
@@ -23,7 +23,7 @@ import ScrollChart from './ScrollChart.vue'
 import { waveSeries, fmt, hhmm, hourAxis } from '../../utils/weather.js'
 const props = defineProps({ waves: { type: Array, required: true }, today: { type: String, default: '' } })
 const { t } = useI18n()
-const PX = 7, H = 130, TOP = 30, BOTTOM = 16
+const PX = 7, H = 142, TOP = 42, BOTTOM = 16
 const series = computed(() => waveSeries(props.waves))
 const W = computed(() => Math.max(320, (series.value.points.length - 1) * PX + 1))
 const axis = computed(() => hourAxis(series.value.points.map(p => p.time), props.today, PX))
