@@ -78,8 +78,8 @@ export const usePostStore = defineStore('posts', () => {
     feed.value = feed.value.filter(p => p._id !== id)
   }
 
-  async function addComment(id, message) {
-    const { data } = await api.post(`/posts/${id}/comments`, { message })
+  async function addComment(id, message, parentId) {
+    const { data } = await api.post(`/posts/${id}/comments`, { message, parentId })
     const post = feed.value.find(p => p._id === id)
     if (post) post.comments = [...(post.comments || []), data]
     if (current.value?._id === id) current.value.comments = [...(current.value.comments || []), data]
@@ -89,8 +89,20 @@ export const usePostStore = defineStore('posts', () => {
   async function deleteComment(id, commentId) {
     await api.delete(`/posts/${id}/comments/${commentId}`)
     const post = feed.value.find(p => p._id === id)
-    if (post) post.comments = post.comments.filter(c => c._id !== commentId)
-    if (current.value?._id === id) current.value.comments = current.value.comments.filter(c => c._id !== commentId)
+    // Il server elimina anche le risposte del commento
+    const keep = c => c._id !== commentId && c.parent !== commentId
+    if (post) post.comments = post.comments.filter(keep)
+    if (current.value?._id === id) current.value.comments = current.value.comments.filter(keep)
+  }
+
+  async function toggleCommentLike(id, commentId) {
+    const { data } = await api.post(`/posts/${id}/comments/${commentId}/like`)
+    return data
+  }
+
+  async function reactToComment(id, commentId, emoji) {
+    const { data } = await api.post(`/posts/${id}/comments/${commentId}/reactions`, { emoji })
+    return data
   }
 
   // Il server risponde solo con {liked, count}: qui si ricostruisce
@@ -137,6 +149,6 @@ export const usePostStore = defineStore('posts', () => {
   return {
     feed, current, pagination, loading, error, unread,
     fetchPosts, fetchPost, createPost, updatePost, deletePost, respond, setEventStatus, setAttendance,
-    fetchUnreadCount, markSeen, addComment, deleteComment, toggleLike, toggleSave
+    fetchUnreadCount, markSeen, addComment, deleteComment, toggleCommentLike, reactToComment, toggleLike, toggleSave
   }
 })
