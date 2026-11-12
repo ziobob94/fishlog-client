@@ -58,7 +58,7 @@
       <button type="button" class="act-btn" :aria-label="t('posts.share')" @click="share">
         <Send :size="24" />
       </button>
-      <button type="button" class="act-btn ml-auto -mr-2.5" :class="{ saved: post.saved }" :aria-pressed="!!post.saved" :aria-label="t(post.saved ? 'posts.unsave' : 'posts.save')" @click="$emit('save', post)">
+      <button type="button" class="act-btn ml-auto -mr-1.5" :class="{ saved: post.saved }" :aria-pressed="!!post.saved" :aria-label="t(post.saved ? 'posts.unsave' : 'posts.save')" @click="$emit('save', post)">
         <Bookmark :size="24" :fill="post.saved ? 'currentColor' : 'none'" />
       </button>
     </div>
@@ -192,8 +192,8 @@
 
     </template>
 
-    <button v-if="post.type !== 'event'" type="button" class="comments-link" @click="showComments = !showComments">
-      {{ post.comments?.length ? t('posts.viewComments', { n: post.comments.length }, post.comments.length) : t('posts.addComment') }}
+    <button v-if="post.type !== 'event' && post.comments?.length" type="button" class="comments-link" @click="showComments = !showComments">
+      {{ t('posts.viewComments', { n: post.comments.length }, post.comments.length) }}
     </button>
 
     <div v-if="post.type !== 'event' && showComments" ref="commentsBlock" class="comments-block">
@@ -431,10 +431,10 @@ const featuredCatch = computed(() => {
   .media-coords { @apply left-3 font-mono text-[0.7rem] font-medium text-ocean-text; }
   .media-count { @apply right-3; }
 
-  .action-row { @apply flex items-center -ml-2.5 gap-1; }
+  .action-row { @apply flex items-center -ml-1.5 gap-3; }
   .act-btn { @apply flex items-center justify-center w-11 h-11 bg-transparent border-none text-foam cursor-pointer; }
-  .act-btn.act-count { @apply w-auto min-w-[44px] gap-1.5 pl-2.5 pr-1.5; }
-  .act-n { @apply text-sm font-semibold leading-none; min-width: 1ch; font-variant-numeric: tabular-nums; }
+  .act-btn.act-count { @apply w-auto min-w-[44px] gap-1 pl-2.5 pr-0.5; }
+  .act-n { @apply text-[13px] font-medium leading-none; min-width: 1ch; font-variant-numeric: tabular-nums; }
   .act-btn.liked, .act-btn.saved { @apply text-sand-text; }
 
   .post-text { @apply flex flex-col gap-1.5; }
