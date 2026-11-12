@@ -43,5 +43,20 @@ export function useSpecies() {
     }
   }
 
-  return { fetchSuggestions, searchSpecies, reportMissingSpecies, fetchSpeciesByName }
+  // «In stagione»: specie più comuni del mese per la zona (senza posizione: Italia).
+  async function fetchSeasonal({ lat, lng, month } = {}) {
+    const params = {}
+    if (month) params.month = month
+    if (lat != null && lng != null) { params.lat = lat; params.lng = lng }
+    const { data } = await api.get('/species/seasonal', { params })
+    return data
+  }
+
+  // Catalogo in ordine alfabetico, paginato (scheda «Tutte»).
+  async function fetchAllSpecies(page = 1) {
+    const { data } = await api.get('/species/all', { params: { page } })
+    return data
+  }
+
+  return { fetchSeasonal, fetchAllSpecies, fetchSuggestions, searchSpecies, reportMissingSpecies, fetchSpeciesByName }
 }
