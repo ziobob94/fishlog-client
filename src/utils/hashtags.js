@@ -1,6 +1,6 @@
 // Stessa regola del server (fishlog-server/src/utils/hashtags.js): "#" + lettere/cifre/_,
-// non attaccato a una parola o a un url ("a#b", "x.it/a#b" non sono tag), non solo cifre.
-const HASHTAG_RE = /(?<![\p{L}\p{N}_&/#])#([\p{L}\p{N}_]{1,50})/gu
+// (senza lookbehind: Safari < 16.4 lo rifiuta e romperebbe il caricamento del modulo) non attaccato a una parola o a un url ("a#b", "x.it/a#b" non sono tag), non solo cifre.
+const HASHTAG_RE = /(^|[^\p{L}\p{N}_&/#])#([\p{L}\p{N}_]{1,50})/gu
 
 export function normalizeTag(tag) {
   return String(tag ?? '').replace(/^#/, '').normalize('NFC').toLocaleLowerCase('it')
@@ -12,11 +12,12 @@ export function splitHashtags(text) {
   const parts = []
   let last = 0
   for (const m of src.matchAll(HASHTAG_RE)) {
-    const tag = normalizeTag(m[1])
+    const tag = normalizeTag(m[2])
     if (!/\p{L}|_/u.test(tag)) continue
-    if (m.index > last) parts.push({ text: src.slice(last, m.index) })
-    parts.push({ text: m[0], tag })
-    last = m.index + m[0].length
+    const start = m.index + m[1].length
+    if (start > last) parts.push({ text: src.slice(last, start) })
+    parts.push({ text: `#${m[2]}`, tag })
+    last = start + 1 + m[2].length
   }
   if (last < src.length) parts.push({ text: src.slice(last) })
   return parts
