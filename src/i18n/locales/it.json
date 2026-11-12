@@ -582,8 +582,6 @@
 			"locUnavailableText": "Non riesco a leggere la posizione adesso. Controlla il GPS e che il segnale sia buono, poi riprova.",
 			"locRetry": "Riprova",
 			"pickPlace": "Scegli un luogo a mano",
-			"expand": "Espandi",
-			"shrink": "Riduci",
 			"summary": "Nessuna pescata | 1 pescata | {n} pescate",
 			"last": "ultima uscita {date}",
 			"toggleOpen": "Le tue pescate: nascondi il mappamondo",
