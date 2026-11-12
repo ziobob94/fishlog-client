@@ -1,3 +1,10 @@
+## [1.60.2](https://github.com/ziobob94/fishlog-client/compare/client-v1.60.1...client-v1.60.2) (2026-11-12)
+
+
+### Bug Fixes
+
+* **home:** il mappamondo torna visibile (larghezza a 0 nella griglia dell'accordion) ([ea95632](https://github.com/ziobob94/fishlog-client/commit/ea95632302009bec2e97355075f2d6267808b0c2)), closes [#107](https://github.com/ziobob94/fishlog-client/issues/107)
+
 ## [1.60.1](https://github.com/ziobob94/fishlog-client/compare/client-v1.60.0...client-v1.60.1) (2026-11-12)
 
 
