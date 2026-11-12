@@ -350,3 +350,27 @@ export function longDate(date) {
   const d = new Date(`${date}T12:00:00Z`)
   return Number.isNaN(d.getTime()) ? MISSING : `${LONG_DAYS[d.getUTCDay()]} ${d.getUTCDate()} ${MONTHS[d.getUTCMonth()]}`
 }
+
+// Striscia oraria scorrevole: tutte le ore date dal server (fino a 7 giorni). Alla prima ora di un nuovo giorno
+// si aggiunge `dayLabel` («Gio 13»), che la scheda mostra come separatore. L'alba/il tramonto sono quelli del giorno dell'ora.
+const DAY_NAMES = ['Dom', 'Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab']
+export const HOME_HOURS_MAX = 168
+export function dayLabelOf(date) {
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(date || '')
+  if (!m) return ''
+  const d = new Date(Date.UTC(+m[1], +m[2] - 1, +m[3]))
+  return `${DAY_NAMES[d.getUTCDay()]} ${+m[3]}`
+}
+export function homeHours(hourly, daily) {
+  const sun = new Map((daily || []).map(x => [x.date, x]))
+  let prev = null
+  return (Array.isArray(hourly) ? hourly : []).slice(0, HOME_HOURS_MAX).map(h => {
+    const day = sun.get(h.date)
+    const dayLabel = prev && h.date && h.date !== prev ? dayLabelOf(h.date) : ''
+    if (h.date) prev = h.date
+    return {
+      key: h.time || `${h.date}-${h.hour}`, hour: h.hour, wmo: rowWmo(h), isDay: isDayAt(h.hour, day?.sunrise, day?.sunset),
+      temp: h.temp, wind: h.windSpeed, windDeg: h.windDeg, dayLabel,
+    }
+  })
+}
