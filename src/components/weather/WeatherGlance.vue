@@ -1,7 +1,7 @@
 <template>
   <section aria-labelledby="wx-gl-h">
     <h2 id="wx-gl-h" class="wx-h">{{ t('weather.glance.title') }}</h2>
-    <div class="wx-grid wx-grid-3">
+    <div class="wx-grid wx-grid-glance">
       <div class="wx-block">
         <h3 class="wx-sub" style="margin:0 0 8px">{{ t('weather.glance.moon') }}</h3>
         <div style="display:flex;gap:12px;align-items:center">
