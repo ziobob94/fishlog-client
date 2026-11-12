@@ -1599,6 +1599,8 @@
 			"report": "Segnala questa specie"
 		},
 		"reported": "Segnalazione inviata, grazie!",
+		"photoCredit": "Foto: {author}",
+		"photoCreditLicense": "Foto: {author} · {license}",
 		"calendar": {
 			"title": "Mesi più produttivi",
 			"subtitle": "Calcolato dalle catture registrate dalla community",

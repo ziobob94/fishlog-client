@@ -18,7 +18,10 @@
 
     <template v-else>
       <div class="species-hero">
-        <img v-if="species.imageUrl" :src="species.imageUrl" class="species-image" :alt="displayName" />
+        <div v-if="species.imageUrl && !imageBroken" class="species-image-wrap">
+          <img :src="species.imageUrl" class="species-image" :alt="displayName" referrerpolicy="no-referrer" @error="imageBroken = true" />
+          <a v-if="photoCredit" class="photo-credit" :href="species.imageCredit?.sourceUrl || undefined" target="_blank" rel="noopener noreferrer">{{ photoCredit }}</a>
+        </div>
         <div v-else class="species-image species-image-placeholder"><Fish :size="48" /></div>
         <div class="species-hero-body">
           <h1 class="species-title">{{ displayName }}</h1>
@@ -160,6 +163,12 @@ const WATER_TYPES = [
 ]
 
 const species = ref(null)
+const imageBroken = ref(false)  // URL esterno rotto → placeholder
+const photoCredit = computed(() => {
+  const c = species.value?.imageCredit
+  if (!c?.author) return ''
+  return c.license ? t('species.photoCreditLicense', { author: c.author, license: c.license }) : t('species.photoCredit', { author: c.author })
+})
 const loading = ref(true)
 const reporting = ref(false)
 const reported = ref(false)
@@ -197,7 +206,7 @@ async function load(name) {
       fetchSpeciesByName(name, { technique: technique.value, waterType: waterType.value }),
       fetchRegulations({ species: name })
     ])
-    species.value = sp
+    species.value = sp; imageBroken.value = false
     regulations.value = regs
     legalLoaded.value = true
   } finally {
@@ -236,6 +245,7 @@ watch([technique, waterType], () => { if (route.params.name) load(route.params.n
   @apply rounded-signature overflow-hidden border border-border/60 bg-surface;
 }
 
+.photo-credit { @apply block text-xs px-2 py-1 truncate opacity-70; }
 .species-image {
   @apply w-full object-cover block;
   aspect-ratio: 16 / 9;
@@ -252,7 +262,9 @@ watch([technique, waterType], () => { if (route.params.name) load(route.params.n
 
 @media (min-width: 768px) {
   .species-hero { @apply flex items-stretch; }
-  .species-image { @apply w-64 shrink-0; aspect-ratio: auto; }
+  .species-image-wrap { @apply w-64 shrink-0; }
+  .species-image { @apply w-full; aspect-ratio: auto; }
+  .species-image-wrap > .species-image { aspect-ratio: 4 / 3; }
   .species-hero-body { @apply flex-1 self-center p-5; }
 }
 
