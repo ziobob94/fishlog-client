@@ -1,3 +1,16 @@
+# [1.65.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.64.0...client-v1.65.0) (2026-11-12)
+
+
+### Bug Fixes
+
+* **meteo:** icona e orario di alba/tramonto centrati sulla barretta gialla ([5af888c](https://github.com/ziobob94/fishlog-client/commit/5af888c80ac8ae3bc4aafca304e75c3388fe90ce))
+
+
+### Features
+
+* **meteo:** attribuzione e fonte ICON-2I nel pannello meteo ([3df8323](https://github.com/ziobob94/fishlog-client/commit/3df8323738e4bad4c5fe9aaa7b8363c9eb53f6f8))
+* **notifiche:** il tap sull'avatar apre il profilo dell'utente ([#125](https://github.com/ziobob94/fishlog-client/issues/125)) ([01c336a](https://github.com/ziobob94/fishlog-client/commit/01c336a836758a24be0131fe06c09dbe7fc2e7cc))
+
 # [1.64.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.63.0...client-v1.64.0) (2026-11-12)
 
 
