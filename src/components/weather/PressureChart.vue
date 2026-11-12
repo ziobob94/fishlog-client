@@ -8,13 +8,13 @@
       </template>
       <svg :viewBox="`0 0 ${W} ${H}`" :width="W" :height="H" class="wx-tide-svg" role="img" :aria-label="aria">
         <line v-for="g in grid" :key="'g' + g.v" x1="0" :y1="g.y" :x2="W" :y2="g.y" stroke="currentColor" stroke-opacity=".15" />
-        <line v-for="d in axis.days" :key="'d' + d.x" :x1="d.x" :y1="TOP - 8" :x2="d.x" :y2="H - BOTTOM" stroke="currentColor" stroke-opacity=".2" stroke-dasharray="3 4" />
+        <line v-for="d in axis.days" :key="'d' + d.x" :x1="d.x" :y1="16" :x2="d.x" :y2="H - BOTTOM" stroke="currentColor" stroke-opacity=".2" stroke-dasharray="3 4" />
         <polyline :points="line" fill="none" stroke="rgb(var(--color-sand-text))" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" />
         <circle :cx="pt(series.maxIndex).x" :cy="pt(series.maxIndex).y" r="3.5" fill="rgb(var(--color-sand-text))" />
         <text :x="clampX(pt(series.maxIndex).x)" :y="pt(series.maxIndex).y - 8" text-anchor="middle" class="wx-tide-t">{{ fmt(series.max) }}</text>
         <circle :cx="pt(series.minIndex).x" :cy="pt(series.minIndex).y" r="3.5" fill="rgb(var(--color-sand-text))" />
         <text :x="clampX(pt(series.minIndex).x)" :y="pt(series.minIndex).y + 15" text-anchor="middle" class="wx-tide-t">{{ fmt(series.min) }}</text>
-        <text v-for="d in axis.days" :key="'l' + d.x" :x="d.x + 3" :y="TOP - 10" class="wx-tide-t wx-tide-day">{{ d.label }}</text>
+        <text v-for="d in axis.days" :key="'l' + d.x" :x="d.x + 3" :y="11" class="wx-tide-t wx-tide-day">{{ d.label }}</text>
         <text v-for="k in axis.ticks" :key="'t' + k.x" :x="k.x" :y="H - 2" text-anchor="middle" class="wx-tide-t">{{ k.label }}</text>
       </svg>
     </ScrollChart>
@@ -30,7 +30,7 @@ import ScrollChart from './ScrollChart.vue'
 import { pressureSeries, fmt, hourAxis } from '../../utils/weather.js'
 const props = defineProps({ rows: { type: Array, required: true }, today: { type: String, default: '' } })
 const { t } = useI18n()
-const PX = 7, H = 130, TOP = 30, BOTTOM = 16
+const PX = 7, H = 142, TOP = 42, BOTTOM = 16
 const series = computed(() => pressureSeries(props.rows))
 const W = computed(() => Math.max(280, (series.value.points.length - 1) * PX + 1))
 const axis = computed(() => hourAxis(series.value.points.map(p => p.time), props.today, PX))

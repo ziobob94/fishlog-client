@@ -54,7 +54,7 @@
 .wx-tide { margin: 0; }
 .wx-tide-svg { display: block; width: 100%; max-width: 100%; height: auto; color: rgb(var(--color-ocean-text)); overflow: visible; }
 .wx-tide-day { font-weight: 700; fill: rgb(var(--color-foam)); }
-.wx-tide-t { font-family: var(--font-mono); font-size: 10px; fill: rgb(var(--color-muted)); }
+.wx-tide-t { font-family: var(--font-mono); font-size: 10px; fill: rgb(var(--color-muted)); paint-order: stroke; stroke: rgb(var(--color-surface)); stroke-width: 3px; stroke-linejoin: round; }
 .wx-tide-sum { display: grid; gap: 8px; margin-top: 8px; font-size: .85rem; }
 .wx-tide-list { list-style: none; margin: 0; padding: 10px 0 0; border-top: 1px solid rgb(var(--color-border)); display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 4px; }
 .wx-tide-list li { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 2px; }
