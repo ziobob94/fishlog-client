@@ -22,7 +22,7 @@
           <img v-if="r.imageUrl" :src="r.imageUrl" alt="" class="species-thumb" />
           <div v-else class="species-thumb species-thumb-placeholder"><Fish :size="22" /></div>
           <div class="species-card-text">
-            <strong>{{ displayName(r) }}</strong>
+            <strong>{{ displayName(r) }}</strong><span v-if="r.matchedAlias" class="alias-hint"> · {{ r.matchedAlias }}</span>
             <span class="scientific">{{ r.scientificName }}</span>
           </div>
           <ChevronRight :size="18" class="text-muted ml-auto shrink-0" />
@@ -257,6 +257,7 @@ onMounted(loadSeason)
 .search-icon { @apply absolute left-3.5 top-1/2 -translate-y-1/2 text-muted pointer-events-none; }
 .search-input { @apply w-full min-h-[48px] rounded-xl pl-10 pr-4; }
 
+.alias-hint { @apply text-sm text-muted font-normal; }
 .tabs { @apply flex gap-1 p-1 bg-surface-2 border border-border rounded-full mb-4; }
 .tab { @apply flex-1 min-h-[44px] rounded-full text-sm font-semibold text-muted border-0 bg-transparent cursor-pointer; transition: background-color var(--motion-fast), color var(--motion-fast); }
 .tab[aria-selected='true'] { @apply bg-ocean/15 text-ocean-text; }
