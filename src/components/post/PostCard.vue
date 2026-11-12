@@ -192,8 +192,8 @@
 
     </template>
 
-    <button v-if="post.type !== 'event' && post.comments?.length" type="button" class="comments-link" @click="showComments = !showComments">
-      {{ t('posts.viewComments', { n: post.comments.length }, post.comments.length) }}
+    <button v-if="post.type !== 'event' && (post.comments?.length || showComments)" type="button" class="comments-link" :aria-expanded="showComments" @click="showComments = !showComments">
+      {{ showComments ? t('posts.hideComments', post.comments?.length || 0) : t('posts.viewComments', { n: post.comments.length }, post.comments.length) }}
     </button>
 
     <div v-if="post.type !== 'event' && showComments" ref="commentsBlock" class="comments-block">
