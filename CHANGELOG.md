@@ -1,3 +1,10 @@
+# [1.71.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.70.1...client-v1.71.0) (2026-11-12)
+
+
+### Features
+
+* **social:** «Nascondi commenti» quando i commenti sono aperti ([#143](https://github.com/ziobob94/fishlog-client/issues/143)) ([5781484](https://github.com/ziobob94/fishlog-client/commit/5781484241aac9e2cb4e34b7540c9010d688fb09))
+
 ## [1.70.1](https://github.com/ziobob94/fishlog-client/compare/client-v1.70.0...client-v1.70.1) (2026-11-12)
 
 
