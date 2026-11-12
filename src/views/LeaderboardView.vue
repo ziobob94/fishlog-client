@@ -23,6 +23,7 @@
           <span class="podium-name">{{ p.r.displayName }}</span>
           <span v-if="p.r.username" class="podium-user text-muted">@{{ p.r.username }}</span>
           <span class="podium-score font-mono">{{ p.r.score }}</span>
+          <span class="podium-user text-muted">{{ t('leaderboard.sessionsCount', { n: p.r.sessionsCount }, p.r.sessionsCount) }} · {{ t('leaderboard.catchesCount', { n: p.r.catchesCount }, p.r.catchesCount) }}</span>
           <span class="podium-pos">{{ p.pos }}</span>
           </RouterLink>
         </li>
