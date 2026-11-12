@@ -1,3 +1,12 @@
+## [1.62.3](https://github.com/ziobob94/fishlog-client/compare/client-v1.62.2...client-v1.62.3) (2026-11-12)
+
+
+### Bug Fixes
+
+* **meteo:** allinea la pagina Meteo al mockup 56 (riquadri con icone, badge modello, colpo d'occhio a due colonne, confronto prima delle ore) ([a540b79](https://github.com/ziobob94/fishlog-client/commit/a540b791e97a1c60894e576893edc6df251b2b6e))
+* **meteo:** ore, giorni e maree come nel mockup 56 ([92f405e](https://github.com/ziobob94/fishlog-client/commit/92f405e813118868193bbc4b166daeaf3fea3253))
+* **post:** rimuove il bordo ridondante sotto l'header nel dettaglio post ([e2cd467](https://github.com/ziobob94/fishlog-client/commit/e2cd4677b92f9fada356329ca27ca7aeb559d427))
+
 ## [1.62.2](https://github.com/ziobob94/fishlog-client/compare/client-v1.62.1...client-v1.62.2) (2026-11-12)
 
 
