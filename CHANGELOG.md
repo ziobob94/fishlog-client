@@ -1,3 +1,10 @@
+## [1.59.2](https://github.com/ziobob94/fishlog-client/compare/client-v1.59.1...client-v1.59.2) (2026-11-12)
+
+
+### Bug Fixes
+
+* **home:** spazio uniforme tra i blocchi del meteo aperto ([cad51a6](https://github.com/ziobob94/fishlog-client/commit/cad51a6925940f95d6497636d1df18083e5927d4))
+
 ## [1.59.1](https://github.com/ziobob94/fishlog-client/compare/client-v1.59.0...client-v1.59.1) (2026-11-12)
 
 
