@@ -7,7 +7,7 @@
     <div class="audio-wave" aria-hidden="true">
       <span v-for="(h, i) in bars" :key="i" :class="{ played: i / bars.length < progress }" :style="{ height: h + 'px' }"></span>
     </div>
-    <audio ref="el" :src="src" preload="metadata" @loadedmetadata="onMeta" @timeupdate="onTime" @ended="onEnded"></audio>
+    <audio ref="el" :src="src" preload="metadata" playsinline @loadedmetadata="onMeta" @durationchange="onMeta" @timeupdate="onTime" @play="playing = true" @pause="playing = false" @ended="onEnded"></audio>
     <span class="audio-time">{{ fmt(playing || current ? current : duration) }}</span>
   </div>
 </template>
@@ -34,12 +34,21 @@
     })
   })
 
-  function toggle() {
+  // Lo stato `playing` segue gli eventi reali dell'elemento (play/pause), non il tocco:
+  // su iOS/Safari il primo play() può fallire o ritardare e lo stato ottimistico
+  // faceva sembrare l'audio "avviato" costringendo a un secondo tocco.
+  async function toggle() {
     const a = el.value
     if (!a) return
-    if (a.paused) { a.play(); playing.value = true } else { a.pause(); playing.value = false }
+    if (!a.paused) { a.pause(); return }
+    try {
+      await a.play()
+    } catch {
+      // Primo tentativo rifiutato (risorsa non ancora pronta): ricarica e riprova nel contesto del gesto.
+      try { a.load(); await a.play() } catch { playing.value = false }
+    }
   }
-  function onMeta() { if (isFinite(el.value.duration)) duration.value = el.value.duration }
+  function onMeta() { if (el.value && isFinite(el.value.duration)) duration.value = el.value.duration }
   function onTime() { current.value = el.value.currentTime }
   function onEnded() { playing.value = false; current.value = 0 }
   function fmt(s) {
