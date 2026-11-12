@@ -1628,6 +1628,36 @@
 			"10": "Ott",
 			"11": "Nov",
 			"12": "Dic"
+		},
+		"tabsLabel": "Elenco specie",
+		"tab": {
+			"season": "In stagione",
+			"all": "Tutte"
+		},
+		"showSeason": "Mostra le specie di stagione",
+		"season": {
+			"title": "In stagione",
+			"indicative": "Dati indicativi: stagionalità stimata, non validata con catture reali.",
+			"changeMonth": "Mese: {month}. Cambia mese",
+			"pickMonth": "Scegli il mese",
+			"zone": {
+				"italia": "Specie comuni in Italia",
+				"nord": "Specie comuni al Nord",
+				"centro": "Specie comuni al Centro",
+				"sud": "Specie comuni al Sud e nelle isole"
+			},
+			"noPosition": "Posizione non attiva: mostriamo le specie di tutta Italia.",
+			"enable": "Attiva",
+			"geoDenied": "Non riesco a leggere la posizione. Controlla il permesso del browser.",
+			"offline": "Sei offline: elenco salvato alle {time}.",
+			"error": "Non riesco a caricare l'elenco.",
+			"retry": "Riprova",
+			"empty": "Nessuna specie in stagione per questo mese.",
+			"mine": "{n} tua cattura | {n} tue catture"
+		},
+		"report": {
+			"title": "Non trovi la specie?",
+			"text": "Non abbiamo ancora una scheda per ogni specie. Segnalala e la aggiungiamo."
 		}
 	},
 	"seller": {
