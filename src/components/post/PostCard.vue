@@ -9,7 +9,7 @@
       <span v-if="post.type === 'event'" class="badge badge-ocean">{{ t('posts.eventBadge') }}</span>
       <span v-if="post.visibility === 'group'" class="badge badge-sand">{{ groupNames }}</span>
       <span v-else-if="post.visibility === 'private'" class="badge badge-sand">{{ t('posts.visibility.private') }}</span>
-      <div v-if="isAuthor" class="more-wrap">
+      <div v-if="isAuthor" ref="moreWrap" class="more-wrap">
         <button type="button" class="more-btn" :aria-label="t('posts.more')" :aria-expanded="menuOpen" @click="menuOpen = !menuOpen"><MoreHorizontal :size="20" /></button>
         <div v-if="menuOpen" class="more-menu" @click="menuOpen = false">
           <button v-if="post.type === 'event' && post.event?.status === 'open'" type="button" @click="$emit('close-event', post)">{{ t('posts.event.closeAction') }}</button>
@@ -268,6 +268,7 @@ import AppIcon from '../AppIcon.vue'
   import { RouterLink } from 'vue-router'
   import { MapPin, Calendar, Heart, MessageCircle, X, Users, Trash2, Send, MoreHorizontal, ChevronRight, Bookmark } from 'lucide-vue-next'
   import { useAuthStore } from '../../stores/auth.js'
+  import { useDismissable } from '../../composables/useDismissable.js'
 
   const props = defineProps({ post: { type: Object, required: true } })
   const emit = defineEmits(['delete', 'close-event', 'respond', 'like', 'comment', 'delete-comment', 'attend', 'save'])
@@ -282,6 +283,8 @@ import AppIcon from '../AppIcon.vue'
   const lightboxItem = ref(null)
   const selectedUser = ref(null)
   const menuOpen = ref(false)
+  const moreWrap = ref(null)
+  useDismissable(menuOpen, moreWrap)
   const mediaEl = ref(null)
   const mediaIndex = ref(0)
   const loadedIds = reactive({})

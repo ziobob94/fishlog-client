@@ -173,6 +173,7 @@ import PageHeader from '../components/PageHeader.vue'
   import { useAuthStore } from '../stores/auth.js'
   import { useUserStore } from '../stores/users.js'
   import { useInfiniteScroll } from '../composables/useInfiniteScroll.js'
+  import { useDismissable } from '../composables/useDismissable.js'
   import PullToRefresh from '../components/motion/PullToRefresh.vue'
   import StaggerList from '../components/motion/StaggerList.vue'
   import StoriesRail from '../components/StoriesRail.vue'
@@ -276,9 +277,7 @@ import PageHeader from '../components/PageHeader.vue'
   const currentTabLabel = computed(() => t(TABS.find(x => x.id === tab.value)?.label || 'nav.community'))
   const initials = computed(() => toInitials(auth.user?.displayName || auth.user?.email || '?'))
   function pickTab(id) { tabMenuOpen.value = false; setTab(id) }
-  function onDocClick(e) { if (tabMenuOpen.value && tabMenuWrap.value && !tabMenuWrap.value.contains(e.target)) tabMenuOpen.value = false }
-  onMounted(() => document.addEventListener('click', onDocClick))
-  onBeforeUnmount(() => document.removeEventListener('click', onDocClick))
+  useDismissable(tabMenuOpen, tabMenuWrap)
 
   function setTab(value) {
     tab.value = value
