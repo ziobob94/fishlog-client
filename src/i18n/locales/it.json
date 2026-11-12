@@ -2041,7 +2041,11 @@
 			"noSpecies": "Nessuna specie spicca per questo giorno.",
 			"speciesBasis": "Basata su stagione, temperatura dell'acqua, condizioni del giorno e sulle tue catture: indica cosa è più plausibile, non cosa prenderai.",
 			"speciesSeason": "Mancano i dati su meteo e acqua: l'elenco dice solo quali specie sono di stagione, non quanto sia probabile prenderle oggi.",
-			"seasonLevel": { "high": "In piena stagione", "mid": "Stagione discreta", "low": "Fuori stagione" },
+			"seasonLevel": {
+				"high": "In piena stagione",
+				"mid": "Stagione discreta",
+				"low": "Fuori stagione"
+			},
 			"lightMoon": "Luce e luna",
 			"pressure": "Pressione"
 		},
@@ -2062,5 +2066,61 @@
 			"compactOffline": "Offline",
 			"compactOfflineLabel": "Serve la connessione per aprire 3bmeteo"
 		}
+	},
+	"unsaved": {
+		"title": "Uscire senza salvare?",
+		"message": "Hai modifiche non salvate: se esci le perdi.",
+		"leave": "Esci senza salvare",
+		"stay": "Resta qui"
+	},
+	"catchPage": {
+		"sessionBanner": "Stai aggiungendo a",
+		"addToClosed": "Aggiungi cattura",
+		"extendEnd": "Estendi l'uscita fino alle {time}",
+		"extendStart": "Estendi l'uscita dalle {time}",
+		"pickOther": "Scegli un'altra ora",
+		"outsideAfter": "L'ora {time} è dopo la fine dell'uscita ({end}).",
+		"outsideBefore": "L'ora {time} è prima dell'inizio dell'uscita ({start}).",
+		"willExtendEnd": "Al salvataggio l'uscita finirà alle {time}.",
+		"willExtendStart": "Al salvataggio l'uscita inizierà alle {time}.",
+		"undoExtend": "Non estendere",
+		"saveChanges": "Salva modifiche",
+		"saveError": "Non siamo riusciti a salvare. I dati sono ancora qui.",
+		"retry": "Riprova a salvare",
+		"offline": "Sei offline. I dati restano qui: potrai salvare quando torni online.",
+		"deleteAria": "Elimina cattura",
+		"deleteTitle": "Eliminare la cattura?",
+		"deleteConfirm": "La cattura sarà rimossa dall'uscita.",
+		"added": "Cattura aggiunta",
+		"updated": "Cattura modificata",
+		"removed": "Cattura eliminata",
+		"undo": "Annulla",
+		"undone": "Modifica annullata",
+		"undoFailed": "Impossibile annullare, riprova.",
+		"add": "Aggiungi cattura",
+		"editCatchAria": "Modifica cattura: {name}",
+		"timeLabel": "Ora della cattura",
+		"emptyClosed": "Nessuna cattura registrata. Tocca «Aggiungi cattura»."
+	},
+	"sessionMenu": {
+		"main": "Principali",
+		"other": "Altri dettagli · facoltativi",
+		"general": "Generale",
+		"generalSub": "Titolo, data, orari, tecnica",
+		"rating": "Voto",
+		"ratingSub": "Com'è andata",
+		"ratingNone": "Nessun voto",
+		"waterWeather": "Acqua e meteo",
+		"waterWeatherSub": "Mare, onde, marea, tempo, vento",
+		"visibility": "Visibilità",
+		"notes": "Note",
+		"notesSub": "Cosa ricordare",
+		"notesEmpty": "Nessuna nota",
+		"sheetTitle": "Chi può vedere l'uscita",
+		"done": "Fatto",
+		"saveError": "Non siamo riusciti a salvare. I dati sono ancora qui.",
+		"retry": "Riprova a salvare",
+		"offline": "Sei offline. I dati restano qui: potrai salvare quando torni online.",
+		"backToMenu": "Torna alle voci"
 	}
 }

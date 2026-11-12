@@ -1,11 +1,24 @@
 <template>
   <div class="catch-page">
-    <PageHeader :title="isNew ? t('session.ongoing.newCatch') : t('session.ongoing.editCatch')" back compact />
+    <PageHeader :title="isNew ? t('session.ongoing.newCatch') : t('session.ongoing.editCatch')" back compact>
+      <button v-if="!isNew && ready" type="button" class="ph-trash" :aria-label="t('catchPage.deleteAria')" :disabled="saving" @click="remove"><Trash2 :size="20" /></button>
+    </PageHeader>
 
     <div v-if="!ready" class="state-center"><div class="m-spinner"></div></div>
 
     <form v-else class="catch-form" novalidate @submit.prevent="save(false)">
-      <div v-if="error" class="error-banner"><AlertTriangle :size="16" /> {{ error }}</div>
+      <div v-if="!online" class="info-banner" role="status"><WifiOff :size="16" /> {{ t('catchPage.offline') }}</div>
+      <div v-if="error" class="error-banner" role="alert">
+        <span class="eb-text"><AlertTriangle :size="16" /> {{ t('catchPage.saveError') }}</span>
+        <button type="button" class="eb-retry" :disabled="saving || !online" @click="save(false)">{{ t('catchPage.retry') }}</button>
+      </div>
+
+      <!-- Banner dell'uscita -->
+      <div v-if="session" class="session-banner">
+        <span class="sb-lab">{{ isNew ? t('catchPage.sessionBanner') : t('session.view.sections.catches', { n: session.catches?.length || 0 }) }}</span>
+        <strong class="sb-title">{{ session.title || session.location?.name || t('session.untitled') }}</strong>
+        <span class="fl-mono sb-meta">{{ bannerMeta }}</span>
+      </div>
 
       <!-- Che pesce è? -->
       <section>
@@ -33,10 +46,6 @@
               <span class="m-row"><input v-model.number="draft.lengthCm" class="fl-mono m-inp" inputmode="decimal" type="number" step="0.5" min="0" :aria-label="t('session.ongoing.lengthAria')" placeholder="0" /><span class="m-unit">cm</span></span>
             </label>
           </div>
-          <label class="measure fight">
-            <span class="m-lab">{{ t('session.ongoing.fight') }}</span>
-            <span class="m-row"><input v-model.number="draft.fightMinutes" class="fl-mono m-inp" inputmode="numeric" type="number" step="1" min="0" :aria-label="t('session.ongoing.fightAria')" placeholder="0" /><span class="m-unit">min</span></span>
-          </label>
         </section>
 
         <!-- Rilasciato -->
@@ -65,53 +74,73 @@
 
         <!-- Altri dettagli -->
         <section>
-          <button type="button" class="more-row" @click="showMore = !showMore">
+          <button type="button" class="more-row" :aria-expanded="showMore" aria-controls="more-details" @click="showMore = !showMore">
             <span>
               <strong>{{ t('session.ongoing.otherDetails') }}</strong>
               <small>{{ t('session.ongoing.otherDetailsSub') }}</small>
             </span>
             <ChevronRight :size="20" :class="{ open: showMore }" />
           </button>
-          <div v-if="showMore" class="more-grid">
+          <div v-if="showMore" id="more-details" class="more-grid">
             <label v-for="f in DETAIL_FIELDS" :key="f.key" class="field">
-              <span class="fl-lab">{{ t(`catchesSection.${f.label}`) }}</span>
+              <span class="fl-lab">{{ f.raw ? t(f.raw) : t(`catchesSection.${f.label}`) }}</span>
               <select v-if="f.key === 'baitType'" v-model="draft.baitType" class="fl-inp">
                 <option value="">--</option>
                 <option value="naturale">{{ t('catchesSection.baitTypeNatural') }}</option>
                 <option value="artificiale">{{ t('catchesSection.baitTypeArtificial') }}</option>
                 <option value="misto">{{ t('catchesSection.baitTypeMixed') }}</option>
               </select>
+              <input v-else-if="f.key === 'time'" id="catch-time" v-model="draft.time" class="fl-inp fl-mono" type="time" :aria-invalid="blocked" aria-describedby="catch-time-err" v-ph="'--:--'" />
               <input v-else-if="f.num" v-model.number="draft[f.key]" class="fl-inp" type="number" inputmode="decimal" step="any" min="0" />
               <input v-else v-model="draft[f.key]" class="fl-inp" :type="f.type || 'text'" :list="f.key === 'baitUsed' ? 'catch-bait-suggestions' : undefined" v-ph="'--:--'" />
             </label>
           </div>
+        </section>
+
+        <!-- Ora fuori dalla fascia dell'uscita -->
+        <section v-if="windowCheck.ok === false || extension" id="catch-time-err" class="time-err" :class="{ resolved: !blocked }" role="alert">
+          <template v-if="blocked">
+            <p class="te-msg"><AlertTriangle :size="16" /> {{ windowMessage }}</p>
+            <div class="te-actions">
+              <button type="button" class="fl-btn2 te-btn" @click="extendSession">{{ windowCheck.side === 'before' ? t('catchPage.extendStart', { time: windowCheck.time }) : t('catchPage.extendEnd', { time: windowCheck.time }) }}</button>
+              <button type="button" class="fl-btn2 te-btn" @click="pickOtherTime">{{ t('catchPage.pickOther') }}</button>
+            </div>
+          </template>
+          <p v-else class="te-msg ok">
+            <Check :size="16" /> {{ extension.side === 'before' ? t('catchPage.willExtendStart', { time: extension.time }) : t('catchPage.willExtendEnd', { time: extension.time }) }}
+            <button type="button" class="te-undo" @click="extension = null">{{ t('catchPage.undoExtend') }}</button>
+          </p>
         </section>
       </template>
 
       <datalist id="catch-bait-suggestions"><option v-for="b in baitSuggestions" :key="b" :value="b" /></datalist>
 
       <div v-if="draft.species" class="fl-bar">
-        <button type="submit" class="fl-btn1" :disabled="saving">
+        <button type="submit" class="fl-btn1" :disabled="saving || blocked || !online">
           <span v-if="saving" class="m-spinner" style="width:15px;height:15px"></span>
-          {{ t('session.ongoing.saveCatch') }}
+          {{ isNew ? t('session.ongoing.saveCatch') : t('catchPage.saveChanges') }}
         </button>
-        <button v-if="isNew" type="button" class="bar-link" :disabled="saving" @click="save(true)">{{ t('session.ongoing.saveAndAnother') }}</button>
-        <button v-else type="button" class="bar-link danger" :disabled="saving" @click="remove">{{ t('common.delete') }}</button>
+        <button v-if="isNew && session?.status === 'ongoing'" type="button" class="bar-link" :disabled="saving || blocked || !online" @click="save(true)">{{ t('session.ongoing.saveAndAnother') }}</button>
       </div>
     </form>
   </div>
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, nextTick } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { AlertTriangle, Camera, Image, ChevronRight, RefreshCw } from 'lucide-vue-next'
+import { AlertTriangle, Camera, Image, ChevronRight, RefreshCw, Trash2, WifiOff, Check } from 'lucide-vue-next'
 import PageHeader from '../components/PageHeader.vue'
 import SpeciesQuickAdd from '../components/form/SpeciesQuickAdd.vue'
 import { useSessionStore } from '../stores/sessions.js'
 import { useToast } from '../composables/useToast.js'
 import { useBaitSuggestions } from '../composables/useBaitSuggestions.js'
+import { useOnline } from '../composables/useOnline.js'
+import { useUnsavedGuard } from '../composables/useUnsavedGuard.js'
+import { confirmDialog } from '../composables/useConfirm.js'
+import { setLastCatchChange } from '../composables/useUndoCatch.js'
+import { checkCatchTime } from '../utils/catchWindow.js'
 
 const { t } = useI18n()
 const route = useRoute()
@@ -119,6 +148,7 @@ const router = useRouter()
 const store = useSessionStore()
 const { toast } = useToast()
 const { fetchBaitSuggestions } = useBaitSuggestions()
+const online = useOnline()
 
 const sessionId = route.params.id
 const isNew = computed(() => route.params.index === 'new')
@@ -127,6 +157,7 @@ const editIndex = computed(() => isNew.value ? null : Number(route.params.index)
 // Tutti i campi che prima erano nell'elenco lungo della cattura, ora dietro «Altri dettagli».
 const DETAIL_FIELDS = [
   { key: 'time', label: 'timeLabel', type: 'time' },
+  { key: 'fightMinutes', raw: 'session.ongoing.fight', num: true },
   { key: 'baitUsed', label: 'baitUsedLabel' },
   { key: 'baitType', label: 'baitTypeLabel' },
   { key: 'baitPresentation', label: 'baitPresentationLabel' },
@@ -154,6 +185,37 @@ const speciesQuery = ref('')
 const photos = ref([])
 const showMore = ref(false)
 const baitSuggestions = ref([])
+const extension = ref(null) // { side: 'after' | 'before', time } — estensione dell'uscita applicata al salvataggio
+const snapshot = ref('')
+
+const session = computed(() => store.current)
+const bannerMeta = computed(() => {
+  const s = session.value
+  if (!s) return ''
+  const d = s.date ? new Date(s.date).toLocaleDateString('it-IT', { day: 'numeric', month: 'short', year: 'numeric' }) : ''
+  const range = s.startTime ? `${s.startTime}${s.endTime ? '–' + s.endTime : ''}` : ''
+  return [d, range].filter(Boolean).join(' · ')
+})
+
+// Ora della cattura fuori dalla fascia dell'uscita conclusa: Salva resta disabilitato finché non si risolve.
+const windowCheck = computed(() => checkCatchTime(session.value, draft.value.time))
+const extended = computed(() => !!extension.value && extension.value.time === draft.value.time && extension.value.side === windowCheck.value.side)
+const blocked = computed(() => windowCheck.value.ok === false && !extended.value)
+const windowMessage = computed(() => windowCheck.value.side === 'before'
+  ? t('catchPage.outsideBefore', { time: windowCheck.value.time, start: session.value?.startTime })
+  : t('catchPage.outsideAfter', { time: windowCheck.value.time, end: session.value?.endTime }))
+
+function extendSession() { extension.value = { side: windowCheck.value.side, time: windowCheck.value.time } }
+async function pickOtherTime() {
+  extension.value = null
+  showMore.value = true
+  await nextTick()
+  const el = document.getElementById('catch-time')
+  el?.focus(); el?.scrollIntoView?.({ block: 'center' })
+}
+
+const dirtyState = () => JSON.stringify([draft.value, photos.value.length, extension.value])
+const guard = useUnsavedGuard(() => ready.value && !saving.value && dirtyState() !== snapshot.value)
 
 onMounted(async () => {
   if (store.current?._id !== sessionId) await store.fetchSession(sessionId)
@@ -166,6 +228,7 @@ onMounted(async () => {
     showMore.value = DETAIL_FIELDS.some(f => draft.value[f.key])
   }
   ready.value = true
+  snapshot.value = dirtyState()
   try { baitSuggestions.value = await fetchBaitSuggestions() } catch { /* opzionale */ }
 })
 
@@ -188,23 +251,36 @@ function cleanDraft() {
   return out
 }
 
-async function persist(list) {
+async function persist(payload) {
   error.value = null
-  const result = await store.updateSession(sessionId, { catches: list })
-  if (!result) error.value = store.error
+  const result = await store.updateSession(sessionId, payload)
+  if (!result) error.value = store.error || 'error'
   return result
 }
 
-// Salvataggio esplicito: "Salva cattura" torna alla scheda, "Salva e aggiungine un'altra" riparte da zero.
+const snapshotOf = s => ({ catches: JSON.parse(JSON.stringify(s?.catches || [])), startTime: s?.startTime, endTime: s?.endTime })
+
+// Dopo il salvataggio su un'uscita conclusa si torna al dettaglio: cattura evidenziata e «Annulla».
+function leaveAfterSave(kind, catchId, previous) {
+  guard.allowLeave()
+  if (session.value?.status === 'ongoing') { router.replace(`/session/${sessionId}/edit`); return }
+  setLastCatchChange({ sessionId, catchId, previous, kind })
+  router.replace(`/session/${sessionId}`)
+}
+
+// Salvataggio esplicito: «Salva cattura» torna alla scheda, «Salva e aggiungine un'altra» riparte da zero.
 async function save(another) {
-  if (!draft.value.species?.trim()) return
+  if (!draft.value.species?.trim() || blocked.value || !online.value || saving.value) return
   saving.value = true
+  const previous = snapshotOf(store.current)
   const current = store.current?.catches || []
   const entry = cleanDraft()
   const index = isNew.value ? current.length : editIndex.value
   const list = isNew.value ? [...current, entry] : current.map((c, i) => i === index ? { ...c, ...entry } : c)
+  const payload = { catches: list }
+  if (extension.value && extended.value) payload[extension.value.side === 'before' ? 'startTime' : 'endTime'] = extension.value.time
 
-  const result = await persist(list)
+  const result = await persist(payload)
   if (!result) { saving.value = false; return }
 
   const saved = result.catches?.[index]
@@ -217,30 +293,51 @@ async function save(another) {
     }
   }
   saving.value = false
-  toast(t('session.ongoing.fishSaved'), { type: 'success' })
 
   if (another) {
-    draft.value = emptyDraft(); photos.value = []; showMore.value = false
+    toast(t('session.ongoing.fishSaved'), { type: 'success' })
+    draft.value = emptyDraft(); photos.value = []; showMore.value = false; extension.value = null
+    snapshot.value = dirtyState()
     window.scrollTo({ top: 0 })
     if (!isNew.value) router.replace(`/session/${sessionId}/catch/new`)
   } else {
-    router.replace(`/session/${sessionId}/edit`)
+    leaveAfterSave(isNew.value ? 'added' : 'updated', saved?._id, previous)
   }
 }
 
 async function remove() {
+  if (!online.value) return
+  if (!(await confirmDialog(t('catchPage.deleteConfirm'), { title: t('catchPage.deleteTitle'), confirmLabel: t('common.delete') }))) return
   saving.value = true
+  const previous = snapshotOf(store.current)
   const list = (store.current?.catches || []).filter((_, i) => i !== editIndex.value)
-  const result = await persist(list)
+  const result = await persist({ catches: list })
   saving.value = false
-  if (result) router.replace(`/session/${sessionId}/edit`)
+  if (result) leaveAfterSave('removed', null, previous)
 }
 </script>
 
 <style scoped>
 .catch-form { display: flex; flex-direction: column; gap: 26px; max-width: 640px; padding: 0 0 calc(130px + env(safe-area-inset-bottom)); }
 .state-center { display: flex; justify-content: center; padding: 4rem; }
-.error-banner { align-items: center; background: rgba(240,80,80,.1); border: 1px solid var(--danger); border-radius: 6px; color: var(--danger); display: inline-flex; gap: .4rem; padding: .75rem 1rem; }
+.error-banner { align-items: center; background: rgba(240,80,80,.1); border: 1px solid var(--danger); border-radius: 14px; color: rgb(var(--color-danger-text)); display: flex; justify-content: space-between; flex-wrap: wrap; gap: .5rem; padding: .75rem 1rem; }
+.eb-text { display: inline-flex; align-items: center; gap: .4rem; font-weight: 600; }
+.eb-retry { background: none; border: 1px solid currentColor; border-radius: 10px; color: inherit; cursor: pointer; font-weight: 700; min-height: 44px; padding: 0 14px; }
+.eb-retry:disabled { opacity: .5; cursor: default; }
+.info-banner { display: flex; align-items: center; gap: .5rem; background: var(--surface-2); border: 1px solid var(--border-light); border-radius: 14px; color: var(--foam); padding: .75rem 1rem; font-size: 14px; }
+.session-banner { display: flex; flex-direction: column; gap: 2px; background: rgb(var(--color-sea-deep)); border: 1px solid var(--border); border-radius: 18px 18px 18px 6px; padding: 12px 16px; }
+.sb-lab { font-size: 12px; color: var(--text-muted); font-weight: 600; }
+.sb-title { font-family: var(--font-display); color: var(--foam); font-size: 18px; font-weight: 800; }
+.sb-meta { color: rgb(var(--color-ocean-text)); font-size: 12px; }
+.ph-trash { width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; background: none; border: 0; color: rgb(var(--color-danger-text)); cursor: pointer; border-radius: 12px; }
+.ph-trash:focus-visible, .te-undo:focus-visible { outline: 2px solid rgb(var(--color-ocean-text)); outline-offset: 2px; }
+.time-err { border: 1px solid var(--danger); background: rgba(240,80,80,.08); border-radius: 18px; padding: 14px; display: flex; flex-direction: column; gap: 12px; }
+.time-err.resolved { border-color: var(--border-light); background: var(--surface); }
+.te-msg { display: flex; align-items: center; flex-wrap: wrap; gap: .4rem; margin: 0; color: rgb(var(--color-danger-text)); font-weight: 600; font-size: 14px; }
+.te-msg.ok { color: var(--foam); }
+.te-actions { display: flex; flex-direction: column; gap: 8px; }
+.te-btn { min-height: 48px; }
+.te-undo { background: none; border: 0; color: rgb(var(--color-ocean-text)); cursor: pointer; font-weight: 700; min-height: 44px; padding: 0 6px; margin-left: auto; }
 .use-name { min-height: 52px; border-radius: 14px; white-space: nowrap; }
 .use-name:disabled { opacity: .5; }
 
@@ -271,5 +368,4 @@ async function remove() {
 .field { display: flex; flex-direction: column; margin: 0; }
 
 .bar-link { background: none; border: none; color: rgb(var(--color-ocean-text)); cursor: pointer; font-weight: 700; font-size: 15px; min-height: 36px; }
-.bar-link.danger { color: rgb(var(--color-danger-text)); }
 </style>

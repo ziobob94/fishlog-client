@@ -9,7 +9,7 @@
       <div class="m-spinner"></div>
     </div>
 
-    <div v-else-if="error" class="error-banner" style="display:inline-flex;align-items:center;gap:.4rem"><AlertTriangle :size="16" /> {{ error }}</div>
+    <div v-else-if="error && !store.current" class="error-banner" style="display:inline-flex;align-items:center;gap:.4rem"><AlertTriangle :size="16" /> {{ error }}</div>
 
     <!-- Uscita in corso: di norma solo la scheda di aggiunta cattura; il
          form completo resta un'eccezione esplicita, richiesta con "Modifica
@@ -24,6 +24,7 @@
       v-else-if="store.current"
       :initial-data="store.current"
       :saving="store.loading"
+      :error="error || ''"
       :is-edit="true"
       @submit="onSubmit"
       @cancel="onCancelFullForm"
