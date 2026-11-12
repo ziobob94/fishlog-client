@@ -1,3 +1,10 @@
+## [1.62.5](https://github.com/ziobob94/fishlog-client/compare/client-v1.62.4...client-v1.62.5) (2026-11-12)
+
+
+### Bug Fixes
+
+* la tab bar arriva al bordo nelle viste a scroll interno (Social, Chat) ([9915f44](https://github.com/ziobob94/fishlog-client/commit/9915f448a9862383d65cf1ef687225739e82e242))
+
 ## [1.62.4](https://github.com/ziobob94/fishlog-client/compare/client-v1.62.3...client-v1.62.4) (2026-11-12)
 
 
