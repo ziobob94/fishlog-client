@@ -2,6 +2,7 @@
   <aside
     class="fixed inset-y-0 left-0 z-[200] w-60 flex flex-col bg-surface border-r border-border transition-all duration-300"
     :class="open ? 'translate-x-0 shadow-[4px_0_32px_rgba(0,0,0,0.4)]' : '-translate-x-full'"
+    style="padding-top: env(safe-area-inset-top)"
   >
     <!-- Header -->
     <div class="flex items-center justify-between px-5 py-4 border-b border-border">
@@ -107,7 +108,7 @@
     </div>
 
     <!-- Footer -->
-    <div class="border-t border-border p-4 flex flex-col gap-3">
+    <div class="border-t border-border p-4 flex flex-col gap-3" style="padding-bottom: max(1rem, env(safe-area-inset-bottom))">
       <template v-if="auth.isLoggedIn">
         <RouterLink to="/board" class="flex items-center gap-2.5" @click="$emit('close')">
           <img
