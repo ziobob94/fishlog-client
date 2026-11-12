@@ -1254,6 +1254,7 @@
 		}
 	},
 	"market": {
+		"listingNotFound": "Annuncio non disponibile o non più visibile.",
 		"viewsCount": "{n} visualizzazioni | {n} visualizzazione | {n} visualizzazioni",
 		"visibility": {
 			"all": "Tutti",
