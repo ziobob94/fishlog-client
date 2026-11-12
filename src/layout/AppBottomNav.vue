@@ -64,12 +64,16 @@ const newSessionTarget = computed(() =>
   @apply fixed bottom-0 inset-x-0 z-[150] grid grid-cols-5 items-stretch
          bg-surface border-t border-border md:hidden;
   min-height: var(--bottom-nav-h);
-  padding-bottom: max(calc(env(safe-area-inset-bottom) - 12px), 0px);
+  /* Solo una quota della safe-area: l'indicatore home di iOS è sottile e
+     la barra non deve lasciare una fascia vuota sotto le etichette. */
+  padding-bottom: calc(env(safe-area-inset-bottom) * 0.3);
+  /* Se iOS lascia una fascia sotto la barra fissa (PWA), la tinge come la barra. */
+  box-shadow: 0 60px 0 0 rgb(var(--color-surface));
 }
 
 .bottom-nav-item {
   @apply relative flex flex-col items-center justify-center gap-0.5
-         min-h-[44px] py-1.5 text-muted text-[0.68rem] font-semibold no-underline transition-colors duration-200;
+         min-h-[44px] py-1 text-muted text-[0.68rem] font-semibold no-underline transition-colors duration-200;
 }
 
 .bottom-nav-item.router-link-active {
