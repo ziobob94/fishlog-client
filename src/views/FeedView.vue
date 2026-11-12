@@ -30,6 +30,12 @@
     <StoriesRail />
 
 
+    <div v-if="activeTag" class="tag-filter">
+      <span class="tag-filter-chip">#{{ activeTag }}
+        <button type="button" class="tag-filter-x" :aria-label="t('posts.filters.clearHashtag')" @click="clearTag"><X :size="14" /></button>
+      </span>
+    </div>
+
     <div v-if="showFilters" class="filters-panel">
       <p class="filters-desc">{{ t('posts.filters.description') }}</p>
 
@@ -167,6 +173,7 @@ import PageHeader from '../components/PageHeader.vue'
   import { useRoute, useRouter } from 'vue-router'
   import { MessageCircle, Newspaper, MapPin, Map as MapIcon, X, Filter, ChevronDown, Check } from 'lucide-vue-next'
   import { toInitials } from '../utils/initials.js'
+  import { normalizeTag } from '../utils/hashtags.js'
   import { usePostStore } from '../stores/posts.js'
   import { useStoryStore } from '../stores/stories.js'
   import { useChatStore } from '../stores/chat.js'
@@ -209,6 +216,12 @@ import PageHeader from '../components/PageHeader.vue'
     radiusKm: 25,
     sort: 'date'
   })
+
+  // Filtro per hashtag: vive nell'URL (/feed?tag=spigola), così il link dal testo
+  // di un post/commento, il tasto indietro e la condivisione funzionano da soli.
+  const activeTag = computed(() => normalizeTag(Array.isArray(route.query.tag) ? route.query.tag[0] : route.query.tag))
+  function clearTag() { router.replace({ path: '/feed' }) }
+  watch(activeTag, (next, prev) => { if (next !== prev) reload() })
 
   const authorQuery = ref('')
   const selectedAuthor = ref(null)
@@ -255,6 +268,7 @@ import PageHeader from '../components/PageHeader.vue'
     if (filters.dateFrom) params.dateFrom = filters.dateFrom
     if (filters.dateTo) params.dateTo = filters.dateTo
     if (filters.author) params.author = filters.author
+    if (activeTag.value) params.tag = activeTag.value
     if (tab.value === 'event') {
       if (filters.near) params.near = filters.near
       if (filters.near && filters.radiusKm) params.radiusKm = filters.radiusKm
@@ -369,6 +383,9 @@ import PageHeader from '../components/PageHeader.vue'
 </script>
 
 <style scoped>
+  .tag-filter { @apply flex px-4 pt-2; }
+  .tag-filter-chip { @apply inline-flex items-center gap-1 rounded-full border border-ocean text-ocean-text text-sm font-bold pl-3 pr-1; background: var(--ocean-glow); }
+  .tag-filter-x { @apply inline-flex items-center justify-center min-w-[44px] min-h-[44px] -my-2 bg-transparent border-none text-ocean-text cursor-pointer; }
   /* Il <main> è overflow-hidden (pagina a scroll interno): senza margine in alto
      il badge della chat (-top-1.5) e il puntino della campanella vengono tagliati. */
   .feed-page { display: flex; flex-direction: column; min-height: 0; padding-top: 8px; }
