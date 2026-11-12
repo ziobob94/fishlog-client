@@ -373,6 +373,8 @@ import PageHeader from '../components/PageHeader.vue'
      il badge della chat (-top-1.5) e il puntino della campanella vengono tagliati. */
   .feed-page { display: flex; flex-direction: column; min-height: 0; padding-top: 8px; }
   .feed-scroll { flex: 1; min-height: 0; overflow-y: auto; overflow-x: hidden; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; margin: 0 -1rem; padding: 0 1rem; }
+  /* La lista scorre fino al bordo (dietro la barra fissa); il padding finale tiene raggiungibile l'ultimo post. */
+  @media (max-width: 767px) { .feed-scroll { padding-bottom: calc(var(--bottom-nav-h) + 1rem + env(safe-area-inset-bottom) * 0.3); } }
   @media (min-width: 640px) { .feed-scroll { margin: 0 -1.5rem; padding: 0 1.5rem; } }
   .posts-list {
     @apply flex flex-col gap-5;
