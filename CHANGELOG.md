@@ -1,3 +1,17 @@
+# [1.63.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.62.5...client-v1.63.0) (2026-11-12)
+
+
+### Bug Fixes
+
+* **meteo:** il separatore di affidabilità sta tra due giorni, senza linea doppia ([b1a9663](https://github.com/ziobob94/fishlog-client/commit/b1a9663fcb12910a37f47b634c3407c1244d17c3))
+
+
+### Features
+
+* **meteo:** alba e tramonto in Ora per ora come barretta gialla con icona e orario ([cc5404e](https://github.com/ziobob94/fishlog-client/commit/cc5404e17316fd138c779a313c9f578b350d7fae))
+* **meteo:** Confronta le previsioni in fondo alla pagina ([d5016b0](https://github.com/ziobob94/fishlog-client/commit/d5016b0edde780027d5aac217b1374100a0d74f9))
+* **meteo:** icone di alba e tramonto al posto delle parole nel colpo d'occhio ([8cf4ab8](https://github.com/ziobob94/fishlog-client/commit/8cf4ab8ffa0c61d2cbe2ab65873ed0d4ad616c9b))
+
 ## [1.62.5](https://github.com/ziobob94/fishlog-client/compare/client-v1.62.4...client-v1.62.5) (2026-11-12)
 
 
