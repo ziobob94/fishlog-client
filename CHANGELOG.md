@@ -1,3 +1,11 @@
+# [1.64.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.63.0...client-v1.64.0) (2026-11-12)
+
+
+### Features
+
+* **chat:** vocali con velocità x1,5/x2, seek sull'onda e download ([c26c8c4](https://github.com/ziobob94/fishlog-client/commit/c26c8c4b7aa53e9dd7ca0f42bf112e2bd94cc4b3))
+* **post:** sfondo sfocato per foto che non riempiono la larghezza ([#119](https://github.com/ziobob94/fishlog-client/issues/119)) ([ff5289a](https://github.com/ziobob94/fishlog-client/commit/ff5289a95fa3ed50a3067f82d60c96aeeb9f154f))
+
 # [1.63.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.62.5...client-v1.63.0) (2026-11-12)
 
 
