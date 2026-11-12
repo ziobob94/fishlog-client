@@ -7,7 +7,7 @@
            hover:shadow-[0_4px_24px_rgba(14,165,233,0.1)]"
   >
     <!-- Thumbnail -->
-    <RulerFrame class="relative w-24 shrink-0 sm:w-auto aspect-square sm:aspect-video bg-surface-2 overflow-hidden">
+    <RulerFrame :ruler="!session.thumbnail" class="relative w-24 shrink-0 sm:w-auto aspect-square sm:aspect-video bg-surface-2 overflow-hidden">
       <img
         v-if="session.thumbnail"
         :src="session.thumbnail"

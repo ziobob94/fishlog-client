@@ -2,12 +2,19 @@
   <!-- Cornice a metro per le foto delle catture. Slot predefinito: immagine/video. Slot "badge": pillola con la misura. -->
   <div class="ruler-frame">
     <slot />
-    <div class="ruler-shade"></div>
-    <div class="ruler-ticks"></div>
-    <div class="ruler-major"></div>
-    <div v-if="$slots.badge" class="ruler-badge"><slot name="badge" /></div>
+    <template v-if="ruler">
+      <div class="ruler-shade"></div>
+      <div class="ruler-ticks"></div>
+      <div class="ruler-major"></div>
+    </template>
+    <div v-if="$slots.badge" class="ruler-badge" :class="{ 'no-ruler': !ruler }"><slot name="badge" /></div>
   </div>
 </template>
+
+<script setup>
+// `ruler` = false con foto reali: il metro serve solo per i placeholder.
+defineProps({ ruler: { type: Boolean, default: true } })
+</script>
 
 <style scoped>
 .ruler-frame { position: relative; overflow: hidden; }
@@ -18,4 +25,5 @@
 .ruler-major { position: absolute; left: 12px; right: 12px; bottom: 10px; height: 18px; pointer-events: none;
   background: repeating-linear-gradient(90deg, rgb(var(--color-sand-text)) 0 2px, transparent 2px 50px); }
 .ruler-badge { position: absolute; left: 12px; bottom: 40px; }
+.ruler-badge.no-ruler { bottom: 12px; }
 </style>
