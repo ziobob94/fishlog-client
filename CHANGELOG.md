@@ -1,3 +1,15 @@
+# [1.68.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.67.1...client-v1.68.0) (2026-11-12)
+
+
+### Bug Fixes
+
+* **meteo:** ripristina parentesi persa nella risoluzione del merge ([cb5f4b0](https://github.com/ziobob94/fishlog-client/commit/cb5f4b08876dde963cf9f00da13ba0f4d2ae4b71))
+
+
+### Features
+
+* **meteo:** grafici onde e maree scorrevoli e nuovo grafico della pressione ([37dbf80](https://github.com/ziobob94/fishlog-client/commit/37dbf80b928ca4a58a803acb9fee7d815ddc8c45))
+
 ## [1.67.1](https://github.com/ziobob94/fishlog-client/compare/client-v1.67.0...client-v1.67.1) (2026-11-12)
 
 
