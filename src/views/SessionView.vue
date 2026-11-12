@@ -297,7 +297,8 @@ async function doDelete() {
 .slider { display: flex; height: 100%; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; }
 .slider::-webkit-scrollbar { display: none; }
 .slide { flex: 0 0 100%; scroll-snap-align: center; height: 100%; }
-.slide img, .slide video { width: 100%; height: 100%; object-fit: cover; display: block; }
+.slide { background: rgb(var(--color-ink)); }
+.slide img, .slide video { width: 100%; height: 100%; object-fit: contain; display: block; }
 .hero-empty { height: 100%; display: flex; align-items: center; justify-content: center; color: rgb(var(--color-ocean-text) / .45); }
 .hero-btn { position: absolute; top: 14px; width: 44px; height: 44px; border-radius: 14px; background: rgb(var(--color-ink) / .72); border: 1px solid var(--border); color: var(--foam); display: flex; align-items: center; justify-content: center; cursor: pointer; text-decoration: none; backdrop-filter: blur(6px); }
 .hero-back { left: 14px; }
