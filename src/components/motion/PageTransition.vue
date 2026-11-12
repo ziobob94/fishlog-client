@@ -1,11 +1,11 @@
 <template>
   <!-- Cambio pagina. Avanti: la nuova entra da destra di 24 px con dissolvenza (320 ms, --ease-enter), la vecchia sfuma (200 ms, --ease-exit).
-       Indietro: inverso. Tra tab della barra: solo dissolvenza incrociata (200 ms). Con movimento ridotto restano solo dissolvenze brevi.
+       Indietro: inverso. Tra tab della barra: dissolvenza in sequenza (esce 120 ms, poi entra 200 ms), mai le due pagine sovrapposte. Con movimento ridotto restano solo dissolvenze brevi.
        Ogni pagina è avvolta in un <div class="page">: le viste con più elementi radice funzionano comunque.
        Nelle route: meta.tab = true per le 4 voci della barra; meta.depth = 1 per i dettagli, 2 per le sotto-pagine. -->
   <RouterView v-slot="{ Component, route }">
     <div class="page-stack" :class="{ 'page-fill': route.meta.fullHeight }">
-      <Transition :name="name">
+      <Transition :name="name" :mode="name === 'page-tab' ? 'out-in' : undefined">
         <div :key="route.meta.tab ? route.name : route.fullPath" class="page" :class="{ 'page-fill': route.meta.fullHeight }">
           <component :is="Component" />
         </div>

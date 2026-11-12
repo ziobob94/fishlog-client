@@ -1,3 +1,10 @@
+# [1.67.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.66.0...client-v1.67.0) (2026-11-12)
+
+
+### Features
+
+* **home:** striscia oraria meteo scorrevole fino a 7 giorni con separatore del giorno ([4e3b649](https://github.com/ziobob94/fishlog-client/commit/4e3b64935046bd8a3b078d54c3527ac01fe582be))
+
 # [1.66.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.65.0...client-v1.66.0) (2026-11-12)
 
 

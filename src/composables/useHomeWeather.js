@@ -4,7 +4,7 @@ import { computed, ref, onMounted, onBeforeUnmount } from 'vue'
 import { useWeatherStore } from '../stores/weather.js'
 import { useOnline } from './useOnline.js'
 import { reverseLabel } from '../utils/places.js'
-import { rowWmo, rowLabel, isDayAt, windInfo, pressureState } from '../utils/weather.js'
+import { rowWmo, rowLabel, windInfo, pressureState, homeHours } from '../utils/weather.js'
 
 // Pausa tra due aggiornamenti manuali: la quota delle API meteo è limitata, il server comunque risponde dalla sua cache (~5 km).
 export const REFRESH_COOLDOWN_MS = 30_000
@@ -33,10 +33,7 @@ export function useHomeWeather() {
     return {
       temp: c.temp, feels: c.feelsLike, max: d.daily?.[0]?.tempMax ?? null, min: d.daily?.[0]?.tempMin ?? null,
       wmo: rowWmo(c), isDay: c.isDay !== false, condition: rowLabel(c, c.description),
-      hours: (d.hourly || []).slice(0, 8).map(h => ({
-        key: h.time || `${h.date}-${h.hour}`, hour: h.hour, wmo: rowWmo(h), isDay: isDayAt(h.hour, sunrise, sunset),
-        temp: h.temp, wind: h.windSpeed, windDeg: h.windDeg,
-      })),
+      hours: homeHours(d.hourly, d.daily),
       wind: { speed: c.windSpeed, gust: c.windGust, info: windInfo(c.windSpeed, c.windDeg) },
       pressure: { value: c.pressure, state: press },
       wave: d.marine.available ? { height: d.marine.waveHeight, period: d.marine.wavePeriod } : null,
