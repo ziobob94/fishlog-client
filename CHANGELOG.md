@@ -1,3 +1,11 @@
+## [1.60.1](https://github.com/ziobob94/fishlog-client/compare/client-v1.60.0...client-v1.60.1) (2026-11-12)
+
+
+### Bug Fixes
+
+* **session:** metro graduato solo sul placeholder senza foto ([7bad53a](https://github.com/ziobob94/fishlog-client/commit/7bad53a9af76a6dde648fa1846d94c0332da3675))
+* **session:** mostra le foto intere nel dettaglio uscita e nel feed senza tagliarle ([3a2c3c1](https://github.com/ziobob94/fishlog-client/commit/3a2c3c1dc8dbad5ac5b8a06b15596538385dd52d))
+
 # [1.60.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.59.2...client-v1.60.0) (2026-11-12)
 
 
