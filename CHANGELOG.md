@@ -1,3 +1,10 @@
+# [1.66.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.65.0...client-v1.66.0) (2026-11-12)
+
+
+### Features
+
+* **storie:** gesti stile Instagram nel visualizzatore (tap, pausa, swipe tra utenti, swipe giù) ([018de26](https://github.com/ziobob94/fishlog-client/commit/018de2619c4ec5caa3f1ed5c3d9eccceba936b6a))
+
 # [1.65.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.64.0...client-v1.65.0) (2026-11-12)
 
 
