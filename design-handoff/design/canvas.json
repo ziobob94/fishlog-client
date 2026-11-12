@@ -191,8 +191,8 @@
    "y": 4800
   },
   "SpecieRicerca.dc.html": {
-   "h": 844,
-   "title": "Specie · ricerca",
+   "h": 1300,
+   "title": "15 · Specie: in stagione, ricerca e stati (scuro)",
    "w": 390,
    "x": 3360,
    "y": 1760
@@ -647,6 +647,14 @@
    "w": 390,
    "x": 470,
    "y": 26300
+  },
+  "SpecieRicerca-chiaro.dc.html": {
+   "h": 1300,
+   "is_interactive": true,
+   "title": "15 · Specie: in stagione, ricerca e stati (chiaro)",
+   "w": 390,
+   "x": 3360,
+   "y": 3200
   }
  },
  "createdOnFiles": {
@@ -676,7 +684,8 @@
   "n17",
   "n18",
   "n19",
-  "n20"
+  "n20",
+  "n21"
  ],
  "notes": {
   "n1": {
@@ -806,6 +815,12 @@
    "w": 1000,
    "x": 0,
    "y": 26100
+  },
+  "n21": {
+   "text": "Specie: la pagina non è più vuota all'apertura. Mostra «In stagione» con le specie più comuni del mese corrente (novembre) per la zona dell'utente, con livello (Molto comune / Comune), il numero delle sue catture e una barra a 12 mesi con il mese in ambra. Si può cambiare mese da un foglio per programmare le uscite. La scheda «Tutte» è alfabetica; la ricerca (nome comune o scientifico) resta in alto. Stati: caricamento, senza posizione (Italia in generale), offline (elenco salvato), nessun risultato, errore. I dati di stagionalità sono d'esempio: vanno presi da una tabella specie × zona × mese da validare.",
+   "w": 1000,
+   "x": 3360,
+   "y": 1560
   }
  },
  "order": [
@@ -824,6 +839,7 @@
   "Statistiche.dc.html",
   "Classifica.dc.html",
   "SpecieRicerca.dc.html",
+  "SpecieRicerca-chiaro.dc.html",
   "SpecieScheda.dc.html",
   "Commenti.dc.html",
   "ProfiloUtente.dc.html",

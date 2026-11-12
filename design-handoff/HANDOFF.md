@@ -357,6 +357,17 @@ Regola valida ovunque: **visibilità e note non stanno più nella stessa sezione
 
 Da verificare: se salvare una cattura con ora oltre la fine debba davvero poter estendere l'uscita (regola di prodotto), il comportamento offline (oggi il design chiede la connessione), e se le note dell'uscita sono sempre private.
 
+### Specie: «In stagione» al posto della pagina vuota (aggiornamento schermata 15)
+
+Prima la pagina Specie si apriva con la sola barra di ricerca e uno spazio vuoto. Ora si apre sull'elenco delle **specie più comuni del mese corrente**.
+- Due schede: «In stagione» (predefinita) e «Tutte» (alfabetico). La ricerca resta in alto (nome comune o scientifico).
+- Sotto la scheda: chip del mese («Novembre», apre un foglio con i 12 mesi, per programmare le uscite) e chip della zona («Adriatico · Marche», dalla posizione; senza posizione: «Italia · tutte le zone» con avviso e «Attiva»).
+- Ogni riga: icona, nome, nome scientifico in corsivo, livello del mese («Molto comune» / «Comune» / «Meno comune»), le catture dell'utente («3 tue catture») e una barra a 12 mesi con il mese scelto in ambra (lo stesso linguaggio del grafico nella scheda specie). Tocco → scheda specie (16).
+- Ordine: livello decrescente, poi catture dell'utente, poi nome. Mostra le prime 8; «Tutte» le elenca tutte.
+- Stati: caricamento, senza posizione, offline (elenco salvato con ora), nessun risultato (con «Mostra le specie di stagione»), errore con «Riprova».
+- Dati: **i livelli del mockup sono d'esempio**. Serve una tabella specie × zona × mese (o un campo mensile sul modello Specie) da far validare. Testo sempre «indicativo»: non promette catture.
+- Accessibilità: le barre hanno `role="img"` con testo («Frequenza nei 12 mesi, novembre evidenziato»); il livello è sempre anche in parole.
+
 ## Posizione non attivabile nella Home (da correggere nell'app)
 
 Segnalato da una prova sull'app installata: dalla Home non si riesce ad attivare la localizzazione, e la mappa espansa resta grigia. Controlla in quest'ordine:
