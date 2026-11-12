@@ -1,3 +1,15 @@
+# [1.59.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.58.1...client-v1.59.0) (2026-11-12)
+
+
+### Bug Fixes
+
+* conteggi della Classifica (media delle catture, uscite e catture nel podio) ([f5f1b14](https://github.com/ziobob94/fishlog-client/commit/f5f1b14c823a256df0ac2243a074189e041b8c1a))
+
+
+### Features
+
+* **home:** meteo e «Le tue pescate» ad accordion con stato ricordato ([2facc6d](https://github.com/ziobob94/fishlog-client/commit/2facc6d271fa8280a60e0f96c112125b78af3641))
+
 ## [1.58.1](https://github.com/ziobob94/fishlog-client/compare/client-v1.58.0...client-v1.58.1) (2026-11-11)
 
 
