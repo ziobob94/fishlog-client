@@ -38,6 +38,10 @@
           <span v-if="session.visibility !== 'private'" class="badge badge-sand">{{ visibilityLabel(session.visibility) }}</span>
           <span v-if="session.rating" class="stars" :aria-label="`${session.rating}/5`">{{ '★'.repeat(session.rating) }}</span>
         </div>
+        <div v-if="change" class="undo-bar" role="status">
+          <span>{{ t(`catchPage.${change.kind}`) }}</span>
+          <button type="button" class="undo-btn" :disabled="undoing" @click="undoChange">{{ t('catchPage.undo') }}</button>
+        </div>
         <h1 class="d-title">{{ title }}</h1>
         <p v-if="placeLine" class="d-place"><MapPin :size="15" /> {{ placeLine }}</p>
         <p v-if="coordsLabel" class="coords-pill fl-mono">{{ coordsLabel }}</p>
@@ -62,11 +66,20 @@
         </section>
 
         <!-- Catture -->
-        <section v-if="session.catches?.length" class="d-sec">
+        <section v-if="session.catches?.length || canAddCatch" class="d-sec">
           <TideDivider>{{ t('session.view.sections.catches', { n: session.catches.length }) }}</TideDivider>
+          <p v-if="!session.catches?.length" class="notes-text">{{ t('catchPage.emptyClosed') }}</p>
           <div class="catch-list">
-            <div v-for="c in session.catches" :key="c._id" class="catch" :class="{ open: openCatch === c._id }">
-              <button type="button" class="catch-head" :aria-expanded="openCatch === c._id" @click="openCatch = openCatch === c._id ? null : c._id">
+            <div v-for="(c, ci) in session.catches" :key="c._id" :ref="el => { if (c._id === change?.catchId) hlEl = el }" class="catch" :class="{ open: openCatch === c._id, hl: c._id === change?.catchId }">
+              <RouterLink v-if="canAddCatch" :to="`/session/${session._id}/catch/${ci}`" class="catch-head" :aria-label="t('catchPage.editCatchAria', { name: c.species })">
+                <span class="fl-mono time-chip">{{ c.time || '--:--' }}</span>
+                <span class="catch-main">
+                  <strong class="catch-name">{{ c.species }}</strong>
+                  <span class="catch-sum">{{ catchSummary(c) }}</span>
+                </span>
+                <ChevronRight :size="20" class="chev go" />
+              </RouterLink>
+              <button v-else type="button" class="catch-head" :aria-expanded="openCatch === c._id" @click="openCatch = openCatch === c._id ? null : c._id">
                 <span class="fl-mono time-chip">{{ c.time || '--:--' }}</span>
                 <span class="catch-main">
                   <strong class="catch-name">{{ c.species }}</strong>
@@ -133,12 +146,17 @@
           <MediaUploader v-if="showMedia" class="mt-3" :session-id="session._id" :media="session.media || []" @update="reload" />
         </section>
 
-        <div v-if="isOwner" class="d-actions">
+        <div v-if="isOwner" class="d-actions" :class="{ 'with-fab': canAddCatch }">
           <RouterLink :to="`/session/${session._id}/edit`" class="act act-edit">{{ t('groups.editAction') }}</RouterLink>
           <button type="button" class="act act-del" @click="confirmDelete = true">{{ t('groups.deleteAction') }}</button>
         </div>
       </div>
     </template>
+
+    <!-- Aggiungi cattura: fisso in basso sulle uscite concluse (non riapre né cambia lo stato dell'uscita) -->
+    <div v-if="canAddCatch" class="fl-bar add-bar">
+      <RouterLink :to="`/session/${session._id}/catch/new`" class="fl-btn1 add-btn"><Plus :size="20" /> {{ t('catchPage.add') }}</RouterLink>
+    </div>
 
     <!-- Confirm delete -->
     <Teleport to="body">
@@ -159,11 +177,13 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, onBeforeUnmount, watch, nextTick } from 'vue'
 import { elapsedLabel } from '../utils/sessionTime.js'
 import { useRoute, useRouter, RouterLink } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { Hourglass, MapPin, Pencil, Camera, ChevronLeft, ChevronDown, Image as ImageIcon } from 'lucide-vue-next'
+import { Hourglass, MapPin, Pencil, Camera, ChevronLeft, ChevronDown, ChevronRight, Plus, Image as ImageIcon } from 'lucide-vue-next'
+import { lastCatchChange, clearLastCatchChange } from '../composables/useUndoCatch.js'
+import { useToast } from '../composables/useToast.js'
 import { useSessionStore } from '../stores/sessions.js'
 import { useAuthStore } from '../stores/auth.js'
 import MediaUploader from '../components/MediaUploader.vue'
@@ -200,6 +220,35 @@ function onSlide() {
   if (el) slideIndex.value = Math.round(el.scrollLeft / Math.max(1, el.clientWidth))
 }
 const showMedia = ref(false)
+const { toast } = useToast()
+
+// Solo sulle uscite concluse del proprietario: aggiungere/modificare una cattura non cambia lo stato dell'uscita.
+const canAddCatch = computed(() => isOwner.value && session.value?.status === 'closed' && !session.value?._pending)
+
+// Ultima modifica alle catture (da pagina cattura): evidenzia la cattura e offre «Annulla».
+const change = computed(() => lastCatchChange.value?.sessionId === route.params.id ? lastCatchChange.value : null)
+const undoing = ref(false)
+let hlEl = null, undoTimer = null
+watch(change, async c => {
+  clearTimeout(undoTimer)
+  if (!c) return
+  undoTimer = setTimeout(clearLastCatchChange, 12000)
+  await nextTick()
+  hlEl?.scrollIntoView?.({ block: 'center', behavior: window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' })
+}, { immediate: true })
+onBeforeUnmount(() => { clearTimeout(undoTimer); clearLastCatchChange() })
+async function undoChange() {
+  const c = change.value
+  if (!c) return
+  undoing.value = true
+  const payload = { catches: c.previous.catches }
+  if (c.previous.startTime !== undefined) payload.startTime = c.previous.startTime
+  if (c.previous.endTime !== undefined) payload.endTime = c.previous.endTime
+  const res = await store.updateSession(route.params.id, payload)
+  undoing.value = false
+  clearLastCatchChange()
+  toast(res ? t('catchPage.undone') : t('catchPage.undoFailed'), { type: res ? 'success' : 'error' })
+}
 const openCatch = ref(null)
 
 const placeLine = computed(() => {
@@ -330,6 +379,16 @@ async function doDelete() {
 .c-lab { font-size: 13px; color: var(--text-muted); }
 .c-val { font-size: 16px; font-weight: 700; color: var(--foam); overflow-wrap: anywhere; }
 
+.undo-bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; background: var(--surface-2); border: 1px solid var(--border-light); border-radius: 14px; padding: 4px 6px 4px 14px; margin-bottom: 12px; color: var(--foam); font-weight: 600; font-size: 14px; }
+.undo-btn { background: none; border: 0; color: rgb(var(--color-ocean-text)); font-weight: 800; cursor: pointer; min-height: 44px; min-width: 44px; padding: 0 12px; border-radius: 10px; }
+.undo-btn:focus-visible, .catch-head:focus-visible, .add-btn:focus-visible { outline: 2px solid rgb(var(--color-ocean-text)); outline-offset: 2px; }
+.catch-head { text-decoration: none; box-sizing: border-box; }
+.catch.hl { border-color: rgb(var(--color-ocean-text)); box-shadow: 0 0 0 2px rgba(14, 165, 233, .35); animation: hl-fade 1.6s var(--ease-standard, ease) 1; }
+@keyframes hl-fade { from { background: rgba(14, 165, 233, .18); } to { background: var(--surface); } }
+@media (prefers-reduced-motion: reduce) { .catch.hl { animation: none; } }
+.add-bar { z-index: 160; }
+.add-btn { text-decoration: none; }
+.d-actions.with-fab { margin-bottom: calc(80px + env(safe-area-inset-bottom)); }
 .catch-list { display: flex; flex-direction: column; gap: 10px; }
 .catch { background: var(--surface); border: 1px solid var(--border); border-radius: 18px; }
 .catch-head { display: flex; align-items: center; gap: 12px; width: 100%; padding: 12px 14px; background: none; border: 0; color: var(--foam); text-align: left; cursor: pointer; min-height: 64px; }

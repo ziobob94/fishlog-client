@@ -64,12 +64,15 @@
         <ChevronRight :size="20" class="menu-go" />
       </button>
       <p v-if="autoFillMsg" class="autofill-result" :class="autoFillMsg.type">{{ autoFillMsg.text }}</p>
-      <button v-for="row in menuRows" :key="row.id" type="button" class="menu-row" @click="openSection(row.id)">
-        <span class="menu-icon" :class="{ done: row.done }"><component :is="MENU_ICONS[row.id]" :size="22" /></span>
-        <span class="menu-text"><strong>{{ row.title }}</strong><small>{{ row.sub }}</small></span>
-        <span class="menu-status" :class="{ done: row.done }">{{ row.status }}</span>
-        <ChevronRight :size="18" class="menu-go" />
-      </button>
+      <section v-for="g in menuGroups" :key="g.id" class="menu-group" :aria-labelledby="`mg-${g.id}`">
+        <h3 :id="`mg-${g.id}`" class="menu-group-title">{{ g.title }}</h3>
+        <button v-for="row in g.rows" :key="row.id" type="button" class="menu-row" @click="openRow(row.id)">
+          <span class="menu-icon" :class="{ done: row.done }"><component :is="MENU_ICONS[row.id]" :size="22" /></span>
+          <span class="menu-text"><strong>{{ row.title }}</strong><small>{{ row.sub }}</small></span>
+          <span class="menu-status fl-mono" :class="{ done: row.done }">{{ row.status }}</span>
+          <ChevronRight :size="18" class="menu-go" />
+        </button>
+      </section>
       <button type="button" class="delete-link" @click="$emit('delete')"><Trash2 :size="18" /> {{ t('sessionForm.menu.delete') }}</button>
     </div>
 
@@ -141,7 +144,13 @@
           <option v-for="w in WATER_TYPES" :key="w.v" :value="w.v">{{ w.l }}</option>
         </select>
       </div>
-      <div class="form-group">
+    </div>
+    </div>
+
+    <!-- VOTO (nel menu: pagina a sé; nel form lungo resta in fondo a «Dati uscita») -->
+    <div class="accordion-section" v-show="sectionVisible('rating')">
+    <div class="form-grid">
+      <div class="form-group full">
         <label>{{ t('sessionForm.fields.ratingLabel') }}<FieldInfo :text="t('sessionForm.fields.ratingInfo')" /></label>
         <div class="star-row">
           <button v-for="n in 5" :key="n" type="button"
@@ -348,6 +357,7 @@
     </button>
     <p class="section-desc">{{ t('sessionForm.sections.notesDesc') }}</p>
     <template v-if="isOpen('notes')">
+    <template v-if="!menuMode">
     <div class="form-group">
       <label>{{ t('sessionForm.fields.visibilityLabel') }}<FieldInfo :text="t('sessionForm.fields.visibilityInfo')" /></label>
       <select v-model="f.visibility">
@@ -369,6 +379,7 @@
         </span>
       </div>
     </div>
+    </template>
 
     <div class="form-group">
       <label>{{ t('sessionForm.fields.generalNotesLabel') }}<FieldInfo :text="t('sessionForm.fields.generalNotesInfo')" /></label>
@@ -379,15 +390,38 @@
 
     </div>
 
+    <!-- Foglio dal basso: visibilità -->
+    <BottomSheet v-model="visSheet" :label="t('sessionMenu.sheetTitle')">
+      <div class="vis-sheet">
+        <h2 class="vis-title">{{ t('sessionMenu.sheetTitle') }}</h2>
+        <div class="vis-opts" role="radiogroup" :aria-label="t('sessionMenu.visibility')">
+          <button v-for="v in ['private', 'users', 'group']" :key="v" type="button" class="vis-opt" :class="{ on: f.visibility === v }" role="radio" :aria-checked="f.visibility === v" @click="f.visibility = v">
+            <strong>{{ t(`sessionForm.visibility.${v}`) }}</strong>
+            <small>{{ t(`session.ongoing.${({ private: 'visPrivateHint', users: 'visUsersHint', group: 'visGroupHint' })[v]}`) }}</small>
+          </button>
+        </div>
+        <div v-if="f.visibility === 'group'" class="group-checkboxes">
+          <label v-for="g in groups" :key="g._id" class="group-check"><input type="checkbox" :value="g._id" v-model="f.allowedGroups" /> {{ g.name }}</label>
+          <span v-if="!groups.length" class="text-muted" style="font-size:.85rem">{{ t('sessionForm.fields.noGroups') }}</span>
+        </div>
+        <button type="button" class="fl-btn1" @click="visSheet = false">{{ t('sessionMenu.done') }}</button>
+      </div>
+    </BottomSheet>
+
     <!-- AZIONI -->
     <div class="form-actions">
+      <div v-if="mode !== 'essential' && (!online || error)" class="form-status" role="alert" :class="{ off: !online }">
+        <template v-if="!online"><WifiOff :size="16" /> {{ t('sessionMenu.offline') }}</template>
+        <template v-else><AlertTriangle :size="16" /> {{ t('sessionMenu.saveError') }}
+          <button type="button" class="status-retry" :disabled="saving" @click="handleSubmit">{{ t('sessionMenu.retry') }}</button></template>
+      </div>
       <div class="form-actions-inner" :class="{ 'ess-actions': mode === 'essential' }">
         <template v-if="menuMode && activeSection">
           <button type="button" class="btn btn-primary" @click="activeSection = null">{{ t('sessionForm.menu.done') }}</button>
         </template>
         <template v-else>
           <button v-if="mode !== 'essential'" type="button" class="btn btn-ghost" @click="$emit('cancel')">{{ t('common.cancel') }}</button>
-          <button type="submit" :class="mode === 'essential' ? 'fl-btn1' : 'btn btn-primary'" :disabled="saving">
+          <button type="submit" :class="mode === 'essential' ? 'fl-btn1' : 'btn btn-primary'" :disabled="saving || !online">
             <span v-if="saving" class="m-spinner" style="width:15px;height:15px"></span>
             {{ saving ? t('sessionForm.saving') : (mode === 'essential' ? (concluded ? t('sessionForm.essential.save') : t('sessionForm.essential.start')) : (isEdit ? t('sessionForm.submitEdit') : t('sessionForm.submitCreate'))) }}
           </button>
@@ -400,8 +434,8 @@
 
 <script setup>
   import { ref, reactive, computed, watch, onMounted, nextTick } from 'vue'
-  import { ChevronRight, ArrowLeft, MapPin, RefreshCw, Trash2, FileText, Waves, CloudSun, Fish, StickyNote } from 'lucide-vue-next'
-  const MENU_ICONS = { base: FileText, location: MapPin, water: Waves, weather: CloudSun, catches: Fish, notes: StickyNote }
+  import { ChevronRight, ArrowLeft, MapPin, RefreshCw, Trash2, FileText, Waves, Star, Eye, StickyNote, WifiOff, AlertTriangle } from 'lucide-vue-next'
+  const MENU_ICONS = { general: FileText, location: MapPin, rating: Star, waterweather: Waves, visibility: Eye, notes: StickyNote }
   import { useI18n } from 'vue-i18n'
   import { useGroupStore } from '../../stores/groups.js'
   import { useAuthStore } from '../../stores/auth.js'
@@ -413,6 +447,9 @@
   import { reverseGeocode, geocodeText } from '../../utils/places.js'
   import CatchesSection from './CatchesSection.vue'
   import FieldInfo from '../FieldInfo.vue'
+  import BottomSheet from '../motion/BottomSheet.vue'
+  import { useOnline } from '../../composables/useOnline.js'
+  import { useUnsavedGuard } from '../../composables/useUnsavedGuard.js'
   import { useToast } from '../../composables/useToast.js'
 
   const { t } = useI18n()
@@ -425,6 +462,7 @@
   const props = defineProps({
     initialData: { type: Object, default: null },
     saving: { type: Boolean, default: false },
+    error: { type: String, default: '' },
     isEdit: { type: Boolean, default: false },
     // 'essential' = nuova uscita (solo luogo/quando/ambiente/tecnica); 'full' = modifica a sezioni
     mode: { type: String, default: 'full' }
@@ -444,31 +482,38 @@
   const activeSection = ref(null)
   const menuMode = computed(() => props.isEdit && props.mode !== 'essential')
 
+  // Sezioni del menu «Dati uscita» → sezioni dell'accordion mostrate nella pagina
+  const SECTION_MAP = { general: ['base'], location: ['location'], rating: ['rating'], waterweather: ['water', 'weather'], notes: ['notes'] }
+  const online = useOnline()
+  const visSheet = ref(false)
+
   function openSection(id) {
     activeSection.value = id
     openSections.value = new Set(ALL_SECTIONS)
     nextTick(() => window.scrollTo({ top: 0 }))
   }
-  const sectionVisible = id => !menuMode.value || activeSection.value === id
+  // Visibilità = foglio dal basso, tutte le altre voci = pagina a sé
+  function openRow(id) { id === 'visibility' ? (visSheet.value = true) : openSection(id) }
+  const sectionVisible = id => !menuMode.value || (SECTION_MAP[activeSection.value] || []).includes(id)
   function sectionLabel(id) {
-    return id === 'water' ? waterSectionTitle.value : t(`sessionForm.sections.${id}`)
+    return { general: t('sessionMenu.general'), rating: t('sessionMenu.rating'), waterweather: t('sessionMenu.waterWeather'), notes: t('sessionMenu.notes') }[id] || t(`sessionForm.sections.${id}`)
   }
-  const menuRows = computed(() => {
+  const menuGroups = computed(() => {
     const done = t('sessionForm.menu.filled'), todo = t('sessionForm.menu.toAdd')
     const hasObj = o => Object.values(o || {}).some(v => v && typeof v === 'object' ? hasObj(v) : (v !== '' && v !== null && v !== undefined && v !== 0))
-    const n = f.value.catches?.length || 0
-    const rows = [
-      { id: 'base', ok: !!f.value.date },
-      { id: 'location', ok: !!f.value.location.name },
-      { id: 'water', ok: hasObj(f.value.sea) },
-      { id: 'weather', ok: hasObj(f.value.weather) },
-      { id: 'catches', ok: n > 0, status: n ? t('sessionForm.menu.catchesCount', { n }, n) : todo },
-      { id: 'notes', ok: !!f.value.notes }
+    const row = (id, title, sub, ok, status) => ({ id, title, sub, done: ok, status: status || (ok ? done : todo) })
+    return [
+      { id: 'main', title: t('sessionMenu.main'), rows: [
+        row('general', t('sessionMenu.general'), t('sessionMenu.generalSub'), !!f.value.date),
+        row('location', t('sessionForm.sections.location'), t('sessionForm.menu.sub.location'), !!f.value.location.name),
+        row('rating', t('sessionMenu.rating'), t('sessionMenu.ratingSub'), f.value.rating > 0, f.value.rating > 0 ? `${f.value.rating}/5` : t('sessionMenu.ratingNone'))
+      ] },
+      { id: 'other', title: t('sessionMenu.other'), rows: [
+        row('waterweather', t('sessionMenu.waterWeather'), t('sessionMenu.waterWeatherSub'), hasObj(f.value.sea) || hasObj(f.value.weather)),
+        row('visibility', t('sessionMenu.visibility'), t('sessionMenu.sheetTitle'), true, t(`sessionForm.visibility.${f.value.visibility || 'private'}`)),
+        row('notes', t('sessionMenu.notes'), t('sessionMenu.notesSub'), !!f.value.notes, f.value.notes ? done : t('sessionMenu.notesEmpty'))
+      ] }
     ]
-    return rows.map(r => ({
-      id: r.id, title: sectionLabel(r.id), sub: t(`sessionForm.menu.sub.${r.id}`),
-      done: r.ok, status: r.status || (r.ok ? done : todo)
-    }))
   })
 
   // ─── Costanti ─────────────────────────────────────────────────────────────────
@@ -604,7 +649,7 @@
   let geocodeTimer = null
 
   const canAutoFill = computed(() => !!f.value.date)
-  const showAutofill = computed(() => !menuMode.value || ['location', 'water', 'weather'].includes(activeSection.value))
+  const showAutofill = computed(() => !menuMode.value || ['location', 'waterweather'].includes(activeSection.value))
 
   // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -820,6 +865,14 @@
   watch(() => f.value.location.name, v => { if (v?.trim()) essErr.value.where = false })
   watch(() => f.value.date, v => { if (v) essErr.value.date = false })
 
+  // «Uscire senza salvare?»: confronto con lo stato di partenza (si ferma al primo submit)
+  const formSnap = () => JSON.stringify(f.value)
+  const baseSnap = ref('')
+  useUnsavedGuard(() => baseSnap.value !== '' && formSnap() !== baseSnap.value)
+  onMounted(() => nextTick(() => { baseSnap.value = formSnap() }))
+  // Se il salvataggio fallisce i dati restano e l'uscita torna a chiedere conferma
+  watch(() => props.error, e => { if (e) { baseSnap.value = JSON.stringify(defaultForm()) + '#' } })
+
   function handleSubmit() {
     // Campo obbligatorio vuoto: apre la sezione e porta lì l'utente, con
     // messaggio chiaro (altrimenti il browser non può evidenziare un campo
@@ -843,6 +896,7 @@
     const payload = JSON.parse(JSON.stringify(f.value))
     if (!payload.location.coords?.lat && !payload.location.coords?.lng) delete payload.location.coords
     if (payload.visibility !== 'group') payload.allowedGroups = []
+    baseSnap.value = formSnap()
     emit('submit', payload, catchesRef.value?.pendingPhotosByIndex, { concluded: props.mode === 'essential' && concluded.value })
   }
 </script>
@@ -1012,6 +1066,19 @@
     }
   }
 
+  .menu-group { display: flex; flex-direction: column; gap: 10px; margin-top: 18px; }
+  .menu-group-title { font-size: 13px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--text-muted); margin: 0 2px; }
+  .menu-status.fl-mono { font-size: 13px; }
+  .menu-row:focus-visible, .vis-opt:focus-visible, .status-retry:focus-visible { outline: 2px solid rgb(var(--color-ocean-text)); outline-offset: 2px; }
+  .vis-sheet { display: flex; flex-direction: column; gap: 14px; }
+  .vis-title { font-size: 22px; font-weight: 800; margin: 6px 0 0; color: var(--foam); }
+  .vis-opts { display: flex; flex-direction: column; gap: 8px; }
+  .vis-opt { display: flex; flex-direction: column; gap: 2px; text-align: left; min-height: 64px; padding: 12px 14px; background: var(--surface); border: 1px solid var(--border); border-radius: 16px; color: var(--foam); cursor: pointer; }
+  .vis-opt small { color: var(--text-muted); font-size: 13px; }
+  .vis-opt.on { border-color: rgb(var(--color-ocean-text)); background: rgba(14, 165, 233, .1); }
+  .form-status { display: flex; align-items: center; flex-wrap: wrap; gap: .5rem; padding: 10px 16px; font-size: 14px; font-weight: 600; color: rgb(var(--color-danger-text)); }
+  .form-status.off { color: var(--foam); }
+  .status-retry { margin-left: auto; min-height: 44px; padding: 0 14px; background: none; border: 1px solid currentColor; border-radius: 10px; color: inherit; font-weight: 700; cursor: pointer; }
   .form-actions-inner {
     display: flex;
     gap: .75rem;
