@@ -47,9 +47,10 @@
       <StaggerList class="wx-page">
         <div :style="{ '--i': 0 }" class="wx-grid wx-grid-2">
           <WeatherNow :view="store.data" />
-          <WeatherSea :view="store.data" :now-iso="nowIso" />
+          <WeatherSea :view="store.data" :now-iso="nowIso" :today="today" />
         </div>
         <div :style="{ '--i': 1 }"><WeatherGlance :view="store.data" /></div>
+        <div :style="{ '--i': 2 }"><WeatherPressure :view="store.data" :today="today" /></div>
         <div :style="{ '--i': 2 }"><WeatherHourly :view="store.data" :today="today" /></div>
         <div :style="{ '--i': 3 }"><WeatherDaily :view="store.data" :today="today" /></div>
         <div :style="{ '--i': 4 }"><CompareForecast /></div>
@@ -74,6 +75,7 @@ import WeatherSkeleton from '../components/weather/WeatherSkeleton.vue'
 import WeatherNow from '../components/weather/WeatherNow.vue'
 import WeatherSea from '../components/weather/WeatherSea.vue'
 import WeatherGlance from '../components/weather/WeatherGlance.vue'
+import WeatherPressure from '../components/weather/WeatherPressure.vue'
 import WeatherHourly from '../components/weather/WeatherHourly.vue'
 import WeatherDaily from '../components/weather/WeatherDaily.vue'
 import CompareForecast from '../components/weather/CompareForecast.vue'

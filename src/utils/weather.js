@@ -351,6 +351,29 @@ export function longDate(date) {
   return Number.isNaN(d.getTime()) ? MISSING : `${LONG_DAYS[d.getUTCDay()]} ${d.getUTCDate()} ${MONTHS[d.getUTCMonth()]}`
 }
 
+// ── Grafici scorrevoli ────────────────────────────────────────────────────────
+// Asse del tempo per i grafici lunghi (fino a 7 giorni): una tacca ogni 6 ore e una riga a ogni mezzanotte col nome del giorno.
+// `times` sono ISO locali del luogo; ogni punto sta a `px` pixel dal precedente.
+export function hourAxis(times, today = '', px = 7) {
+  const ticks = [], days = []
+  ;(Array.isArray(times) ? times : []).forEach((t, i) => {
+    const m = typeof t === 'string' && t.match(/^(\d{4}-\d{2}-\d{2})T(\d{2})/)
+    if (!m) return
+    const h = Number(m[2])
+    if (h % 6 === 0) ticks.push({ x: i * px, label: `${m[2]}`, midnight: h === 0 })
+    if (h === 0 || i === 0) days.push({ x: i * px, label: dayLabel(m[1], today), start: h === 0 })
+  })
+  return { ticks, days }
+}
+// Serie oraria della pressione dalle righe orarie: solo i punti con valore; vuota se meno di 2. Restituisce minimo e massimo.
+export function pressureSeries(rows) {
+  const pts = (Array.isArray(rows) ? rows : []).filter(h => h?.time && isNum(h.pressure)).map(h => ({ time: h.time, value: h.pressure }))
+  if (pts.length < 2) return { points: [], min: null, max: null, minIndex: -1, maxIndex: -1 }
+  let minIndex = 0, maxIndex = 0
+  pts.forEach((p, i) => { if (p.value < pts[minIndex].value) minIndex = i; if (p.value > pts[maxIndex].value) maxIndex = i })
+  return { points: pts, min: pts[minIndex].value, max: pts[maxIndex].value, minIndex, maxIndex }
+}
+
 // Striscia oraria scorrevole: tutte le ore date dal server (fino a 7 giorni). Alla prima ora di un nuovo giorno
 // si aggiunge `dayLabel` («Gio 13»), che la scheda mostra come separatore. L'alba/il tramonto sono quelli del giorno dell'ora.
 const DAY_NAMES = ['Dom', 'Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab']
