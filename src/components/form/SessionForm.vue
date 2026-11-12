@@ -439,7 +439,7 @@
   import { useI18n } from 'vue-i18n'
   import { useGroupStore } from '../../stores/groups.js'
   import { useAuthStore } from '../../stores/auth.js'
-  import { RouterLink } from 'vue-router'
+  import { RouterLink, onBeforeRouteLeave } from 'vue-router'
   import { storeToRefs } from 'pinia'
   import LocationPicker from './LocationPicker.vue'
   import PlaceInput from './PlaceInput.vue'
@@ -858,6 +858,11 @@
     // richiesta esplicita ("Modifica altri dati" da OngoingCatchForm). In
     // entrambi i casi tutte le sezioni aperte per la revisione/modifica.
     openSections.value = new Set(ALL_SECTIONS)
+    // Dati appena caricati: non devono far partire geocoding/ricalcoli automatici
+    // (cambierebbero il form e farebbero comparire «Uscire senza salvare?» senza modifiche).
+    const { lat, lng } = f.value.location.coords
+    if (lat && lng) appliedKey = `${lat},${lng}`
+    if (f.value.location.name) skipNameGeocode = true
   }, { immediate: true })
 
   const catchesRef = ref(null)
@@ -868,6 +873,11 @@
   // «Uscire senza salvare?»: confronto con lo stato di partenza (si ferma al primo submit)
   const formSnap = () => JSON.stringify(f.value)
   const baseSnap = ref('')
+  // Dentro una sezione, «indietro» (freccia o gesto) torna al menu dell'uscita invece di uscire dalla pagina
+  onBeforeRouteLeave(() => {
+    if (menuMode.value && activeSection.value) { activeSection.value = null; return false }
+    return true
+  })
   useUnsavedGuard(() => baseSnap.value !== '' && formSnap() !== baseSnap.value)
   onMounted(() => nextTick(() => { baseSnap.value = formSnap() }))
   // Se il salvataggio fallisce i dati restano e l'uscita torna a chiedere conferma
