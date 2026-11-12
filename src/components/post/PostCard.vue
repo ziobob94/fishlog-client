@@ -50,9 +50,10 @@
     </div>
 
     <div class="action-row">
-      <LikeButton :liked="isLiked" @toggle="$emit('like', post)" />
-      <button v-if="post.type !== 'event'" type="button" class="act-btn" :aria-label="t('posts.comment')" @click="showComments = !showComments">
+      <LikeButton :liked="isLiked" :count="post.likes?.length || 0" @toggle="$emit('like', post)" />
+      <button v-if="post.type !== 'event'" type="button" class="act-btn act-count" :aria-label="t('posts.comment')" :aria-expanded="showComments" @click="showComments = !showComments">
         <MessageCircle :size="24" />
+        <span class="font-mono act-n">{{ post.comments?.length || 0 }}</span>
       </button>
       <button type="button" class="act-btn" :aria-label="t('posts.share')" @click="share">
         <Send :size="24" />
@@ -63,7 +64,6 @@
     </div>
 
     <div class="post-text">
-      <span class="likes-label">{{ t('posts.likesCount', { n: post.likes?.length || 0 }, post.likes?.length || 0) }}</span>
       <template v-if="post.media?.length">
       <h3 v-if="post.title" class="post-title">{{ post.title }}</h3>
       <p class="post-body"><strong>{{ post.author?.displayName || post.author?.email }}</strong> {{ post.body }}</p>
@@ -433,10 +433,11 @@ const featuredCatch = computed(() => {
 
   .action-row { @apply flex items-center -ml-2.5; }
   .act-btn { @apply flex items-center justify-center w-11 h-11 bg-transparent border-none text-foam cursor-pointer; }
+  .act-btn.act-count { @apply w-auto min-w-[48px] gap-1.5 font-bold; }
+  .act-n { @apply text-base; min-width: 2ch; text-align: left; font-variant-numeric: tabular-nums; }
   .act-btn.liked, .act-btn.saved { @apply text-sand-text; }
 
   .post-text { @apply flex flex-col gap-1.5; }
-  .likes-label { @apply text-sm font-bold text-foam; }
   .post-lead { @apply flex flex-col gap-2 pt-1; }
   .post-lead-body { @apply text-[17px] leading-relaxed text-foam whitespace-pre-wrap break-words; }
   .post-lead .post-title { @apply text-lg; }
