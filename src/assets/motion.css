@@ -169,3 +169,17 @@ html, body { overflow-x: clip; }       /* la scivolata di 24 px delle pagine non
 :root[data-motion='reduce'] .m-skeleton, :root[data-motion='reduce'] .m-bobber, :root[data-motion='reduce'] .m-story-ring-loading { animation: none; }
 :root[data-motion='reduce'] .m-spinner { animation: m-pulse 1600ms ease-in-out infinite; border-right-color: currentColor; }
 :root[data-motion='reduce'] .m-pop, :root[data-motion='reduce'] .m-pop-s, :root[data-motion='reduce'] .m-ripple::after { animation: none; }
+
+/* ───────── Accordion (Home: meteo e «Le tue pescate») ─────────
+   Eccezione alla regola 1: qui l'altezza si anima con grid-template-rows 0fr → 1fr, l'unico modo di aprire un contenuto di
+   altezza ignota senza JavaScript. Il contenuto chiuso è `inert` (fuori da focus e lettore di schermo) e `visibility:hidden`.
+   Con movimento ridotto il cambio è immediato. */
+.m-collapse { display: grid; grid-template-rows: 0fr; visibility: hidden;
+  transition: grid-template-rows var(--motion-base) var(--ease-exit), visibility 0s linear var(--motion-base); }
+.m-collapse.is-open { grid-template-rows: 1fr; visibility: visible;
+  transition: grid-template-rows var(--motion-slow) var(--ease-enter), visibility 0s; }
+.m-collapse > .m-collapse-in { overflow: hidden; min-height: 0; }
+@media (prefers-reduced-motion: reduce) {
+  :root:not([data-motion='full']) .m-collapse, :root:not([data-motion='full']) .m-collapse.is-open { transition: none; }
+}
+:root[data-motion='reduce'] .m-collapse, :root[data-motion='reduce'] .m-collapse.is-open { transition: none; }
