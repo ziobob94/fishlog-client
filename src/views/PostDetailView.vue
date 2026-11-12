@@ -7,6 +7,7 @@
     </div>
     <PostCard
       v-else
+      class="post-detail-card"
       :post="post"
       @delete="onDelete"
       @close-event="p => store.setEventStatus(p._id, 'closed')"
@@ -39,3 +40,8 @@ const post = computed(() => (store.current?._id === route.params.id ? store.curr
 onMounted(() => { store.current = null; store.fetchPost(route.params.id) })
 async function onDelete(p) { await store.deletePost(p._id); router.back() }
 </script>
+
+<style scoped>
+/* Il PostCard mette un border-t quando non è :first-child (feed); qui segue PageHeader, quindi il bordo duplicherebbe quello dell'header. */
+.post-detail-card { @apply border-t-0 pt-0; }
+</style>
