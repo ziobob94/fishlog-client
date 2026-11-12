@@ -1118,7 +1118,6 @@
 		"like": "Mi piace",
 		"comment": "Commenta",
 		"share": "Condividi",
-		"likesCount": "{n} mi piace | {n} mi piace | {n} mi piace",
 		"viewComments": "Vedi il commento | Vedi tutti i {n} commenti",
 		"addComment": "Aggiungi un commento",
 		"time": {
