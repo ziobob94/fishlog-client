@@ -24,7 +24,7 @@ function toggle() {
 </script>
 
 <style scoped>
-.like { min-width: 44px; min-height: 44px; padding: 0 6px 0 10px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; border: 0; background: transparent; color: rgb(var(--color-foam)); font-size: 14px; font-weight: 600; }
+.like { min-width: 44px; min-height: 44px; padding: 0 2px 0 10px; display: inline-flex; align-items: center; justify-content: center; gap: 4px; border: 0; background: transparent; color: rgb(var(--color-foam)); font-size: 13px; font-weight: 500; }
 .like-ic { position: relative; display: inline-flex; }
 .like-n { min-width: 1ch; line-height: 1; font-variant-numeric: tabular-nums; }
 </style>
