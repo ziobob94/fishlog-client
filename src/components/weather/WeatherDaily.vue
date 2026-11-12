@@ -87,5 +87,6 @@ function onKey(e) {
 .wx-dtemp { font-size: .95rem; font-weight: 700; white-space: nowrap; }
 .wx-dgo { color: rgb(var(--color-muted)); }
 .wx-dsplit { display: flex; align-items: center; gap: 10px; margin: 8px 0; font-size: .74rem; font-weight: 700; color: rgb(var(--color-muted)); text-transform: uppercase; letter-spacing: .05em; }
+.wx-dsplit + li .wx-drow { border-top: 0; }
 .wx-dsplit::before, .wx-dsplit::after { content: ''; flex: 1; border-top: 2px dashed rgb(var(--color-border)); }
 </style>
