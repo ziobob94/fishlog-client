@@ -372,6 +372,7 @@ export function pressureSeries(rows) {
   let minIndex = 0, maxIndex = 0
   pts.forEach((p, i) => { if (p.value < pts[minIndex].value) minIndex = i; if (p.value > pts[maxIndex].value) maxIndex = i })
   return { points: pts, min: pts[minIndex].value, max: pts[maxIndex].value, minIndex, maxIndex }
+}
 
 // Striscia oraria scorrevole: tutte le ore date dal server (fino a 7 giorni). Alla prima ora di un nuovo giorno
 // si aggiunge `dayLabel` («Gio 13»), che la scheda mostra come separatore. L'alba/il tramonto sono quelli del giorno dell'ora.
