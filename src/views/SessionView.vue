@@ -26,9 +26,9 @@
         <button type="button" class="hero-btn hero-back" :aria-label="t('common.back')" @click="router.push('/sessions')"><ChevronLeft :size="22" /></button>
         <RouterLink v-if="isOwner" :to="`/session/${session._id}/edit`" class="hero-btn hero-edit" :aria-label="t('groups.editAction')"><Pencil :size="18" /></RouterLink>
         <span v-if="media.length" class="fl-mono hero-count">{{ slideIndex + 1 }}/{{ media.length }} {{ t('session.view.photoWord') }}</span>
-        <div class="hero-ticks" aria-hidden="true"></div>
+        <div v-if="!media.length" class="hero-ticks" aria-hidden="true"></div>
         <StampBadge v-if="session.record" class="d-stamp" title="RECORD" :value="session.record.lengthCm" unit="cm" :size="80" />
-        <div class="hero-major" aria-hidden="true"></div>
+        <div v-if="!media.length" class="hero-major" aria-hidden="true"></div>
       </section>
 
       <div class="d-body">
@@ -297,12 +297,13 @@ async function doDelete() {
 .slider { display: flex; height: 100%; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; }
 .slider::-webkit-scrollbar { display: none; }
 .slide { flex: 0 0 100%; scroll-snap-align: center; height: 100%; }
-.slide img, .slide video { width: 100%; height: 100%; object-fit: cover; display: block; }
+.slide { background: rgb(var(--color-ink)); }
+.slide img, .slide video { width: 100%; height: 100%; object-fit: contain; display: block; }
 .hero-empty { height: 100%; display: flex; align-items: center; justify-content: center; color: rgb(var(--color-ocean-text) / .45); }
 .hero-btn { position: absolute; top: 14px; width: 44px; height: 44px; border-radius: 14px; background: rgb(var(--color-ink) / .72); border: 1px solid var(--border); color: var(--foam); display: flex; align-items: center; justify-content: center; cursor: pointer; text-decoration: none; backdrop-filter: blur(6px); }
 .hero-back { left: 14px; }
 .hero-edit { right: 14px; }
-.hero-count { position: absolute; left: 14px; bottom: 40px; font-size: 12px; padding: 5px 10px; border-radius: 12px; background: rgb(var(--color-ink) / .75); color: var(--foam); }
+.hero-count { position: absolute; left: 14px; bottom: 14px; font-size: 12px; padding: 5px 10px; border-radius: 12px; background: rgb(var(--color-ink) / .75); color: var(--foam); }
 .hero-ticks { position: absolute; left: 12px; right: 12px; bottom: 10px; height: 10px; pointer-events: none; background: repeating-linear-gradient(90deg, rgba(241,245,249,.85) 0 2px, transparent 2px 10px); }
 .hero-major { position: absolute; left: 12px; right: 12px; bottom: 10px; height: 18px; pointer-events: none; background: repeating-linear-gradient(90deg, rgb(var(--color-sand-text)) 0 2px, transparent 2px 50px); }
 

@@ -461,7 +461,7 @@ const featuredCatch = computed(() => {
   .linked-text { @apply flex flex-col min-w-0; }
   .linked-label { @apply text-xs font-bold uppercase text-ocean-text; letter-spacing: 0.14em; }
   .media-thumb {
-    @apply w-full object-cover cursor-pointer block bg-surface-2;
+    @apply w-full object-contain cursor-pointer block bg-ink;
     height: min(390px, 100vw);
   }
 
