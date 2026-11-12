@@ -1,8 +1,8 @@
 <template>
   <div class="audio-msg">
     <button type="button" class="audio-play" :aria-label="playing ? 'Pausa' : 'Riproduci'" @click="toggle">
-      <Pause v-if="playing" :size="22" fill="currentColor" />
-      <Play v-else :size="22" fill="currentColor" />
+      <Pause v-if="playing" :size="18" fill="currentColor" />
+      <Play v-else :size="18" fill="currentColor" />
     </button>
     <div class="audio-wave" aria-hidden="true">
       <span v-for="(h, i) in bars" :key="i" :class="{ played: i / bars.length < progress }" :style="{ height: h + 'px' }"></span>
@@ -28,9 +28,9 @@
   const bars = computed(() => {
     let h = 7
     for (const c of props.seed || 'x') h = (h * 31 + c.charCodeAt(0)) >>> 0
-    return Array.from({ length: 28 }, () => {
+    return Array.from({ length: 20 }, () => {
       h = (h * 1664525 + 1013904223) >>> 0
-      return 8 + (h % 28)
+      return 6 + (h % 18)
     })
   })
 
@@ -58,10 +58,10 @@
 </script>
 
 <style scoped>
-  .audio-msg { @apply grid items-center gap-x-3 gap-y-0.5; grid-template-columns: auto 1fr; min-width: 220px; }
-  .audio-play { @apply flex items-center justify-center w-11 h-11 rounded-full bg-ocean text-on-primary border-none cursor-pointer; }
-  .audio-wave { @apply flex items-center gap-[3px] h-10; }
-  .audio-wave span { @apply w-[3px] rounded-full bg-ocean-text/50; }
+  .audio-msg { @apply grid items-center gap-x-2 gap-y-0; grid-template-columns: auto 1fr; min-width: 160px; }
+  .audio-play { @apply flex items-center justify-center w-9 h-9 rounded-full bg-ocean text-on-primary border-none cursor-pointer; }
+  .audio-wave { @apply flex items-center gap-[2px] h-7; }
+  .audio-wave span { @apply w-[2px] rounded-full bg-ocean-text/50; }
   .audio-wave span.played { @apply bg-ocean-text; }
   .audio-time { @apply font-mono text-[0.7rem] text-muted; grid-column: 1; }
 </style>
