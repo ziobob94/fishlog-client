@@ -1,3 +1,10 @@
+## [1.69.2](https://github.com/ziobob94/fishlog-client/compare/client-v1.69.1...client-v1.69.2) (2026-11-12)
+
+
+### Bug Fixes
+
+* **social:** apri i commenti sopra la barra in basso ([b7d4151](https://github.com/ziobob94/fishlog-client/commit/b7d415183e4c4df90ceeb71dac61c24eeadc1bfe))
+
 ## [1.69.1](https://github.com/ziobob94/fishlog-client/compare/client-v1.69.0...client-v1.69.1) (2026-11-12)
 
 
