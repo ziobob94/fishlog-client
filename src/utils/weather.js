@@ -308,23 +308,22 @@ export const hasHourlyDetail = (view, date) => {
 // ── Striscia oraria continua ──────────────────────────────────────────────────
 // Dalle ore ricevute (la prima è l'ora corrente) costruisce un'unica sequenza di `n` ore con:
 //  - una colonna divisore («Gio 12») quando cambia il giorno, anche all'inizio;
-//  - le colonne Alba e Tramonto subito dopo l'ora in cui avvengono (orari locali del luogo, da daily.sunrise/sunset).
+//  - alba e tramonto come marcatore `sun` sulla colonna dell'ora in cui avvengono, con `frac` = minuti/60 per posizionarlo (orari locali, da daily.sunrise/sunset).
 export function buildHourStream(view, n = 24) {
   const hours = (Array.isArray(view?.hourly) ? view.hourly : []).filter(h => h?.date && isNum(h.hour)).slice(0, n)
   const events = new Map()
   for (const d of Array.isArray(view?.daily) ? view.daily : []) {
     for (const [kind, iso] of [['sunrise', d.sunrise], ['sunset', d.sunset]]) {
       const m = typeof iso === 'string' && iso.match(/^(\d{4}-\d{2}-\d{2})T(\d{2}):(\d{2})/)
-      if (m) events.set(`${m[1]}T${m[2]}`, { type: kind, time: `${m[2]}:${m[3]}`, date: m[1] })
+      if (m) events.set(`${m[1]}T${m[2]}`, { type: kind, time: `${m[2]}:${m[3]}`, date: m[1], frac: Number(m[3]) / 60 })
     }
   }
   const out = []
   let lastDate = null
   hours.forEach((h, i) => {
     if (h.date !== lastDate) { out.push({ type: 'day', date: h.date, key: `day-${h.date}` }); lastDate = h.date }
-    out.push({ type: 'hour', row: h, key: h.time || `h-${i}` })
-    const ev = events.get(`${h.date}T${String(h.hour).padStart(2, '0')}`)
-    if (ev) out.push({ ...ev, key: `${ev.type}-${ev.date}` })
+    const sun = events.get(`${h.date}T${String(h.hour).padStart(2, '0')}`) || null
+    out.push({ type: 'hour', row: h, key: h.time || `h-${i}`, sun })
   })
   return out
 }
