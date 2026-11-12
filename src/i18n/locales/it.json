@@ -1119,6 +1119,7 @@
 		"comment": "Commenta",
 		"share": "Condividi",
 		"viewComments": "Vedi il commento | Vedi tutti i {n} commenti",
+		"hideComments": "Nascondi commenti | Nascondi commento | Nascondi commenti",
 		"addComment": "Aggiungi un commento",
 		"time": {
 			"now": "ora",
