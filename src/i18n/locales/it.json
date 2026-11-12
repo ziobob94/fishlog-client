@@ -1873,6 +1873,10 @@
 			"noTrend": "Tendenza non disponibile",
 			"unavailable": "Tendenza non disponibile: senza questo dato non possiamo darti una lettura.",
 			"chartLabel": "Pressione delle ultime ore, {n} rilevazioni",
+			"title": "Pressione",
+			"scrollHint": "Scorri il grafico per vedere i prossimi giorni. hPa = ettopascal.",
+			"rangeNote": "Da {min} a {max} hPa nel periodo",
+			"scrollAria": "Pressione oraria, {n} ore: da {min} a {max} hPa. Grafico scorrevole in orizzontale",
 			"read": {
 				"falling": "Un calo di pressione spesso accompagna un cambio di tempo. È uno spunto, non una previsione.",
 				"steady": "Pressione senza grandi variazioni: condizioni che tendono a restare simili. Lettura indicativa.",
@@ -1893,12 +1897,12 @@
 			"high": "Alta",
 			"low": "Bassa",
 			"tideNote": "Stima del modello (livello del mare), non una tabella delle maree: nel Mediterraneo l'escursione è piccola. Non usarla per la navigazione.",
-			"tideAria": "Maree stimate nelle prossime 48 ore: {summary}",
+			"tideAria": "Maree stimate (grafico scorrevole), prossime: {summary}",
 			"noExtremes": "nessun massimo o minimo previsto",
 			"none": "Qui non ci sono dati sul mare. Per laghi, fiumi e zone interne mostriamo solo il meteo.",
-			"waves": "Altezza dell'onda · prossime 48 h",
+			"waves": "Altezza dell'onda · scorri per i prossimi giorni",
 			"waveMax": "Massimo {h} m alle {time}",
-			"waveAria": "Altezza dell'onda nelle prossime 48 ore: da {first} m a {last} m, massimo {max} m alle {time}",
+			"waveAria": "Altezza dell'onda nelle prossime ore (grafico scorrevole): da {first} m a {last} m, massimo {max} m alle {time}",
 			"noTides": "Maree non disponibili per questo luogo: il modello non copre questo punto."
 		},
 		"glance": {
