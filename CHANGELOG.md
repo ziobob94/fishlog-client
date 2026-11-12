@@ -1,3 +1,10 @@
+## [1.62.2](https://github.com/ziobob94/fishlog-client/compare/client-v1.62.1...client-v1.62.2) (2026-11-12)
+
+
+### Bug Fixes
+
+* **chat:** il vocale parte al primo tocco (stato play legato agli eventi dell'audio) ([4eb536e](https://github.com/ziobob94/fishlog-client/commit/4eb536e0122cbe7466351aaaee94d313ca668bee))
+
 ## [1.62.1](https://github.com/ziobob94/fishlog-client/compare/client-v1.62.0...client-v1.62.1) (2026-11-12)
 
 
