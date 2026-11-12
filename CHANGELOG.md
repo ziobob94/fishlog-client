@@ -1,3 +1,10 @@
+## [1.68.1](https://github.com/ziobob94/fishlog-client/compare/client-v1.68.0...client-v1.68.1) (2026-11-12)
+
+
+### Bug Fixes
+
+* **menu:** chiudi i menu a comparsa con tap fuori ed Esc ([b5261ac](https://github.com/ziobob94/fishlog-client/commit/b5261ac55d78e8968e31fabf1ed3402e0910fd6c))
+
 # [1.68.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.67.1...client-v1.68.0) (2026-11-12)
 
 
