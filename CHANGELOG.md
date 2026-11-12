@@ -1,3 +1,10 @@
+## [1.70.1](https://github.com/ziobob94/fishlog-client/compare/client-v1.70.0...client-v1.70.1) (2026-11-12)
+
+
+### Bug Fixes
+
+* **social:** avatar dei commenti tondo e non schiacciato ([#141](https://github.com/ziobob94/fishlog-client/issues/141)) ([8b0c2e4](https://github.com/ziobob94/fishlog-client/commit/8b0c2e479496970ce37ae4f769e5caed20f4212e))
+
 # [1.70.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.69.2...client-v1.70.0) (2026-11-12)
 
 
