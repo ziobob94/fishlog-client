@@ -289,14 +289,20 @@
 			"friend_accept": "{name} ha accettato la tua richiesta di amicizia",
 			"chat_message": "Nuovo messaggio da {name}",
 			"post_like": "{name} ha messo mi piace a un tuo post",
-			"post_comment": "{name} ha commentato un tuo post"
+			"post_comment": "{name} ha commentato un tuo post",
+			"comment_like": "{name} ha messo mi piace a un tuo commento",
+			"comment_reply": "{name} ha risposto a un tuo commento",
+			"comment_reaction": "{name} ha reagito a un tuo commento"
 		},
 		"messages": {
 			"friend_request": "ti ha inviato una richiesta di amicizia",
 			"friend_accept": "ha accettato la tua richiesta di amicizia",
 			"chat_message": "ti ha inviato un nuovo messaggio",
 			"post_like": "ha messo mi piace al tuo post",
-			"post_comment": "ha commentato il tuo post"
+			"post_comment": "ha commentato il tuo post",
+			"comment_like": "ha messo mi piace al tuo commento",
+			"comment_reply": "ha risposto al tuo commento",
+			"comment_reaction": "ha reagito al tuo commento"
 		},
 		"groups": {
 			"new": "Nuove",
@@ -1124,7 +1130,15 @@
 		"eventBadge": "Evento",
 		"comments": {
 			"placeholder": "Scrivi un commento...",
-			"send": "Invia"
+			"send": "Invia",
+			"reply": "Rispondi",
+			"replyingTo": "Rispondi a {name}",
+			"cancelReply": "Annulla risposta",
+			"like": "Mi piace al commento",
+			"unlike": "Non mi piace più",
+			"react": "Reagisci al commento",
+			"reactWith": "Reagisci con {emoji}",
+			"delete": "Elimina commento"
 		},
 		"visibility": {
 			"public": "Pubblico",

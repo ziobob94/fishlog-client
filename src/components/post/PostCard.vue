@@ -197,29 +197,25 @@
     </button>
 
     <div v-if="post.type !== 'event' && showComments" class="comments-block">
-      <div v-if="post.comments?.length" class="comments-list">
-        <div v-for="c in post.comments" :key="c._id" class="comment-row">
-          <RouterLink v-if="c.user?._id" :to="`/users/${c.user._id}`" class="post-author-link">
-            <img v-if="c.user?.avatar" :src="c.user.avatar" class="mini-avatar" />
-            <span v-else class="mini-placeholder">{{ initials(c.user) }}</span>
-          </RouterLink>
-          <template v-else>
-            <img v-if="c.user?.avatar" :src="c.user.avatar" class="mini-avatar" />
-            <span v-else class="mini-placeholder">{{ initials(c.user) }}</span>
-          </template>
-          <div class="comment-body">
-            <span class="text-sm"><RouterLink v-if="c.user?._id" :to="`/users/${c.user._id}`" class="comment-author"><strong>{{ c.user?.displayName || c.user?.email }}</strong></RouterLink><strong v-else>{{ c.user?.displayName || c.user?.email }}</strong> {{ c.message }}</span>
-            <span class="comment-time text-muted">{{ formatDate(c.createdAt) }}</span>
-          </div>
-          <button
-            v-if="c.user?._id === auth.user?._id || isAuthor"
-            class="btn btn-ghost btn-sm comment-remove"
-            @click="$emit('delete-comment', post, c)"
-          ><X :size="12" /></button>
-        </div>
+      <div v-if="threads.length" class="comments-list">
+        <template v-for="th in threads" :key="th.root._id">
+          <CommentItem
+            :c="th.root" :can-delete="canDeleteComment(th.root)" :format-date="formatDate"
+            @reply="startReply" @like="likeComment" @react="reactComment" @delete="c => $emit('delete-comment', post, c)"
+          />
+          <CommentItem
+            v-for="r in th.replies" :key="r._id" :c="r" is-reply :can-delete="canDeleteComment(r)" :format-date="formatDate"
+            @reply="startReply" @like="likeComment" @react="reactComment" @delete="c => $emit('delete-comment', post, c)"
+          />
+        </template>
+      </div>
+      <div v-if="replyTarget" class="replying-to text-xs text-muted">
+        <span>{{ t('posts.comments.replyingTo', { name: replyTarget.user?.displayName || '' }) }}</span>
+        <button type="button" class="replying-cancel" :aria-label="t('posts.comments.cancelReply')" @click="replyTarget = null"><X :size="14" /></button>
       </div>
       <div class="comment-row-input">
         <input
+          ref="commentInput"
           v-model="commentText"
           type="text"
           :placeholder="t('posts.comments.placeholder')"
@@ -263,7 +259,9 @@
 import { toInitials } from '../../utils/initials.js'
 import RulerFrame from '../RulerFrame.vue'
 import AppIcon from '../AppIcon.vue'
-  import { ref, reactive, computed, watch } from 'vue'
+  import { ref, reactive, computed, watch, nextTick } from 'vue'
+  import CommentItem from './CommentItem.vue'
+  import { usePostStore } from '../../stores/posts.js'
   import { useI18n } from 'vue-i18n'
   import { RouterLink } from 'vue-router'
   import { MapPin, Calendar, Heart, MessageCircle, X, Users, Trash2, Send, MoreHorizontal, ChevronRight, Bookmark } from 'lucide-vue-next'
@@ -277,6 +275,27 @@ import AppIcon from '../AppIcon.vue'
   const auth = useAuthStore()
   const responseText = ref('')
   const commentText = ref('')
+  const commentInput = ref(null)
+  const replyTarget = ref(null)
+  const posts = usePostStore()
+  const me = computed(() => String(auth.user?._id || auth.user?.id || ''))
+  // Un livello: radici in ordine cronologico, risposte raggruppate sotto la radice
+  const threads = computed(() => {
+    const all = props.post.comments || []
+    const roots = all.filter(c => !c.parent)
+    return roots.map(root => ({ root, replies: all.filter(c => String(c.parent) === String(root._id)) }))
+  })
+  const canDeleteComment = c => String(c.user?._id) === me.value || isAuthor.value
+  function startReply(c) {
+    replyTarget.value = c
+    nextTick(() => commentInput.value?.focus())
+  }
+  async function likeComment(c) {
+    try { c.likes = (await posts.toggleCommentLike(props.post._id, c._id)).likes } catch { /* ritenta al prossimo tap */ }
+  }
+  async function reactComment(c, emoji) {
+    try { c.reactions = (await posts.reactToComment(props.post._id, c._id, emoji)).reactions } catch { /* ritenta */ }
+  }
   const showComments = ref(false)
   const showAttendees = ref(false)
   const showResponses = ref(false)
@@ -363,8 +382,9 @@ return toInitials(name)
 
   function submitComment() {
     if (!commentText.value.trim()) return
-    emit('comment', props.post, commentText.value)
+    emit('comment', props.post, commentText.value, replyTarget.value?._id)
     commentText.value = ''
+    replyTarget.value = null
   }
 
 const featuredCatch = computed(() => {
@@ -654,6 +674,9 @@ const featuredCatch = computed(() => {
   .comment-row-input {
     @apply flex gap-2;
   }
+
+  .replying-to { @apply flex items-center justify-between; }
+  .replying-cancel { @apply inline-flex items-center justify-center min-w-[44px] min-h-[44px] bg-transparent border-none text-muted cursor-pointer; }
 
   .comment-row-input input {
     @apply text-sm flex-1 rounded-full px-4;

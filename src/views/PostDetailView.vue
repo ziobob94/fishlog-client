@@ -14,7 +14,7 @@
       @respond="(p, m) => store.respond(p._id, m)"
       @like="p => store.toggleLike(p._id, auth.user?._id)"
       @save="p => store.toggleSave(p._id)"
-      @comment="(p, m) => store.addComment(p._id, m)"
+      @comment="(p, m, parent) => store.addComment(p._id, m, parent)"
       @delete-comment="(p, c) => store.deleteComment(p._id, c._id)"
       @attend="(p, s, g) => store.setAttendance(p._id, s, g)"
     />

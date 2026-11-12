@@ -31,7 +31,7 @@
               </component>
               <component :is="isLinked(n) ? RouterLink : 'div'" :to="linkFor(n)" class="row-main" @click="onOpen(n)">
                 <span class="text">
-                  <span class="msg"><strong>{{ name(n) }}</strong> {{ t(`notifications.messages.${n.type}`) }}<template v-if="n.type === 'post_comment' && n.data?.preview">: «{{ n.data.preview }}»</template></span>
+                  <span class="msg"><strong>{{ name(n) }}</strong> {{ t(`notifications.messages.${n.type}`) }}<template v-if="['post_comment', 'comment_reply'].includes(n.type) && n.data?.preview">: «{{ n.data.preview }}»</template></span>
                   <span class="time text-muted">{{ timeAgo(n.createdAt) }}</span>
                 </span>
                 <span v-if="!n.read" class="dot" :aria-label="t('notifications.unread')"></span>
@@ -78,7 +78,10 @@ const BADGES = {
   friend_accept:  { icon: 'profilo', tone: 'green' },
   chat_message:   { icon: 'community', tone: 'ocean' },
   post_comment:   { icon: 'community', tone: 'ocean' },
-  post_like:      { icon: 'mi-piace', tone: 'sand' }
+  post_like:      { icon: 'mi-piace', tone: 'sand' },
+  comment_like:   { icon: 'mi-piace', tone: 'sand' },
+  comment_reply:  { icon: 'community', tone: 'ocean' },
+  comment_reaction: { icon: 'mi-piace', tone: 'sand' }
 }
 const badge = n => BADGES[n.type] || BADGES.chat_message
 const name = n => n.actor?.displayName || n.actor?.email || ''
@@ -88,7 +91,7 @@ function linkFor(n) {
   if (n.type === 'chat_message') {
     return n.data?.conversationType === 'group' ? `/chat/group/${n.data.conversationId}` : `/chat/${n.actor?._id || ''}`
   }
-  if (n.type === 'post_like' || n.type === 'post_comment') {
+  if (['post_like', 'post_comment', 'comment_like', 'comment_reply', 'comment_reaction'].includes(n.type)) {
     // Dettaglio del post (con i commenti); le notifiche senza postId ricadono sulla bacheca.
     // Se il post è stato eliminato la pagina di dettaglio mostra "non disponibile".
     return n.data?.postId ? `/post/${n.data.postId}` : '/feed'
