@@ -35,7 +35,11 @@
       <div ref="mediaEl" class="media-scroll" @scroll.passive="onMediaScroll">
         <RulerFrame v-for="(m, i) in post.media" :key="m._id" class="media-frame" :ruler="false">
           <video v-if="isVideo(m)" :src="m.url" class="media-thumb" controls playsinline preload="metadata"></video>
-          <img v-else :src="m.url" class="media-thumb" alt="" @click="lightboxItem = m" />
+          <template v-else>
+            <!-- Letterbox: stessa foto sfocata e scurita come sfondo, la foto resta intera -->
+            <img :src="m.url" class="media-backdrop" alt="" aria-hidden="true" loading="lazy" decoding="async" />
+            <img :src="m.url" class="media-thumb media-thumb-img" alt="" @click="lightboxItem = m" />
+          </template>
           <template v-if="i === 0 && featuredCatch" #badge>
             <span class="catch-pill">{{ featuredCatch.species }}{{ featuredCatch.lengthCm ? ` ${featuredCatch.lengthCm} cm` : '' }}</span>
           </template>
@@ -464,6 +468,14 @@ const featuredCatch = computed(() => {
     @apply w-full object-contain cursor-pointer block bg-ink;
     height: min(390px, 100vw);
   }
+  /* Sfondo statico (nessuna animazione, quindi nulla da ridurre con prefers-reduced-motion).
+     Il blur viene rasterizzato una volta sola: scala 1.25 per nascondere i bordi sfumati. */
+  .media-backdrop {
+    @apply absolute inset-0 w-full h-full object-cover pointer-events-none;
+    filter: blur(24px) brightness(0.55) saturate(1.1);
+    transform: scale(1.25) translateZ(0);
+  }
+  .media-thumb-img { @apply relative bg-transparent; }
 
   .lightbox {
     @apply fixed inset-0 bg-black/90 flex items-center justify-center;
