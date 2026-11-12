@@ -16,18 +16,27 @@
         <h2 class="group-label">{{ t(`notifications.groups.${g.key}`) }}</h2>
         <ul class="list">
           <li v-for="n in g.items" :key="n._id" class="row" :class="{ unread: !n.read }">
-            <component :is="isLinked(n) ? RouterLink : 'div'" :to="linkFor(n)" class="row-main" @click="onOpen(n)">
-              <span class="avatar-wrap">
+            <div class="row-top">
+              <component
+                :is="n.actor?._id ? RouterLink : 'span'"
+                :to="n.actor?._id ? `/users/${n.actor._id}` : undefined"
+                class="avatar-wrap"
+                :class="{ 'avatar-link': n.actor?._id }"
+                :aria-label="n.actor?._id ? t('notifications.openProfile', { name: name(n) }) : undefined"
+                @click="onOpen(n)"
+              >
                 <img v-if="n.actor?.avatar" :src="n.actor.avatar" class="avatar" alt="" />
                 <span v-else class="avatar avatar-ph">{{ initials(n.actor) }}</span>
                 <span class="type-badge" :class="`tb-${badge(n).tone}`"><AppIcon :name="badge(n).icon" :size="12" stroke="2.5" /></span>
-              </span>
-              <span class="text">
-                <span class="msg"><strong>{{ name(n) }}</strong> {{ t(`notifications.messages.${n.type}`) }}<template v-if="n.type === 'post_comment' && n.data?.preview">: «{{ n.data.preview }}»</template></span>
-                <span class="time text-muted">{{ timeAgo(n.createdAt) }}</span>
-              </span>
-              <span v-if="!n.read" class="dot" :aria-label="t('notifications.unread')"></span>
-            </component>
+              </component>
+              <component :is="isLinked(n) ? RouterLink : 'div'" :to="linkFor(n)" class="row-main" @click="onOpen(n)">
+                <span class="text">
+                  <span class="msg"><strong>{{ name(n) }}</strong> {{ t(`notifications.messages.${n.type}`) }}<template v-if="n.type === 'post_comment' && n.data?.preview">: «{{ n.data.preview }}»</template></span>
+                  <span class="time text-muted">{{ timeAgo(n.createdAt) }}</span>
+                </span>
+                <span v-if="!n.read" class="dot" :aria-label="t('notifications.unread')"></span>
+              </component>
+            </div>
             <div v-if="n.type === 'friend_request' && n.data?.requestId && !done[n._id]" class="actions">
               <button type="button" class="btn btn-primary btn-sm" @click="respond(n, true)">{{ t('friends.actions.accept') }}</button>
               <button type="button" class="btn btn-secondary btn-sm" @click="respond(n, false)">{{ t('friends.actions.decline') }}</button>
@@ -119,7 +128,9 @@ function timeAgo(date) {
 .list { @apply list-none flex flex-col border-y border-border/60; }
 .row { @apply flex flex-col gap-2 py-3 px-1 border-b border-border/60 last:border-b-0; }
 .row.unread { background: rgb(var(--color-surface) / 0.6); }
-.row-main { @apply flex items-start gap-3 text-foam no-underline min-h-[44px]; }
+.row-top { @apply flex items-start gap-3; }
+.row-main { @apply flex items-start gap-3 flex-1 min-w-0 text-foam no-underline min-h-[44px]; }
+.avatar-link { @apply cursor-pointer no-underline; }
 .avatar-wrap { @apply relative shrink-0; }
 .avatar { @apply w-12 h-12 rounded-full object-cover; }
 .avatar-ph { @apply inline-flex items-center justify-center bg-surface-2 text-ocean-text font-bold text-sm; }
