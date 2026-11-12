@@ -263,7 +263,8 @@
 #app { padding-top: env(safe-area-inset-top); padding-left: env(safe-area-inset-left); padding-right: env(safe-area-inset-right); }
 /* Pagine a scroll interno: l'altezza esclude la fascia della barra di stato */
 #app > .h-dvh { height: calc(100dvh - env(safe-area-inset-top)); }
-html.lock-doc-scroll, html.lock-doc-scroll body { overflow: hidden; overscroll-behavior: none; min-height: 0; height: 100%; }
+/* Niente height:100% qui: in PWA iOS (viewport-fit=cover) accorcia il viewport e la barra fissa resta sollevata dal bordo (fascia vuota in Social/Chat). */
+html.lock-doc-scroll, html.lock-doc-scroll body { overflow: hidden; overscroll-behavior: none; min-height: 0; }
 body::before {
   content: ''; position: fixed; top: 0; left: 0; right: 0; height: env(safe-area-inset-top);
   background: rgb(var(--color-ink)); z-index: 1000; pointer-events: none;
