@@ -397,7 +397,7 @@ const featuredCatch = computed(() => {
   .post-media { @apply relative -mx-4 sm:mx-0; }
   .media-scroll { @apply flex overflow-x-auto snap-x snap-mandatory; scrollbar-width: none; }
   .media-scroll::-webkit-scrollbar { display: none; }
-  .media-frame { @apply snap-center shrink-0 w-full bg-surface-2; }
+  .media-frame { @apply snap-center shrink-0 w-full bg-surface-2 flex items-center justify-center; }
   .media-chip { @apply absolute top-3 text-xs font-bold text-foam px-2.5 py-1 rounded-full pointer-events-none; background: rgb(var(--color-ink) / 0.82); }
   .media-coords { @apply left-3 font-mono text-[0.7rem] font-medium text-ocean-text; }
   .media-count { @apply right-3; }
@@ -466,7 +466,9 @@ const featuredCatch = computed(() => {
   .linked-label { @apply text-xs font-bold uppercase text-ocean-text; letter-spacing: 0.14em; }
   .media-thumb {
     @apply w-full object-contain cursor-pointer block bg-ink;
-    height: min(390px, 100vw);
+    height: auto;
+    /* Il contenitore segue la proporzione della foto; tetto 4:5 verticale (come i social) */
+    max-height: min(125vw, 560px);
   }
   /* Sfondo statico (nessuna animazione, quindi nulla da ridurre con prefers-reduced-motion).
      Il blur viene rasterizzato una volta sola: scala 1.25 per nascondere i bordi sfumati. */
