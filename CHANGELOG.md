@@ -1,3 +1,16 @@
+# [1.69.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.68.2...client-v1.69.0) (2026-11-12)
+
+
+### Bug Fixes
+
+* **layout:** rispetta safe-area in alto e in basso nel menu laterale ([3d95185](https://github.com/ziobob94/fishlog-client/commit/3d951859eb75f921057fc8110a136c810e20b06d))
+* **meteo:** etichette dei giorni e valori massimo/minimo non si sovrappongono nei grafici scorrevoli ([f39be6a](https://github.com/ziobob94/fishlog-client/commit/f39be6a58c433b0d709ffe63491b77d7bf4d83ac))
+
+
+### Features
+
+* **social:** like, risposte e reazioni ai commenti ([be624f4](https://github.com/ziobob94/fishlog-client/commit/be624f4a07f3a37c2a10e6d561e302e8e2ce85b1))
+
 ## [1.68.2](https://github.com/ziobob94/fishlog-client/compare/client-v1.68.1...client-v1.68.2) (2026-11-12)
 
 
