@@ -1,3 +1,15 @@
+# [1.72.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.71.0...client-v1.72.0) (2026-11-12)
+
+
+### Bug Fixes
+
+* **social:** il feed scorre fino alla barra, senza fascia vuota sopra la bottom nav ([#145](https://github.com/ziobob94/fishlog-client/issues/145)) ([8f1aee4](https://github.com/ziobob94/fishlog-client/commit/8f1aee433a86d70874a88bfaa3261b3abe9f718b))
+
+
+### Features
+
+* **posts:** #hashtag cliccabili e feed filtrato per tag ([#144](https://github.com/ziobob94/fishlog-client/issues/144)) ([558f273](https://github.com/ziobob94/fishlog-client/commit/558f2734c13e7a1eae8fdd0fddac9418806a915b)), closes [#hashtag](https://github.com/ziobob94/fishlog-client/issues/hashtag) [#hashtag](https://github.com/ziobob94/fishlog-client/issues/hashtag)
+
 # [1.71.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.70.1...client-v1.71.0) (2026-11-12)
 
 
