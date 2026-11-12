@@ -1,3 +1,10 @@
+# [1.70.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.69.2...client-v1.70.0) (2026-11-12)
+
+
+### Features
+
+* **social:** contatori mi piace e commenti accanto alle azioni ([20622ed](https://github.com/ziobob94/fishlog-client/commit/20622eda833a11692b6cd81ccaacf2171a214231))
+
 ## [1.69.2](https://github.com/ziobob94/fishlog-client/compare/client-v1.69.1...client-v1.69.2) (2026-11-12)
 
 
