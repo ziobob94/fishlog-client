@@ -241,9 +241,10 @@ describe('striscia oraria continua', () => {
     hourly: [hr('2026-11-11', 22), hr('2026-11-11', 23), hr('2026-11-12', 0), hr('2026-11-12', 1), hr('2026-11-12', 6), hr('2026-11-12', 7)],
     daily: [{ date: '2026-11-12', sunrise: '2026-11-12T06:48', sunset: '2026-11-12T16:55' }],
   }
-  it('divisori di giorno e alba all\'ora giusta', () => {
-    const s = buildHourStream(view, 48).map(x => x.type === 'hour' ? x.row.hour : x.type)
-    expect(s).toEqual(['day', 22, 23, 'day', 0, 1, 6, 'sunrise', 7])
+  it('divisori di giorno e alba come marcatore sull\'ora giusta', () => {
+    const st = buildHourStream(view, 48)
+    expect(st.map(x => x.type === 'hour' ? x.row.hour : x.type)).toEqual(['day', 22, 23, 'day', 0, 1, 6, 7])
+    expect(st.find(x => x.row?.hour === 6).sun).toMatchObject({ type: 'sunrise', time: '06:48', frac: 0.8 })
   })
   it('limita a n ore e il dettaglio di oggi resta con poche ore', () => {
     expect(buildHourStream(view, 2).filter(x => x.type === 'hour')).toHaveLength(2)

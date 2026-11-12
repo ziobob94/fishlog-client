@@ -8,18 +8,22 @@
       </div>
     </div>
     <div class="wx-hours" role="region" tabindex="0" :aria-label="t('weather.hourly.regionAll', { n: span })">
-      <div class="wx-hour wx-hour-lab" aria-hidden="true"><span>{{ t('weather.hourly.lHour') }}</span><span style="height:22px"></span><span>{{ t('weather.hourly.lTemp') }}</span><span style="height:45px;display:flex;align-items:center">{{ t('weather.hourly.lWind') }}</span><span>{{ t('weather.hourly.lRain') }}</span></div>
+      <div class="wx-hour wx-hour-lab" aria-hidden="true"><span v-if="hasSun" style="height:34px"></span><span>{{ t('weather.hourly.lHour') }}</span><span style="height:22px"></span><span>{{ t('weather.hourly.lTemp') }}</span><span style="height:45px;display:flex;align-items:center">{{ t('weather.hourly.lWind') }}</span><span>{{ t('weather.hourly.lRain') }}</span></div>
       <template v-for="it in items" :key="it.key">
         <div v-if="it.type === 'day'" class="wx-hour wx-hour-day" role="note">
           <span class="wx-hday">{{ dayLabel(it.date, today) }}</span>
           <span class="wx-num wx-hdnum">{{ it.date.slice(8) }}</span>
         </div>
-        <div v-else-if="it.type === 'sunrise' || it.type === 'sunset'" class="wx-hour wx-hour-sun">
-          <Sunrise v-if="it.type === 'sunrise'" :size="22" aria-hidden="true" /><Sunset v-else :size="22" aria-hidden="true" />
-          <span class="wx-hsun">{{ t('weather.hourly.' + it.type) }}</span>
-          <span class="wx-num" style="font-weight:700">{{ it.time }}</span>
-        </div>
         <div v-else class="wx-hour" :class="{ 'wx-hour-now': it.row === firstRow }">
+          <span v-if="hasSun" class="wx-hsunrow">
+            <template v-if="it.sun">
+              <span class="wx-hsunbar" :style="{ left: pct(it.sun) }" aria-hidden="true"></span>
+              <span class="wx-hsunlab" :style="{ left: `clamp(21px, ${pct(it.sun)}, calc(100% - 21px))` }" role="img" :aria-label="t('weather.hourly.' + it.sun.type) + ' ' + it.sun.time">
+                <Sunrise v-if="it.sun.type === 'sunrise'" :size="16" aria-hidden="true" /><Sunset v-else :size="16" aria-hidden="true" />
+                <span class="wx-num">{{ it.sun.time }}</span>
+              </span>
+            </template>
+          </span>
           <span class="wx-num">{{ String(it.row.hour).padStart(2, '0') }}:00</span>
           <WeatherIcon :code="rowWmo(it.row)" :is-day="isDayAt(it.row.hour, sunOf(it.row.date)?.sunrise, sunOf(it.row.date)?.sunset)" :size="22" /><span class="wx-sr">{{ wmoLabel(rowWmo(it.row)) }}</span>
           <span class="wx-num" style="font-weight:700">{{ fmt(it.row.temp) }}°</span>
@@ -36,7 +40,7 @@
 
 <script setup>
 // Una sola striscia continua dall'ora corrente (24 o 48 ore), senza schede per giorno. Tra un giorno e l'altro c'è una colonna con nome e
-// numero del giorno; alba e tramonto sono colonne inserite all'ora in cui avvengono (orari locali del luogo).
+// numero del giorno; alba e tramonto sono una barretta gialla sulla colonna dell'ora, con icona e orario in alto (orari locali del luogo).
 import { ref, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { Sunrise, Sunset } from 'lucide-vue-next'
@@ -50,6 +54,8 @@ const SPANS = [24, 48]
 const span = ref(24)
 const btns = {}
 const items = computed(() => buildHourStream(props.view, span.value))
+const hasSun = computed(() => items.value.some(i => i.type === 'hour' && i.sun))
+const pct = ev => `${Math.round(ev.frac * 100)}%`
 const firstRow = computed(() => items.value.find(i => i.type === 'hour')?.row)
 const hasExt = computed(() => items.value.some(i => i.type === 'hour' && i.row.source === 'open-meteo'))
 const sunOf = date => props.view.daily.find(d => d.date === date) || null
@@ -77,8 +83,9 @@ function onKey(e) {
 .wx-hour-day { width: 52px; align-content: center; gap: 2px; background: transparent; border: 1px dashed rgb(var(--color-border)); }
 .wx-hday { font-size: .7rem; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: rgb(var(--color-muted)); }
 .wx-hdnum { font-size: 1.1rem; font-weight: 700; }
-.wx-hour-sun { background: rgb(var(--color-surface-2)); border: 1px solid rgb(var(--color-sand-text)); color: rgb(var(--color-sand-text)); align-content: center; }
-.wx-hsun { font-size: .7rem; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; }
-@media (prefers-reduced-motion: no-preference) { .wx-hour-sun { animation: wx-sun-in var(--dur-base, .24s) var(--ease-out, ease-out) both; } }
-@keyframes wx-sun-in { from { opacity: 0; transform: translateY(4px); } }
+.wx-hours :deep(.wx-hour) { position: relative; }
+.wx-hsunrow { display: block; height: 34px; width: 100%; }
+.wx-hsunbar { position: absolute; top: 0; bottom: 0; width: 2px; margin-left: -1px; background: rgb(var(--color-sand-text)); border-radius: 1px; pointer-events: none; }
+.wx-hsunlab { position: absolute; top: 12px; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; line-height: 16px; font-size: .72rem; font-weight: 700; color: rgb(var(--color-sand-text)); background: rgb(var(--color-surface-2)); padding: 0 2px; border-radius: 6px; }
+.wx-hour-now .wx-hsunlab { background: rgb(var(--color-surface)); }
 </style>
