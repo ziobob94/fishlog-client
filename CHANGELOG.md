@@ -1,3 +1,10 @@
+## [1.59.1](https://github.com/ziobob94/fishlog-client/compare/client-v1.59.0...client-v1.59.1) (2026-11-12)
+
+
+### Bug Fixes
+
+* **home:** rimuove il pulsante «Espandi» dal mappamondo ([2188717](https://github.com/ziobob94/fishlog-client/commit/218871728e490d764dac0ef79a08b5878cb158fb))
+
 # [1.59.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.58.1...client-v1.59.0) (2026-11-12)
 
 
