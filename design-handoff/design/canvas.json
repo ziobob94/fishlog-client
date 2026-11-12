@@ -631,6 +631,22 @@
    "w": 1200,
    "x": 2280,
    "y": 24800
+  },
+  "UscitaChiusa.dc.html": {
+   "h": 1320,
+   "is_interactive": true,
+   "title": "66 · Uscita conclusa: aggiungi cattura e modifica semplificati (scuro)",
+   "w": 390,
+   "x": 0,
+   "y": 26300
+  },
+  "UscitaChiusa-chiaro.dc.html": {
+   "h": 1320,
+   "is_interactive": true,
+   "title": "66 · Uscita conclusa: aggiungi cattura e modifica semplificati (chiaro)",
+   "w": 390,
+   "x": 470,
+   "y": 26300
   }
  },
  "createdOnFiles": {
@@ -659,7 +675,8 @@
   "n16",
   "n17",
   "n18",
-  "n19"
+  "n19",
+  "n20"
  ],
  "notes": {
   "n1": {
@@ -783,6 +800,12 @@
    "w": 1000,
    "x": 0,
    "y": 24600
+  },
+  "n20": {
+   "text": "Uscita già conclusa: aggiungere una cattura non richiede più di modificare l'uscita. Dal dettaglio c'è un solo pulsante «Aggiungi cattura» fisso in basso; la pagina «Nuova cattura» mostra solo le informazioni principali (specie, misure, rilasciato, foto) e tiene tutto il resto in «Altri dettagli», chiuso di default. Se l'ora cade fuori dall'uscita, il campo lo dice e propone di estendere l'uscita. Dopo il salvataggio si torna al dettaglio con la cattura evidenziata e «Annulla». La matita porta a «Modifica uscita»: sezione «Principali» (generale, luogo, voto) e «Altri dettagli · facoltativi», dove Visibilità (scelta in un foglio) e Note (pagina a sé) sono voci separate. Stati: ora fuori dall'uscita, errore di salvataggio, offline, uscire senza salvare.",
+   "w": 1000,
+   "x": 0,
+   "y": 26100
   }
  },
  "order": [
@@ -867,7 +890,9 @@
   "HomeMeteo.dc.html",
   "HomeMeteo-chiaro.dc.html",
   "HomeMeteoDesktop.dc.html",
-  "HomeMeteoDesktop-chiaro.dc.html"
+  "HomeMeteoDesktop-chiaro.dc.html",
+  "UscitaChiusa.dc.html",
+  "UscitaChiusa-chiaro.dc.html"
  ],
  "pages": [],
  "title": "FishLog – Restyling"

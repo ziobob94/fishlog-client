@@ -338,6 +338,25 @@ Problema visto nell'app: il badge del meteo da chiuso aveva la freccia da sola s
 - Movimento: l'altezza si anima con `grid-template-rows: 0fr → 1fr` e i token di `tokens/motion.css`; con `prefers-reduced-motion` il cambio è immediato. Il contenuto chiuso va nascosto (`inert`/`hidden`) per non finire nel focus.
 - Lo stato aperto/chiuso viene ricordato (localStorage), con meteo aperto e pescate aperte come predefinito.
 
+### Uscita conclusa: aggiungere una cattura e modificare l'uscita (schermata 66)
+
+Problema: per aggiungere una cattura a un'uscita già chiusa si passava da un form lungo, con tutti i dettagli sullo stesso livello. Ora il flusso è breve e i dettagli sono separati dalle informazioni principali.
+
+| Passo | Cosa vede l'utente |
+|---|---|
+| Dettaglio uscita conclusa (`SessionView.vue`) | Un solo pulsante fisso in basso «Aggiungi cattura». Ogni cattura è toccabile per modificarla. La matita in alto porta a «Modifica uscita»; «⋯» ha le altre azioni. L'uscita **non** va riaperta né rimessa «in corso». |
+| Nuova cattura (stessa pagina di 35, `CatchesSection.vue`) | Banner con uscita, data e fascia oraria. **Principali:** specie (ricerca + chip frequenti), peso e lunghezza, rilasciato, foto. **Facoltativo:** «Altri dettagli» chiuso di default (ora, esca, montatura, distanza, note della cattura). Salvataggio esplicito. |
+| Ora fuori dall'uscita | Il campo ora è nell'errore, con il testo «02:10 è dopo la fine dell'uscita (01:30)» e due azioni: «Estendi l'uscita fino alle 02:10» (aggiorna `endedAt`) o «Scegli un'altra ora». «Salva» disabilitato finché non è risolto. Ora proposta: come l'ultima cattura, mai fuori fascia. |
+| Dopo il salvataggio | Si torna al dettaglio; la nuova cattura è evidenziata («Nuova») con avviso «Cattura aggiunta» e «Annulla»; i conteggi si aggiornano. |
+| Modifica cattura | Stessa pagina, precompilata, «Salva modifiche» e cestino con conferma. |
+| Modifica uscita (come 37) | **Principali:** Generale, Luogo, Voto. **Altri dettagli · facoltativi:** Acqua e meteo, **Visibilità** (foglio dal basso con 3 scelte) e **Note** (pagina a sé) come voci separate. «Elimina uscita» in fondo, con conferma. |
+
+Stati: errore di salvataggio (i dati restano nel form, «Riprova a salvare»), offline (pulsante disabilitato, dati conservati), uscire con dati non salvati (finestra «Uscire senza salvare?»).
+
+Regola valida ovunque: **visibilità e note non stanno più nella stessa sezione**. Vale anche per la finestra «Chiudi uscita» (36): lì restano il riepilogo e il voto, e sotto due righe distinte «Visibilità» e «Note» che aprono foglio e pagina, come in «Modifica uscita».
+
+Da verificare: se salvare una cattura con ora oltre la fine debba davvero poter estendere l'uscita (regola di prodotto), il comportamento offline (oggi il design chiede la connessione), e se le note dell'uscita sono sempre private.
+
 ## Posizione non attivabile nella Home (da correggere nell'app)
 
 Segnalato da una prova sull'app installata: dalla Home non si riesce ad attivare la localizzazione, e la mappa espansa resta grigia. Controlla in quest'ordine:
