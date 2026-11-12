@@ -1,3 +1,10 @@
+## [1.61.1](https://github.com/ziobob94/fishlog-client/compare/client-v1.61.0...client-v1.61.1) (2026-11-12)
+
+
+### Bug Fixes
+
+* **media:** metro graduato solo sui placeholder, non sulle foto reali ([967f11a](https://github.com/ziobob94/fishlog-client/commit/967f11a963a8bfbcd9a8b33e0b6e117ac7d4349a))
+
 # [1.61.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.60.2...client-v1.61.0) (2026-11-12)
 
 
