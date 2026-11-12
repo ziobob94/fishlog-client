@@ -20,8 +20,8 @@
 
     <!-- Post senza foto/video: il testo è il contenuto, subito sotto l'intestazione -->
     <div v-if="!post.media?.length" class="post-lead">
-      <h3 v-if="post.title" class="post-title">{{ post.title }}</h3>
-      <p class="post-lead-body">{{ post.body }}</p>
+      <h3 v-if="post.title" class="post-title"><LinkifiedText :text="post.title" /></h3>
+      <p class="post-lead-body"><LinkifiedText :text="post.body" /></p>
       <div v-if="post.type === 'event'" class="event-info">
         <span v-if="post.event?.location?.name" class="inline-flex items-center gap-1.5"><MapPin :size="14" /> {{ post.event.location.name }}</span>
         <span v-if="post.event?.date" class="inline-flex items-center gap-1.5"><Calendar :size="14" /> {{ formatDate(post.event.date) }}</span>
@@ -65,8 +65,8 @@
 
     <div class="post-text">
       <template v-if="post.media?.length">
-      <h3 v-if="post.title" class="post-title">{{ post.title }}</h3>
-      <p class="post-body"><strong>{{ post.author?.displayName || post.author?.email }}</strong> {{ post.body }}</p>
+      <h3 v-if="post.title" class="post-title"><LinkifiedText :text="post.title" /></h3>
+      <p class="post-body"><strong>{{ post.author?.displayName || post.author?.email }}</strong> <LinkifiedText :text="post.body" /></p>
       </template>
 
       <div v-if="post.media?.length && post.type === 'event'" class="event-info">
@@ -261,6 +261,7 @@ import RulerFrame from '../RulerFrame.vue'
 import AppIcon from '../AppIcon.vue'
   import { ref, reactive, computed, watch, nextTick } from 'vue'
   import CommentItem from './CommentItem.vue'
+  import LinkifiedText from './LinkifiedText.vue'
   import { usePostStore } from '../../stores/posts.js'
   import { useI18n } from 'vue-i18n'
   import { RouterLink } from 'vue-router'

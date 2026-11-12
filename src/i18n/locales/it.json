@@ -1200,6 +1200,7 @@
 			"events": "Eventi"
 		},
 		"filters": {
+			"clearHashtag": "Rimuovi filtro hashtag",
 			"title": "Filtri di ricerca",
 			"description": "Usa questi filtri per trovare più facilmente quello che cerchi.",
 			"visibilityLabel": "Chi può vederlo",

@@ -14,7 +14,7 @@
         <RouterLink v-if="c.user?._id" :to="`/users/${c.user._id}`" class="comment-author"><strong>{{ c.user?.displayName || c.user?.email }}</strong></RouterLink>
         <strong v-else>{{ c.user?.displayName || c.user?.email }}</strong>
         <RouterLink v-if="c.replyTo?._id && isReply" :to="`/users/${c.replyTo._id}`" class="comment-mention">@{{ c.replyTo.displayName }}</RouterLink>
-        {{ c.message }}
+        <LinkifiedText :text="c.message" />
       </span>
       <span class="comment-meta text-muted">
         <span>{{ formatDate(c.createdAt) }}</span>
@@ -57,6 +57,7 @@ import { ref, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { RouterLink } from 'vue-router'
 import { Heart, SmilePlus, X } from 'lucide-vue-next'
+import LinkifiedText from './LinkifiedText.vue'
 import { useAuthStore } from '../../stores/auth.js'
 import { toInitials } from '../../utils/initials.js'
 
