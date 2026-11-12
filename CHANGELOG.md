@@ -1,3 +1,10 @@
+## [1.67.1](https://github.com/ziobob94/fishlog-client/compare/client-v1.67.0...client-v1.67.1) (2026-11-12)
+
+
+### Bug Fixes
+
+* **motion:** cambio tab in sequenza, senza sovrapposizione delle pagine ([be54310](https://github.com/ziobob94/fishlog-client/commit/be54310f12806fec04a3b57d70129f5b0150d0eb))
+
 # [1.67.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.66.0...client-v1.67.0) (2026-11-12)
 
 
