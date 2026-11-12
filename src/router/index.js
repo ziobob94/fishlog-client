@@ -45,7 +45,7 @@ export default createRouter({
     { path: '/utenti/:id/catture', name: 'user-catches', component: () => import('../views/CatchesRankingPage.vue'), meta: { ownHeader: true } },
     { path: '/story/new', name: 'story-new', component: () => import('../views/StoryComposerView.vue'), meta: { ownHeader: true, hideBottomNav: true } },
     { path: '/post/new', name: 'post-new', component: () => import('../views/PostComposeView.vue'), meta: { ownHeader: true, hideBottomNav: true } },
-    { path: '/stories/:userId', name: 'story-view', component: () => import('../views/StoryViewerView.vue'), meta: { ownHeader: true, hideBottomNav: true } },
+    { path: '/stories/:userId', name: 'story-view', component: () => import('../views/StoryViewerView.vue'), meta: { ownHeader: true, hideBottomNav: true, sameView: true } },
     { path: '/feed',  name: 'feed',  component: () => import('../views/FeedView.vue'), meta: { ownHeader: true, fullHeight: true, tab: true } },
     { path: '/board', name: 'board', component: () => import('../views/MyBoardView.vue'), meta: { ownHeader: true } },
     { path: '/market', name: 'market', component: () => import('../views/MarketView.vue'), meta: { ownHeader: true, tab: true } },

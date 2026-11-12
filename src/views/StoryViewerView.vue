@@ -1,5 +1,5 @@
 <template>
-  <div class="viewer" :class="[enterClass, { dragging: dragMode }]" :style="dragStyle" @keydown.esc="close" @keydown.left="prev" @keydown.right="next" tabindex="-1" ref="root"
+  <div class="viewer" :class="{ dragging: dragMode }" :style="dragStyle" @keydown.esc="close" @keydown.left="prev" @keydown.right="next" tabindex="-1" ref="root"
     @pointerdown="onDown" @pointermove="onMove" @pointerup="onUp" @pointercancel="onCancel" @contextmenu.prevent>
     <div v-if="loading" class="center"><div class="m-spinner"></div></div>
     <div v-else-if="!stories.length" class="center">
@@ -7,8 +7,8 @@
       <button type="button" class="fl-btn2 back" @click="close">{{ t('stories.close') }}</button>
     </div>
 
-    <template v-else>
-      <div class="bg" :class="{ plain: !current.media }">
+    <div v-else class="stage" :key="stageKey" :class="enterClass">
+      <div class="bg" :key="current._id" :class="{ plain: !current.media }">
         <template v-if="current.media?.type === 'photo'">
           <img class="blur" :src="current.media.url" alt="" aria-hidden="true" />
           <img class="main" :src="current.media.url" alt="" />
@@ -45,7 +45,7 @@
           <button type="submit" class="icon" :aria-label="t('stories.sendReply')" :disabled="!reply.trim()"><Send :size="22" /></button>
         </form>
       </footer>
-    </template>
+    </div>
   </div>
 </template>
 
@@ -86,6 +86,8 @@ const video = ref(null)
 const root = ref(null)
 let timer = null
 const enterClass = ref('')
+const stageKey = ref('')
+const cache = new Map()   // utenti già scaricati: il cambio è istantaneo, senza schermo vuoto
 let startAtEnd = false
 let loadToken = 0
 
@@ -100,23 +102,38 @@ function ago(d) {
   return mins < 60 ? t('stories.agoMin', { n: mins }) : t('stories.ago', { n: Math.round(mins / 60) })
 }
 
+async function fetchCached(id) {
+  const key = String(id)
+  if (!cache.has(key)) cache.set(key, store.fetchUser(key).catch(e => { cache.delete(key); throw e }))
+  return cache.get(key)
+}
+function prefetchNeighbours() {
+  for (const step of [1, -1]) {
+    const id = neighbour(step)
+    if (!id) continue
+    fetchCached(id).then(d => { const m = d?.stories?.[0]?.media; if (m?.type === 'photo') new Image().src = m.url }).catch(() => {})
+  }
+}
+
 async function load(userId) {
   const token = ++loadToken
-  loading.value = true
-  progress.value = 0
-  index.value = 0
+  // Se c'è già una storia a schermo la teniamo finché la nuova non è pronta: niente schermo vuoto tra un utente e l'altro.
+  if (!stories.value.length) loading.value = true
   try {
-    const data = await store.fetchUser(userId)
+    const data = await fetchCached(userId)
     if (token !== loadToken) return
     author.value = data.author
     stories.value = data.stories
     const firstUnseen = stories.value.findIndex(s => !s.seen)
     index.value = startAtEnd ? stories.value.length - 1 : (firstUnseen > -1 ? firstUnseen : 0)
-  } catch { if (token === loadToken) stories.value = [] }
+    progress.value = 0
+    stageKey.value = String(userId)
+  } catch { if (token === loadToken) { stories.value = []; author.value = null } }
   if (token !== loadToken) return
   startAtEnd = false
   loading.value = false
   root.value?.focus()
+  prefetchNeighbours()
 }
 
 onMounted(async () => {
@@ -155,6 +172,8 @@ const order = computed(() => {
   const gs = store.groups
   return [...gs.filter(g => g.own), ...gs.filter(g => !g.own)].map(g => String(g.author._id))
 })
+// L'elenco degli utenti può arrivare dopo la prima storia: appena c'è, scalda i vicini.
+watch(order, () => { if (!loading.value) prefetchNeighbours() })
 function neighbour(step) {
   const i = order.value.indexOf(String(route.params.userId))
   return i < 0 ? null : order.value[i + step] || null
@@ -268,8 +287,11 @@ async function removeStory() {
   touch-action: none; -webkit-user-select: none; user-select: none; -webkit-touch-callout: none;
   transition: transform var(--motion-base) var(--ease-spring); }
 .viewer.dragging { transition: none; }
-.viewer.enter-next { animation: story-in-next var(--motion-slow) var(--ease-enter); }
-.viewer.enter-prev { animation: story-in-prev var(--motion-slow) var(--ease-enter); }
+.stage { position: absolute; inset: 0; }
+.stage.enter-next { animation: story-in-next var(--motion-slow) var(--ease-enter); }
+.stage.enter-prev { animation: story-in-prev var(--motion-slow) var(--ease-enter); }
+.bg { animation: story-fade var(--motion-fast) var(--ease-enter); }
+@keyframes story-fade { from { opacity: 0; } }
 @keyframes story-in-next { from { opacity: 0; transform: translateX(var(--dist-lg)); } }
 @keyframes story-in-prev { from { opacity: 0; transform: translateX(calc(var(--dist-lg) * -1)); } }
 .reply .fl-inp { -webkit-user-select: text; user-select: text; }
