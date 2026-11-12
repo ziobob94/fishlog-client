@@ -1,3 +1,10 @@
+## [1.73.1](https://github.com/ziobob94/fishlog-client/compare/client-v1.73.0...client-v1.73.1) (2026-11-12)
+
+
+### Bug Fixes
+
+* **sessione:** avviso «uscire senza salvare» solo con modifiche reali ([#147](https://github.com/ziobob94/fishlog-client/issues/147)) ([37cebdb](https://github.com/ziobob94/fishlog-client/commit/37cebdb6d36fd057ee2d82c55842905b4cdca72d))
+
 # [1.73.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.72.0...client-v1.73.0) (2026-11-12)
 
 
