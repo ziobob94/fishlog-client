@@ -13,7 +13,7 @@
     </h2>
 
     <div :id="bodyId" class="globe-body m-collapse" :class="{ 'is-open': open }" :inert="!open || undefined">
-    <div class="m-collapse-in">
+    <div class="m-collapse-in globe-body-in">
     <div ref="stage" class="globe-stage">
       <div ref="mapEl" class="globe-map" role="region" :aria-label="ariaLabel"></div>
       <div v-if="mapError" class="globe-fallback">{{ mapError }} <button type="button" class="globe-retry" @click="retryMap">{{ t('common.retry') }}</button></div>
@@ -57,22 +57,27 @@
       </div>
 
     <div class="globe-legend">
-      <span class="legend-item"><i class="dot dot-me"></i> {{ t('globe.you') }}</span>
-      <span class="legend-item"><i class="dot dot-spot"></i> {{ t('globe.catchesLegend') }}</span>
-      <span class="legend-hint">{{ t('globe.dragHint') }}</span>
+      <ul class="legend-items" :aria-label="t('globe.legend')">
+        <li class="legend-item"><i class="dot dot-me" aria-hidden="true"></i> {{ t('globe.you') }}</li>
+        <li class="legend-item"><i class="dot dot-spot" aria-hidden="true"></i> {{ t('globe.catchesLegend') }}</li>
+      </ul>
+      <p class="legend-hint"><Hand :size="14" aria-hidden="true" /> {{ t('globe.dragHint') }}</p>
     </div>
 
     <!-- Alternativa testuale al globo -->
     <details v-if="spots.length" class="globe-list">
-      <summary>{{ t('globe.listToggle') }}</summary>
+      <summary><span>{{ t('globe.listToggle') }}</span><ChevronDown :size="18" aria-hidden="true" class="globe-list-chev" /></summary>
       <ul>
         <li v-for="s in spots" :key="s._id">
-          <RouterLink :to="`/session/${s._id}`">{{ s.title || s.location?.name || t('session.untitled') }}</RouterLink>
-          <span class="text-muted text-xs"> · {{ fmtDate(s.date) }}</span>
+          <RouterLink :to="`/session/${s._id}`" class="globe-row">
+            <span class="globe-row-name">{{ s.title || s.location?.name || t('session.untitled') }}</span>
+            <span class="globe-row-date">{{ fmtDate(s.date) }}</span>
+            <ChevronRight :size="16" aria-hidden="true" class="globe-row-go" />
+          </RouterLink>
         </li>
       </ul>
     </details>
-    <p v-else-if="!loading" class="text-muted text-sm mt-3">{{ t('globe.empty') }}</p>
+    <p v-else-if="!loading" class="text-muted text-sm">{{ t('globe.empty') }}</p>
     </div>
     </div>
   </section>
@@ -82,7 +87,7 @@
 import { ref, computed, onMounted, onBeforeUnmount, watch } from 'vue'
 import { RouterLink } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { Layers, MapPinOff, Search, ChevronDown } from 'lucide-vue-next'
+import { Layers, MapPinOff, Search, ChevronDown, ChevronRight, Hand } from 'lucide-vue-next'
 import api from '../utils/api.js'
 import { useAccordion } from '../composables/useAccordion.js'
 import AppIcon from './AppIcon.vue'
@@ -288,12 +293,13 @@ onBeforeUnmount(() => { resizeObs?.disconnect(); spotMarkers.forEach(m => m.setM
 .globe-sum { @apply text-sm text-muted mt-0.5; }
 .globe-chev { @apply flex-none; transition: transform var(--motion-base) var(--ease-standard); }
 .globe-chev.is-open { transform: rotate(180deg); }
-.globe-body { @apply mt-3; }
+.globe-body.is-open { @apply mt-3; }
+.globe-body-in { display: grid; gap: 12px; }
 .globe-stage { @apply relative rounded-xl overflow-hidden mx-auto; max-width: 560px; height: 380px; background: rgb(var(--color-ink)); }
 .globe-map { @apply absolute inset-0; }
 .globe-fallback { @apply absolute inset-x-3 bottom-3 rounded-lg bg-surface/95 border border-border p-3 text-sm text-muted; }
 
-.globe-toolbar { @apply flex items-center justify-center gap-2 mt-3; }
+.globe-toolbar { @apply flex items-center justify-center gap-2; }
 .globe-btn {
   @apply flex items-center justify-center w-11 h-11 rounded-xl bg-surface-2 border border-border text-foam cursor-pointer;
 }
@@ -307,10 +313,11 @@ onBeforeUnmount(() => { resizeObs?.disconnect(); spotMarkers.forEach(m => m.setM
 .globe-popup-list { @apply list-none flex flex-col gap-1 max-h-40 overflow-y-auto; }
 .globe-popup-item { @apply flex flex-col min-h-[44px] justify-center text-foam no-underline; }
 
-.globe-legend { @apply flex flex-wrap items-center gap-x-4 gap-y-1 mt-3 text-sm text-muted; }
-.legend-item { @apply inline-flex items-center gap-1.5; }
-.legend-hint { @apply ml-auto text-xs; }
-.dot { @apply inline-block w-3 h-3 rounded-full; }
+.globe-legend { @apply grid gap-1.5 px-1 text-sm text-muted; }
+.legend-items { @apply list-none m-0 p-0 flex flex-wrap items-center gap-x-5 gap-y-1; }
+.legend-item { @apply inline-flex items-center gap-2 text-foam; }
+.legend-hint { @apply m-0 inline-flex items-center gap-1.5 text-xs; }
+.dot { @apply inline-block w-3 h-3 rounded-full flex-none; }
 .dot-me { @apply bg-ocean; box-shadow: 0 0 0 2px #fff; }
 .dot-spot { @apply bg-sand; }
 .globe-loc { @apply absolute left-3 right-3 bottom-3 z-20 rounded-xl bg-surface border border-border p-4 pr-12 text-sm; max-height: 70%; overflow-y: auto; }
@@ -324,8 +331,17 @@ onBeforeUnmount(() => { resizeObs?.disconnect(); spotMarkers.forEach(m => m.setM
 }
 .globe-pill-btn:focus-visible { outline: 2px solid rgb(var(--color-ocean-text)); outline-offset: 2px; }
 
-.globe-list { @apply mt-3 text-sm; }
-.globe-list summary { @apply cursor-pointer min-h-[44px] flex items-center text-ocean-text font-semibold; }
-.globe-list ul { @apply list-none flex flex-col gap-1 pb-1; }
-.globe-list li { @apply py-1; }
+.globe-list { @apply rounded-xl bg-surface-2 border border-border text-sm overflow-hidden; }
+.globe-list summary { @apply cursor-pointer min-h-[44px] flex items-center justify-between gap-3 px-3 text-foam font-bold list-none; }
+.globe-list summary::-webkit-details-marker { display: none; }
+.globe-list summary:focus-visible, .globe-row:focus-visible { outline: 2px solid rgb(var(--color-ocean-text)); outline-offset: -2px; }
+.globe-list-chev { @apply flex-none text-muted; transition: transform var(--motion-base) var(--ease-standard); }
+.globe-list[open] .globe-list-chev { transform: rotate(180deg); }
+.globe-list ul { @apply list-none m-0 p-0 border-t border-border; max-height: 264px; overflow-y: auto; }
+.globe-list li + li { @apply border-t border-border/60; }
+.globe-row { @apply flex items-center gap-3 min-h-[44px] px-3 no-underline text-foam; }
+.globe-row:hover { @apply bg-surface; }
+.globe-row-name { @apply flex-1 min-w-0 truncate font-semibold; }
+.globe-row-date { @apply flex-none text-xs text-muted; }
+.globe-row-go { @apply flex-none text-muted; }
 </style>

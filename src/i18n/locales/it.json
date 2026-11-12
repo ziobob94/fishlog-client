@@ -1720,6 +1720,7 @@
 		"title": "Mappamondo delle tue pescate",
 		"eyebrow": "Le tue pescate",
 		"count": "Nessun luogo sul mappamondo | 1 luogo sul mappamondo | {n} luoghi sul mappamondo",
+		"legend": "Legenda",
 		"you": "Tu sei qui",
 		"catchesLegend": "Pescate",
 		"dragHint": "Due dita per muovere la mappa",
