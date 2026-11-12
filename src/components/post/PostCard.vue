@@ -33,7 +33,7 @@
 
     <div v-if="post.media?.length" class="post-media">
       <div ref="mediaEl" class="media-scroll" @scroll.passive="onMediaScroll">
-        <RulerFrame v-for="(m, i) in post.media" :key="m._id" class="media-frame">
+        <RulerFrame v-for="(m, i) in post.media" :key="m._id" class="media-frame" :ruler="false">
           <video v-if="isVideo(m)" :src="m.url" class="media-thumb" controls playsinline preload="metadata"></video>
           <img v-else :src="m.url" class="media-thumb" alt="" @click="lightboxItem = m" />
           <template v-if="i === 0 && featuredCatch" #badge>
