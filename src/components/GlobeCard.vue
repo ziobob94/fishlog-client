@@ -295,7 +295,7 @@ onBeforeUnmount(() => { resizeObs?.disconnect(); spotMarkers.forEach(m => m.setM
 .globe-chev.is-open { transform: rotate(180deg); }
 .globe-body.is-open { @apply mt-3; }
 .globe-body-in { display: grid; gap: 12px; }
-.globe-stage { @apply relative rounded-xl overflow-hidden mx-auto; max-width: 560px; height: 380px; background: rgb(var(--color-ink)); }
+.globe-stage { @apply relative rounded-xl overflow-hidden mx-auto w-full; max-width: 560px; height: 380px; background: rgb(var(--color-ink)); }
 .globe-map { @apply absolute inset-0; }
 .globe-fallback { @apply absolute inset-x-3 bottom-3 rounded-lg bg-surface/95 border border-border p-3 text-sm text-muted; }
 
