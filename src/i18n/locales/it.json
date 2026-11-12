@@ -304,7 +304,8 @@
 		},
 		"accepted": "Richiesta accettata",
 		"declined": "Richiesta rifiutata",
-		"unread": "Da leggere"
+		"unread": "Da leggere",
+		"openProfile": "Apri il profilo di {name}"
 	},
 	"chat": {
 		"title": "Chat",
