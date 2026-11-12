@@ -1,5 +1,13 @@
 <template>
-  <div v-if="listing" class="listing-view" :class="{ 'has-cta': !isOwner }">
+  <div v-if="failed" class="text-center py-16">
+    <p class="text-muted">{{ t('market.listingNotFound') }}</p>
+    <div class="flex gap-2 justify-center mt-3">
+      <button type="button" class="btn" @click="load">{{ t('common.retry') }}</button>
+      <button type="button" class="btn btn-primary" @click="router.push('/market')">{{ t('common.back') }}</button>
+    </div>
+  </div>
+  <div v-else-if="!listing" class="text-center py-16" aria-busy="true"><p class="text-muted">…</p></div>
+  <div v-else class="listing-view" :class="{ 'has-cta': !isOwner }">
     <div class="gallery">
       <img v-if="activeMedia" :src="activeMedia.url" class="gallery-main" :alt="listing.title" />
       <div v-else class="gallery-placeholder"><Package :size="56" /></div>
@@ -51,7 +59,7 @@
       </template>
 
       <h2 class="section-label">{{ t('market.seller') }}</h2>
-      <RouterLink :to="listing.sellerType === 'negozio' && isVerifiedShop ? `/market/shop/${listing.seller._id}` : `/users/${listing.seller._id}`" class="seller-card">
+      <RouterLink v-if="listing.seller" :to="listing.sellerType === 'negozio' && isVerifiedShop ? `/market/shop/${listing.seller?._id}` : `/users/${listing.seller?._id}`" class="seller-card">
         <img v-if="sellerImage" :src="sellerImage" class="seller-avatar" alt="" />
         <span v-else class="seller-avatar seller-initials">{{ initials }}</span>
         <span class="seller-text">
@@ -64,8 +72,8 @@
         <ChevronRight :size="18" class="text-muted" />
       </RouterLink>
 
-      <div v-if="!isOwner" class="cta-bar">
-        <RouterLink :to="`/chat/${listing.seller._id}`" class="btn btn-primary cta-main">
+      <div v-if="!isOwner && listing.seller" class="cta-bar">
+        <RouterLink :to="`/chat/${listing.seller?._id}`" class="btn btn-primary cta-main">
           <MessageCircle :size="16" /> {{ t('market.contactSeller') }}
         </RouterLink>
       </div>
@@ -94,7 +102,7 @@ const listing = computed(() => store.current)
 const activeMedia = ref(null)
 const statusModel = ref('active')
 
-const isOwner = computed(() => listing.value && (listing.value.seller._id === auth.user?._id || auth.user?.role === 'admin'))
+const isOwner = computed(() => listing.value && (listing.value.seller?._id === auth.user?._id || auth.user?.role === 'admin'))
 const isVerifiedShop = computed(() => listing.value?.seller?.shop?.verificationStatus === 'verified')
 
 watch(listing, (l) => {
@@ -133,13 +141,17 @@ async function onDelete() {
   router.push('/market')
 }
 
-onMounted(async () => {
-  await store.fetchListing(route.params.id)
+const failed = ref(false)
+async function load() {
+  failed.value = false
+  store.current = null // niente annuncio precedente mentre carica
+  try { await store.fetchListing(route.params.id) } catch { failed.value = true; return }
   // Visualizzazione unica per utente: il server ignora riaperture e il venditore.
   if (!isOwner.value) {
     try { const { data } = await api.post(`/listings/${route.params.id}/view`); if (store.current) store.current.views = data.views } catch { /* accessorio */ }
   }
-})
+}
+onMounted(load)
 </script>
 
 <style scoped>
