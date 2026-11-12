@@ -1,3 +1,10 @@
+## [1.62.4](https://github.com/ziobob94/fishlog-client/compare/client-v1.62.3...client-v1.62.4) (2026-11-12)
+
+
+### Bug Fixes
+
+* riduce la fascia vuota sotto la tab bar inferiore ([0874564](https://github.com/ziobob94/fishlog-client/commit/0874564958c8ec735e9180d381123ff96aef4480))
+
 ## [1.62.3](https://github.com/ziobob94/fishlog-client/compare/client-v1.62.2...client-v1.62.3) (2026-11-12)
 
 
