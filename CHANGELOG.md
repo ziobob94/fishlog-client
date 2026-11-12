@@ -1,3 +1,10 @@
+## [1.62.1](https://github.com/ziobob94/fishlog-client/compare/client-v1.62.0...client-v1.62.1) (2026-11-12)
+
+
+### Bug Fixes
+
+* le notifiche di like/commento aprono il post collegato ([#115](https://github.com/ziobob94/fishlog-client/issues/115)) ([d2c9024](https://github.com/ziobob94/fishlog-client/commit/d2c902495a9e8227ad6afc797bb561a6b3c908f8))
+
 # [1.62.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.61.1...client-v1.62.0) (2026-11-12)
 
 
