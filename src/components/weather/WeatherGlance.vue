@@ -12,7 +12,9 @@
       </div>
       <div class="wx-block">
         <h3 class="wx-sub" style="margin:0 0 8px">{{ t('weather.glance.sun') }}</h3>
-        <p style="margin:0;display:flex;gap:16px"><span>{{ t('weather.glance.dawn') }} <span class="wx-num">{{ hhmm(f.sunrise) }}</span></span><span>{{ t('weather.glance.dusk') }} <span class="wx-num">{{ hhmm(f.sunset) }}</span></span></p>
+        <p style="margin:0;display:flex;flex-wrap:wrap;gap:8px 14px;min-width:0">
+          <span style="display:inline-flex;align-items:center;gap:6px;white-space:nowrap"><span role="img" :aria-label="t('weather.glance.dawn')" :title="t('weather.glance.dawn')" style="display:inline-flex"><WeatherIcon name="alba" :size="24" /></span><span class="wx-num">{{ hhmm(f.sunrise) }}</span></span>
+          <span style="display:inline-flex;align-items:center;gap:6px;white-space:nowrap"><span role="img" :aria-label="t('weather.glance.dusk')" :title="t('weather.glance.dusk')" style="display:inline-flex"><WeatherIcon name="tramonto" :size="24" /></span><span class="wx-num">{{ hhmm(f.sunset) }}</span></span></p>
         <p class="wx-sub" style="margin:6px 0 0"><template v-if="light"><span class="wx-num">{{ light.hours }}</span> h <span class="wx-num">{{ String(light.minutes).padStart(2, '0') }}</span> min {{ t('weather.glance.ofLight') }}</template><template v-else>{{ MISSING }}</template></p>
       </div>
       <div class="wx-block">
@@ -26,6 +28,7 @@
 <script setup>
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
+import WeatherIcon from '../WeatherIcon.vue'
 import MoonIcon from './MoonIcon.vue'
 import PressureTrend from './PressureTrend.vue'
 import { moonLabel, percent, hhmm, daylight, MISSING } from '../../utils/weather.js'
