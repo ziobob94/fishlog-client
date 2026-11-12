@@ -8,7 +8,10 @@
 
     <template v-else>
       <div class="bg" :class="{ plain: !current.media }">
-        <img v-if="current.media?.type === 'photo'" :src="current.media.url" alt="" />
+        <template v-if="current.media?.type === 'photo'">
+          <img class="blur" :src="current.media.url" alt="" aria-hidden="true" />
+          <img class="main" :src="current.media.url" alt="" />
+        </template>
         <video v-else-if="current.media?.type === 'video'" ref="video" :src="current.media.url" autoplay playsinline @timeupdate="onVideoTime" @ended="next"></video>
         <svg v-else class="iso" viewBox="0 0 400 800" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
           <g fill="none" stroke="#7dd3fc" stroke-width="1.5"><path opacity=".2" d="M-40 140C120 60 300 100 420 240" /><path opacity=".14" d="M-60 600C80 420 300 460 440 680" /></g>
@@ -160,6 +163,13 @@ async function removeStory() {
 .back { max-width: 200px; }
 .bg { position: absolute; inset: 0; background: radial-gradient(120% 80% at 70% 0%, #1b3a5c, #0b1623); }
 .bg img, .bg video { width: 100%; height: 100%; object-fit: cover; display: block; }
+/* foto: intera (contain) su sfondo sfocato, così non viene tagliata */
+.bg img { position: absolute; inset: 0; }
+.bg img.blur { filter: blur(28px) brightness(.7); transform: scale(1.15); }
+.bg img.main { object-fit: contain; }
+/* scrim sopra/sotto: i controlli restano leggibili su qualsiasi sfondo */
+.bg::after { content: ''; position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(to bottom, rgba(0,0,0,.6) 0, rgba(0,0,0,0) 22%, rgba(0,0,0,0) 62%, rgba(0,0,0,.72) 100%); }
 .iso { width: 100%; height: 100%; }
 .bars { position: absolute; left: 12px; right: 12px; top: calc(10px + env(safe-area-inset-top)); display: flex; gap: 4px; z-index: 3; }
 .bar { flex: 1; height: 3px; border-radius: 2px; background: rgba(255,255,255,.3); overflow: hidden; }
@@ -169,11 +179,13 @@ async function removeStory() {
 .avatar img { width: 100%; height: 100%; object-fit: cover; }
 .who { flex: 1; min-width: 0; display: flex; flex-direction: column; }
 .who-name { color: inherit; text-decoration: none; }
+.who { text-shadow: 0 1px 3px rgba(0,0,0,.7); }
 .who strong { font-size: 16px; font-weight: 700; }
 .who small { font-size: 13px; opacity: .8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.icon { width: 44px; height: 44px; background: none; border: 0; color: #fff; display: flex; align-items: center; justify-content: center; cursor: pointer; flex: none; }
+.icon { width: 44px; height: 44px; background: none; border: 0; color: #fff; filter: drop-shadow(0 1px 3px rgba(0,0,0,.7)); display: flex; align-items: center; justify-content: center; cursor: pointer; flex: none; }
 .icon:disabled { opacity: .4; }
 .heart.on { color: #f59e0b; }
+.avatar { box-shadow: 0 0 0 2px rgba(0,0,0,.45); }
 .tap { position: absolute; top: 90px; bottom: 90px; width: 35%; background: none; border: 0; z-index: 2; cursor: pointer; }
 .tap-l { left: 0; }
 .tap-r { right: 0; width: 65%; }
@@ -181,6 +193,7 @@ async function removeStory() {
 .stickers :deep(a) { pointer-events: auto; }
 .bottom { position: absolute; left: 0; right: 0; bottom: 0; padding: 12px 12px calc(14px + env(safe-area-inset-bottom)); z-index: 4; }
 .reply { display: flex; align-items: center; gap: 4px; }
-.reply .fl-inp { flex: 1; border-radius: 26px; background: rgba(11,22,35,.6); color: #fff; border-color: rgba(255,255,255,.5); }
+.reply .fl-inp { flex: 1; border-radius: 26px; background: rgba(11,22,35,.88); color: #fff; border-color: rgba(255,255,255,.85); }
+.reply .fl-inp::placeholder { color: rgba(255,255,255,.85); opacity: 1; }
 .views { display: flex; align-items: center; gap: 8px; font-size: 13px; margin: 0; }
 </style>
