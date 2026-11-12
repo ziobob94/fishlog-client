@@ -14,11 +14,11 @@
           <span class="wx-hday">{{ dayLabel(it.date, today) }}</span>
           <span class="wx-num wx-hdnum">{{ it.date.slice(8) }}</span>
         </div>
-        <div v-else class="wx-hour" :class="{ 'wx-hour-now': it.row === firstRow }">
+        <div v-else class="wx-hour" :class="{ 'wx-hour-now': it.row === firstRow, 'wx-hour-hassun': it.sun }">
           <span v-if="hasSun" class="wx-hsunrow">
             <template v-if="it.sun">
               <span class="wx-hsunbar" :style="{ left: pct(it.sun) }" aria-hidden="true"></span>
-              <span class="wx-hsunlab" :style="{ left: `clamp(21px, ${pct(it.sun)}, calc(100% - 21px))` }" role="img" :aria-label="t('weather.hourly.' + it.sun.type) + ' ' + it.sun.time">
+              <span class="wx-hsunlab" :style="{ left: pct(it.sun) }" role="img" :aria-label="t('weather.hourly.' + it.sun.type) + ' ' + it.sun.time">
                 <Sunrise v-if="it.sun.type === 'sunrise'" :size="16" aria-hidden="true" /><Sunset v-else :size="16" aria-hidden="true" />
                 <span class="wx-num">{{ it.sun.time }}</span>
               </span>
@@ -84,6 +84,7 @@ function onKey(e) {
 .wx-hday { font-size: .7rem; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: rgb(var(--color-muted)); }
 .wx-hdnum { font-size: 1.1rem; font-weight: 700; }
 .wx-hours :deep(.wx-hour) { position: relative; }
+.wx-hours :deep(.wx-hour-hassun) { z-index: 1; }
 .wx-hsunrow { display: block; height: 34px; width: 100%; }
 .wx-hsunbar { position: absolute; top: 0; bottom: 0; width: 2px; margin-left: -1px; background: rgb(var(--color-sand-text)); border-radius: 1px; pointer-events: none; }
 .wx-hsunlab { position: absolute; top: 12px; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; line-height: 16px; font-size: .72rem; font-weight: 700; color: rgb(var(--color-sand-text)); background: rgb(var(--color-surface-2)); padding: 0 2px; border-radius: 6px; }
