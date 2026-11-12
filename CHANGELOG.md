@@ -1,3 +1,15 @@
+# [1.61.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.60.2...client-v1.61.0) (2026-11-12)
+
+
+### Bug Fixes
+
+* **stories:** rende leggibili le CTA su ogni sfondo e non taglia la foto ([ae3c772](https://github.com/ziobob94/fishlog-client/commit/ae3c772bc5309334f3feba4cb8c769471318f697))
+
+
+### Features
+
+* **uscite:** aggiungi e modifica catture su uscita conclusa, form a sezioni Principali/Altri dettagli ([4b75e7d](https://github.com/ziobob94/fishlog-client/commit/4b75e7d67ec85e3207d25cf5bfe658af021b6878))
+
 ## [1.60.2](https://github.com/ziobob94/fishlog-client/compare/client-v1.60.1...client-v1.60.2) (2026-11-12)
 
 
