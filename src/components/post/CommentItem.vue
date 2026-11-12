@@ -91,8 +91,11 @@ function pick(e) { pickerOpen.value = false; emit('react', props.c, e) }
 <style scoped>
 .comment-row { @apply flex items-start gap-3 py-1; }
 .comment-row.is-reply { @apply ml-12; }
-.comment-row :deep(.mini-avatar), .comment-row :deep(.mini-placeholder) { @apply w-9 h-9 shrink-0; }
-.comment-row.is-reply :deep(.mini-avatar), .comment-row.is-reply :deep(.mini-placeholder) { @apply w-7 h-7; }
+/* Gli stili di .mini-avatar di PostCard sono scoped e non arrivano qui: tondo, cover, misura fissa */
+.post-author-link { @apply flex shrink-0 rounded-full; }
+.mini-avatar { @apply w-9 h-9 min-w-[2.25rem] rounded-full object-cover shrink-0; }
+.mini-placeholder { @apply w-9 h-9 min-w-[2.25rem] rounded-full border border-ocean text-ocean-text flex items-center justify-center text-xs font-bold shrink-0; background: var(--ocean-glow); }
+.comment-row.is-reply .mini-avatar, .comment-row.is-reply .mini-placeholder { @apply w-7 h-7 min-w-[1.75rem]; }
 .comment-body { @apply flex flex-col gap-0.5 flex-1 min-w-0; }
 .comment-author { @apply no-underline text-foam; }
 .comment-mention { @apply no-underline text-ocean-text; }
