@@ -116,6 +116,8 @@ export function tideSummary(items) {
 // Garantisce una forma completa: i blocchi mancanti diventano oggetti vuoti, così i componenti non lanciano errori
 // e ogni campo assente resta null (mai 0). `marine.available` decide se mostrare il blocco Mare.
 const num = v => (isNum(v) ? v : null)
+// Fonti conosciute di ogni riga; qualunque altra (dati vecchi o sconosciuti) vale «google» come prima.
+const srcOf = v => (v === 'open-meteo' || v === 'icon-2i' ? v : 'google')
 export function normalizeOverview(raw) {
   if (!raw || typeof raw !== 'object') return null
   const c = raw.current || {}
@@ -145,11 +147,11 @@ export function normalizeOverview(raw) {
     },
     hourly: (Array.isArray(raw.hourly) ? raw.hourly : []).map(h => ({
       time: h.time ?? null, date: typeof h.date === 'string' ? h.date : (typeof h.time === 'string' ? h.time.slice(0, 10) : null),
-      hour: num(h.hour), source: h.source === 'open-meteo' ? 'open-meteo' : 'google', condition: h.condition ?? null, wmo: num(h.wmo), temp: num(h.temp),
+      hour: num(h.hour), source: srcOf(h.source), condition: h.condition ?? null, wmo: num(h.wmo), temp: num(h.temp),
       precipProbability: num(h.precipProbability), precipMm: num(h.precipMm), windSpeed: num(h.windSpeed), windGust: num(h.windGust), windDeg: num(h.windDeg), pressure: num(h.pressure),
     })),
     daily: (Array.isArray(raw.daily) ? raw.daily : []).map(d => ({
-      date: d.date ?? null, source: d.source === 'open-meteo' ? 'open-meteo' : 'google', condition: d.condition ?? null, wmo: num(d.wmo), tempMax: num(d.tempMax), tempMin: num(d.tempMin),
+      date: d.date ?? null, source: srcOf(d.source), condition: d.condition ?? null, wmo: num(d.wmo), tempMax: num(d.tempMax), tempMin: num(d.tempMin),
       precipProbability: num(d.precipProbability), precipSum: num(d.precipSum), windSpeed: num(d.windSpeed), windGust: num(d.windGust),
       sunrise: d.sunrise ?? null, sunset: d.sunset ?? null, moonPhase: d.moonPhase ?? null,
       activity: d.activity && num(d.activity.level) != null ? { level: d.activity.level, label: d.activity.label ?? null, score: num(d.activity.score) } : null,
@@ -164,6 +166,8 @@ export function normalizeOverview(raw) {
     sources: raw.sources || {},
   }
 }
+// True se l'overview usa dati ICON-2I (Italia Meteo / ARPAE-SIMC, CC BY 4.0): in quel caso va mostrata l'attribuzione.
+export const usesIcon2i = view => String(view?.sources?.weather || '').includes('icon-2i')
 // Quanti campi principali ha l'«Adesso»: serve a segnalare i dati parziali.
 export function isPartial(view) {
   if (!view) return false

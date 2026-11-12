@@ -34,7 +34,7 @@
       </template>
     </div>
     <p class="wx-note">{{ t('weather.hourly.legend') }}</p>
-    <p v-if="hasExt" class="wx-note">{{ t('weather.hourly.source') }}</p>
+    <p v-if="hasExt" class="wx-note">{{ t(icon ? 'weather.hourly.sourceIcon' : 'weather.hourly.source') }}</p>
   </section>
 </template>
 
@@ -47,7 +47,7 @@ import { Sunrise, Sunset } from 'lucide-vue-next'
 import WeatherIcon from '../WeatherIcon.vue'
 import { wmoLabel } from '../weather-icons.js'
 import WindArrow from './WindArrow.vue'
-import { fmt, dayLabel, buildHourStream, rowWmo, isDayAt } from '../../utils/weather.js'
+import { fmt, dayLabel, buildHourStream, rowWmo, isDayAt, usesIcon2i } from '../../utils/weather.js'
 const props = defineProps({ view: { type: Object, required: true }, today: { type: String, default: '' } })
 const { t } = useI18n()
 const SPANS = [24, 48]
@@ -57,6 +57,7 @@ const items = computed(() => buildHourStream(props.view, span.value))
 const hasSun = computed(() => items.value.some(i => i.type === 'hour' && i.sun))
 const pct = ev => `${Math.round(ev.frac * 100)}%`
 const firstRow = computed(() => items.value.find(i => i.type === 'hour')?.row)
+const icon = computed(() => usesIcon2i(props.view))
 const hasExt = computed(() => items.value.some(i => i.type === 'hour' && i.row.source === 'open-meteo'))
 const sunOf = date => props.view.daily.find(d => d.date === date) || null
 function onKey(e) {

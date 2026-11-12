@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest'
 import {
   fmt, fmtSigned, MISSING, compass, windInfo, headingTo, pressureState, moonLabel, hhmm, daylight, dayLabel,
   conditionText, uvLabel, nextTides, tideSummary, normalizeOverview, isPartial, waveSeries, groupHoursByDay, firstExtendedIndex,
-  rowWmo, rowLabel, isDayAt, periodSummary, tempBars, readDays, saveDays, DAYS_KEY, reliability, hoursOfDay, dayBands, pressureDay, tidesOfDay, fromNow, hasHourlyDetail, buildHourStream, moonOn, longDate,
+  usesIcon2i, rowWmo, rowLabel, isDayAt, periodSummary, tempBars, readDays, saveDays, DAYS_KEY, reliability, hoursOfDay, dayBands, pressureDay, tidesOfDay, fromNow, hasHourlyDetail, buildHourStream, moonOn, longDate,
 } from '../weather.js'
 
 describe('null → «—» (mai 0)', () => {
@@ -250,5 +250,21 @@ describe('striscia oraria continua', () => {
     expect(buildHourStream(view, 2).filter(x => x.type === 'hour')).toHaveLength(2)
     const v = { daily: [{ date: '2026-11-11' }], hourly: [hr('2026-11-11', 20), hr('2026-11-11', 21), hr('2026-11-11', 22), hr('2026-11-11', 23)] }
     expect(hasHourlyDetail(v, '2026-11-11')).toBe(true)
+  })
+})
+
+describe('ICON-2I', () => {
+  it('normalizeOverview conserva la fonte icon-2i di ore e giorni', () => {
+    const v = normalizeOverview({ hourly: [{ time: '2026-11-11T15:00', source: 'icon-2i' }], daily: [{ date: 'd', source: 'icon-2i' }] })
+    expect(v.hourly[0].source).toBe('icon-2i'); expect(v.daily[0].source).toBe('icon-2i')
+  })
+  it('un\'ora ICON-2I non conta come «estesa» da Open-Meteo', () => {
+    expect(groupHoursByDay([{ date: '2026-11-11', hour: 1, source: 'icon-2i' }])[0].extended).toBe(false)
+    expect(firstExtendedIndex([{ source: 'icon-2i' }])).toBe(-1)
+  })
+  it('usesIcon2i: attribuzione solo quando serve', () => {
+    expect(usesIcon2i({ sources: { weather: 'icon-2i+open-meteo' } })).toBe(true)
+    expect(usesIcon2i({ sources: { weather: 'google' } })).toBe(false)
+    expect(usesIcon2i(null)).toBe(false)
   })
 })

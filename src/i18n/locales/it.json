@@ -1833,6 +1833,9 @@
 		"partial": "Alcuni dati non sono disponibili in questo momento. Mostriamo «—» al posto dei valori mancanti.",
 		"degraded": "Servizio meteo in modalità ridotta: alcuni dati possono mancare o non essere aggiornati. Dati delle {time}.",
 		"disclaimer": "Dati indicativi da Google e Open-Meteo, non per la navigazione. Verifica sempre le condizioni reali prima di uscire.",
+		"attribution": {
+			"icon2i": "Previsioni per l'Italia: modello ICON-2I di Italia Meteo (ARPAE-SIMC), dati forniti da Open-Meteo.com, licenza"
+		},
 		"mode": {
 			"label": "Dove guardare",
 			"here": "Qui",
@@ -1921,7 +1924,8 @@
 			"sunrise": "Alba",
 			"sunset": "Tramonto",
 			"fromOm": "Da qui: Open-Meteo",
-			"source": "Le prime 48 ore vengono da Google, le successive da Open-Meteo: più lontano nel tempo, meno precise."
+			"source": "Le prime 48 ore vengono da Google, le successive da Open-Meteo: più lontano nel tempo, meno precise.",
+			"sourceIcon": "Le prime 72 ore vengono dal modello italiano ICON-2I, le successive da Open-Meteo: più lontano nel tempo, meno precise."
 		},
 		"daily": {
 			"title": "Prossimi 15 giorni",

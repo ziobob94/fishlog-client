@@ -55,6 +55,7 @@
         <div :style="{ '--i': 4 }"><CompareForecast /></div>
       </StaggerList>
       <p class="wx-note">{{ t('weather.disclaimer') }}</p>
+      <p v-if="usesIcon2i(store.data)" class="wx-note">{{ t('weather.attribution.icon2i') }} <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer">CC BY 4.0</a></p>
     </template>
 
     <LocationHelp v-model="helpOpen" />
@@ -78,7 +79,7 @@ import WeatherDaily from '../components/weather/WeatherDaily.vue'
 import CompareForecast from '../components/weather/CompareForecast.vue'
 import LocationHelp from '../components/weather/LocationHelp.vue'
 import { useWeatherStore } from '../stores/weather.js'
-import { isPartial } from '../utils/weather.js'
+import { isPartial, usesIcon2i } from '../utils/weather.js'
 import { reverseLabel } from '../utils/places.js'
 import '../assets/weather.css'
 
