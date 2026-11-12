@@ -1,3 +1,10 @@
+# [1.73.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.72.0...client-v1.73.0) (2026-11-12)
+
+
+### Features
+
+* **species:** crediti foto e fallback se l'immagine esterna non carica ([#146](https://github.com/ziobob94/fishlog-client/issues/146)) ([610f27f](https://github.com/ziobob94/fishlog-client/commit/610f27ff4ad46c376e8e52b8f5cc157d33e20e16))
+
 # [1.72.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.71.0...client-v1.72.0) (2026-11-12)
 
 
