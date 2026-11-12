@@ -9,19 +9,19 @@
       </div>
     </div>
     <dl class="wx-kv" style="margin-top:14px">
-      <div><dt>{{ t('weather.now.wind') }}</dt>
+      <div><dt><Wind :size="16" aria-hidden="true" />{{ t('weather.now.wind') }}</dt>
         <dd><span class="wx-num">{{ fmt(c.windSpeed) }}</span> <small>km/h</small>
           <small v-if="c.windGust != null"> · {{ t('weather.now.gust') }} <span class="wx-num">{{ fmt(c.windGust) }}</span></small><br />
           <WindArrow :speed="c.windSpeed" :deg="c.windDeg" /></dd></div>
-      <div><dt>{{ t('weather.now.pressure') }}</dt>
+      <div><dt><Gauge :size="16" aria-hidden="true" />{{ t('weather.now.pressure') }}</dt>
         <dd><span class="wx-num">{{ fmt(c.pressure) }}</span> <small>hPa</small><br />
           <small v-if="trendWord">{{ trendWord }}<template v-if="f.pressure.delta3h != null"> · <span class="wx-num">{{ fmtSigned(f.pressure.delta3h, 0) }}</span> hPa/3 h</template></small></dd></div>
-      <div><dt>{{ t('weather.now.humidity') }}</dt><dd><span class="wx-num">{{ fmt(c.humidity) }}</span> <small>%</small></dd></div>
-      <div><dt>{{ t('weather.now.rain') }}</dt>
+      <div><dt><Droplet :size="16" aria-hidden="true" />{{ t('weather.now.humidity') }}</dt><dd><span class="wx-num">{{ fmt(c.humidity) }}</span> <small>%</small></dd></div>
+      <div><dt><CloudRain :size="16" aria-hidden="true" />{{ t('weather.now.rain') }}</dt>
         <dd><span class="wx-num">{{ fmt(c.precipProbability) }}</span> <small>% {{ t('weather.now.expected') }}</small><br />
           <small><span class="wx-num">{{ fmt(c.precipMm, 1) }}</span> mm</small></dd></div>
-      <div><dt>{{ t('weather.now.uv') }}</dt><dd><span class="wx-num">{{ fmt(c.uvIndex) }}</span> <small v-if="uv">{{ uv }}</small></dd></div>
-      <div><dt>{{ t('weather.now.clouds') }}</dt><dd><span class="wx-num">{{ fmt(c.cloudCover) }}</span> <small>% {{ t('weather.now.cover') }}</small></dd></div>
+      <div><dt><Sun :size="16" aria-hidden="true" />{{ t('weather.now.uv') }}</dt><dd><span class="wx-num">{{ fmt(c.uvIndex) }}</span> <small v-if="uv">{{ uv }}</small></dd></div>
+      <div><dt><Cloud :size="16" aria-hidden="true" />{{ t('weather.now.clouds') }}</dt><dd><span class="wx-num">{{ fmt(c.cloudCover) }}</span> <small>% {{ t('weather.now.cover') }}</small></dd></div>
     </dl>
   </section>
 </template>
@@ -29,6 +29,7 @@
 <script setup>
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { Wind, Gauge, Droplet, CloudRain, Sun, Cloud } from 'lucide-vue-next'
 import WeatherIcon from '../WeatherIcon.vue'
 import WindArrow from './WindArrow.vue'
 import { fmt, fmtSigned, rowWmo, rowLabel, uvLabel, pressureState } from '../../utils/weather.js'

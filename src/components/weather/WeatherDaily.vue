@@ -23,18 +23,17 @@
         <li v-if="i === LESS_RELIABLE_FROM" class="wx-dsplit" role="separator" aria-orientation="horizontal"><span>{{ t('weather.daily.lessReliable') }}</span></li>
         <li>
           <RouterLink :to="{ name: 'weather-day', params: { date: d.date } }" class="wx-drow m-press">
-            <span class="wx-dday">{{ dayLabel(d.date, today) }} <span class="wx-num wx-muted">{{ d.date ? d.date.slice(8) : '' }}</span></span>
-            <span class="wx-cond"><WeatherIcon :code="rowWmo(d)" :size="24" /><span class="wx-dcond">{{ wmoLabel(rowWmo(d)) }}</span>
-              <span v-if="d.sunrise || d.sunset" class="wx-dsun"><Sunrise :size="13" aria-hidden="true" /><span class="wx-sr">{{ t('weather.hourly.sunrise') }}</span> <span class="wx-num">{{ hhmm(d.sunrise) }}</span> <Sunset :size="13" aria-hidden="true" /><span class="wx-sr">{{ t('weather.hourly.sunset') }}</span> <span class="wx-num">{{ hhmm(d.sunset) }}</span></span></span>
-            <span class="wx-dtemp"><span class="wx-num">{{ fmt(d.tempMax) }}°</span> <span class="wx-num wx-muted">{{ fmt(d.tempMin) }}°</span></span>
-            <span class="wx-dbar" aria-hidden="true"><i v-if="bars[i]" :style="{ left: bars[i].from + '%', width: Math.max(bars[i].to - bars[i].from, 4) + '%' }"></i></span>
-            <span class="wx-drain"><span class="wx-num">{{ fmt(d.precipProbability) }}</span><small class="wx-muted">%</small></span>
-            <span class="wx-dwind"><span class="wx-num">{{ fmt(d.windSpeed) }}</span> <small class="wx-muted">km/h</small></span>
-            <span v-if="view.marine.available" class="wx-dwave"><span class="wx-num">{{ fmt(d.waveHeightMax, 1) }}</span> <small class="wx-muted">m</small></span>
-            <span class="wx-dact">
-              <template v-if="d.activity"><Fish :size="16" aria-hidden="true" /> {{ d.activity.label }}</template>
-              <template v-else><span class="wx-dash" :aria-label="t('weather.missing')">—</span></template>
+            <WeatherIcon :code="rowWmo(d)" :size="30" class="wx-dicon" />
+            <span class="wx-dmain">
+              <span class="wx-dday">{{ dayLabel(d.date, today) }} <span class="wx-num">{{ d.date ? d.date.slice(8) : '' }}</span> <span class="wx-dcond">· {{ wmoLabel(rowWmo(d)) }}</span></span>
+              <span class="wx-dmeta">
+                <span><span class="wx-num">{{ fmt(d.windSpeed) }}</span> km/h</span>
+                <span class="wx-dsky"><span class="wx-num">{{ fmt(d.precipProbability) }}%</span> · <span class="wx-num">{{ fmt(d.precipSum, 1) }}</span> mm</span>
+                <span v-if="view.marine.available && d.waveHeightMax != null" class="wx-dwave2"><Waves :size="14" aria-hidden="true" /> <span class="wx-num">{{ fmt(d.waveHeightMax, 1) }}</span> m</span>
+              </span>
+              <span v-if="d.sunrise || d.sunset" class="wx-dsun"><Sunrise :size="16" aria-hidden="true" /><span class="wx-sr">{{ t('weather.hourly.sunrise') }}</span> <span class="wx-num">{{ hhmm(d.sunrise) }}</span> <Sunset :size="16" aria-hidden="true" /><span class="wx-sr">{{ t('weather.hourly.sunset') }}</span> <span class="wx-num">{{ hhmm(d.sunset) }}</span></span>
             </span>
+            <span class="wx-dtemp"><span class="wx-num">{{ fmt(d.tempMin) }}°</span> / <span class="wx-num">{{ fmt(d.tempMax) }}°</span></span>
             <ChevronRight :size="18" aria-hidden="true" class="wx-dgo" />
           </RouterLink>
         </li>
@@ -51,17 +50,16 @@
 import { ref, computed } from 'vue'
 import { RouterLink } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { ChevronRight, Fish, Sunrise, Sunset } from 'lucide-vue-next'
+import { ChevronRight, Sunrise, Sunset, Waves } from 'lucide-vue-next'
 import WeatherIcon from '../WeatherIcon.vue'
 import { wmoLabel } from '../weather-icons.js'
-import { fmt, hhmm, dayLabel, rowWmo, periodSummary, tempBars, readDays, saveDays, DAY_CHOICES, LESS_RELIABLE_FROM } from '../../utils/weather.js'
+import { fmt, hhmm, dayLabel, rowWmo, periodSummary, readDays, saveDays, DAY_CHOICES, LESS_RELIABLE_FROM } from '../../utils/weather.js'
 const props = defineProps({ view: { type: Object, required: true }, today: { type: String, default: '' } })
 const { t } = useI18n()
 const days = ref(readDays())
 const btns = {}
 const rows = computed(() => props.view.daily.slice(0, days.value))
 const sum = computed(() => periodSummary(props.view.daily, days.value))
-const bars = computed(() => tempBars(props.view.daily, days.value))
 function pick(n) { days.value = n; saveDays(n) }
 function onKey(e) {
   const i = DAY_CHOICES.indexOf(days.value)
@@ -77,21 +75,17 @@ function onKey(e) {
 .wx-sum { background: rgb(var(--color-surface-2)); border-radius: 14px; padding: 12px 14px; margin-bottom: 8px; }
 .wx-sum-kv { grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); }
 .wx-dlist { list-style: none; margin: 0; padding: 0; }
-.wx-drow { display: grid; grid-template-columns: 72px minmax(0, 1.4fr) 72px minmax(40px, .8fr) 44px 74px auto 24px; align-items: center; gap: 8px; min-height: 52px; padding: 6px 4px; border-top: 1px solid rgb(var(--color-border)); color: inherit; text-decoration: none; font-size: .9rem; }
-.wx-dday { font-weight: 700; }
-.wx-cond { flex-wrap: wrap; }
-.wx-dsun { display: inline-flex; align-items: center; gap: 3px; flex-basis: 100%; font-size: .74rem; color: rgb(var(--color-sand-text)); }
-.wx-dcond { color: rgb(var(--color-muted)); font-size: .82rem; }
-.wx-dbar { position: relative; height: 6px; border-radius: 3px; background: rgb(var(--color-border)); }
-.wx-dbar i { position: absolute; top: 0; bottom: 0; border-radius: 3px; background: rgb(var(--color-sand-text)); }
-.wx-dact { font-size: .8rem; display: inline-flex; align-items: center; gap: 4px; color: rgb(var(--color-foam)); white-space: nowrap; }
+.wx-drow { display: grid; grid-template-columns: 36px minmax(0, 1fr) auto 20px; align-items: center; gap: 10px; min-height: 64px; padding: 10px 0; border-top: 1px solid rgb(var(--color-border)); color: inherit; text-decoration: none; }
+.wx-dicon { color: rgb(var(--color-sand-text)); }
+.wx-dmain { display: grid; gap: 3px; min-width: 0; }
+.wx-dday { font-weight: 800; font-size: .95rem; }
+.wx-dcond { font-weight: 500; font-size: .8rem; color: rgb(var(--color-muted)); }
+.wx-dmeta { display: flex; flex-wrap: wrap; gap: 4px 12px; font-size: .78rem; color: rgb(var(--color-muted)); }
+.wx-dsky { color: rgb(var(--color-ocean-text)); }
+.wx-dwave2 { display: inline-flex; align-items: center; gap: 3px; }
+.wx-dsun { display: inline-flex; align-items: center; gap: 4px; font-size: .78rem; color: rgb(var(--color-sand-text)); }
+.wx-dtemp { font-size: .95rem; font-weight: 700; white-space: nowrap; }
 .wx-dgo { color: rgb(var(--color-muted)); }
 .wx-dsplit { display: flex; align-items: center; gap: 10px; margin: 8px 0; font-size: .74rem; font-weight: 700; color: rgb(var(--color-muted)); text-transform: uppercase; letter-spacing: .05em; }
 .wx-dsplit::before, .wx-dsplit::after { content: ''; flex: 1; border-top: 2px dashed rgb(var(--color-border)); }
-@media (max-width: 700px) {
-  .wx-drow { grid-template-columns: 64px minmax(0, 1fr) 70px 24px; grid-template-areas: 'day cond temp go' 'bar bar rain rain' 'act act act act'; row-gap: 4px; }
-  .wx-dday { grid-area: day; } .wx-cond { grid-area: cond; } .wx-dtemp { grid-area: temp; } .wx-dgo { grid-area: go; }
-  .wx-dbar { grid-area: bar; } .wx-drain { grid-area: rain; } .wx-dact { grid-area: act; }
-  .wx-dwind, .wx-dwave { display: none; }
-}
 </style>

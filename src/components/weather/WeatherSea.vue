@@ -1,17 +1,19 @@
 <template>
   <section class="wx-block" aria-labelledby="wx-sea-h">
-    <h2 id="wx-sea-h" class="wx-h">{{ t('weather.sea.title') }}</h2>
+    <div class="wx-head-row">
+      <h2 id="wx-sea-h" class="wx-h">{{ t('weather.sea.title') }}</h2>
+      <span v-if="m.available" class="wx-tag">{{ t('weather.sea.model') }}</span>
+    </div>
     <template v-if="m.available">
-      <p class="wx-sub">{{ t('weather.sea.model') }}</p>
       <dl class="wx-kv">
-        <div><dt>{{ t('weather.sea.wave') }}</dt>
+        <div><dt><Waves :size="16" aria-hidden="true" />{{ t('weather.sea.wave') }}</dt>
           <dd><span class="wx-num">{{ fmt(m.waveHeight, 1) }}</span> <small>m</small><br />
             <small>{{ t('weather.sea.period') }} <span class="wx-num">{{ fmt(m.wavePeriod) }}</span> s<template v-if="waveFrom"> · {{ t('weather.wind.from') }} <abbr :title="waveFrom.name">{{ waveFrom.abbr }}</abbr></template></small></dd></div>
-        <div><dt>{{ t('weather.sea.swell') }}</dt>
+        <div><dt><Waves :size="16" aria-hidden="true" />{{ t('weather.sea.swell') }}</dt>
           <dd><span class="wx-num">{{ fmt(m.swellHeight, 1) }}</span> <small>m</small><br />
             <small><span class="wx-num">{{ fmt(m.swellPeriod) }}</span> s<template v-if="swellFrom"> · {{ t('weather.wind.from') }} <abbr :title="swellFrom.name">{{ swellFrom.abbr }}</abbr></template></small></dd></div>
-        <div><dt>{{ t('weather.sea.temp') }}</dt><dd><span class="wx-num">{{ fmt(m.seaTemp) }}</span> <small>°C</small></dd></div>
-        <div v-if="m.currentSpeed != null"><dt>{{ t('weather.sea.current') }}</dt>
+        <div><dt><Thermometer :size="16" aria-hidden="true" />{{ t('weather.sea.temp') }}</dt><dd><span class="wx-num">{{ fmt(m.seaTemp) }}</span> <small>°C</small></dd></div>
+        <div v-if="m.currentSpeed != null"><dt><Navigation :size="16" aria-hidden="true" />{{ t('weather.sea.current') }}</dt>
           <dd><span class="wx-num">{{ fmt(m.currentSpeed, 1) }}</span> <small>km/h<template v-if="heading"> · {{ t('weather.sea.toward') }} {{ heading }}</template></small></dd></div>
       </dl>
       <template v-if="waves.points.length">
@@ -33,6 +35,7 @@
 // Senza dati mare (lago, fiume, entroterra) il blocco diventa una riga neutra: il resto della pagina resta completo.
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { Waves, Thermometer, Navigation } from 'lucide-vue-next'
 import TideChart from './TideChart.vue'
 import WaveChart from './WaveChart.vue'
 import { fmt, compass, waveSeries, fromNow } from '../../utils/weather.js'

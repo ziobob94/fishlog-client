@@ -1909,6 +1909,10 @@
 		},
 		"hourly": {
 			"title": "Ora per ora",
+			"lHour": "Ora",
+			"lTemp": "Temp.",
+			"lWind": "Vento",
+			"lRain": "Pioggia",
 			"region": "Previsione ora per ora di {day}, scorri con le frecce",
 			"legend": "Vento in km/h, la freccia indica dove soffia. Pioggia = probabilità.",
 			"days": "Giorno da mostrare",
