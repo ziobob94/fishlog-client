@@ -27,6 +27,7 @@ export default createRouter({
     { path: '/reset-password',  name: 'reset-password',  component: () => import('../views/ResetPasswordView.vue'),  meta: { public: true } },
     { path: '/confirm-email',   name: 'confirm-email',   component: () => import('../views/ConfirmEmailView.vue'),   meta: { public: true } },
     { path: '/privacy-policy', name: 'privacy-policy', component: () => import('../views/legal/PrivacyView.vue'), meta: { public: true } },
+    { path: '/gare/p/:slug', name: 'fipsas-public', component: () => import('../views/fipsas/FipsasPublicView.vue'), meta: { public: true } },
     { path: '/termini',        name: 'terms',          component: () => import('../views/legal/TermsView.vue'),   meta: { public: true } },
     { path: '/cookie-policy',  name: 'cookie-policy',  component: () => import('../views/legal/CookieView.vue'),  meta: { public: true } },
     { path: '/',               name: 'home',          component: () => import('../views/HomeView.vue'), meta: { tab: true } },
@@ -66,6 +67,8 @@ export default createRouter({
     { path: '/stats',   name: 'stats',   component: () => import('../views/StatsView.vue'), meta: { ownHeader: true } },
     { path: '/species', name: 'species-search', component: () => import('../views/SpeciesSearchView.vue'), meta: { ownHeader: true } },
     { path: '/species/:name', name: 'species', component: () => import('../views/SpeciesView.vue') },
+    { path: '/gare', name: 'gare', component: () => import('../views/fipsas/FipsasListView.vue'), meta: { ownHeader: true } },
+    { path: '/gare/:id/:sezione?', name: 'gare-prova', component: () => import('../views/fipsas/FipsasProvaView.vue'), meta: { ownHeader: true, hideBottomNav: true, depth: 1 } },
     { path: '/classifica', name: 'leaderboard', component: () => import('../views/LeaderboardView.vue'), meta: { ownHeader: true } },
   ])
 })
