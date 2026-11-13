@@ -687,6 +687,22 @@
    "w": 390,
    "x": 3070,
    "y": 28000
+  },
+  "HomePreferiti.dc.html": {
+   "h": 1400,
+   "is_interactive": true,
+   "title": "69 · Home · località preferite (scuro)",
+   "w": 390,
+   "x": 0,
+   "y": 29300
+  },
+  "HomePreferiti-chiaro.dc.html": {
+   "h": 1400,
+   "is_interactive": true,
+   "title": "69 · Home · località preferite (chiaro)",
+   "w": 390,
+   "x": 470,
+   "y": 29300
   }
  },
  "createdOnFiles": {
@@ -718,7 +734,8 @@
   "n19",
   "n20",
   "n21",
-  "n22"
+  "n22",
+  "n23"
  ],
  "notes": {
   "n1": {
@@ -860,6 +877,12 @@
    "w": 1000,
    "x": 0,
    "y": 27800
+  },
+  "n23": {
+   "text": "Home: località preferite. Sotto il meteo c'è «Le mie località»: una fila scorrevole di schede (la mia posizione + fino a 8 preferite) con temperatura, vento e onde. Toccando una scheda il meteo grande passa a quel posto, con un avviso «Mia posizione» per tornare. «Gestisci» per riordinare e togliere (con Annulla), «Aggiungi» per cercare e salvare con la stella. Stati: vuoto, caricamento, offline con ora dell'ultimo dato, dati non disponibili. Meteo e onde sono dati reali del servizio; nomi di esempio.",
+   "w": 560,
+   "x": 950,
+   "y": 29300
   }
  },
  "order": [
@@ -951,7 +974,9 @@
   "GareFipsasDesktop.dc.html",
   "GareFipsasDesktop-chiaro.dc.html",
   "GareFipsasMobile.dc.html",
-  "GareFipsasMobile-chiaro.dc.html"
+  "GareFipsasMobile-chiaro.dc.html",
+  "HomePreferiti.dc.html",
+  "HomePreferiti-chiaro.dc.html"
  ],
  "pages": [],
  "title": "FishLog – Restyling"

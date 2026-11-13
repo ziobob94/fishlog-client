@@ -229,6 +229,28 @@ Implementazione di riferimento: `vue-starter/fipsas/calc.js` (funzioni pure, da 
 
 **Backend da verificare in `fishlog-server`:** `Event/Prova` con campi dell'intestazione, `Settore`, `Concorrente` (numero di gara, società, squadra), `Pesata` (catture, catture valide, grammi, conversione, bonus), classifiche calcolate dalla stessa libreria di `calc.js`; ruoli: solo il giudice scrive le pesate. Esportazione PDF lato server (A4, orientamento per classifica).
 
+## Home: località preferite (69)
+
+Schermate: `screenshots/69-Home-preferiti(.png|-chiaro.png)`, board 69 sul canvas (10 stati, scuro e chiaro).
+
+**Cosa cambia.** Sotto la card meteo c'è la sezione «Le mie località»: fila orizzontale scorrevole (`role="list"`, snap, `scroll-padding-left:16px`) di schede 164×112. La prima è sempre «La mia posizione» (segue il GPS, non si può togliere né spostare, icona mirino). Seguono le preferite (stella ambra), poi la scheda tratteggiata «Aggiungi». Ogni scheda: nome, icona condizione, temperatura (mono), vento (freccia direzione + km/h) e onda in m; per le località interne l'onda è omessa.
+
+**Interazione.**
+- Tocco su una scheda: la card meteo grande mostra quel posto; la scheda attiva ha bordo `--oct` 2px e `aria-pressed="true"`. Compare il banner «Stai guardando X, una località preferita» con il pulsante «Mia posizione» per tornare.
+- «Gestisci» apre un bottom sheet: maniglia per riordinare (alternativa da tastiera: pulsanti su/giù), cestino per togliere; toast «X rimossa dalle preferite · Annulla» per 6 s.
+- «Aggiungi»: bottom sheet con ricerca, «Salva la posizione attuale» e stella on/off sui risultati (`aria-pressed`). Limite 8; al limite la stella è disattivata con messaggio «Hai raggiunto il massimo di 8 località».
+- Nel header della pagina Meteo va aggiunta la stella per salvare/togliere il posto visualizzato (stesso componente della stella nel sheet).
+
+**Stati.** Preferite, Meteo chiuso (badge + fila), Altra località, Aggiungi, Gestisci, Rimossa·Annulla, Nessuna preferita (invito «Salva le tue spiagge»), Caricamento (skeleton per scheda), Offline (banner + «Aggiornato alle HH:MM · dati non aggiornati»), Dati parziali (scheda con «—» e «Dati non disponibili», le altre restano).
+
+**Dati e persistenza.**
+- Salvare `favorites: [{id, name, lat, lon, order}]` sull'account (server) con cache locale; funziona offline in sola lettura. Proposta API: `GET/PUT /me/favorite-places`, `PUT` con l'intera lista ordinata per evitare conflitti di ordine.
+- Meteo e mare per ogni scheda con una sola chiamata batch (lat/lon dei preferiti), cache 15 min; mai una richiesta per scheda a ogni render.
+- Onda: se il punto è lontano dal mare, nessun valore (non inventarlo).
+- Il meteo mostrato in grande per «La mia posizione» resta quello della Home attuale.
+
+**Accessibilità e movimento.** Bersagli ≥44 px, scheda = pulsante con nome e stato letto («Ancona, 13 gradi, selezionata»), lista scorribile con tastiera (frecce), focus visibile. Cambio località con la transizione standard di `tokens/motion.css`; con riduzione del movimento nessuna animazione.
+
 ## Movimento (animazioni e transizioni) — vale per tutta l'app
 
 Stile: calmo e acquatico, come un'onda lunga. Mai rimbalzi: la «molla» è appena accennata (sovraelongazione ≈ 3 %). I valori sono token in `tokens/motion.css` (importare da `tokens.css`; alias Tailwind `duration-fast|base|slow`, `ease-enter|exit|standard|spring` in `tailwind-extend.js`). Gli esempi Vue sono in `vue-starter/motion/`.
