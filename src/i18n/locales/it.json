@@ -40,6 +40,7 @@
 		"stats": "Statistiche",
 		"species": "Specie",
 		"leaderboard": "Classifica",
+		"gare": "Gare",
 		"forum": "Forum",
 		"culture": "Cultura",
 		"profile": "Profilo",
@@ -474,6 +475,7 @@
 			"sessions": "Uscite",
 			"stats": "Statistiche",
 			"leaderboard": "Classifica",
+			"gare": "Gare",
 			"friends": "Amici",
 			"profile": "Il mio profilo"
 		},
