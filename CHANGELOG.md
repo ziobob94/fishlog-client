@@ -1,3 +1,10 @@
+# [1.77.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.76.0...client-v1.77.0) (2026-11-13)
+
+
+### Features
+
+* **gare:** voce Gare nel menu laterale e negli accessi rapidi della Home ([#152](https://github.com/ziobob94/fishlog-client/issues/152)) ([5623ec9](https://github.com/ziobob94/fishlog-client/commit/5623ec907cc518c991e16d21091f2895f59d44d3))
+
 # [1.76.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.75.0...client-v1.76.0) (2026-11-13)
 
 
