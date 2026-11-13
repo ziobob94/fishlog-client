@@ -47,7 +47,7 @@
 import { useI18n } from 'vue-i18n'
 import {
   Fish, Users, ShoppingBag, UserCircle, UserPlus, BarChart3,
-  Trophy, CalendarDays, ArrowRight, CloudSun
+  Trophy, CalendarDays, ArrowRight, CloudSun, Flag
 } from 'lucide-vue-next'
 import AppIcon from '../components/AppIcon.vue'
 import { useSessionStore } from '../stores/sessions.js'
@@ -76,6 +76,7 @@ const quickLinks = [
   { key: 'sessions',    to: '/sessions',   icon: Fish },
   { key: 'stats',       to: '/stats',      icon: BarChart3 },
   { key: 'leaderboard', to: '/classifica', icon: Trophy },
+  { key: 'gare',        to: '/gare',       icon: Flag },
   { key: 'friends',     to: '/friends',    icon: UserPlus },
   { key: 'profile',     to: '/board',    icon: UserCircle }
 ]

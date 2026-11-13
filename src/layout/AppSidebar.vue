@@ -41,6 +41,9 @@
       <RouterLink to="/classifica" class="nav-item" @click="$emit('close')">
         <span class="w-5 text-center flex justify-center"><Trophy :size="16" /></span> {{ t('nav.leaderboard') }}
       </RouterLink>
+      <RouterLink to="/gare" class="nav-item" @click="$emit('close')">
+        <span class="w-5 text-center flex justify-center"><Flag :size="16" /></span> {{ t('nav.gare') }}
+      </RouterLink>
 
       <div class="nav-section-label">{{ t('nav.sections.community') }}</div>
       <RouterLink to="/feed" class="nav-item" @click="$emit('close')">
@@ -144,7 +147,7 @@ import { toInitials } from '../utils/initials.js'
   import { useInstallPrompt } from '../composables/useInstallPrompt.js'
   import { RouterLink, useRouter } from 'vue-router'
   import { useI18n } from 'vue-i18n'
-  import { Fish, Home, Pin, MapPin, Users, UserPlus, Newspaper, MessageCircle, Settings, BarChart3, UserCircle, Plus, Waves, ShoppingBag, Tag, MessageSquare, BookOpen, Trophy, Download, CloudSun } from 'lucide-vue-next'
+  import { Fish, Home, Pin, MapPin, Users, UserPlus, Newspaper, MessageCircle, Settings, BarChart3, UserCircle, Plus, Waves, ShoppingBag, Tag, MessageSquare, BookOpen, Trophy, Flag, Download, CloudSun } from 'lucide-vue-next'
   import { useAuthStore } from '../stores/auth.js'
   import { useSessionStore } from '../stores/sessions.js'
   import { usePostStore } from '../stores/posts.js'
