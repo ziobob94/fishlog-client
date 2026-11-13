@@ -703,6 +703,22 @@
    "w": 390,
    "x": 470,
    "y": 29300
+  },
+  "HomeAttivita.dc.html": {
+   "h": 1250,
+   "is_interactive": true,
+   "title": "70 · Home · attività dei pesci (scuro)",
+   "w": 390,
+   "x": 0,
+   "y": 30900
+  },
+  "HomeAttivita-chiaro.dc.html": {
+   "h": 1250,
+   "is_interactive": true,
+   "title": "70 · Home · attività dei pesci (chiaro)",
+   "w": 390,
+   "x": 470,
+   "y": 30900
   }
  },
  "createdOnFiles": {
@@ -735,7 +751,8 @@
   "n20",
   "n21",
   "n22",
-  "n23"
+  "n23",
+  "n24"
  ],
  "notes": {
   "n1": {
@@ -883,6 +900,12 @@
    "w": 560,
    "x": 950,
    "y": 29300
+  },
+  "n24": {
+   "text": "Home: attività dei pesci. Una card sotto il meteo con livello da 1 a 5 (Bassa → Alta) scritto a parole e con 5 segmenti, la prossima finestra utile e i 3 fattori che pesano di più (↑ favorevole, → neutro, ↓ sfavorevole). Tocco: foglio con grafico ora per ora, finestre, fattori e «Come viene calcolata». Nelle località preferite ogni scheda mostra il suo livello. Sempre etichettata «Indicativa»: non promette catture. Stati: ottime, scarse, caricamento, dati mancanti con «Riprova», offline.",
+   "w": 560,
+   "x": 950,
+   "y": 30900
   }
  },
  "order": [
@@ -976,7 +999,9 @@
   "GareFipsasMobile.dc.html",
   "GareFipsasMobile-chiaro.dc.html",
   "HomePreferiti.dc.html",
-  "HomePreferiti-chiaro.dc.html"
+  "HomePreferiti-chiaro.dc.html",
+  "HomeAttivita.dc.html",
+  "HomeAttivita-chiaro.dc.html"
  ],
  "pages": [],
  "title": "FishLog – Restyling"

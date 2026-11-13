@@ -251,6 +251,25 @@ Schermate: `screenshots/69-Home-preferiti(.png|-chiaro.png)`, board 69 sul canva
 
 **Accessibilità e movimento.** Bersagli ≥44 px, scheda = pulsante con nome e stato letto («Ancona, 13 gradi, selezionata»), lista scorribile con tastiera (frecce), focus visibile. Cambio località con la transizione standard di `tokens/motion.css`; con riduzione del movimento nessuna animazione.
 
+## Home: attività dei pesci (70)
+
+Schermate: `screenshots/70-Home-attivita-pesci(.png|-chiaro.png)`, board 70 (9 stati, scuro e chiaro). La pagina Meteo ha già «Attività dei pesci» per giorno; qui si porta una sintesi in Home.
+
+**Card «Attività dei pesci»** sotto il meteo (sopra «Le mie località»):
+- Livello 1–5: Bassa, Medio-bassa, Media, Medio-alta, Alta. Mai solo colore: nome del livello + 5 segmenti + `role="img"` con `aria-label="Attività stimata: media, 3 su 5"`.
+- Frase breve di consiglio, riga «Prossima finestra» (es. «oggi 16:00–18:00», «adesso fino alle 18:00», «domani…» se oggi non ce ne sono) e i 3 fattori più pesanti come pill con freccia ↑ favorevole / → neutro / ↓ sfavorevole (testo nascosto per lo screen reader).
+- Etichetta fissa «Indicativa». Copy onesto: mai «pesca garantita», mai promesse di catture.
+- Tocco sulla card: bottom sheet con livello, grafico a 24 barre (ora corrente, alba e tramonto tratteggiati), finestre favorevoli, fattori con spiegazione e link «Come viene calcolata».
+- Nelle schede di «Le mie località» (69) compare il livello di quel posto (5 segmenti + parola) con etichetta «Pesci · indicativa» nell'intestazione.
+
+**Calcolo (proposta, lato server).** Punteggio 0–1 pesato: luce (alba/tramonto/crepuscolo) ~30%, marea (fasi crescente/calante) ~25%, pressione (trend 6 h) ~20%, vento e onda ~15%, temperatura dell'acqua rispetto alla stagione ~10%; la luna come aggiustamento minimo. Soglie per i 5 livelli e pesi da rivedere con dati reali: non presentarli come scientifici. Per ogni ora restituire `{level 1–5, factors:[{key, effect:'up'|'flat'|'down'}]}`; la card mostra i 3 con effetto più forte. Se mancano pressione o maree: nessun livello inventato, stato «Non riesco a stimarla adesso» con «Riprova».
+- Specie: non c'è un indicatore per specie in Home; resta nel dettaglio giorno del Meteo («Indicativa»).
+- Le uscite dell'utente non cambiano la stima (nessun feedback loop); eventuale confronto «stima vs. tue catture» è una fase successiva.
+
+**Stati.** Home (Media), Condizioni ottime (Alta), Dettaglio, Come si calcola, Preferite con livello, Condizioni scarse (Bassa), Caricamento (skeleton, `aria-busy`), Dati mancanti, Offline («Calcolata con gli ultimi dati delle HH:MM»).
+
+**Accessibilità e movimento.** Bersagli ≥44 px, grafico con testo alternativo che riassume le finestre, sheet con focus trap ed Esc, transizioni solo da `tokens/motion.css`.
+
 ## Movimento (animazioni e transizioni) — vale per tutta l'app
 
 Stile: calmo e acquatico, come un'onda lunga. Mai rimbalzi: la «molla» è appena accennata (sovraelongazione ≈ 3 %). I valori sono token in `tokens/motion.css` (importare da `tokens.css`; alias Tailwind `duration-fast|base|slow`, `ease-enter|exit|standard|spring` in `tailwind-extend.js`). Gli esempi Vue sono in `vue-starter/motion/`.
