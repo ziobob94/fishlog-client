@@ -1,3 +1,15 @@
+# [1.74.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.73.1...client-v1.74.0) (2026-11-13)
+
+
+### Bug Fixes
+
+* **meteo:** suggerimenti luogo sempre verso il basso e visibili con la tastiera ([c200798](https://github.com/ziobob94/fishlog-client/commit/c2007988d2f6b7e4b6afaae950573269db099afb))
+
+
+### Features
+
+* **gare:** formato FIPSAS surf casting: prova, iscritti, sorteggio, pesatura, classifiche, stampa ([#151](https://github.com/ziobob94/fishlog-client/issues/151)) ([b7c2067](https://github.com/ziobob94/fishlog-client/commit/b7c2067ab23a3fc476af130cec0b2513990a3cf5))
+
 ## [1.73.1](https://github.com/ziobob94/fishlog-client/compare/client-v1.73.0...client-v1.73.1) (2026-11-12)
 
 
