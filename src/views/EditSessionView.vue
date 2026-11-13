@@ -74,7 +74,7 @@ async function onDelete() {
   if (await store.deleteSession(route.params.id)) router.replace('/sessions')
 }
 
-async function onSubmit(payload, pendingPhotosByIndex) {
+async function onSubmit(payload, pendingPhotosByIndex, opts) {
   const session = await store.updateSession(route.params.id, payload)
   if (!session) return
 
@@ -84,6 +84,12 @@ async function onSubmit(payload, pendingPhotosByIndex) {
       if (catchId && files.length) await store.uploadCatchMedia(session._id, catchId, files)
     }
     await store.fetchSession(route.params.id)
+  }
+
+  // Salvataggio dentro una sezione del menu: si resta sulla pagina
+  if (opts?.inPlace) {
+    toast(t('sessionForm.saved'), { type: 'success' })
+    return
   }
 
   if (session.status === 'ongoing') {
