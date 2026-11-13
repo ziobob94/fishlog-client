@@ -7,7 +7,7 @@
     </div>
 
     <div v-if="mode === 'search'" class="wx-search">
-      <PlaceInput v-model="query" :placeholder="t('weather.search.placeholder')" :lat="place?.lat ?? null" :lng="place?.lng ?? null" @place="p => $emit('pick', p)" />
+      <PlaceInput always-down v-model="query" :placeholder="t('weather.search.placeholder')" :lat="place?.lat ?? null" :lng="place?.lng ?? null" @place="p => $emit('pick', p)" />
       <div class="wx-chips" role="group" :aria-label="t('weather.search.zones')">
         <button v-for="z in zones" :key="z.key" type="button" class="wx-chip m-color" @click="$emit('pick', { name: t(`home.zones.items.${z.key}`), lat: z.lat, lng: z.lng })">{{ t(`home.zones.items.${z.key}`) }}</button>
       </div>

@@ -4,8 +4,8 @@
       <div class="place-field">
         <input :id="id" ref="inp" :value="modelValue" type="text" class="fl-inp place-inp" :class="{ 'fl-err': invalid }" :aria-invalid="invalid || undefined"
           :aria-required="required || undefined" :placeholder="placeholder" autocomplete="off" role="combobox" :aria-expanded="open && options.length > 0" aria-autocomplete="list"
-          @input="onInput" @focus="open = true; measure()" @blur="closeSoon" />
-        <ul v-if="open && options.length" class="place-list" :class="{ up: dropUp }" role="listbox">
+          @input="onInput" @focus="onFocus" @blur="closeSoon" />
+        <ul v-if="open && options.length" class="place-list" :class="{ up: dropUp }" :style="listStyle" role="listbox">
           <li v-for="(o, i) in options" :key="i" role="option">
             <button type="button" class="place-opt" @mousedown.prevent @click="pick(o)">
               <span class="place-ic"><MapPin :size="18" /></span>
@@ -51,6 +51,7 @@ const props = defineProps({
   placeholder: { type: String, default: '' },
   invalid: Boolean,
   required: Boolean,
+  alwaysDown: Boolean,   // il menu si apre sempre verso il basso (campo in cima alla pagina), con altezza limitata allo spazio visibile sopra la tastiera
   mode: { type: String, default: 'place' }   // 'city': nel campo va il comune; 'region': la regione/area, non il locale/punto di interesse
 })
 const emit = defineEmits(['update:modelValue', 'update:lat', 'update:lng', 'pick', 'place'])
@@ -65,12 +66,24 @@ const statusMsg = computed(() => !hasGoogleKey() ? t('placeInput.keyMissing') : 
 let timer = null
 const inp = ref(null)
 const dropUp = ref(false)
+const listMax = ref(0)
+const listStyle = computed(() => (props.alwaysDown && listMax.value ? { maxHeight: `${listMax.value}px`, overflowY: 'auto' } : null))
 // Apre verso l'alto se sotto non c'è spazio (barra in basso, tastiera): il menu non resta coperto.
 function measure() {
   const r = inp.value?.getBoundingClientRect(); if (!r) return
   const vh = window.visualViewport?.height || window.innerHeight
+  if (props.alwaysDown) { dropUp.value = false; listMax.value = Math.max(160, Math.floor(vh - r.bottom - 16)); return }
   dropUp.value = vh - r.bottom < 300 && r.top > 300 - 120
 }
+
+// Con la tastiera aperta porta il campo in cima all'area visibile, così i suggerimenti (sotto) restano in vista.
+function onFocus() {
+  open.value = true; measure()
+  if (!props.alwaysDown) return
+  setTimeout(() => { inp.value?.scrollIntoView({ block: 'start', behavior: 'smooth' }); setTimeout(measure, 350) }, 300)
+}
+function onViewport() { if (open.value) measure() }
+window.visualViewport?.addEventListener('resize', onViewport)
 
 // p = luogo completo {name, city, province, region, country, postalCode, lat, lng}
 function set(p) {
@@ -120,7 +133,7 @@ async function confirmMap() {
 }
 
 watch(mapOpen, (o) => { if (o) { draft.name = props.modelValue; draft.lat = props.lat; draft.lng = props.lng; draft.place = null } })
-onBeforeUnmount(() => clearTimeout(timer))
+onBeforeUnmount(() => { clearTimeout(timer); window.visualViewport?.removeEventListener('resize', onViewport) })
 </script>
 
 <style scoped>
