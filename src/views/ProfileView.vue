@@ -261,6 +261,7 @@
     <nav class="more-links" :aria-label="t('profile.more')">
       <RouterLink to="/groups" class="more-link">{{ t('nav.groups') }} <ChevronRight :size="18" /></RouterLink>
       <RouterLink to="/board" class="more-link">{{ t('nav.board') }} <ChevronRight :size="18" /></RouterLink>
+      <RouterLink to="/gare" class="more-link">{{ t('gare.titolo') }} <ChevronRight :size="18" /></RouterLink>
       <RouterLink to="/classifica" class="more-link">{{ t('nav.leaderboard') }} <ChevronRight :size="18" /></RouterLink>
       <RouterLink to="/species" class="more-link">{{ t('nav.species') }} <ChevronRight :size="18" /></RouterLink>
       <RouterLink v-if="auth.user?.role === 'admin'" to="/admin" class="more-link">{{ t('nav.admin') }} <ChevronRight :size="18" /></RouterLink>
