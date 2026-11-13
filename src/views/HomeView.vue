@@ -3,6 +3,9 @@
     <!-- Meteo in evidenza: scheda grande. -->
     <HomeWeatherCard class="mb-4" />
 
+    <!-- Le mie località: fila di schede meteo/mare dei posti preferiti. -->
+    <FavoritePlaces />
+
     <!-- Uscita in corso (mobile): riprendi con un tocco. -->
     <RouterLink v-if="sessions.ongoing" :to="{ path: `/session/${sessions.ongoing._id}/edit`, hash: '#section-catches' }" class="ongoing-panel md:hidden">
       <span class="pulse-dot"></span>
@@ -54,6 +57,7 @@ import { useSessionStore } from '../stores/sessions.js'
 import GlobeCard from '../components/GlobeCard.vue'
 import { useFriendStore } from '../stores/friends.js'
 import HomeWeatherCard from '../components/weather/HomeWeatherCard.vue'
+import FavoritePlaces from '../components/favorites/FavoritePlaces.vue'
 
 const { t } = useI18n()
 const friends = useFriendStore()
