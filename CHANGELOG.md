@@ -1,3 +1,10 @@
+# [1.75.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.74.0...client-v1.75.0) (2026-11-13)
+
+
+### Features
+
+* **sessione:** salva dentro ogni sezione di «Dati dell'uscita», senza barra Annulla/Aggiorna ([#149](https://github.com/ziobob94/fishlog-client/issues/149)) ([5ddcfd9](https://github.com/ziobob94/fishlog-client/commit/5ddcfd9a0be4180e9fd34c586a830a108dcbbf32))
+
 # [1.74.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.73.1...client-v1.74.0) (2026-11-13)
 
 
