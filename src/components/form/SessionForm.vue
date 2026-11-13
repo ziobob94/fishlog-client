@@ -77,7 +77,7 @@
     </div>
 
     <div v-else-if="menuMode" class="section-bar">
-      <button type="button" class="link-back" @click="activeSection = null"><ArrowLeft :size="18" /> {{ t('sessionForm.menu.back') }}</button>
+      <button type="button" class="link-back" @click="leaveSection"><ArrowLeft :size="18" /> {{ t('sessionForm.menu.back') }}</button>
       <h3>{{ sectionLabel(activeSection) }}</h3>
     </div>
 
@@ -409,15 +409,18 @@
     </BottomSheet>
 
     <!-- AZIONI -->
-    <div class="form-actions">
+    <div v-if="!menuHome || !online || error" class="form-actions">
       <div v-if="mode !== 'essential' && (!online || error)" class="form-status" role="alert" :class="{ off: !online }">
         <template v-if="!online"><WifiOff :size="16" /> {{ t('sessionMenu.offline') }}</template>
         <template v-else><AlertTriangle :size="16" /> {{ t('sessionMenu.saveError') }}
           <button type="button" class="status-retry" :disabled="saving" @click="handleSubmit">{{ t('sessionMenu.retry') }}</button></template>
       </div>
-      <div class="form-actions-inner" :class="{ 'ess-actions': mode === 'essential' }">
+      <div v-if="!menuHome" class="form-actions-inner" :class="{ 'ess-actions': mode === 'essential' }">
         <template v-if="menuMode && activeSection">
-          <button type="button" class="btn btn-primary" @click="activeSection = null">{{ t('sessionForm.menu.done') }}</button>
+          <button type="submit" class="btn btn-primary" :disabled="saving || !online">
+            <span v-if="saving" class="m-spinner" style="width:15px;height:15px"></span>
+            {{ saving ? t('sessionForm.saving') : t('sessionForm.menu.save') }}
+          </button>
         </template>
         <template v-else>
           <button v-if="mode !== 'essential'" type="button" class="btn btn-ghost" @click="$emit('cancel')">{{ t('common.cancel') }}</button>
@@ -451,6 +454,7 @@
   import { useOnline } from '../../composables/useOnline.js'
   import { useUnsavedGuard } from '../../composables/useUnsavedGuard.js'
   import { useToast } from '../../composables/useToast.js'
+  import { confirmDialog } from '../../composables/useConfirm.js'
 
   const { t } = useI18n()
   const { toast } = useToast()
@@ -481,6 +485,8 @@
   })
   const activeSection = ref(null)
   const menuMode = computed(() => props.isEdit && props.mode !== 'essential')
+  // Elenco principale di «Dati uscita»: nessuna barra di salvataggio, si salva dentro ogni sezione
+  const menuHome = computed(() => menuMode.value && !activeSection.value)
 
   // Sezioni del menu «Dati uscita» → sezioni dell'accordion mostrate nella pagina
   const SECTION_MAP = { general: ['base'], location: ['location'], rating: ['rating'], waterweather: ['water', 'weather'], notes: ['notes'] }
@@ -834,6 +840,8 @@
         : { type: 'warn', text: t('sessionForm.autoFill.noData') }
 
       if (filled.length) autofillDone.value = true
+      // Dal menu principale non c'è una sezione dove salvare: i dati compilati si salvano subito
+      if (filled.length && menuHome.value) handleSubmit()
 
     } catch (err) {
       autoFillMsg.value = { type: 'error', text: navigator.onLine === false ? t('sessionForm.autoFill.offline') : t('sessionForm.autoFill.error') }
@@ -873,13 +881,49 @@
   // «Uscire senza salvare?»: confronto con lo stato di partenza (si ferma al primo submit)
   const formSnap = () => JSON.stringify(f.value)
   const baseSnap = ref('')
+  // Ultimo stato salvato: serve a scartare le modifiche di una sezione quando si esce senza salvare
+  let savedSnap = ''
+  let sectionSavePending = false
+
+  // Uscita da una sezione verso il menu: con modifiche non salvate chiede conferma e poi le scarta
+  async function leaveSection() {
+    if (isDirty()) {
+      const ok = await confirmDialog(t('unsaved.message'), { title: t('unsaved.title'), confirmLabel: t('unsaved.leave'), cancelLabel: t('unsaved.stay') })
+      if (!ok) return
+      const prev = f.value.location
+      const restored = JSON.parse(savedSnap || baseSnap.value)
+      // il ripristino non deve far partire geocoding automatici
+      const { lat, lng } = restored.location.coords
+      if (lat && lng) appliedKey = `${lat},${lng}`
+      if (restored.location.name !== prev.name) skipNameGeocode = true
+      f.value = restored
+      nextTick(() => { baseSnap.value = formSnap() })
+    }
+    activeSection.value = null
+  }
+
+  // Salvataggio di una sezione riuscito: si torna al menu
+  watch(() => props.saving, (now, was) => {
+    if (!was || now || !sectionSavePending) return
+    sectionSavePending = false
+    if (props.error) return
+    savedSnap = baseSnap.value
+    if (activeSection.value) activeSection.value = null
+  })
   // Dentro una sezione, «indietro» (freccia o gesto) torna al menu dell'uscita invece di uscire dalla pagina
   onBeforeRouteLeave(() => {
-    if (menuMode.value && activeSection.value) { activeSection.value = null; return false }
+    if (menuMode.value && activeSection.value) { leaveSection(); return false }
     return true
   })
-  useUnsavedGuard(() => baseSnap.value !== '' && formSnap() !== baseSnap.value)
-  onMounted(() => nextTick(() => { baseSnap.value = formSnap() }))
+  // Con il menu a sezioni si salva dentro ogni sezione: l'avviso vale solo per la nuova uscita
+  // e per la chiusura della scheda; uscire da una sezione è gestito da leaveSection.
+  const isDirty = () => baseSnap.value !== '' && formSnap() !== baseSnap.value
+  useUnsavedGuard(() => isDirty() && (!menuMode.value || !!activeSection.value))
+  onMounted(() => nextTick(() => { baseSnap.value = formSnap(); savedSnap = baseSnap.value }))
+  // Dopo un salvataggio dal menu l'uscita viene riletta dal server: il nuovo stato diventa la base
+  watch(() => props.initialData, () => nextTick(() => { if (baseSnap.value !== '' && !props.error) { baseSnap.value = formSnap(); savedSnap = baseSnap.value } }))
+  // Foglio visibilità: alla chiusura salva se è cambiato qualcosa
+  watch(visSheet, open => { if (!open && menuMode.value && isDirty()) handleSubmit() })
   // Se il salvataggio fallisce i dati restano e l'uscita torna a chiedere conferma
   watch(() => props.error, e => { if (e) { baseSnap.value = JSON.stringify(defaultForm()) + '#' } })
 
@@ -907,7 +951,8 @@
     if (!payload.location.coords?.lat && !payload.location.coords?.lng) delete payload.location.coords
     if (payload.visibility !== 'group') payload.allowedGroups = []
     baseSnap.value = formSnap()
-    emit('submit', payload, catchesRef.value?.pendingPhotosByIndex, { concluded: props.mode === 'essential' && concluded.value })
+    sectionSavePending = menuMode.value
+    emit('submit', payload, catchesRef.value?.pendingPhotosByIndex, { concluded: props.mode === 'essential' && concluded.value, inPlace: menuMode.value })
   }
 </script>
 
