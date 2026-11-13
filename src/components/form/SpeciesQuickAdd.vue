@@ -23,7 +23,7 @@
       <p class="fl-hint chip-title">{{ t('speciesQuickAdd.resultsTitle') }}</p>
       <div class="chip-row">
         <button v-for="r in results" :key="r.gbifKey || r._id" type="button" class="fl-chip" :class="{ on: isSelected(r.commonNameIt || r.commonNameEn || r.scientificName) }" @click="pick(r)">
-          {{ r.commonNameIt || r.commonNameEn || r.scientificName }}
+          {{ r.commonNameIt || r.commonNameEn || r.scientificName }}<template v-if="r.matchedAlias"> ({{ r.matchedAlias }})</template>
         </button>
       </div>
     </div>
