@@ -1,3 +1,10 @@
+# [1.76.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.75.0...client-v1.76.0) (2026-11-13)
+
+
+### Features
+
+* **species:** la ricerca mostra l'alias trovato ([#148](https://github.com/ziobob94/fishlog-client/issues/148)) ([5ff9c10](https://github.com/ziobob94/fishlog-client/commit/5ff9c104af560e702be6695666cbf3119ec36f67))
+
 # [1.75.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.74.0...client-v1.75.0) (2026-11-13)
 
 
