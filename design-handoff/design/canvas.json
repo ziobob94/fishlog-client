@@ -655,6 +655,38 @@
    "w": 390,
    "x": 3360,
    "y": 3200
+  },
+  "GareFipsasDesktop.dc.html": {
+   "h": 1100,
+   "is_interactive": true,
+   "title": "67 · Gare FIPSAS: desktop — prova, settori, pesatura, classifiche, stampa (scuro)",
+   "w": 1200,
+   "x": 0,
+   "y": 28000
+  },
+  "GareFipsasDesktop-chiaro.dc.html": {
+   "h": 1100,
+   "is_interactive": true,
+   "title": "67 · Gare FIPSAS: desktop — prova, settori, pesatura, classifiche, stampa (chiaro)",
+   "w": 1200,
+   "x": 1300,
+   "y": 28000
+  },
+  "GareFipsasMobile.dc.html": {
+   "h": 1000,
+   "is_interactive": true,
+   "title": "68 · Gare FIPSAS mobile: pesatura e classifiche (scuro)",
+   "w": 390,
+   "x": 2600,
+   "y": 28000
+  },
+  "GareFipsasMobile-chiaro.dc.html": {
+   "h": 1000,
+   "is_interactive": true,
+   "title": "68 · Gare FIPSAS mobile: pesatura e classifiche (chiaro)",
+   "w": 390,
+   "x": 3070,
+   "y": 28000
   }
  },
  "createdOnFiles": {
@@ -685,7 +717,8 @@
   "n18",
   "n19",
   "n20",
-  "n21"
+  "n21",
+  "n22"
  ],
  "notes": {
   "n1": {
@@ -821,6 +854,12 @@
    "w": 1000,
    "x": 3360,
    "y": 1560
+  },
+  "n22": {
+   "text": "Gare secondo lo standard FIPSAS (surf casting). Una prova ha: organizzazione, manifestazione, prova nr., campo di gara, data, società organizzatrice, direttore e giudice di gara. I concorrenti hanno numero di gara, società e squadra (A–C, * = senza squadra) e vengono sorteggiati in settori A–F da 10. Il giudice pesa il settore: catture + peso → punteggio (conversione + bonus); il posto nel settore è la penalità. Classifiche: di settore, di giornata individuale, progressiva individuale (3 prove) e progressiva squadre (somma dei posti dei 4 componenti). Pari merito = posto medio; nessuna cattura = settore + 1. Stampa in PDF con le stesse colonne dei moduli, orario, direttore e giudice. Le regole non confermate sono segnalate nelle schermate. Nomi e società del mockup sono inventati.",
+   "w": 1000,
+   "x": 0,
+   "y": 27800
   }
  },
  "order": [
@@ -908,7 +947,11 @@
   "HomeMeteoDesktop.dc.html",
   "HomeMeteoDesktop-chiaro.dc.html",
   "UscitaChiusa.dc.html",
-  "UscitaChiusa-chiaro.dc.html"
+  "UscitaChiusa-chiaro.dc.html",
+  "GareFipsasDesktop.dc.html",
+  "GareFipsasDesktop-chiaro.dc.html",
+  "GareFipsasMobile.dc.html",
+  "GareFipsasMobile-chiaro.dc.html"
  ],
  "pages": [],
  "title": "FishLog – Restyling"

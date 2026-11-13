@@ -183,6 +183,52 @@ Ogni schermata ha un foglio scuro (`NN-Nome.png`) e uno chiaro (`NN-Nome-chiaro.
 
 **Da decidere:** 1) dove entra «Gare» (la barra ha già 5 voci: proposta, scheda in Home e voce nel menù del profilo); 2) classifica a squadre (vedi sopra); 3) un pesce sotto taglia si registra ma non conta; 4) come si risolvono i conflitti di inserimento offline tra due giudici.
 
+## Gare secondo lo standard FIPSAS (schermate 67-68) — DA APPROVARE PRIMA DI IMPLEMENTARE
+
+Estende il modulo Gare (48-55) con un **formato «FIPSAS surf casting»**: organizzazione della prova, sorteggio, pesatura per settore e le quattro classifiche ufficiali, con stampa in PDF. Il modulo generico (piazzamenti a punti, scarti, cappotto) resta per le altre gare. Base: quattro PDF di una selettiva provinciale reale (settori, giornata individuale, progressiva individuale, progressiva squadre). I PDF contengono nomi di persone: **non vanno messi nel repository**; il test usa solo numeri anonimizzati.
+
+### Le quattro classifiche e le loro colonne
+| Classifica | Colonne (come nei moduli) | Orientamento |
+|---|---|---|
+| Settore (A–F) | Posto · Gara (numero) · Concorrente · Società · Conversione · Totale catture · Bonus · Punt. effett. · Pen. effett. · Sq | A4 orizzontale |
+| Giornata individuale | Class. · Cognome · Nome · Società · Penalità effettive · Peso | A4 verticale |
+| Progressiva individuale | Class. · Cognome · Nome · Società · Piazz. tot. · Piazz. (prove) · Punteggio eff. tot. · Catture totali | A4 orizzontale |
+| Progressiva squadre | Class. · Società · Sq · Penalità eff. · Penalità singole prove · Peso totale | A4 verticale |
+| «Settori pieni» | l'elenco dei settori con i concorrenti pesati | A4 orizzontale |
+
+Intestazione di ogni pagina: Organizzazione, Manifestazione, Prova nr., Campo di gara, Data, Società organizzatrice; a piè di pagina: orario di stampa, Direttore di gara, Giudice di gara. Il logo FIPSAS **non** è incluso (serve autorizzazione della Federazione): l'intestazione è solo testo.
+
+### Calcoli verificati sui PDF
+Implementazione di riferimento: `vue-starter/fipsas/calc.js` (funzioni pure, da portare in TypeScript sia nel client sia nel server) con test `calc.test.mjs` e `fixture-prova3.json` (60 concorrenti, 6 settori). Il test passa.
+- **Punteggio effettivo = conversione + bonus** (verificato su 60 righe su 60).
+- **Penalità di settore = posto per punteggio decrescente** (verificato su 60 su 60). Pari merito = posto medio (4,5); **nessuna cattura = numero di concorrenti del settore + 1** (es. 11 in un settore da 10; nelle progressive compare come «11 - 11 - 11» con 0 catture).
+- **Giornata individuale** = penalità crescente, poi punteggio decrescente (verificato su 58 righe). In questa classifica la colonna «Peso» è il punteggio della prova.
+- **Progressiva individuale** = somma dei piazzamenti delle prove (con decimali), con elenco «1-1-2», punteggio e catture totali.
+- **Squadre** = penalità di prova = somma dei posti di settore dei **4 componenti**; «Penalità singole prove» elenca le prove; ordine: penalità totale, poi peso totale. Verificato su 9 squadre di una società su 12 e sui totali per prova.
+
+### Da confermare con il regolamento (segnalato nelle schermate)
+1. **Bonus**: nei PDF è 50 punti per cattura **valida**; in 12 righe su 60 è inferiore a 50 × catture totali (es. 12 catture, bonus 550). Serve la regola delle catture valide (taglia minima? prima cattura?) e dove si registra.
+2. **Conversione del peso**: il mockup assume 1 punto per grammo; va letta dal regolamento.
+3. **Spareggio nella progressiva individuale**: i dati sono coerenti con «migliori piazzamenti, poi punteggio», ma non è provato.
+4. **Squadre con più di 4 componenti**: una squadra aveva 5 iscritti e il PDF conta 4 (non il peggiore): serve la regola delle riserve e come si designano.
+5. **Una prova, più manifestazioni**: i PDF usano due nomi («Selettiva Provinciale S.C.» per settori e progressiva individuale; «Provinciale Surf Casting» per giornata e squadre) per la stessa prova: modellare la prova come dato unico con più classifiche, ciascuna con il suo titolo.
+6. Scarti e numero di prove: nel mockup 3 prove senza scarti.
+
+### Schermate (67 desktop 1200 px, 68 mobile)
+| Stato | Cosa mostra |
+|---|---|
+| Prova | Dati dell'intestazione e regole di punteggio (settori da 10, squadre da 4, conversione, bonus, pari merito, cappotto). «Duplica per la prova successiva». |
+| Iscritti e squadre | Concorrenti con numero di gara, società, squadra (A–C, * = senza squadra) e settore; importa da CSV; avviso per squadre incomplete («ne servono 4»). |
+| Sorteggio e settori | I sei settori da 10 posti con numeri di gara; sorteggio confermato (data e ora) e «Rifai il sorteggio» con conferma; segnala i settori non pieni. |
+| Pesatura | Per settore: catture (− / +), peso in grammi, bonus, punteggio e posto che si aggiornano mentre si inserisce; «Chiudi la pesatura del settore». Offline: coda sul dispositivo. Su mobile: elenco e foglio «Risultato» con grandi numeri e «Nessuna cattura (cappotto)». |
+| Classifiche | Settore · Giornata individuale · Progressiva individuale · Progressiva squadre, con le colonne dei moduli, pari merito evidenziato e leggenda. |
+| Stampa e pubblicazione | Scelta dei PDF, orario automatico, direttore e giudice, anteprima A4, link pubblico (riusa 54). |
+| Senza risultati · Offline | Stato vuoto con «Apri la pesatura»; banner offline con i risultati in coda. |
+
+**Accessibilità:** tabelle con `<th scope>`; posto sempre numerico; pari merito e cappotto anche in testo; tocco ≥ 44 px; navigazione da tastiera (tab a livello di sezione, frecce tra settori); contrasto AA su entrambi i temi. **Font:** Fraunces per i titoli, JetBrains Mono per tutti i numeri.
+
+**Backend da verificare in `fishlog-server`:** `Event/Prova` con campi dell'intestazione, `Settore`, `Concorrente` (numero di gara, società, squadra), `Pesata` (catture, catture valide, grammi, conversione, bonus), classifiche calcolate dalla stessa libreria di `calc.js`; ruoli: solo il giudice scrive le pesate. Esportazione PDF lato server (A4, orientamento per classifica).
+
 ## Movimento (animazioni e transizioni) — vale per tutta l'app
 
 Stile: calmo e acquatico, come un'onda lunga. Mai rimbalzi: la «molla» è appena accennata (sovraelongazione ≈ 3 %). I valori sono token in `tokens/motion.css` (importare da `tokens.css`; alias Tailwind `duration-fast|base|slow`, `ease-enter|exit|standard|spring` in `tailwind-extend.js`). Gli esempi Vue sono in `vue-starter/motion/`.
