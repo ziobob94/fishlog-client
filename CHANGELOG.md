@@ -1,3 +1,10 @@
+# [1.80.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.79.0...client-v1.80.0) (2026-11-14)
+
+
+### Features
+
+* **sessions:** catture a voce in coda quando il servizio AI è al limite ([#156](https://github.com/ziobob94/fishlog-client/issues/156)) ([cac154a](https://github.com/ziobob94/fishlog-client/commit/cac154a3f32568b7bac63ac7db2dfe15f7836728))
+
 # [1.79.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.78.0...client-v1.79.0) (2026-11-14)
 
 
