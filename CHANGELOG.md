@@ -1,3 +1,10 @@
+# [1.79.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.78.0...client-v1.79.0) (2026-11-14)
+
+
+### Features
+
+* **sessions:** cattura a voce raggiungibile da ogni pagina ([#155](https://github.com/ziobob94/fishlog-client/issues/155)) ([d036f43](https://github.com/ziobob94/fishlog-client/commit/d036f43204ea3dec0a63d118731e04e46ddd606a))
+
 # [1.78.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.77.0...client-v1.78.0) (2026-11-14)
 
 
