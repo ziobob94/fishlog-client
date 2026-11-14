@@ -315,6 +315,19 @@ Controlli ≥44 px; contrasto ≥4,5:1; stato annunciato con `aria-live="polite"
 4. Vibrazione: `navigator.vibrate` non esiste su iOS Safari; sull'iPhone restano solo colore, testo e icona.
 5. Le frasi di Fishy («Fatto: 3 azioni…») sono composte dal client.
 
+## Fishy: pulsante animato (77)
+
+Schermate e anteprima in movimento: `screenshots/77-Fishy-animato(.png|-chiaro.png|.gif)`; board 77 sul canvas (le animazioni girano dal vivo); componente `vue-starter/FishyAnimated.vue` (prop `state`: `idle | listen | think | ok`, `size`).
+Solo CSS/SVG, nessuna libreria. Tutte le animazioni sono decorative (`aria-hidden`) e si spengono con `prefers-reduced-motion` (restano avatar fermo, testo, timer, bordo).
+| Stato | Cosa si muove | Durata · curva |
+|---|---|---|
+| `idle` | ammicco, coda che dondola appena, galleggiante che oscilla | ammicco 5 s, coda 2,8 s, galleggiante 4 s · ease-in-out, loop |
+| `listen` | **parla**: la bocca si apre e chiude a ritmo irregolare; occhio grande con ammicco; galleggiante che pulsa e manda due onde; coda veloce | bocca 0,9 s, onde/alone 1,2 s, coda 0,55 s · ease-in-out, loop |
+| `think` | lo sguardo gira, tre puntini si accendono in sequenza (sfasati di 0,2 s), coda lenta | sguardo 2,4 s, puntini 1,2 s · ease-in-out, loop |
+| `ok` | saltello (−7 px), occhi felici, due scintille che «scoppiano»; **una volta sola** poi torna a `idle` | 0,7 s ease-out; scintille 0,4 s |
+La bocca che parla e le onde sono una finta: il riconoscimento del browser non dà il livello audio, quindi non devono mai sembrare un misuratore. Nessun loop vistoso nel foglio quando si leggono le conferme: lì usare `idle` o l'avatar fermo.
+Per il pulsante: `FishyFab` usa `FishyAnimated` con `state` legato agli stati del FAB (idle→`idle`, ascolto→`listen`, elaborazione→`think`, successo→`ok`; errore, offline e limite restano le espressioni ferme di `Fishy.vue`). Anelli dell'ascolto (decorativi) come in board 72.
+
 ## Movimento (animazioni e transizioni) — vale per tutta l'app
 
 Stile: calmo e acquatico, come un'onda lunga. Mai rimbalzi: la «molla» è appena accennata (sovraelongazione ≈ 3 %). I valori sono token in `tokens/motion.css` (importare da `tokens.css`; alias Tailwind `duration-fast|base|slow`, `ease-enter|exit|standard|spring` in `tailwind-extend.js`). Gli esempi Vue sono in `vue-starter/motion/`.

@@ -815,6 +815,22 @@
    "w": 1320,
    "x": 1400,
    "y": 33500
+  },
+  "FishyAnimato.dc.html": {
+   "h": 960,
+   "is_interactive": true,
+   "title": "77 · Fishy · pulsante animato (scuro)",
+   "w": 390,
+   "x": 0,
+   "y": 36800
+  },
+  "FishyAnimato-chiaro.dc.html": {
+   "h": 960,
+   "is_interactive": true,
+   "title": "77 · Fishy · pulsante animato (chiaro)",
+   "w": 390,
+   "x": 500,
+   "y": 36800
   }
  },
  "createdOnFiles": {
@@ -849,7 +865,8 @@
   "n22",
   "n23",
   "n24",
-  "n25"
+  "n25",
+  "n26"
  ],
  "notes": {
   "n1": {
@@ -1009,6 +1026,12 @@
    "w": 560,
    "x": 2800,
    "y": 32400
+  },
+  "n26": {
+   "text": "Il pulsante di Fishy animato dal vivo. A riposo ammicca e dondola appena; in ascolto «parla» (bocca che si apre e chiude, galleggiante che si illumina e manda onde, finte: non seguono la voce); in elaborazione guarda in giro con tre puntini; al successo fa un saltello con due scintille, una volta sola. Con movimento ridotto restano fermi avatar, testo e timer. Cambia scheda in alto per rivedere ogni stato.",
+   "w": 560,
+   "x": 1100,
+   "y": 36800
   }
  },
  "order": [
@@ -1116,7 +1139,9 @@
   "FishyIngressi.dc.html",
   "FishyIngressi-chiaro.dc.html",
   "FishyMisure.dc.html",
-  "FishyMisure-chiaro.dc.html"
+  "FishyMisure-chiaro.dc.html",
+  "FishyAnimato.dc.html",
+  "FishyAnimato-chiaro.dc.html"
  ],
  "pages": [],
  "title": "FishLog – Restyling"
