@@ -19,7 +19,11 @@ import BottomSheet from './motion/BottomSheet.vue'
 import { computed } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { X, ChevronRight, Image as ImageIcon, Fish, FileText, Camera, CalendarDays, Mic } from 'lucide-vue-next'
+import { X, ChevronRight, Image as ImageIcon, Fish, FileText, Camera, CalendarDays } from 'lucide-vue-next'
+import { h } from 'vue'
+import Fishy from './Fishy.vue'
+// La riga «Fishy» ha il suo avatar al posto del microfono.
+const FishyIcon = { render: () => h(Fishy, { size: 40, avatar: true }) }
 import { useSessionStore } from '../stores/sessions.js'
 import { useFishySheet } from '../composables/useFishySheet.js'
 
@@ -43,7 +47,7 @@ const options = computed(() => [
     sub: sessions.ongoing ? t('createMenu.resumeSession') : t('createMenu.sessionSub'),
     to: sessions.ongoing ? `/session/${sessions.ongoing._id}/edit` : '/new' },
   // Fishy, l'assistente vocale: sempre disponibile, anche senza un'uscita in corso (può avviarla lui).
-  { key: 'fishy', tone: 'sand', icon: Mic, title: t('createMenu.fishy'), sub: t('createMenu.fishySub') },
+  { key: 'fishy', tone: 'sand', icon: FishyIcon, title: t('createMenu.fishy'), sub: t('createMenu.fishySub') },
   { key: 'listing', tone: 'slate', icon: FileText, title: t('createMenu.listing'), sub: t('createMenu.listingSub'), to: '/market/new' }
 ])
 </script>

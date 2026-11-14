@@ -9,7 +9,7 @@
     <Transition name="sheet" :css="!swiped" @after-leave="swiped = false">
       <div
         v-if="modelValue" ref="sheet" class="sheet" role="dialog" aria-modal="true" :aria-label="label"
-        tabindex="-1" @keydown.esc.stop="close" v-bind="drag.handlers"
+        tabindex="-1" @keydown.esc.stop="close" @keydown.tab="trap" v-bind="drag.handlers"
       >
         <div class="sheet-grab" aria-hidden="true" />
         <div ref="scroller" class="sheet-body"><slot /></div>
@@ -30,6 +30,15 @@ const swiped = ref(false), progress = ref(0)
 let opener = null
 
 const close = () => emit('update:modelValue', false)
+// Focus trap: Tab e Maiusc+Tab restano dentro il foglio.
+function trap(e) {
+  const els = [...sheet.value.querySelectorAll('a[href],button:not([disabled]),input:not([disabled]),select,textarea,[tabindex]:not([tabindex="-1"])')].filter(el => el.offsetParent !== null)
+  if (!els.length) return
+  const first = els[0], last = els[els.length - 1]
+  const active = document.activeElement
+  if (e.shiftKey && (active === first || active === sheet.value)) { e.preventDefault(); last.focus() }
+  else if (!e.shiftKey && active === last) { e.preventDefault(); first.focus() }
+}
 const drag = useSwipeDismiss(sheet, {
   scrollEl: scroller,
   onProgress: (p) => { progress.value = p },

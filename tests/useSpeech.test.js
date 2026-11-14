@@ -70,4 +70,15 @@ describe('useSpeech', () => {
     s.start(); instances[1].onerror({ error: 'no-speech' })
     expect(onError).toHaveBeenCalledTimes(1)
   })
+
+  it('cancel chiude l\'ascolto senza inviare la frase', async () => {
+    const { useSpeech } = await load()
+    const onResult = vi.fn()
+    const s = useSpeech({ onResult })
+    s.start(); instances[0].say('ho preso una spigola')
+    s.cancel()
+    instances[0].onend?.()
+    expect(s.listening.value).toBe(false)
+    expect(onResult).not.toHaveBeenCalled()
+  })
 })
