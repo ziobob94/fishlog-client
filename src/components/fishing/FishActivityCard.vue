@@ -3,7 +3,7 @@
   <section v-if="place" class="fa" aria-labelledby="fa-title" :aria-busy="state === 'loading' ? 'true' : undefined">
     <div class="fa-head">
       <h2 id="fa-title" class="fa-title">{{ t('fishAct.title') }}</h2>
-      <span class="wx-tag">{{ t('fishAct.tag') }}</span>
+      <p class="fa-note">{{ t('fishAct.note') }}</p>
     </div>
 
     <div v-if="state === 'loading'" class="fa-sk">
@@ -23,11 +23,10 @@
       <button type="button" class="fa-main m-press" aria-haspopup="dialog" @click="open = true">
         <span class="fa-level">
           <span class="fa-word">{{ word }}</span>
-          <span class="fa-n wx-num" aria-hidden="true">{{ rec.level }}/5</span>
+          <FishMeter :level="rec.level" />
         </span>
-        <FishMeter :level="rec.level" />
         <span class="fa-advice">{{ t(`fishAct.advice.${key}`) }}</span>
-        <span class="fa-next"><span class="fa-next-k">{{ t('fishAct.nextWindow') }}</span> <span class="wx-num">{{ nextText }}</span></span>
+        <span class="fa-next"><Clock :size="14" aria-hidden="true" /><span><span class="fa-next-k">{{ t('fishAct.nextWindow') }}:</span> {{ nextText }}</span></span>
         <FishFactors :factors="rec.factors" />
       </button>
       <p v-if="state === 'offline'" class="fa-stale" role="status"><WifiOff :size="14" aria-hidden="true" /> {{ t('fishAct.offlineStale', { time: clock(rec.savedAt) }) }}</p>
@@ -39,7 +38,7 @@
 <script setup>
 import { ref, computed, watch, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { RefreshCw, WifiOff } from 'lucide-vue-next'
+import { RefreshCw, WifiOff, Clock } from 'lucide-vue-next'
 import FishMeter from './FishMeter.vue'
 import FishFactors from './FishFactors.vue'
 import FishActivitySheet from './FishActivitySheet.vue'
@@ -90,15 +89,16 @@ watch(online, on => { if (on) refresh() })
 
 <style scoped>
 .fa { display: grid; gap: 8px; margin: 0 0 16px; padding: 14px 16px; border-radius: 22px; background: rgb(var(--color-surface)); border: 1px solid rgb(var(--color-border)); }
-.fa-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.fa-head { display: grid; gap: 2px; }
+.fa-note { margin: 0; font-size: .8rem; color: rgb(var(--color-muted)); }
 .fa-title { font-family: var(--font-display); font-size: 1.2rem; margin: 0; }
-.fa-main { display: grid; gap: 8px; width: 100%; min-height: 44px; padding: 0; text-align: left; font: inherit; color: inherit; background: none; border: 0; border-radius: 14px; cursor: pointer; }
+.fa-main { display: grid; gap: 10px; width: 100%; min-height: 44px; padding: 0; text-align: left; font: inherit; color: inherit; background: none; border: 0; border-radius: 14px; cursor: pointer; }
 .fa-main:focus-visible, .fa-retry:focus-visible { outline: 2px solid rgb(var(--color-ocean-text)); outline-offset: 4px; }
-.fa-level { display: flex; align-items: baseline; gap: 10px; }
-.fa-word { font-family: var(--font-display); font-size: 1.6rem; font-weight: 700; line-height: 1.1; }
-.fa-n { font-size: .85rem; color: rgb(var(--color-muted)); }
-.fa-advice { font-size: .92rem; line-height: 1.4; color: rgb(var(--color-foam)); }
-.fa-next { font-size: .85rem; color: rgb(var(--color-muted)); }
+.fa-level { display: flex; align-items: center; flex-wrap: wrap; gap: 6px 14px; }
+.fa-word { font-family: var(--font-display); font-size: 1.9rem; font-weight: 700; line-height: 1.1; }
+.fa-advice { font-size: 1rem; line-height: 1.4; font-weight: 600; color: rgb(var(--color-foam)); }
+.fa-next { display: flex; align-items: flex-start; gap: 6px; margin-top: 2px; font-size: .88rem; line-height: 1.35; color: rgb(var(--color-muted)); font-variant-numeric: tabular-nums; }
+.fa-next svg { flex: none; margin-top: 2px; }
 .fa-next-k { font-weight: 700; }
 .fa-stale { display: flex; align-items: center; gap: 6px; margin: 0; font-size: .8rem; color: rgb(var(--color-muted)); }
 .fa-sk { display: grid; gap: 10px; }

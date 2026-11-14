@@ -2464,7 +2464,8 @@
 	"fishAct": {
 		"title": "Attività dei pesci",
 		"tag": "Indicativa",
-		"placesTag": "Pesci · indicativa",
+		"note": "Stima indicativa, non una garanzia",
+		"placesTag": "Stima pesci indicativa",
 		"levels": {
 			"low": "Bassa",
 			"midLow": "Medio-bassa",
@@ -2480,8 +2481,8 @@
 			"midHigh": "Buone condizioni: spesso i pesci sono più attivi.",
 			"high": "Condizioni favorevoli: spesso è un buon momento per uscire."
 		},
-		"nextWindow": "Prossima finestra",
-		"windowNow": "In corso, {from}–{to}",
+		"nextWindow": "Momento migliore",
+		"windowNow": "adesso, {from}–{to}",
 		"windowRange": "{from}–{to}",
 		"windowNone": "Nessuna finestra oggi",
 		"factors": {
@@ -2490,6 +2491,13 @@
 			"pressure": "Pressione",
 			"wind": "Vento",
 			"waterTemp": "Acqua"
+		},
+		"factorText": {
+			"light": { "up": "Luce favorevole", "flat": "Luce nella norma", "down": "Luce sfavorevole" },
+			"tide": { "up": "Marea favorevole", "flat": "Marea nella norma", "down": "Marea sfavorevole" },
+			"pressure": { "up": "Pressione favorevole", "flat": "Pressione nella norma", "down": "Pressione sfavorevole" },
+			"wind": { "up": "Vento favorevole", "flat": "Vento nella norma", "down": "Vento sfavorevole" },
+			"waterTemp": { "up": "Acqua favorevole", "flat": "Acqua nella norma", "down": "Acqua sfavorevole" }
 		},
 		"effect": {
 			"up": "favorisce",
