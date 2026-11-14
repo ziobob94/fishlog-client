@@ -1,6 +1,8 @@
 <template>
   <div class="wx-page">
-    <PageHeader :title="t('weather.title')" back="/" />
+    <PageHeader :title="t('weather.title')" back="/">
+      <FavoriteStar v-if="starPlace" :place="starPlace" />
+    </PageHeader>
 
     <WeatherPlaceBar :mode="mode" :place="store.place" :updated="updatedLabel" :offline="isOffline" :refreshing="store.refreshing"
       @here="goHere" @search="mode = 'search'" @pick="onPick" @refresh="refresh" />
@@ -69,6 +71,7 @@ import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
 import { MapPin, MapPinOff, WifiOff, CloudOff } from 'lucide-vue-next'
 import PageHeader from '../components/PageHeader.vue'
+import FavoriteStar from '../components/favorites/FavoriteStar.vue'
 import StaggerList from '../components/motion/StaggerList.vue'
 import WeatherPlaceBar from '../components/weather/WeatherPlaceBar.vue'
 import WeatherSkeleton from '../components/weather/WeatherSkeleton.vue'
@@ -96,6 +99,8 @@ window.addEventListener('online', () => { online.value = true; if (store.place) 
 window.addEventListener('offline', () => { online.value = false })
 
 const state = computed(() => store.status)
+// Stella nell'header: salva o toglie il posto che si sta guardando (serve il nome: per «Qui» arriva dal reverse geocoding).
+const starPlace = computed(() => (store.place && store.place.name ? { name: store.place.name, lat: store.place.lat, lon: store.place.lng } : null))
 const isOffline = computed(() => !online.value || store.offlineNow)
 const partial = computed(() => isPartial(store.data))
 const fmtClock = ms => new Date(ms).toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit', hour12: false })
