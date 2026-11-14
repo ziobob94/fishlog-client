@@ -75,6 +75,9 @@
 		"session": "Uscita",
 		"sessionSub": "Registra una nuova uscita di pesca",
 		"listing": "Annuncio",
+		"voice": "Cattura a voce",
+		"voiceSub": "Detta un pesce all'uscita in corso",
+		"voiceNoSession": "Prima avvia un'uscita di pesca",
 		"listingSub": "Vendi o scambia attrezzatura",
 		"close": "Chiudi",
 		"story": "Storia",
@@ -2139,6 +2142,8 @@
 	},
 	"voice": {
 		"title": "Catture a voce",
+		"sheetTitle": "Cattura a voce",
+		"fabAria": "Detta una cattura a voce",
 		"hold": "Tieni premuto e racconta",
 		"listening": "Ti ascolto… rilascia per inviare",
 		"thinking": "Sto capendo…",

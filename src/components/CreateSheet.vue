@@ -5,11 +5,11 @@
           <h2>{{ t('createMenu.sheetTitle') }}</h2>
           <button type="button" class="sheet-x" :aria-label="t('createMenu.close')" @click="$emit('close')"><X :size="22" /></button>
         </div>
-        <RouterLink v-for="o in options" :key="o.key" :to="o.to" class="opt" @click="$emit('close')">
+        <component :is="o.to ? RouterLink : 'button'" v-for="o in options" :key="o.key" v-bind="o.to ? { to: o.to } : { type: 'button' }" class="opt" @click="onPick(o)">
           <span class="ic" :class="o.tone"><component :is="o.icon" :size="24" /></span>
           <span class="tx"><strong>{{ o.title }}</strong><small>{{ o.sub }}</small></span>
           <ChevronRight :size="20" class="go" />
-        </RouterLink>
+        </component>
     </div>
   </BottomSheet>
 </template>
@@ -19,11 +19,14 @@ import BottomSheet from './motion/BottomSheet.vue'
 import { computed } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { X, ChevronRight, Image as ImageIcon, Fish, FileText, Camera, CalendarDays } from 'lucide-vue-next'
+import { X, ChevronRight, Image as ImageIcon, Fish, FileText, Camera, CalendarDays, Mic } from 'lucide-vue-next'
 import { useSessionStore } from '../stores/sessions.js'
+import { useVoiceSheet } from '../composables/useVoiceSheet.js'
 
 defineProps({ open: { type: Boolean, default: false } })
-defineEmits(['close'])
+const emit = defineEmits(['close'])
+const voice = useVoiceSheet()
+function onPick(o) { emit('close'); if (o.key === 'voice' && sessions.ongoing) voice.show() }
 
 const { t } = useI18n()
 const sessions = useSessionStore()
@@ -39,6 +42,10 @@ const options = computed(() => [
   { key: 'session', tone: 'green', icon: Fish, title: t('createMenu.session'),
     sub: sessions.ongoing ? t('createMenu.resumeSession') : t('createMenu.sessionSub'),
     to: sessions.ongoing ? `/session/${sessions.ongoing._id}/edit` : '/new' },
+  // Con un'uscita in corso apre il foglio di dettatura; senza, porta ad avviarne una.
+  { key: 'voice', tone: 'sand', icon: Mic, title: t('createMenu.voice'),
+    sub: sessions.ongoing ? t('createMenu.voiceSub') : t('createMenu.voiceNoSession'),
+    ...(sessions.ongoing ? {} : { to: '/new' }) },
   { key: 'listing', tone: 'slate', icon: FileText, title: t('createMenu.listing'), sub: t('createMenu.listingSub'), to: '/market/new' }
 ])
 </script>
@@ -49,6 +56,7 @@ const options = computed(() => [
 .sheet-head h2 { font-size: 22px; font-weight: 800; margin: 0; color: var(--foam); }
 .sheet-x { width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; background: none; border: 0; color: var(--foam); cursor: pointer; }
 .opt { display: flex; align-items: center; gap: 14px; min-height: 72px; padding: 12px 14px; background: var(--surface-2); border: 1px solid var(--border); border-radius: 20px; text-decoration: none; color: var(--foam); }
+button.opt { width: 100%; text-align: left; cursor: pointer; font: inherit; }
 .ic { width: 48px; height: 48px; border-radius: 14px; display: flex; align-items: center; justify-content: center; flex: none; }
 .ic.ocean { background: rgba(14, 165, 233, .18); color: rgb(var(--color-ocean-text)); }
 .ic.sand { background: rgba(251, 191, 36, .16); color: rgb(var(--color-sand-text)); }
