@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import api from '../utils/api.js'
+import { isRetryableAiError } from '../utils/voiceCatch.js'
 import { getAllOutboxItems, putOutboxItem, removeOutboxItem } from '../utils/offlineDb.js'
 
 // Un item in coda rappresenta una richiesta HTTP non ancora andata a buon
@@ -17,6 +18,7 @@ function currentUserId() {
 function isNetworkError(err) {
   return !err.response
 }
+
 
 export const useOfflineStore = defineStore('offline', () => {
   const online   = ref(navigator.onLine)
@@ -110,6 +112,7 @@ export const useOfflineStore = defineStore('offline', () => {
             online.value = false
             break // ancora offline, riprova al prossimo giro
           }
+          if (isRetryableAiError(err)) break // servizio AI al limite: riprova al prossimo giro
           // errore del server (validazione, ecc.): non ha senso ritentare da solo
           item.status   = 'error'
           item.errorMsg = err.response?.data?.error || 'Errore di sincronizzazione'

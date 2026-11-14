@@ -81,8 +81,9 @@ async function submit({ text, species, force }) {
   try {
     const res = await store.addVoiceCatch(props.session._id, { text: clean, time, species, force })
     if (res.error === 'localSession') return
-    if (res.queued) { toast(t('voice.savedForLater'), { type: 'info' }); return }
+    if (res.queued) { toast(res.reason === 'ai_rate_limit' ? t('voice.rateLimited') : res.reason === 'ai_unavailable' ? t('voice.aiDown') : t('voice.savedForLater'), { type: 'info', duration: 7000 }); return }
     if (res.error) { toast(res.error, { type: 'danger' }); return }
+    if (res.degraded) toast(t('voice.simplified'), { type: 'info', duration: 6000 })
     for (const r of res.results.filter(r => r.status === 'saved')) announce(r)
   } finally { busy.value = false }
 }

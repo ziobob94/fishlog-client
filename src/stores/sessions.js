@@ -4,7 +4,7 @@ import api from '../utils/api.js'
 import { compressAll, compressImage } from '../utils/image.js'
 import router from '../router/index.js'
 import { useOfflineStore } from './offline.js'
-import { withCatches, withoutCatch } from '../utils/voiceCatch.js'
+import { withCatches, withoutCatch, isRetryableAiError } from '../utils/voiceCatch.js'
 
 function isNetworkError(err) {
   return !err.response
@@ -86,9 +86,12 @@ export const useSessionStore = defineStore('sessions', () => {
       applyVoiceResults(sessionId, data.results, body.text)
       return data
     } catch (e) {
-      if (!isNetworkError(e)) return { error: e.response?.data?.error || 'Errore catture a voce' }
-      await useOfflineStore().enqueue('post', `/sessions/${sessionId}/voice-catch`, body, { kind: 'voice-catch', sessionId })
-      return { queued: true }
+      // Rete assente oppure servizio AI al limite (429): il testo va in coda e viene interpretato più tardi.
+      if (isNetworkError(e) || isRetryableAiError(e)) {
+        await useOfflineStore().enqueue('post', `/sessions/${sessionId}/voice-catch`, body, { kind: 'voice-catch', sessionId })
+        return { queued: true, reason: isNetworkError(e) ? 'offline' : e.response.data.code, retryAfter: e.response?.data?.retryAfter }
+      }
+      return { error: e.response?.data?.error || 'Errore catture a voce' }
     }
   }
 
