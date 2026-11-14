@@ -116,7 +116,7 @@
     <div class="form-grid" v-if="isOpen('base')">
       <div class="form-group full">
         <label>{{ t('sessionForm.fields.titleLabel') }}<FieldInfo :text="t('sessionForm.fields.titleInfo')" /></label>
-        <input v-model="f.title" type="text" :placeholder="t('sessionForm.fields.titlePlaceholder')" />
+        <input v-model="f.title" type="text" :placeholder="f.location?.name?.trim() || t('sessionForm.fields.titlePlaceholder')" />
       </div>
       <div class="form-group">
         <label>{{ t('sessionForm.fields.dateLabel') }} <span class="required-mark">*</span><FieldInfo :text="t('sessionForm.fields.dateInfo')" /></label>
