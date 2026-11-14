@@ -270,6 +270,51 @@ Schermate: `screenshots/70-Home-attivita-pesci(.png|-chiaro.png)`, board 70 (9 s
 
 **Accessibilità e movimento.** Bersagli ≥44 px, grafico con testo alternativo che riassume le finestre, sheet con focus trap ed Esc, transizioni solo da `tokens/motion.css`.
 
+## Fishy: identità, pulsante e foglio (71–76)
+
+Schermate: `screenshots/71…76-Fishy-*(.png|-chiaro.png)`; file di design `design/Fishy*.dc.html`; componente `vue-starter/Fishy.vue`. Solo design: nessuna modifica a logica, API o server.
+
+### Personaggio
+Direzione scelta: **C, pesce azzurro con galleggiante-lanterna ambra** (il Bobber che ha imparato a nuotare). Scartate: A pesciolino generico, B galleggiante-pesce (si confonde con il Bobber). Corpo `--color-ocean`, pancia `foam`, pinna `ocean-text`; **ambra solo sul galleggiante** (e su «?», scintille). Contorno 2,5 px scuro solo nel tema chiaro (`--fishy-outline`), come il Bobber. viewBox `0 -10 120 120`; sotto i 32 px si omettono pinna dorsale e pettorale.
+Espressioni (`expr`): `riposo`, `ascolta` (occhi grandi, bocca aperta, onde sonore sul galleggiante), `pensa` (sguardo in alto, puntini), `contento` (occhi chiusi a arco, scintille), `perplesso` («?», sopracciglio), `offline` (dorme, «z», galleggiante spento), `limite` (palpebre calate, goccia, galleggiante piegato). Avatar tondo 24/40/56 px, grande 120 px nel foglio vuoto. Il nome «Fishy» è sempre scritto accanto all'avatar nel foglio.
+Tono: frasi brevi, nessuna battuta in acqua, il personaggio reagisce e il testo informa.
+
+### Pulsante (FAB) — board 72
+56 px, cerchio `--deep` con bordo 2 px azzurro e avatar dentro; 16 px sopra la tab bar + safe-area; a ≥768 px 24 px dal fondo. Un normale `<button aria-label="Parla con Fishy">`.
+| Stato | Aspetto | Movimento (durata, curva) | Movimento ridotto |
+|---|---|---|---|
+| Inattivo | avatar a riposo | ammicco 300 ms, ease-out, ogni 20–30 s | nessun ammicco |
+| Prima apparizione | fumetto «Parla con Fishy», sparisce dopo 3 usi o se chiuso | dissolvenza 200 ms | subito visibile |
+| Ascolto | pillola 64 px: avatar `ascolta`, «Ti ascolto», tempo in mono, tasto Ferma, anelli azzurri **decorativi** | anelli 1,6 s ease-out in loop | anelli fermi, solo colore/forma |
+| Elaborazione | avatar `pensa`, anello che gira, fumetto «Sto capendo…» | anello 1,1 s lineare | anello fisso + puntini |
+| Successo | bordo e badge verdi con spunta, avatar `contento`, fumetto con l'esito, dopo 3 s torna a riposo | scala 1→1,06→1 in 250 ms ease-out | solo colore e icona |
+| Errore | bordo rosso, badge «!», avatar `perplesso`, testo | scuotimento 2 px, 200 ms | nessuno scuotimento |
+| Offline · in coda | avatar `offline`, bordo grigio, badge numero (mono) | nessuna | — |
+| Limite raggiunto | bordo ambra tratteggiato su grigio, avatar `limite`, badge numero | nessuna | — |
+Nessun loop vistoso a riposo. Le onde e gli anelli **non** seguono la voce: il riconoscimento del browser non fornisce il livello audio, quindi sono decorazione (`aria-hidden`).
+Dimensioni: FAB compatto 40 px dove lo spazio è stretto (elenchi). Scheda uscita in corso: niente FAB, **riga comandi larga** (avatar 40 + «Parla con Fishy» + tastiera). Chat a tutta altezza: il FAB sparisce (resta il menù «+»). Menù «+»: riga «Fishy» con avatar al posto del microfono. Mostrato a 360, 390, 430 px; ≥768 px foglio centrato di 480 px.
+
+### Interazione (board 73)
+- **Tocca per parlare, tocca per finire** è il modo principale; fine automatica dopo qualche secondo di silenzio. «Tieni premuto e rilascia» resta come scorciatoia (walkie-talkie).
+- Come si capisce che registra: avatar `ascolta`, titolo «Ti ascolto…», pulsante «Tocca per finire» con timer in mono, vibrazione leggera all'inizio e alla fine (opzione disattivabile).
+- Annullare senza inviare: pulsante «Annulla» sempre visibile; in tieni-premuto, zona di annullo a sinistra («Scorri verso sinistra e rilascia»). Passare alla tastiera: pulsante tastiera sempre accanto.
+- Per VoiceOver / Switch Control: nessun gesto a pressione prolungata richiesto; il bottone alterna «Inizia» / «Ferma».
+- Foglio (BottomSheet esistente): testata con avatar e «Fishy», riga di stato (uscita in corso con luogo e ora, oppure «Nessuna uscita in corso. Dimmi dove peschi e la avvio io.»), zona conversazione: «Hai detto: …» + azioni eseguite come righe-card (icona, riepilogo con kg/cm in mono, orario, **Annulla persistente** ≥44 px). Più azioni = più righe, nell'ordine detto. Esempi «Prova: …» cliccabili, ridotti a uno dopo qualche uso.
+- Annulla: la riga diventa «Annullato» con «Ripristina · N s» per qualche secondo. Cattura da completare: bordo ambra e «Completa peso e misura». «Hai già un'uscita in corso a X»: riga informativa con «Vai all'uscita» (senza Annulla).
+
+### Domande e stati (board 74)
+Specie incerta (2–3 chip + «Usa «X» comunque» + «Ignora»), luogo mancante (chip luoghi recenti, «Usa la mia posizione», anche a voce), frase non capita (mostra la frase, «Ripeti a voce», «Scrivi»), offline (richieste in coda con contatore e ora, poi conferma al sync), limite raggiunto (coda, tempo stimato, risposta semplificata con avviso «controlla i dati»), servizio non disponibile (riprova ogni 30 s, «Scrivi i dati a mano»), microfono negato (tre passi + tastiera), solo tastiera (neutro, non è un errore), uscita non ancora sincronizzata, toast sopra la tab bar per chi chiude il foglio (Annulla, Completa).
+
+### Accessibilità
+Controlli ≥44 px; contrasto ≥4,5:1; stato annunciato con `aria-live="polite"` («Ti ascolto», «Sto capendo», «Registrata: spigola 2 kg»); focus ordinato nel foglio (testata → stato → conversazione → comandi), focus trap ed Esc; nessuna informazione solo con il colore (icona + testo, bordo + badge); niente solo suono; `prefers-reduced-motion`: niente pulsazioni, onde, scuotimenti, ammicco.
+
+### Cosa richiederebbe di cambiare (da decidere)
+1. `FishyFab.vue`: oggi cerchio ambra con microfono, solo `aria-label`. Va sostituito con avatar e stati; aggiungere lo stato «prima apparizione» (contatore usi in locale) e la visibilità: nascosto in scheda uscita e chat.
+2. `FishyPanel.vue`/`FishySheet.vue`: oggi il microfono è solo tieni-premuto. Serve il modo tocca-tocca con **fine automatica dopo il silenzio**, che oggi non esiste e dipende dal browser (su iOS la Web Speech API può chiudersi da sola: da verificare).
+3. Lo storico «cosa ha fatto Fishy» nel foglio è nuovo: richiede di tenere in memoria, per la sessione del foglio, le azioni restituite dal server (nessuna modifica API: sono già strutturate) e il «Ripristina» dopo l'annullo richiede di rifare la chiamata con lo stesso `voiceId` oppure di ritardare l'annullo di qualche secondo (da scegliere).
+4. Vibrazione: `navigator.vibrate` non esiste su iOS Safari; sull'iPhone restano solo colore, testo e icona.
+5. Le frasi di Fishy («Fatto: 3 azioni…») sono composte dal client.
+
 ## Movimento (animazioni e transizioni) — vale per tutta l'app
 
 Stile: calmo e acquatico, come un'onda lunga. Mai rimbalzi: la «molla» è appena accennata (sovraelongazione ≈ 3 %). I valori sono token in `tokens/motion.css` (importare da `tokens.css`; alias Tailwind `duration-fast|base|slow`, `ease-enter|exit|standard|spring` in `tailwind-extend.js`). Gli esempi Vue sono in `vue-starter/motion/`.
