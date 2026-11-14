@@ -1,3 +1,10 @@
+# [1.81.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.80.0...client-v1.81.0) (2026-11-14)
+
+
+### Features
+
+* **assistant:** Fishy, assistente vocale generico sempre visibile ([#157](https://github.com/ziobob94/fishlog-client/issues/157)) ([1c4c930](https://github.com/ziobob94/fishlog-client/commit/1c4c93007307ce3c17433b3a747ff34e7a21f57f))
+
 # [1.80.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.79.0...client-v1.80.0) (2026-11-14)
 
 
