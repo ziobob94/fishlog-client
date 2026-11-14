@@ -18,6 +18,11 @@ function isNetworkError(err) {
   return !err.response
 }
 
+// Il servizio AI delle catture a voce è al limite o momentaneamente fuori uso: non è un errore della richiesta,
+// resta in coda e si riprova (il server tiene un cooldown, quindi riprovare è economico).
+const RETRYABLE_CODES = new Set(['ai_rate_limit', 'ai_unavailable'])
+export const isRetryableAiError = err => RETRYABLE_CODES.has(err?.response?.data?.code)
+
 export const useOfflineStore = defineStore('offline', () => {
   const online   = ref(navigator.onLine)
   const outbox   = ref([])
@@ -110,6 +115,7 @@ export const useOfflineStore = defineStore('offline', () => {
             online.value = false
             break // ancora offline, riprova al prossimo giro
           }
+          if (isRetryableAiError(err)) break // servizio AI al limite: riprova al prossimo giro
           // errore del server (validazione, ecc.): non ha senso ritentare da solo
           item.status   = 'error'
           item.errorMsg = err.response?.data?.error || 'Errore di sincronizzazione'

@@ -18,3 +18,14 @@ describe('voiceCatch utils', () => {
     expect(withoutCatch(added, 'b').catches.map(c => c._id)).toEqual(['a'])
   })
 })
+
+import { isRetryableAiError } from '../src/stores/offline.js'
+describe('coda: errori AI ritentabili', () => {
+  it('429/503 del servizio AI restano in coda, gli altri errori no', () => {
+    expect(isRetryableAiError({ response: { status: 429, data: { code: 'ai_rate_limit' } } })).toBe(true)
+    expect(isRetryableAiError({ response: { status: 503, data: { code: 'ai_unavailable' } } })).toBe(true)
+    expect(isRetryableAiError({ response: { status: 503, data: { code: 'ai_not_configured' } } })).toBe(false)
+    expect(isRetryableAiError({ response: { status: 400, data: {} } })).toBe(false)
+    expect(isRetryableAiError({})).toBe(false)
+  })
+})

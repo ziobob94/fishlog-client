@@ -2163,6 +2163,9 @@
 		"dismiss": "Ignora",
 		"queued": "Nessuna rete: {n} da interpretare al ritorno della connessione",
 		"savedForLater": "Nessuna rete: la frase è in coda e verrà registrata appena torna la connessione.",
+		"rateLimited": "Il servizio AI ha raggiunto il limite di richieste: la frase è in coda e verrà registrata appena possibile.",
+		"aiDown": "Il servizio AI non risponde: la frase è in coda e verrà registrata appena possibile.",
+		"simplified": "Servizio AI al limite: ho interpretato la frase in modo semplificato, controlla i dati.",
 		"localSession": "Le catture a voce funzionano dopo che l'uscita è stata sincronizzata.",
 		"micDenied": "Microfono non consentito: abilitalo nelle impostazioni del browser, oppure scrivi la cattura.",
 		"speechError": "Non ho sentito bene: riprova o scrivi la cattura."
