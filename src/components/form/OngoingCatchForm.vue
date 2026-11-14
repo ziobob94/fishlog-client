@@ -34,6 +34,8 @@
         <Plus :size="24" :stroke-width="2.4" /> {{ t('session.ongoing.addCatch') }}
       </RouterLink>
 
+      <VoiceCatch :session="session" />
+
       <!-- Stato vuoto: il galleggiante -->
       <div v-if="!catches.length" class="empty">
         <Bobber :size="96" />
@@ -77,6 +79,7 @@ import { RouterLink } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { Plus, ChevronRight, ChevronLeft, Fish, FileText, MoreHorizontal, Check } from 'lucide-vue-next'
 import Bobber from '../Bobber.vue'
+import VoiceCatch from './VoiceCatch.vue'
 import { sessionStart, fmtClock, elapsedLabel, totalKgLabel } from '../../utils/sessionTime.js'
 
 const { t } = useI18n()

@@ -4,6 +4,7 @@ import api from '../utils/api.js'
 import { compressAll, compressImage } from '../utils/image.js'
 import router from '../router/index.js'
 import { useOfflineStore } from './offline.js'
+import { withCatches, withoutCatch } from '../utils/voiceCatch.js'
 
 function isNetworkError(err) {
   return !err.response
@@ -53,8 +54,52 @@ export const useSessionStore = defineStore('sessions', () => {
     } else if (item.meta.kind === 'session-update') {
       sessions.value = sessions.value.map(s => s._id === item.meta.sessionId ? serverData : s)
       if (current.value?._id === item.meta.sessionId) current.value = serverData
+    } else if (item.meta.kind === 'voice-catch') {
+      // Testo dettato offline, interpretato ora che la rete è tornata.
+      applyVoiceResults(item.meta.sessionId, serverData.results, item.data?.text)
     }
   })
+
+  // Catture a voce che il server non ha potuto salvare da sole (specie incerta/ignota, frase non capita)
+  // e che richiedono una risposta dell'utente: si mostrano in VoiceCatch.vue.
+  const voiceNeedsInfo = ref([])
+
+  function applyVoiceResults(sessionId, results = [], text = '') {
+    const saved = results.filter(r => r.status === 'saved').map(r => r.catch)
+    if (saved.length) {
+      if (current.value?._id === sessionId) current.value = withCatches(current.value, saved)
+      if (ongoing.value?._id === sessionId) ongoing.value = withCatches(ongoing.value, saved)
+    }
+    for (const r of results.filter(r => r.status === 'needs_info')) {
+      voiceNeedsInfo.value = [...voiceNeedsInfo.value, { id: crypto.randomUUID(), sessionId, text, ...r }]
+    }
+  }
+  const dismissVoiceNeedsInfo = id => { voiceNeedsInfo.value = voiceNeedsInfo.value.filter(n => n.id !== id) }
+
+  // Invia il testo dettato. Online: risponde { results }. Offline: il testo va in coda e viene interpretato
+  // al ritorno della rete ({ queued: true }). `voiceId` rende l'invio idempotente anche se la risposta si perde.
+  async function addVoiceCatch(sessionId, payload) {
+    const body = { ...payload, voiceId: payload.voiceId || crypto.randomUUID() }
+    if (sessionId.startsWith('local-')) return { error: 'localSession' }
+    try {
+      const { data } = await api.post(`/sessions/${sessionId}/voice-catch`, body, { timeout: 45000 })
+      applyVoiceResults(sessionId, data.results, body.text)
+      return data
+    } catch (e) {
+      if (!isNetworkError(e)) return { error: e.response?.data?.error || 'Errore catture a voce' }
+      await useOfflineStore().enqueue('post', `/sessions/${sessionId}/voice-catch`, body, { kind: 'voice-catch', sessionId })
+      return { queued: true }
+    }
+  }
+
+  async function undoCatch(sessionId, catchId) {
+    try {
+      await api.delete(`/sessions/${sessionId}/catches/${catchId}`)
+      if (current.value?._id === sessionId) current.value = withoutCatch(current.value, catchId)
+      if (ongoing.value?._id === sessionId) ongoing.value = withoutCatch(ongoing.value, catchId)
+      return true
+    } catch { return false }
+  }
 
   // Sessioni create offline non ancora sincronizzate: vanno mostrate in
   // testa alla lista finché la coda non le manda al server.
@@ -242,6 +287,7 @@ export const useSessionStore = defineStore('sessions', () => {
   return {
     sessions, current, ongoing, loading, error, pagination, total,
     fetchSessions, fetchSession, fetchOngoing, createSession, updateSession,
-    deleteSession, uploadMedia, uploadCatchMedia, deleteMedia, fetchLeaderboard
+    deleteSession, uploadMedia, uploadCatchMedia, deleteMedia, fetchLeaderboard,
+    voiceNeedsInfo, dismissVoiceNeedsInfo, addVoiceCatch, undoCatch
   }
 })
