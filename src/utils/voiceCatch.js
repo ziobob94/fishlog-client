@@ -30,3 +30,8 @@ export function withoutCatch(session, catchId) {
   const catches = (session.catches || []).filter(c => c._id !== catchId)
   return { ...session, catches, totalCatches: catches.length }
 }
+
+// Il servizio AI è al limite (429) o momentaneamente fuori uso: non è un errore della richiesta, quindi la frase
+// resta in coda e si riprova (il server tiene un cooldown, riprovare è economico).
+const RETRYABLE_CODES = new Set(['ai_rate_limit', 'ai_unavailable'])
+export const isRetryableAiError = err => RETRYABLE_CODES.has(err?.response?.data?.code)

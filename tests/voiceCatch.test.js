@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { summarizeCatch, cleanTranscript, withCatches, withoutCatch } from '../src/utils/voiceCatch.js'
+import { summarizeCatch, cleanTranscript, withCatches, withoutCatch, isRetryableAiError } from '../src/utils/voiceCatch.js'
 
 describe('voiceCatch utils', () => {
   it('riassume la cattura con virgola decimale', () => {
@@ -19,7 +19,6 @@ describe('voiceCatch utils', () => {
   })
 })
 
-import { isRetryableAiError } from '../src/stores/offline.js'
 describe('coda: errori AI ritentabili', () => {
   it('429/503 del servizio AI restano in coda, gli altri errori no', () => {
     expect(isRetryableAiError({ response: { status: 429, data: { code: 'ai_rate_limit' } } })).toBe(true)

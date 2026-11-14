@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import api from '../utils/api.js'
+import { isRetryableAiError } from '../utils/voiceCatch.js'
 import { getAllOutboxItems, putOutboxItem, removeOutboxItem } from '../utils/offlineDb.js'
 
 // Un item in coda rappresenta una richiesta HTTP non ancora andata a buon
@@ -18,10 +19,6 @@ function isNetworkError(err) {
   return !err.response
 }
 
-// Il servizio AI delle catture a voce è al limite o momentaneamente fuori uso: non è un errore della richiesta,
-// resta in coda e si riprova (il server tiene un cooldown, quindi riprovare è economico).
-const RETRYABLE_CODES = new Set(['ai_rate_limit', 'ai_unavailable'])
-export const isRetryableAiError = err => RETRYABLE_CODES.has(err?.response?.data?.code)
 
 export const useOfflineStore = defineStore('offline', () => {
   const online   = ref(navigator.onLine)
