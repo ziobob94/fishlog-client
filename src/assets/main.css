@@ -89,7 +89,11 @@
      unico riferimento condiviso da chi deve lasciarle spazio sopra
      (ToastContainer, LocalStorageNotice, padding di App.vue). */
   --bottom-nav-h: 3.25rem;
+
+  /* Fishy: contorno scuro solo nel tema chiaro (nello scuro il corpo azzurro stacca già dal fondo). */
+  --fishy-outline: transparent;
 }
+:root[data-theme='light'] { --fishy-outline: #0b3a5c; }
 
 @layer base {
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }

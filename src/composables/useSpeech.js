@@ -16,13 +16,14 @@ export function useSpeech({ lang = 'it-IT', onResult, onError, silenceMs = 3500,
   let rec = null
   let finalText = ''
   let timer = null
+  let cancelled = false
 
   const clearTimer = () => { clearTimeout(timer); timer = null }
   const arm = ms => { clearTimer(); if (ms > 0) timer = setTimeout(stop, ms) }
 
   function start() {
     if (!supported || listening.value) return
-    finalText = ''; interim.value = ''
+    finalText = ''; interim.value = ''; cancelled = false
     rec = new Ctor()
     rec.lang = lang
     rec.interimResults = true
@@ -44,12 +45,14 @@ export function useSpeech({ lang = 'it-IT', onResult, onError, silenceMs = 3500,
       listening.value = false
       const text = (finalText || interim.value).trim()
       interim.value = ''
-      if (text) onResult?.(text)
+      if (text && !cancelled) onResult?.(text)
     }
     try { rec.start(); listening.value = true; arm(idleMs) } catch { listening.value = false }
   }
+  // Chiude l'ascolto senza inviare nulla (zona di annullo del tieni-premuto).
+  function cancel() { cancelled = true; clearTimer(); try { rec?.abort() } catch { /* */ }; listening.value = false; interim.value = '' }
   function stop() { clearTimer(); try { rec?.stop() } catch { /* già fermo */ } }
   if (getCurrentInstance()) onBeforeUnmount(() => { clearTimer(); try { rec?.abort() } catch { /* */ } })
 
-  return { supported, listening, interim, start, stop }
+  return { supported, listening, interim, start, stop, cancel }
 }
