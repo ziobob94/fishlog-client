@@ -17,9 +17,9 @@
       :aria-label="state === 'listening' ? t('fishy.stopAria') : t('fishy.fabAria')" :title="t('fishy.fabAria')"
       @click="onClick"
     >
-      <span v-if="state === 'listening'" class="fishy-rings" aria-hidden="true"><i></i><i></i></span>
       <span v-if="state === 'busy'" class="ring fishy-spin" aria-hidden="true"></span>
-      <Fishy :expression="EXPRESSION[state]" :size="compact ? 32 : 44" avatar :blink="blinking" />
+      <FishyAnimated v-if="anim" :state="anim" :size="compact ? 32 : 44" />
+      <Fishy v-else :expression="EXPRESSION[state]" :size="compact ? 32 : 44" avatar />
       <span v-if="badge" class="badge fl-mono" aria-hidden="true">{{ badge }}</span>
       <span v-if="state === 'success'" class="mark ok" aria-hidden="true"><Check :size="14" :stroke-width="3" /></span>
       <span v-else-if="state === 'error'" class="mark err" aria-hidden="true"><AlertTriangle :size="14" :stroke-width="2.6" /></span>
@@ -28,15 +28,16 @@
 </template>
 
 <script setup>
-import { computed, ref, onMounted, onBeforeUnmount } from 'vue'
+import { computed, ref, watch, onMounted, onBeforeUnmount } from 'vue'
 import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { Square, Check, AlertTriangle } from 'lucide-vue-next'
 import Fishy from './Fishy.vue'
+import FishyAnimated from './FishyAnimated.vue'
 import { useAuthStore } from '../stores/auth.js'
 import { useFishySheet } from '../composables/useFishySheet.js'
 import { useFishyVoice } from '../composables/useFishyVoice.js'
-import { EXPRESSION, nextBlinkMs, badgeLabel } from '../utils/fishyFab.js'
+import { EXPRESSION, animState, OK_MS, badgeLabel } from '../utils/fishyFab.js'
 
 const { t } = useI18n()
 const route = useRoute()
@@ -58,17 +59,17 @@ const syncCompact = () => { compact.value = !!mq?.matches }
 
 function onClick() { if (state.value === 'listening') finish(); else sheet.show() }
 
-// Ammicco di 300 ms ogni 20–30 s, solo a riposo (con movimento ridotto la CSS lo annulla).
-const blinking = ref(false)
-let blinkTimer = null
-function scheduleBlink() {
-  blinkTimer = setTimeout(() => {
-    if (state.value === 'idle') { blinking.value = true; setTimeout(() => { blinking.value = false }, 300) }
-    scheduleBlink()
-  }, nextBlinkMs())
-}
-onMounted(() => { bubbleTimer = setTimeout(hideBubble, 6000); window.addEventListener('scroll', hideBubble, { once: true, passive: true, capture: true }); syncCompact(); mq?.addEventListener?.('change', syncCompact); scheduleBlink() })
-onBeforeUnmount(() => { clearTimeout(blinkTimer); clearTimeout(bubbleTimer); window.removeEventListener('scroll', hideBubble, { capture: true }); mq?.removeEventListener?.('change', syncCompact) })
+// Il saltello del successo dura OK_MS e si fa una volta sola: poi il pesce torna a riposo (il bordo resta verde).
+const okDone = ref(false)
+let okTimer = null
+watch(state, v => {
+  clearTimeout(okTimer)
+  okDone.value = false
+  if (v === 'success') okTimer = setTimeout(() => { okDone.value = true }, OK_MS)
+}, { immediate: true })
+const anim = computed(() => animState(state.value, okDone.value))
+onMounted(() => { bubbleTimer = setTimeout(hideBubble, 6000); window.addEventListener('scroll', hideBubble, { once: true, passive: true, capture: true }); syncCompact(); mq?.addEventListener?.('change', syncCompact) })
+onBeforeUnmount(() => { clearTimeout(okTimer); clearTimeout(bubbleTimer); window.removeEventListener('scroll', hideBubble, { capture: true }); mq?.removeEventListener?.('change', syncCompact) })
 </script>
 
 <style scoped>
@@ -90,7 +91,6 @@ onBeforeUnmount(() => { clearTimeout(blinkTimer); clearTimeout(bubbleTimer); win
 .st-offline { border-color: rgb(var(--color-muted)); }
 .st-limit { border-color: rgb(var(--color-sand-text)); border-style: dotted; }
 .ring { position: absolute; inset: -5px; border-radius: 50%; border: 3px solid transparent; border-top-color: rgb(var(--color-ocean)); border-right-color: rgb(var(--color-ocean) / .4); }
-.fishy-rings i { border-color: rgb(var(--color-sand-text)); }
 .badge { position: absolute; top: -4px; right: -4px; min-width: 22px; height: 22px; padding: 0 5px; border-radius: 11px; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center;
   background: rgb(var(--color-sand-text)); color: rgb(var(--color-ink)); border: 2px solid rgb(var(--color-ink)); }
 .mark { position: absolute; top: -4px; right: -4px; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; border: 2px solid rgb(var(--color-ink)); }

@@ -1,5 +1,5 @@
 <template>
-  <!-- Scheda 164×112: nome, condizione, temperatura (mono), vento (freccia + km/h) e onda (assente per le località interne). -->
+  <!-- Scheda 164 px, almeno 136 di altezza, a colonna: nome, condizione, temperatura (mono), vento (freccia + km/h) e onda (assente per le località interne). -->
   <button v-if="kind !== 'add'" type="button" class="fc m-press" :class="{ 'is-active': active, 'is-partial': partial }" :aria-pressed="active ? 'true' : 'false'" :aria-label="label" @click="$emit('select')">
     <span class="fc-top">
       <span class="fc-name">{{ name }}</span>
@@ -60,7 +60,7 @@ const label = computed(() => {
 </script>
 
 <style scoped>
-.fc { flex: none; width: 164px; min-height: 134px; overflow: hidden; scroll-snap-align: start; display: flex; flex-direction: column; justify-content: space-between; gap: 4px; padding: 10px 12px; text-align: left; font: inherit; color: rgb(var(--color-foam));
+.fc { flex: none; width: 164px; min-height: 136px; overflow: hidden; scroll-snap-align: start; display: flex; flex-direction: column; justify-content: flex-start; gap: 6px; padding: 10px 12px; text-align: left; font: inherit; color: rgb(var(--color-foam));
   background: rgb(var(--color-surface)); border: 1px solid rgb(var(--color-border)); border-radius: 18px; cursor: pointer; }
 .fc.is-active { border: 2px solid var(--oct, rgb(var(--color-ocean-text))); padding: 9px 11px; }
 .fc:focus-visible { outline: 2px solid rgb(var(--color-ocean-text)); outline-offset: 2px; }
@@ -71,11 +71,11 @@ const label = computed(() => {
 .fc-main { display: flex; align-items: center; gap: 8px; }
 .fc-temp { font-size: 1.6rem; font-weight: 700; line-height: 1; letter-spacing: -.02em; }
 .fc :deep(.wx-wind-tx) { display: none; }
-.fc-sub { white-space: nowrap; display: flex; align-items: center; gap: 10px; font-size: .8rem; color: rgb(var(--color-muted)); min-height: 20px; }
+.fc-sub { display: flex; flex-wrap: wrap; align-items: center; gap: 2px 10px; min-width: 0; font-size: .8rem; color: rgb(var(--color-muted)); min-height: 20px; }
 .fc-wind, .fc-wave { display: inline-flex; align-items: center; gap: 3px; }
 .fc-wind small, .fc-wave small { font-size: .7rem; }
 .fc-arrow :deep(svg) { width: 16px; height: 16px; }
-.fc-fish { display: flex; align-items: center; gap: 6px; font-size: .78rem; font-weight: 700; color: rgb(var(--color-foam)); }
+.fc-fish { margin-top: auto; min-width: 0; display: flex; align-items: center; gap: 6px; font-size: .78rem; font-weight: 700; color: rgb(var(--color-foam)); }
 .fc-fish-w { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .fc-none { font-weight: 600; }
 .fc-add { align-items: center; justify-content: center; border: 2px dashed rgb(var(--color-border-light)); background: none; color: rgb(var(--color-ocean-text)); font-weight: 800; gap: 6px; }

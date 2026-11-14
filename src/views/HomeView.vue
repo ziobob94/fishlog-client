@@ -91,8 +91,8 @@ const quickLinks = [
 </script>
 
 <style scoped>
-/* Spazio in fondo: il pulsante di Fishy (fisso sopra la tab bar) non copre l'ultimo contenuto. */
-@media (max-width: 767px) { .home { padding-bottom: 4.5rem; } }
+/* Spazio in fondo: il pulsante di Fishy (56 px fisso a 16 px sopra la tab bar) non copre l'ultimo contenuto. */
+@media (max-width: 767px) { .home { padding-bottom: calc(56px + 16px + var(--bottom-nav-h) + env(safe-area-inset-bottom)); } }
 .icon-inline { @apply inline-flex items-center gap-1.5; }
 
 .story-grid { @apply grid gap-4 mb-8; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
