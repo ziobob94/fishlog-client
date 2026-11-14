@@ -121,6 +121,8 @@ function announce(r) {
   if (act === 'start_session') msg = r.auto ? t('fishy.startedAuto') : t('fishy.started', { place: r.session?.location || '' })
   else if (act === 'change_bait') msg = t('fishy.bait', { bait: r.bait })
   else if (act === 'end_session') msg = t('fishy.ended')
+  else if (act === 'update_session') msg = r.message || t('fishy.updated')
+  else if (!r.catch) return // azione sconosciuta: nessuna conferma inventata
   else {
     const c = r.catch
     const parts = [summarizeCatch(c, t('session.ongoing.releasedLower'))]

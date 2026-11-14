@@ -2149,6 +2149,7 @@
 		"startedAuto": "Ho avviato un'uscita (luogo da completare)",
 		"bait": "Esca in uso: {bait}",
 		"ended": "Uscita chiusa",
+		"updated": "Uscita aggiornata",
 		"undoneAction": "Annullato"
 	},
 	"voice": {
