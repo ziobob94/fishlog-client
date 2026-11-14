@@ -8,13 +8,11 @@
 
     <div class="fp-head">
       <h2 class="fp-title">{{ t('favorites.title') }}</h2>
-      <span class="wx-tag fp-tag">{{ t('fishAct.placesTag') }}</span>
       <button type="button" class="fp-manage m-press" :disabled="!fav.count" @click="manageOpen = true">{{ t('favorites.manage') }}</button>
     </div>
 
     <p v-if="offline" class="fp-banner" role="status"><WifiOff :size="16" aria-hidden="true" /> {{ t('favorites.offlineBanner') }}</p>
-    <p v-if="offline && fav.cardsAt" class="fp-stale wx-num">{{ t('favorites.updatedStale', { time: clock(fav.cardsAt) }) }}</p>
-    <p v-else-if="fav.cardsAt" class="fp-stale wx-num">{{ t('favorites.updatedAt', { time: clock(fav.cardsAt) }) }}</p>
+    <p v-if="fav.cardsAt" class="fp-stale">{{ offline ? t('favorites.updatedStale', { time: clock(fav.cardsAt) }) : t('favorites.updatedAt', { time: clock(fav.cardsAt) }) }} · {{ t('fishAct.placesTag') }}</p>
     <p v-if="loadingCards" class="fp-sr" role="status">{{ t('favorites.loadingCards') }}</p>
 
     <div ref="rail" class="fp-rail" role="list" :aria-busy="loadingCards ? 'true' : undefined" @keydown="onKey">
@@ -105,7 +103,6 @@ function onKey(e) {
 .fp { display: grid; gap: 8px; margin: 0 0 16px; min-width: 0; }
 .fp-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
 .fp-title { font-family: var(--font-display); font-size: 1.2rem; margin: 0; }
-.fp-tag { margin-right: auto; margin-left: 4px; }
 .fp-manage { min-height: 44px; padding: 0 12px; border: 0; border-radius: 12px; background: none; color: rgb(var(--color-ocean-text)); font: inherit; font-weight: 800; cursor: pointer; }
 .fp-manage:disabled { opacity: .4; cursor: not-allowed; }
 .fp-manage:focus-visible, .fp-back:focus-visible { outline: 2px solid rgb(var(--color-ocean-text)); outline-offset: 2px; }
@@ -113,7 +110,7 @@ function onKey(e) {
 .fp-back { min-height: 44px; display: inline-flex; align-items: center; gap: 6px; padding: 0 12px; border: 0; border-radius: 12px; background: none; color: rgb(var(--color-ocean-text)); font: inherit; font-weight: 800; cursor: pointer; flex: none; }
 .fp-banner { display: flex; align-items: center; gap: 8px; margin: 0; padding: 10px 14px; border-radius: 14px; border: 1px solid rgb(var(--color-sand-text)); background: rgb(var(--color-sand) / .12); font-size: .88rem; font-weight: 600; }
 .fp-banner svg { color: rgb(var(--color-sand-text)); flex: none; }
-.fp-stale { margin: 0; font-size: .78rem; color: rgb(var(--color-muted)); }
+.fp-stale { margin: 0; font-size: .78rem; font-variant-numeric: tabular-nums; color: rgb(var(--color-muted)); }
 .fp-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
 .fp-rail { display: flex; gap: 10px; overflow-x: auto; scroll-snap-type: x proximity; scroll-padding-left: 16px; padding: 4px 16px 8px; margin: 0 -16px; overscroll-behavior-x: contain; scrollbar-width: thin; }
 .fp-item { flex: none; display: flex; }

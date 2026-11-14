@@ -60,7 +60,7 @@ const label = computed(() => {
 </script>
 
 <style scoped>
-.fc { flex: none; width: 164px; height: 134px; scroll-snap-align: start; display: flex; flex-direction: column; justify-content: space-between; gap: 4px; padding: 10px 12px; text-align: left; font: inherit; color: rgb(var(--color-foam));
+.fc { flex: none; width: 164px; min-height: 134px; overflow: hidden; scroll-snap-align: start; display: flex; flex-direction: column; justify-content: space-between; gap: 4px; padding: 10px 12px; text-align: left; font: inherit; color: rgb(var(--color-foam));
   background: rgb(var(--color-surface)); border: 1px solid rgb(var(--color-border)); border-radius: 18px; cursor: pointer; }
 .fc.is-active { border: 2px solid var(--oct, rgb(var(--color-ocean-text))); padding: 9px 11px; }
 .fc:focus-visible { outline: 2px solid rgb(var(--color-ocean-text)); outline-offset: 2px; }
@@ -70,7 +70,8 @@ const label = computed(() => {
 .fc-pin { color: rgb(var(--color-ocean-text)); flex: none; }
 .fc-main { display: flex; align-items: center; gap: 8px; }
 .fc-temp { font-size: 1.6rem; font-weight: 700; line-height: 1; letter-spacing: -.02em; }
-.fc-sub { display: flex; align-items: center; gap: 10px; font-size: .8rem; color: rgb(var(--color-muted)); min-height: 20px; }
+.fc :deep(.wx-wind-tx) { display: none; }
+.fc-sub { white-space: nowrap; display: flex; align-items: center; gap: 10px; font-size: .8rem; color: rgb(var(--color-muted)); min-height: 20px; }
 .fc-wind, .fc-wave { display: inline-flex; align-items: center; gap: 3px; }
 .fc-wind small, .fc-wave small { font-size: .7rem; }
 .fc-arrow :deep(svg) { width: 16px; height: 16px; }

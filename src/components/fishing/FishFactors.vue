@@ -1,18 +1,16 @@
 <template>
-  <!-- Pill dei fattori: freccia ↑ → ↓ decorativa, il significato è nel testo nascosto «favorisce / neutro / sfavorisce». -->
-  <span class="ff" :class="{ 'ff-sm': small }">
-    <span v-for="f in items" :key="f.key" class="ff-pill" :class="`ff-${f.effect}`">
-      <span class="ff-name">{{ t(`fishAct.factors.${f.key}`) }}</span>
-      <span class="ff-arrow" aria-hidden="true">{{ ARROW[f.effect] }}</span>
-      <span class="ff-sr">{{ t(`fishAct.effect.${f.effect}`) }}</span>
-    </span>
-  </span>
+  <!-- Fattori in parole: «Luce favorevole». Il pallino è decorativo, il significato è nel testo. -->
+  <ul class="ff" :class="{ 'ff-sm': small }">
+    <li v-for="f in items" :key="f.key" class="ff-item" :class="`ff-${f.effect}`">
+      <span class="ff-dot" aria-hidden="true"></span>{{ t(`fishAct.factorText.${f.key}.${f.effect}`) }}
+    </li>
+  </ul>
 </template>
 
 <script setup>
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { visibleFactors, EFFECT_ARROW as ARROW } from '../../utils/fishActivity.js'
+import { visibleFactors } from '../../utils/fishActivity.js'
 
 const props = defineProps({ factors: { type: Array, default: () => [] }, small: Boolean })
 const { t } = useI18n()
@@ -20,11 +18,9 @@ const items = computed(() => visibleFactors(props.factors))
 </script>
 
 <style scoped>
-.ff { display: flex; flex-wrap: wrap; gap: 6px; }
-.ff-pill { position: relative; display: inline-flex; align-items: center; gap: 5px; min-height: 28px; padding: 0 10px; border-radius: 999px; border: 1px solid rgb(var(--color-border-light)); background: rgb(var(--color-surface-2)); font-size: .8rem; font-weight: 700; }
-.ff-arrow { font-family: var(--font-mono); font-weight: 700; }
-.ff-up .ff-arrow { color: rgb(var(--color-ocean-text)); }
-.ff-down .ff-arrow { color: rgb(var(--color-sand-text)); }
-.ff-flat .ff-arrow { color: rgb(var(--color-muted)); }
-.ff-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.ff { display: flex; flex-wrap: wrap; gap: 4px 14px; list-style: none; margin: 0; padding: 0; }
+.ff-item { display: inline-flex; align-items: center; gap: 6px; font-size: .85rem; color: rgb(var(--color-foam)); }
+.ff-dot { width: 8px; height: 8px; border-radius: 50%; flex: none; background: rgb(var(--color-muted)); }
+.ff-up .ff-dot { background: rgb(var(--color-ocean-text)); }
+.ff-down .ff-dot { background: rgb(var(--color-sand-text)); }
 </style>

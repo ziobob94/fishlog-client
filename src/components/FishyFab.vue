@@ -2,7 +2,7 @@
   <!-- Fishy, l'assistente vocale: sempre a portata di mano, anche senza uscita in corso. -->
   <div v-if="visible" class="fab-wrap" :class="{ compact }">
     <Transition name="fishy-pop">
-      <span v-if="state === 'first'" class="bubble" aria-hidden="true">{{ t('fishy.bubble') }}</span>
+      <span v-if="state === 'first' && bubbleOn" class="bubble" aria-hidden="true">{{ t('fishy.bubble') }}</span>
     </Transition>
 
     <!-- Ascolto: pillola con timer in mono e tasto Ferma (il bottone alterna «Inizia» e «Ferma»: niente pressioni lunghe) -->
@@ -48,6 +48,10 @@ const { state, queued, elapsedLabel, finish } = useFishyVoice()
 // larga), chat a tutta altezza, pagine pubbliche, e mentre il foglio è aperto.
 const visible = computed(() => auth.isLoggedIn && !route.meta.public && !route.meta.hideBottomNav && !route.meta.fullHeight && !sheet.open.value)
 const badge = computed(() => queued.value > 0 && (state.value === 'offline' || state.value === 'limit') ? badgeLabel(queued.value) : '')
+// Il fumetto resta solo qualche secondo e sparisce allo scroll: non deve coprire il testo sotto.
+const bubbleOn = ref(true)
+const hideBubble = () => { bubbleOn.value = false }
+let bubbleTimer = null
 const compact = ref(false) // 40 px dove lo spazio è stretto: schermo sotto i 360 px o altezza ridotta (tastiera aperta)
 const mq = typeof window !== 'undefined' && window.matchMedia ? window.matchMedia('(max-width: 359px), (max-height: 480px)') : null
 const syncCompact = () => { compact.value = !!mq?.matches }
@@ -63,8 +67,8 @@ function scheduleBlink() {
     scheduleBlink()
   }, nextBlinkMs())
 }
-onMounted(() => { syncCompact(); mq?.addEventListener?.('change', syncCompact); scheduleBlink() })
-onBeforeUnmount(() => { clearTimeout(blinkTimer); mq?.removeEventListener?.('change', syncCompact) })
+onMounted(() => { bubbleTimer = setTimeout(hideBubble, 6000); window.addEventListener('scroll', hideBubble, { once: true, passive: true, capture: true }); syncCompact(); mq?.addEventListener?.('change', syncCompact); scheduleBlink() })
+onBeforeUnmount(() => { clearTimeout(blinkTimer); clearTimeout(bubbleTimer); window.removeEventListener('scroll', hideBubble, { capture: true }); mq?.removeEventListener?.('change', syncCompact) })
 </script>
 
 <style scoped>
