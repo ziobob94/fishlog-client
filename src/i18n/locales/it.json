@@ -875,7 +875,7 @@
 		"fields": {
 			"titleLabel": "Titolo (opzionale)",
 			"titlePlaceholder": "es. Alba alla foce, Uscita notturna...",
-			"titleInfo": "Un titolo a piacere per ricordarti questa uscita.",
+			"titleInfo": "Un titolo a piacere per ricordarti questa uscita. Se lo lasci vuoto, l'app mostra il luogo.",
 			"dateLabel": "Data",
 			"dateInfo": "Il giorno in cui sei andato a pescare.",
 			"startTimeLabel": "Ora inizio",
