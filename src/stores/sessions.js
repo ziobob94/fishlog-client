@@ -124,6 +124,7 @@ export const useSessionStore = defineStore('sessions', () => {
       case 'start_session': return deleteSession(r.session._id)
       case 'change_bait': return !!(await updateSession(r.sessionId, { currentBait: r.previous || '' }))
       case 'end_session': return !!(await updateSession(r.sessionId, { status: 'ongoing', endTime: '' }))
+      case 'update_session': return r.undo?.body ? !!(await updateSession(r.sessionId, r.undo.body)) : false // luogo/orari/tecnica ai valori precedenti
       default: return false
     }
   }

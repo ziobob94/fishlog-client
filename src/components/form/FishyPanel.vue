@@ -116,7 +116,7 @@ import { isCancelZone, EXAMPLES_FULL_UNTIL } from '../../utils/fishyFab.js'
 defineProps({ closable: { type: Boolean, default: false } })
 defineEmits(['close'])
 
-const ICON = { start: Play, catch: Fish, bait: RefreshCw, end: Flag }
+const ICON = { start: Play, catch: Fish, bait: RefreshCw, update: RefreshCw, end: Flag }
 const { t } = useI18n()
 const store = useSessionStore()
 const voice = useFishyVoice()

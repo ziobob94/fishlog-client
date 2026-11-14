@@ -68,6 +68,8 @@ function describe(r) {
   if (act === 'start_session') return { kind: 'start', title: t('fishy.row.start'), parts: [{ text: r.auto ? t('fishy.startedAutoShort') : (r.session?.location || '') }] }
   if (act === 'change_bait') return { kind: 'bait', title: t('fishy.row.bait'), parts: [{ text: r.bait }] }
   if (act === 'end_session') return { kind: 'end', title: t('fishy.row.end'), parts: [] }
+  if (act === 'update_session') return { kind: 'update', title: t('fishy.row.update'), parts: (r.changes || []).map(c => ({ text: `${c.label}: ${c.to}` })) }
+  if (!r.catch) return null // azione sconosciuta: nessuna conferma inventata
   const c = r.catch
   const parts = [{ text: c.species }]
   if (c.weightKg) parts.push({ text: `${String(c.weightKg).replace('.', ',')} kg`, mono: true })
@@ -108,7 +110,8 @@ async function submit({ text, species, force }) {
     if (res.degraded) { issue.value = 'degraded'; issueText.value = t('voice.simplified') }
     for (const r of res.results) {
       if (r.status === 'saved') {
-        const row = conversation.addRow({ result: r, time, id: crypto.randomUUID(), sessionId: r.sessionId, ...describe(r) })
+        const d = describe(r); if (!d) continue
+        const row = conversation.addRow({ result: r, time, id: crypto.randomUUID(), sessionId: r.sessionId, ...d })
         if (row.kind === 'catch' && row.toComplete && r.catch?._id) {
           const idx = (store.current?.catches || []).findIndex(x => x._id === r.catch._id)
           row.completeTo = idx >= 0 ? `/session/${r.sessionId}/catch/${idx}` : null

@@ -2160,7 +2160,7 @@
 		"ex2": "ho preso una spigola da due chili",
 		"ex3": "cambio esca, ora uso il gambero",
 		"ex4": "ho finito l'uscita",
-		"row": { "start": "Uscita avviata", "catch": "Cattura registrata", "bait": "Esca cambiata", "end": "Uscita chiusa" },
+		"row": { "start": "Uscita avviata", "catch": "Cattura registrata", "bait": "Esca cambiata", "update": "Uscita aggiornata", "end": "Uscita chiusa" },
 		"startedAutoShort": "Luogo da completare",
 		"done": "Fatto: 1 azione | Fatto: {n} azioni",
 		"undone": "Annullato",
