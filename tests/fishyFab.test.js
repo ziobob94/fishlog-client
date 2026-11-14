@@ -46,3 +46,37 @@ describe('coda offline di Fishy', () => {
     expect(fabState({ queued: queuedCount(outbox), offline: false })).toBe('offline')
   })
 })
+
+import { readFileSync } from 'node:fs'
+import { animState, OK_MS } from '../src/utils/fishyFab.js'
+
+describe('pesce animato del pulsante', () => {
+  it('mappa gli stati del pulsante su idle · listen · think · ok', () => {
+    expect(animState('idle')).toBe('idle')
+    expect(animState('first')).toBe('idle')
+    expect(animState('listening')).toBe('listen')
+    expect(animState('busy')).toBe('think')
+    expect(animState('success')).toBe('ok')
+  })
+  it('errore, offline e limite restano le espressioni ferme', () => {
+    for (const s of ['error', 'offline', 'limit']) expect(animState(s)).toBeNull()
+  })
+  it('dopo il successo torna a idle (una sola volta, ~0,7 s)', () => {
+    expect(OK_MS).toBe(700)
+    expect(animState('success', true)).toBe('idle')
+    expect(animState('listening', true)).toBe('listen')
+  })
+})
+
+describe('FishyAnimated: movimento ridotto e accessibilità', () => {
+  const src = readFileSync(new URL('../src/components/FishyAnimated.vue', import.meta.url), 'utf8')
+  it('è decorativo', () => { expect(src).toContain('aria-hidden="true"') })
+  it('spegne ogni animazione con prefers-reduced-motion e con data-motion=reduce', () => {
+    expect(src).toMatch(/prefers-reduced-motion: reduce\)[^}]*\{\s*:root:not\(\[data-motion='full'\]\) \.fa \* \{ animation: none !important/)
+    expect(src).toContain(":root[data-motion='reduce'] .fa * { animation: none !important")
+  })
+  it('usa le durate del design', () => {
+    for (const d of ['5s', '2.8s', '4s', '.9s', '1.2s', '.55s', '2.4s', '.2s', '.7s', '.4s']) expect(src).toContain(d)
+  })
+  it('onde e bocca non leggono alcun livello audio', () => { expect(src).not.toMatch(/AudioContext|analyser|getUserMedia|volume/i) })
+})

@@ -18,6 +18,15 @@ export function fabState({ listening = false, busy = false, error = false, succe
 // Espressione della mascotte per ogni stato.
 export const EXPRESSION = { idle: 'rest', first: 'rest', listening: 'listen', busy: 'think', success: 'happy', error: 'confused', offline: 'offline', limit: 'limit' }
 
+// Pesce animato del pulsante (FishyAnimated): solo 4 stati. Errore, offline e limite restano le espressioni ferme di Fishy.vue (null).
+// Il successo salta una volta sola (OK_MS) e poi il pesce torna a riposo, mentre il bordo resta verde fino alla fine del flash.
+export const OK_MS = 700
+export const ANIM_STATE = { idle: 'idle', first: 'idle', listening: 'listen', busy: 'think', success: 'ok' }
+export function animState(state, okDone = false) {
+  const a = ANIM_STATE[state] || null
+  return a === 'ok' && okDone ? 'idle' : a
+}
+
 // Contatori in locale: il fumetto compare per i primi 3 usi, gli esempi «Prova:» si riducono dopo qualche uso.
 export const INTRO_USES = 3
 export const EXAMPLES_FULL_UNTIL = 3

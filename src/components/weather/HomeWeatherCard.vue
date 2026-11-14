@@ -162,7 +162,7 @@ const refreshLabel = computed(() => refreshing.value ? t('weather.refreshing') :
 .hw-pin { flex: none; }
 .hw-badge-txt { flex: 1 1 0; min-width: 0; display: grid; line-height: 1.2; }
 .hw-badge-cond { font-weight: 700; font-size: .9rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.hw-badge-sub { font-size: .75rem; color: rgb(var(--color-muted)); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.hw-badge-sub { font-size: .75rem; color: rgb(var(--color-muted)); overflow: hidden; overflow-wrap: anywhere; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
 .hw-badge-stale { color: rgb(var(--color-sand-text)); font-weight: 700; }
 .hw-badge-press { flex: none; display: inline-flex; align-items: center; gap: 4px; font-size: .75rem; font-weight: 700; color: rgb(var(--color-muted)); }
 .hw-badge-press.hw-pt-steady { font-weight: 600; }
