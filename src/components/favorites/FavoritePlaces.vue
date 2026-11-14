@@ -8,6 +8,7 @@
 
     <div class="fp-head">
       <h2 class="fp-title">{{ t('favorites.title') }}</h2>
+      <span class="wx-tag fp-tag">{{ t('fishAct.placesTag') }}</span>
       <button type="button" class="fp-manage m-press" :disabled="!fav.count" @click="manageOpen = true">{{ t('favorites.manage') }}</button>
     </div>
 
@@ -17,8 +18,8 @@
     <p v-if="loadingCards" class="fp-sr" role="status">{{ t('favorites.loadingCards') }}</p>
 
     <div ref="rail" class="fp-rail" role="list" :aria-busy="loadingCards ? 'true' : undefined" @keydown="onKey">
-      <div role="listitem" class="fp-item"><FavoriteCard kind="here" :name="t('favorites.here')" :data="cardFor('here')" :active="activeId === 'here'" @select="goHere" /></div>
-      <div v-for="p in fav.places" :key="p.id" role="listitem" class="fp-item"><FavoriteCard :name="p.name" :data="cardFor(p.id)" :active="activeId === p.id" @select="view(p)" /></div>
+      <div role="listitem" class="fp-item"><FavoriteCard kind="here" :name="t('favorites.here')" :data="cardFor('here')" :fish="fishFor('here')" :active="activeId === 'here'" @select="goHere" /></div>
+      <div v-for="p in fav.places" :key="p.id" role="listitem" class="fp-item"><FavoriteCard :name="p.name" :data="cardFor(p.id)" :fish="fishFor(p.id)" :active="activeId === p.id" @select="view(p)" /></div>
       <div v-if="!fav.limitReached" role="listitem" class="fp-item"><FavoriteCard kind="add" @select="addOpen = true" /></div>
     </div>
 
@@ -41,12 +42,14 @@ import FavoritesManageSheet from './FavoritesManageSheet.vue'
 import FavoritesAddSheet from './FavoritesAddSheet.vue'
 import { useFavoritesStore, HERE_ID } from '../../stores/favorites.js'
 import { useWeatherStore } from '../../stores/weather.js'
+import { useFishActivityStore } from '../../stores/fishActivity.js'
 import { useOnline } from '../../composables/useOnline.js'
 import { reverseLabel } from '../../utils/places.js'
 
 const { t } = useI18n()
 const fav = useFavoritesStore()
 const weather = useWeatherStore()
+const fishAct = useFishActivityStore()
 const online = useOnline()
 const offline = computed(() => !online.value || fav.cardsStatus === 'offline')
 const manageOpen = ref(false), addOpen = ref(false), rail = ref(null)
@@ -61,6 +64,9 @@ const activeId = computed(() => {
 })
 const viewingName = computed(() => (activeId.value !== HERE_ID && weather.place ? (weather.place.name || t('weather.yourPosition')) : ''))
 const cardFor = id => fav.cards[id] || null
+const fishFor = id => fishAct.records[id] || null
+// Attività dei pesci di tutte le schede: una sola chiamata batch (cache 15 min lato server).
+const loadFish = () => fishAct.load([...(fav.hereSpot ? [{ id: HERE_ID, ...fav.hereSpot }] : []), ...fav.places])
 const loadingCards = computed(() => fav.cardsStatus === 'loading')
 
 async function view(p) {
@@ -77,12 +83,12 @@ async function goHere() {
 
 // La posizione GPS usata dalla card meteo diventa la scheda «La mia posizione».
 watch(() => weather.place, p => {
-  if (p?.mode === 'here') { const h = fav.hereSpot; if (!h || h.lat !== p.lat || h.lon !== p.lng) { fav.setHere(p.lat, p.lng); fav.loadCards() } }
+  if (p?.mode === 'here') { const h = fav.hereSpot; if (!h || h.lat !== p.lat || h.lon !== p.lng) { fav.setHere(p.lat, p.lng); fav.loadCards(); loadFish() } }
 }, { immediate: true })
-watch(() => fav.places.length, () => fav.loadCards())
-watch(online, on => { if (on) fav.loadCards() })
+watch(() => fav.places.length, () => { fav.loadCards(); loadFish() })
+watch(online, on => { if (on) { fav.loadCards(); loadFish() } })
 
-onMounted(async () => { await fav.load(); fav.loadCards() })
+onMounted(async () => { await fav.load(); fav.loadCards(); loadFish() })
 
 // Frecce sinistra/destra spostano il focus tra le schede.
 function onKey(e) {
@@ -99,6 +105,7 @@ function onKey(e) {
 .fp { display: grid; gap: 8px; margin: 0 0 16px; min-width: 0; }
 .fp-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
 .fp-title { font-family: var(--font-display); font-size: 1.2rem; margin: 0; }
+.fp-tag { margin-right: auto; margin-left: 4px; }
 .fp-manage { min-height: 44px; padding: 0 12px; border: 0; border-radius: 12px; background: none; color: rgb(var(--color-ocean-text)); font: inherit; font-weight: 800; cursor: pointer; }
 .fp-manage:disabled { opacity: .4; cursor: not-allowed; }
 .fp-manage:focus-visible, .fp-back:focus-visible { outline: 2px solid rgb(var(--color-ocean-text)); outline-offset: 2px; }

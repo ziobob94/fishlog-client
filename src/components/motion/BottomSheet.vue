@@ -9,7 +9,7 @@
     <Transition name="sheet" :css="!swiped" @after-leave="swiped = false">
       <div
         v-if="modelValue" ref="sheet" class="sheet" role="dialog" aria-modal="true" :aria-label="label"
-        tabindex="-1" @keydown.esc.stop="close" @keydown.tab="trap" v-bind="drag.handlers"
+        tabindex="-1" @keydown="onKey" v-bind="drag.handlers"
       >
         <div class="sheet-grab" aria-hidden="true" />
         <div ref="scroller" class="sheet-body"><slot /></div>
@@ -28,17 +28,21 @@ const emit = defineEmits(['update:modelValue'])
 const sheet = ref(null), scroller = ref(null)
 const swiped = ref(false), progress = ref(0)
 let opener = null
+let locks = 0 // fogli aperti insieme (es. «Come viene calcolata» sopra un altro): lo scroll della pagina si sblocca all'ultimo
+
+// Esc chiude; Tab resta dentro il foglio (focus trap).
+const FOCUSABLE = 'a[href],button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])'
+function onKey(e) {
+  if (e.key === 'Escape') { e.stop?.(); e.stopPropagation(); close(); return }
+  if (e.key !== 'Tab' || !sheet.value) return
+  const els = [...sheet.value.querySelectorAll(FOCUSABLE)].filter(el => !el.closest('[inert]') && el.offsetParent !== null)
+  if (!els.length) { e.preventDefault(); sheet.value.focus(); return }
+  const first = els[0], last = els[els.length - 1], a = document.activeElement
+  if (e.shiftKey && (a === first || a === sheet.value)) { e.preventDefault(); last.focus() }
+  else if (!e.shiftKey && a === last) { e.preventDefault(); first.focus() }
+}
 
 const close = () => emit('update:modelValue', false)
-// Focus trap: Tab e Maiusc+Tab restano dentro il foglio.
-function trap(e) {
-  const els = [...sheet.value.querySelectorAll('a[href],button:not([disabled]),input:not([disabled]),select,textarea,[tabindex]:not([tabindex="-1"])')].filter(el => el.offsetParent !== null)
-  if (!els.length) return
-  const first = els[0], last = els[els.length - 1]
-  const active = document.activeElement
-  if (e.shiftKey && (active === first || active === sheet.value)) { e.preventDefault(); last.focus() }
-  else if (!e.shiftKey && active === last) { e.preventDefault(); first.focus() }
-}
 const drag = useSwipeDismiss(sheet, {
   scrollEl: scroller,
   onProgress: (p) => { progress.value = p },
@@ -49,14 +53,14 @@ const backdropStyle = computed(() => (drag.dragging.value || progress.value ? { 
 watch(() => props.modelValue, async (open) => {
   if (open) {
     opener = document.activeElement
-    document.documentElement.style.overflow = 'hidden'
+    locks++; document.documentElement.style.overflow = 'hidden'
     await nextTick(); sheet.value?.focus()
   } else {
-    document.documentElement.style.overflow = ''
+    locks = Math.max(0, locks - 1); if (!locks) document.documentElement.style.overflow = ''
     opener?.focus?.()
   }
 })
-onBeforeUnmount(() => { document.documentElement.style.overflow = '' })
+onBeforeUnmount(() => { if (props.modelValue) locks = Math.max(0, locks - 1); if (!locks) document.documentElement.style.overflow = '' })
 </script>
 
 <style>
