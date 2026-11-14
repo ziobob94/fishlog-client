@@ -3,6 +3,9 @@
     <!-- Annunci per lettori di schermo: «Ti ascolto», «Sto capendo», «Registrata: …» -->
     <p class="sr-only" aria-live="polite" role="status">{{ announcement }}</p>
 
+    <!-- Presentazione: solo finché non c'è uno scambio, una domanda, un avviso o un ascolto in corso (nessuno storico) -->
+    <p v-if="showIntro" class="intro">{{ t('fishy.intro') }}</p>
+
     <!-- Ultimo scambio (nessuno storico: il comando successivo lo sostituisce) -->
     <div v-if="exchange" class="conv">
       <p class="said"><span class="said-l">{{ t('fishy.said') }}</span> {{ exchange.text }}</p>
@@ -127,6 +130,7 @@ const typed = ref('')
 const inp = ref(null)
 const exchange = computed(() => conversation.last.value)
 const notices = computed(() => store.voiceNeedsInfo)
+const showIntro = computed(() => !exchange.value && !notices.value.length && !issue.value && !queued.value && !busy.value && !listening.value)
 const unsynced = computed(() => String(store.ongoing?._id || '').startsWith('local-'))
 const label = computed(() => busy.value ? t('voice.thinking') : listening.value ? t('fishy.stop') : t('fishy.start'))
 const EX = ['ex1', 'ex2', 'ex3', 'ex4']
@@ -212,7 +216,9 @@ async function useExample(ex) { typing.value = true; typed.value = ex; await nex
 .cancelbtn { min-height: 60px; min-width: 44px; padding: 0 12px; border-radius: 20px; border: 1px solid var(--border); background: transparent; color: var(--foam); font-weight: 700; font-size: 14px; cursor: pointer; }
 .type { display: flex; gap: 8px; }
 .type .fl-inp { flex: 1; min-width: 0; }
-.try { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.intro { font-size: 15px; line-height: 1.4; color: var(--foam); }
+/* Esempi: lista compatta, allineata a sinistra, righe da 36 px */
+.try { display: flex; flex-direction: column; align-items: flex-start; gap: 0; }
 .try-l { font-size: 12px; color: var(--text-muted); }
-.ex { min-height: 44px; padding: 0 10px; border: 0; background: none; color: rgb(var(--color-ocean-text)); font-size: 13px; text-align: left; cursor: pointer; }
+.ex { min-height: 36px; padding: 0; border: 0; background: none; color: rgb(var(--color-ocean-text)); font-size: 13px; line-height: 1.3; text-align: left; cursor: pointer; }
 </style>

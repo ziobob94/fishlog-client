@@ -77,15 +77,15 @@ const outline = computed(() => props.size <= 40 ? 4 : 3)
 .fa-ok .fa-hop { animation: fa-hop .7s ease-out 1; }
 .fa-ok .fa-sparks { animation: fa-spark .4s ease-out 1; }
 
-@keyframes fa-float { 50% { transform: translateY(-3px); } }
+@keyframes fa-float { 50% { transform: translateY(-8px); } }
 @keyframes fa-blink { 0%, 94%, 100% { transform: scaleY(1); } 97% { transform: scaleY(.1); } }
-@keyframes fa-tail { 50% { transform: rotate(10deg); } }
+@keyframes fa-tail { 0%, 100% { transform: rotate(-14deg); } 50% { transform: rotate(14deg); } }
 @keyframes fa-mouth { 50% { transform: scale(.55); } }
 @keyframes fa-waves { 0% { opacity: .8; transform: translateX(-3px); } 100% { opacity: 0; transform: translateX(4px); } }
 @keyframes fa-halo { 0% { opacity: .55; transform: scale(1); } 100% { opacity: 0; transform: scale(1.25); } }
-@keyframes fa-gaze { 0%, 100% { transform: translate(0, -2px); } 50% { transform: translate(-3px, -3px); } }
+@keyframes fa-gaze { 0%, 100% { transform: translate(2px, -3px); } 50% { transform: translate(-4px, -4px); } }
 @keyframes fa-dot { 0%, 100% { opacity: .25; } 40% { opacity: 1; } }
-@keyframes fa-hop { 30% { transform: translateY(-8px); } 60% { transform: translateY(0); } 80% { transform: translateY(-2px); } }
+@keyframes fa-hop { 30% { transform: translateY(-12px); } 60% { transform: translateY(0); } 80% { transform: translateY(-3px); } }
 @keyframes fa-spark { 0% { opacity: 0; transform: scale(.4); } 100% { opacity: 1; transform: scale(1); } }
 
 /* Movimento ridotto: nessuna animazione, resta l'avatar fermo (onde e alone nascosti; scintille e puntini restano ferme). */

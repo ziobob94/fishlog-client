@@ -80,3 +80,11 @@ describe('FishyAnimated: movimento ridotto e accessibilità', () => {
   })
   it('onde e bocca non leggono alcun livello audio', () => { expect(src).not.toMatch(/AudioContext|analyser|getUserMedia|volume/i) })
 })
+
+describe('FishyAnimated: movimento leggibile a 44 px', () => {
+  const src = readFileSync(new URL('../src/components/FishyAnimated.vue', import.meta.url), 'utf8')
+  it('galleggiamento e coda sono abbastanza ampi da vedersi', () => {
+    expect(src).toMatch(/@keyframes fa-float \{ 50% \{ transform: translateY\(-8px\)/)
+    expect(src).toMatch(/rotate\(14deg\)/)
+  })
+})
