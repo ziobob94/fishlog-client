@@ -184,3 +184,41 @@ html, body { overflow-x: clip; }       /* la scivolata di 24 px delle pagine non
   :root:not([data-motion='full']) .m-collapse, :root:not([data-motion='full']) .m-collapse.is-open { transition: none; }
 }
 :root[data-motion='reduce'] .m-collapse, :root[data-motion='reduce'] .m-collapse.is-open { transition: none; }
+
+/* ───────── Fishy (assistente vocale): tutte le animazioni usano le durate e le curve qui sopra ─────────
+   Durata / curva / con movimento ridotto:
+   - cambio di stato del pulsante   --motion-base 200 ms · ease-enter · resta solo il cambio di colore/forma
+   - ammicco a riposo               --motion-blink 300 ms, ogni 20–30 s (timer in FishyFab) · ease-standard · assente
+   - fumetto «Parla con Fishy»      --motion-base · ease-enter · solo dissolvenza
+   - anelli d'ascolto (decorativi)  --motion-loop-rings · ease-standard · assenti
+   - scuotimento d'errore           --motion-base, una volta, --dist-xs · ease-standard · assente (resta il bordo rosso + icona)
+   - comparsa righe del foglio      --motion-base · ease-enter · solo dissolvenza */
+:root { --motion-blink: 300ms; --motion-loop-rings: 1800ms; }
+
+.fishy-eyes { transform-box: fill-box; transform-origin: center; }
+.fishy-blink .fishy-eyes { animation: fishy-blink var(--motion-blink) var(--ease-standard) 1; }
+@keyframes fishy-blink { 0%, 100% { transform: scaleY(1); } 50% { transform: scaleY(.1); } }
+
+.fishy-rings { position: absolute; inset: 0; pointer-events: none; }
+.fishy-rings i { position: absolute; inset: 0; border-radius: 50%; border: 2px solid rgb(var(--color-ocean)); opacity: 0;
+  animation: fishy-ring var(--motion-loop-rings) var(--ease-standard) infinite; }
+.fishy-rings i:nth-child(2) { animation-delay: calc(var(--motion-loop-rings) / 2); }
+@keyframes fishy-ring { 0% { transform: scale(1); opacity: .55; } 100% { transform: scale(1.7); opacity: 0; } }
+
+.fishy-shake { animation: fishy-shake var(--motion-base) var(--ease-standard) 1; }
+@keyframes fishy-shake { 25% { transform: translateX(calc(var(--dist-xs) * -1)); } 75% { transform: translateX(var(--dist-xs)); } }
+
+.fishy-spin { animation: fishy-spin var(--motion-loop-spinner) var(--ease-linear) infinite; }
+@keyframes fishy-spin { to { transform: rotate(360deg); } }
+
+.fishy-pop-enter-active { transition: opacity var(--motion-base) var(--ease-enter), transform var(--motion-base) var(--ease-enter); }
+.fishy-pop-leave-active { transition: opacity var(--motion-fast) var(--ease-exit); }
+.fishy-pop-enter-from { opacity: 0; transform: translateY(var(--dist-sm)); }
+.fishy-pop-leave-to { opacity: 0; }
+
+@media (prefers-reduced-motion: reduce) {
+  :root:not([data-motion='full']) .fishy-rings, :root:not([data-motion='full']) .fishy-spin { display: none; }
+  :root:not([data-motion='full']) .fishy-blink .fishy-eyes, :root:not([data-motion='full']) .fishy-shake { animation: none; }
+}
+:root[data-motion='reduce'] .fishy-rings, :root[data-motion='reduce'] .fishy-spin { display: none; }
+:root[data-motion='reduce'] .fishy-blink .fishy-eyes, :root[data-motion='reduce'] .fishy-shake { animation: none; }
