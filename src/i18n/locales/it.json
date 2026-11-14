@@ -2435,6 +2435,71 @@
 				"piede": "Direttore di gara: {direttore} · Giudice di gara: {giudice}"
 			}
 		},
+	"fishAct": {
+		"title": "Attività dei pesci",
+		"tag": "Indicativa",
+		"placesTag": "Pesci · indicativa",
+		"levels": {
+			"low": "Bassa",
+			"midLow": "Medio-bassa",
+			"mid": "Media",
+			"midHigh": "Medio-alta",
+			"high": "Alta"
+		},
+		"aria": "Attività stimata: {level}, {n} su 5",
+		"advice": {
+			"low": "Condizioni poco favorevoli: spesso conviene aspettare o scegliere un altro momento.",
+			"midLow": "Attività sotto la media: puoi provare, con aspettative prudenti.",
+			"mid": "Condizioni nella media: spesso c'è margine per qualche buon momento.",
+			"midHigh": "Buone condizioni: spesso i pesci sono più attivi.",
+			"high": "Condizioni favorevoli: spesso è un buon momento per uscire."
+		},
+		"nextWindow": "Prossima finestra",
+		"windowNow": "In corso, {from}–{to}",
+		"windowRange": "{from}–{to}",
+		"windowNone": "Nessuna finestra oggi",
+		"factors": {
+			"light": "Luce",
+			"tide": "Marea",
+			"pressure": "Pressione",
+			"wind": "Vento",
+			"waterTemp": "Acqua"
+		},
+		"effect": {
+			"up": "favorisce",
+			"flat": "neutro",
+			"down": "sfavorisce"
+		},
+		"factorAria": "{name}: {effect}",
+		"loading": "Calcolo l'attività dei pesci…",
+		"missingTitle": "Non riesco a stimarla adesso",
+		"missingText": "Mancano dati per questo momento: non mostro un livello al posto loro.",
+		"retry": "Riprova",
+		"offlineStale": "Calcolata con gli ultimi dati delle {time}",
+		"offlineMissing": "Sei offline e non ho un'ultima stima da mostrare.",
+		"sheetTitle": "Attività dei pesci",
+		"hoursTitle": "Ora per ora",
+		"legendBar": "Attività stimata (più alta = più favorevole)",
+		"legendNow": "Ora",
+		"legendSun": "Alba e tramonto",
+		"chartAria": "Attività dei pesci stimata ora per ora. Finestre più favorevoli: {windows}. Ora corrente: livello {level}.",
+		"chartNone": "nessuna finestra spicca oggi",
+		"chartMissing": "Il dettaglio ora per ora non è disponibile adesso.",
+		"windowsTitle": "Finestre favorevoli",
+		"factorsTitle": "Cosa pesa nella stima",
+		"how": "Come viene calcolata",
+		"close": "Chiudi",
+		"howTitle": "Come viene calcolata",
+		"howP1": "È una stima indicativa, non una previsione: combina alcune condizioni che spesso influenzano quanto i pesci si muovono e mangiano.",
+		"howList": [
+			"Luce: alba e tramonto sono di solito le ore più attive; di notte la luna illuminata aiuta solo un poco.",
+			"Marea: conta quanto l'acqua si muove, più dei colmi.",
+			"Pressione: un lieve calo spesso accompagna più attività; variazioni rapide, meno.",
+			"Vento e onda: vento debole e mare calmo rendono la pesca più facile.",
+			"Temperatura dell'acqua: la fascia comoda per molte specie."
+		],
+		"howP2": "Le regole sono dichiarate e non ancora validate con catture reali. La stima non promette catture e non tiene conto delle tue uscite. Si ricalcola con il meteo, circa ogni 15 minuti."
+	},
 	"favorites": {
 		"title": "Le mie località",
 		"manage": "Gestisci",
@@ -2451,7 +2516,9 @@
 		"wave": "onda {n} m",
 		"wind": "vento {n} km/h",
 		"temp": "{n} gradi",
-		"cardLabel": "{name}: {cond}, {temp}, {wind}{wave}",
+		"cardLabel": "{name}: {cond}, {temp}, {wind}{wave}{fish}",
+		"fishPart": ", attività dei pesci stimata: {level}",
+		"fishNone": ", attività dei pesci non stimabile",
 		"calmWord": "calmo",
 		"noSea": "",
 		"updatedAt": "Aggiornato alle {time}",

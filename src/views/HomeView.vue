@@ -3,6 +3,9 @@
     <!-- Meteo in evidenza: scheda grande. -->
     <HomeWeatherCard class="mb-4" />
 
+    <!-- Attività dei pesci (stima indicativa) del luogo mostrato nella card meteo. -->
+    <FishActivityCard />
+
     <!-- Le mie località: fila di schede meteo/mare dei posti preferiti. -->
     <FavoritePlaces />
 
@@ -58,6 +61,7 @@ import GlobeCard from '../components/GlobeCard.vue'
 import { useFriendStore } from '../stores/friends.js'
 import HomeWeatherCard from '../components/weather/HomeWeatherCard.vue'
 import FavoritePlaces from '../components/favorites/FavoritePlaces.vue'
+import FishActivityCard from '../components/fishing/FishActivityCard.vue'
 
 const { t } = useI18n()
 const friends = useFriendStore()
