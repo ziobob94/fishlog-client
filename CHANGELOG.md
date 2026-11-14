@@ -1,3 +1,10 @@
+# [1.83.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.82.0...client-v1.83.0) (2026-11-14)
+
+
+### Features
+
+* **fishy:** restyling di Fishy: mascotte, pulsante a stati e foglio ([#160](https://github.com/ziobob94/fishlog-client/issues/160)) ([2b819d9](https://github.com/ziobob94/fishlog-client/commit/2b819d97df9551a095e43051784150ce876fc4e0))
+
 # [1.82.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.81.1...client-v1.82.0) (2026-11-14)
 
 
