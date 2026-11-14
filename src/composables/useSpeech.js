@@ -1,15 +1,24 @@
-import { ref, onBeforeUnmount } from 'vue'
+import { ref, getCurrentInstance, onBeforeUnmount } from 'vue'
 
 // Riconoscimento vocale del dispositivo (Web Speech API: Chrome/Android, Safari/iOS recente).
-// Tieni-premuto: start() all'inizio della pressione, stop() al rilascio; il testo finale arriva in onResult.
+// start() avvia l'ascolto, stop() lo chiude e il testo finale arriva in onResult. Si ferma anche da solo dopo un
+// silenzio (`silenceMs` dall'ultima parola, `idleMs` se non si parla affatto): è ciò che permette la modalità
+// «tocca per parlare, tocca per inviare» su telefono, dove tenere premuto non è affidabile.
 // Dove l'API non esiste `supported` è false e il chiamante offre l'inserimento a tastiera.
-export function useSpeech({ lang = 'it-IT', onResult, onError } = {}) {
+export const isIOS = () => typeof navigator !== 'undefined' &&
+  (/iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1))
+
+export function useSpeech({ lang = 'it-IT', onResult, onError, silenceMs = 3500, idleMs = 10000 } = {}) {
   const Ctor = typeof window !== 'undefined' ? (window.SpeechRecognition || window.webkitSpeechRecognition) : null
   const supported = !!Ctor
   const listening = ref(false)
   const interim = ref('')
   let rec = null
   let finalText = ''
+  let timer = null
+
+  const clearTimer = () => { clearTimeout(timer); timer = null }
+  const arm = ms => { clearTimer(); if (ms > 0) timer = setTimeout(stop, ms) }
 
   function start() {
     if (!supported || listening.value) return
@@ -17,7 +26,8 @@ export function useSpeech({ lang = 'it-IT', onResult, onError } = {}) {
     rec = new Ctor()
     rec.lang = lang
     rec.interimResults = true
-    rec.continuous = true // non chiudere alla prima pausa mentre il pulsante è premuto
+    // Su iOS la modalità continua è inaffidabile: lì basta una frase (si chiude da sola alla pausa).
+    rec.continuous = !isIOS()
     rec.onresult = (e) => {
       let tmp = ''
       for (let i = e.resultIndex; i < e.results.length; i++) {
@@ -26,18 +36,20 @@ export function useSpeech({ lang = 'it-IT', onResult, onError } = {}) {
         else tmp += r[0].transcript
       }
       interim.value = (finalText + tmp).trim()
+      arm(silenceMs)
     }
-    rec.onerror = (e) => { listening.value = false; if (e.error !== 'no-speech' && e.error !== 'aborted') onError?.(e.error) }
+    rec.onerror = (e) => { clearTimer(); listening.value = false; if (e.error !== 'no-speech' && e.error !== 'aborted') onError?.(e.error) }
     rec.onend = () => {
+      clearTimer()
       listening.value = false
       const text = (finalText || interim.value).trim()
       interim.value = ''
       if (text) onResult?.(text)
     }
-    try { rec.start(); listening.value = true } catch { listening.value = false }
+    try { rec.start(); listening.value = true; arm(idleMs) } catch { listening.value = false }
   }
-  function stop() { try { rec?.stop() } catch { /* già fermo */ } }
-  onBeforeUnmount(() => { try { rec?.abort() } catch { /* */ } })
+  function stop() { clearTimer(); try { rec?.stop() } catch { /* già fermo */ } }
+  if (getCurrentInstance()) onBeforeUnmount(() => { clearTimer(); try { rec?.abort() } catch { /* */ } })
 
   return { supported, listening, interim, start, stop }
 }

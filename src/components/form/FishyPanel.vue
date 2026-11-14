@@ -18,8 +18,7 @@
         v-if="speech.supported"
         type="button" class="mic" :class="{ on: speech.listening.value, busy }"
         :disabled="busy" :aria-label="t('voice.holdAria')"
-        @pointerdown.prevent="press" @pointerup="release" @pointercancel="release" @pointerleave="release" @contextmenu.prevent
-        @keydown.space.prevent="press" @keyup.space.prevent="release"
+        @pointerdown="onDown" @pointerup="onUp" @pointercancel="onCancel" @click="onClick" @contextmenu.prevent
       >
         <Loader2 v-if="busy" :size="24" class="spin" /><Mic v-else :size="24" />
         <span>{{ label }}</span>
@@ -67,8 +66,32 @@ const speech = useSpeech({
 })
 const label = computed(() => busy.value ? t('voice.thinking') : speech.listening.value ? t('voice.listening') : t('voice.hold'))
 
-function press() { if (!busy.value) speech.start() }
-function release() { if (speech.listening.value) speech.stop() }
+// Comando del pulsante. Su telefono (tocco) si TOCCA per iniziare e si TOCCA per inviare: tenere premuto sul
+// touch è inaffidabile (menu contestuale, selezione, gesti, richiesta del permesso del microfono che annulla
+// la pressione) e su iPhone l'ascolto parte solo da un tocco completo. Il tieni-premuto resta per il mouse:
+// premuto >= HOLD_MS parla finché non si rilascia; un clic breve funziona come il tocco.
+const HOLD_MS = 450
+let downAt = 0
+let heldByMouse = false
+let suppressClick = false
+function onDown(e) {
+  suppressClick = false
+  if (e.pointerType !== 'mouse' || busy.value || speech.listening.value) return
+  e.currentTarget.setPointerCapture?.(e.pointerId) // il rilascio arriva anche se il mouse esce dal pulsante
+  downAt = Date.now(); heldByMouse = true
+  speech.start()
+}
+function onUp() {
+  if (!heldByMouse) return
+  heldByMouse = false; suppressClick = true
+  if (Date.now() - downAt >= HOLD_MS) speech.stop() // tenuto premuto: rilasciando si invia
+}
+function onCancel() { if (heldByMouse) { heldByMouse = false; suppressClick = true; speech.stop() } }
+function onClick() {
+  if (suppressClick) { suppressClick = false; return }
+  if (busy.value) return
+  if (speech.listening.value) speech.stop(); else speech.start()
+}
 function sendTyped() { const text = typed.value; typed.value = ''; submit({ text }) }
 function answer(n, extra) { store.dismissVoiceNeedsInfo(n.id); submit({ text: n.text, ...extra }) }
 
@@ -122,7 +145,7 @@ function announce(r) {
 <style scoped>
 .voice { display: flex; flex-direction: column; gap: 10px; }
 .row { display: flex; gap: 10px; align-items: stretch; }
-.mic { flex: 1; min-height: 60px; border-radius: 20px; border: 1px solid var(--border); background: var(--surface); color: var(--foam); font-size: 16px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 10px; touch-action: none; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
+.mic { flex: 1; min-height: 60px; border-radius: 20px; border: 1px solid var(--border); background: var(--surface); color: var(--foam); font-size: 16px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 10px; touch-action: manipulation; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; -webkit-tap-highlight-color: transparent; cursor: pointer; }
 .mic.on { background: rgb(var(--color-sand-text) / .18); border-color: rgb(var(--color-sand-text)); transform: scale(.98); }
 .mic.busy { opacity: .7; }
 .kbd { width: 60px; height: auto; }

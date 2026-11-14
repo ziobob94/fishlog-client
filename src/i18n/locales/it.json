@@ -2153,10 +2153,10 @@
 	},
 	"voice": {
 		"title": "Fishy",
-		"hold": "Tieni premuto e racconta",
-		"listening": "Ti ascolto… rilascia per inviare",
+		"hold": "Tocca e parla",
+		"listening": "Ti ascolto… tocca per inviare",
 		"thinking": "Sto capendo…",
-		"holdAria": "Tieni premuto per parlare con Fishy",
+		"holdAria": "Tocca per parlare con Fishy, tocca di nuovo per inviare",
 		"typeAria": "Scrivi a Fishy invece di parlare",
 		"placeholder": "Es. inizio un'uscita a Civitavecchia",
 		"send": "Invia",
