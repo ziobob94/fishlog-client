@@ -1,3 +1,10 @@
+## [1.81.1](https://github.com/ziobob94/fishlog-client/compare/client-v1.81.0...client-v1.81.1) (2026-11-14)
+
+
+### Bug Fixes
+
+* **assistant:** Fishy si usa con un tocco (tocca per parlare, tocca per inviare) ([#158](https://github.com/ziobob94/fishlog-client/issues/158)) ([3db56ac](https://github.com/ziobob94/fishlog-client/commit/3db56aca17a32338e3cbbdfae1071474e1c328a9))
+
 # [1.81.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.80.0...client-v1.81.0) (2026-11-14)
 
 
