@@ -1,5 +1,5 @@
 <template>
-  <section class="voice" :aria-label="t('voice.title')">
+  <section class="voice" :aria-label="t('fishy.title')">
     <!-- Domande del server (specie incerta/sconosciuta, frase non capita) -->
     <div v-for="n in notices" :key="n.id" class="notice" role="alert">
       <p class="q">{{ n.question }}</p>
@@ -12,26 +12,26 @@
     </div>
 
     <p v-if="queued" class="queued" role="status"><WifiOff :size="14" /> {{ t('voice.queued', { n: queued }) }}</p>
-    <p v-if="localSession" class="queued" role="status">{{ t('voice.localSession') }}</p>
 
     <div class="row">
       <button
         v-if="speech.supported"
         type="button" class="mic" :class="{ on: speech.listening.value, busy }"
-        :disabled="busy || localSession" :aria-label="t('voice.holdAria')"
+        :disabled="busy" :aria-label="t('voice.holdAria')"
         @pointerdown.prevent="press" @pointerup="release" @pointercancel="release" @pointerleave="release" @contextmenu.prevent
         @keydown.space.prevent="press" @keyup.space.prevent="release"
       >
         <Loader2 v-if="busy" :size="24" class="spin" /><Mic v-else :size="24" />
         <span>{{ label }}</span>
       </button>
-      <button type="button" class="kbd fl-iconbtn" :disabled="busy || localSession" :aria-label="t('voice.typeAria')" :title="t('voice.typeAria')" @click="typing = !typing"><Keyboard :size="20" /></button>
+      <button type="button" class="kbd fl-iconbtn" :disabled="busy" :aria-label="t('voice.typeAria')" :title="t('voice.typeAria')" @click="typing = !typing"><Keyboard :size="20" /></button>
     </div>
     <p v-if="speech.listening.value && speech.interim.value" class="interim" aria-live="polite">{{ speech.interim.value }}</p>
+    <p v-else-if="!busy" class="hint">{{ t('fishy.hint') }}</p>
 
     <form v-if="typing || !speech.supported" class="type" @submit.prevent="sendTyped">
-      <input v-model="typed" class="fl-inp" type="text" maxlength="600" :placeholder="t('voice.placeholder')" :aria-label="t('voice.placeholder')" :disabled="busy || localSession" />
-      <button type="submit" class="fl-btn2" :disabled="busy || localSession || !typed.trim()">{{ t('voice.send') }}</button>
+      <input v-model="typed" class="fl-inp" type="text" maxlength="600" :placeholder="t('voice.placeholder')" :aria-label="t('voice.placeholder')" :disabled="busy" />
+      <button type="submit" class="fl-btn2" :disabled="busy || !typed.trim()">{{ t('voice.send') }}</button>
     </form>
   </section>
 </template>
@@ -47,7 +47,8 @@ import { useSpeech } from '../../composables/useSpeech.js'
 import { useToast } from '../../composables/useToast.js'
 import { summarizeCatch, cleanTranscript } from '../../utils/voiceCatch.js'
 
-const props = defineProps({ session: { type: Object, required: true } })
+// Fishy, l'assistente vocale: tieni premuto e parla (o scrivi). Il server traduce la frase in azioni
+// (inizia uscita, registra cattura, cambia esca, fine uscita) e le esegue; ognuna ha il suo «Annulla».
 const { t } = useI18n()
 const router = useRouter()
 const store = useSessionStore()
@@ -57,9 +58,8 @@ const { toast, dismiss } = useToast()
 const busy = ref(false)
 const typing = ref(false)
 const typed = ref('')
-const localSession = computed(() => String(props.session._id).startsWith('local-'))
-const notices = computed(() => store.voiceNeedsInfo.filter(n => n.sessionId === props.session._id))
-const queued = computed(() => offline.outbox.filter(i => i.meta.kind === 'voice-catch' && i.meta.sessionId === props.session._id).length)
+const notices = computed(() => store.voiceNeedsInfo)
+const queued = computed(() => offline.outbox.filter(i => i.meta.kind === 'assistant' || i.meta.kind === 'voice-catch').length)
 
 const speech = useSpeech({
   onResult: text => submit({ text }),
@@ -79,30 +79,42 @@ async function submit({ text, species, force }) {
   const d = new Date()
   const time = `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}` // ora della dettatura, anche se l'invio avviene dopo
   try {
-    const res = await store.addVoiceCatch(props.session._id, { text: clean, time, species, force })
-    if (res.error === 'localSession') return
+    const res = await store.askFishy({ text: clean, time, species, force })
     if (res.queued) { toast(res.reason === 'ai_rate_limit' ? t('voice.rateLimited') : res.reason === 'ai_unavailable' ? t('voice.aiDown') : t('voice.savedForLater'), { type: 'info', duration: 7000 }); return }
     if (res.error) { toast(res.error, { type: 'danger' }); return }
     if (res.degraded) toast(t('voice.simplified'), { type: 'info', duration: 6000 })
-    for (const r of res.results.filter(r => r.status === 'saved')) announce(r)
+    for (const r of res.results) {
+      if (r.status === 'saved') announce(r)
+      else if (r.status === 'info' && r.message) toast(r.message, { type: 'info' })
+    }
   } finally { busy.value = false }
 }
 
+// Un avviso per ogni azione eseguita, con «Annulla».
 function announce(r) {
-  const c = r.catch
-  const lines = [summarizeCatch(c, t('session.ongoing.releasedLower'))]
-  if (r.matchedAlias) lines.push(t('voice.alias', { alias: r.matchedAlias }))
-  if (c.toComplete) lines.push(t('voice.toComplete'))
-  const id = toast(`${t('voice.saved')}: ${lines.join(' · ')}`, {
-    type: c.toComplete ? 'warning' : 'success', duration: 8000,
+  const act = r.action || 'catch'
+  let msg = ''
+  let type = 'success'
+  if (act === 'start_session') msg = r.auto ? t('fishy.startedAuto') : t('fishy.started', { place: r.session?.location || '' })
+  else if (act === 'change_bait') msg = t('fishy.bait', { bait: r.bait })
+  else if (act === 'end_session') msg = t('fishy.ended')
+  else {
+    const c = r.catch
+    const parts = [summarizeCatch(c, t('session.ongoing.releasedLower'))]
+    if (r.matchedAlias) parts.push(t('voice.alias', { alias: r.matchedAlias }))
+    if (c.toComplete) { parts.push(t('voice.toComplete')); type = 'warning' }
+    msg = `${t('voice.saved')}: ${parts.join(' · ')}`
+  }
+  const id = toast(msg, {
+    type, duration: 8000,
     action: {
       label: t('voice.undo'),
-      onClick: async () => { if (await store.undoCatch(props.session._id, c._id)) toast(t('voice.undone'), { type: 'info' }); else toast(t('voice.undoFailed'), { type: 'danger' }) }
+      onClick: async () => { toast((await store.undoAction(r)) ? t('fishy.undoneAction') : t('voice.undoFailed'), { type: 'info' }) }
     }
   })
-  if (c.toComplete) {
-    const idx = (store.current?.catches || []).findIndex(x => x._id === c._id)
-    if (idx >= 0) toast(t('voice.completeHint'), { type: 'info', duration: 8000, action: { label: t('voice.complete'), onClick: () => { dismiss(id); router.push(`/session/${props.session._id}/catch/${idx}`) } } })
+  if (act === 'catch' && r.catch.toComplete) {
+    const idx = (store.current?.catches || []).findIndex(x => x._id === r.catch._id)
+    if (idx >= 0) toast(t('voice.completeHint'), { type: 'info', duration: 8000, action: { label: t('voice.complete'), onClick: () => { dismiss(id); router.push(`/session/${r.sessionId}/catch/${idx}`) } } })
   }
 }
 </script>
@@ -114,6 +126,7 @@ function announce(r) {
 .mic.on { background: rgb(var(--color-sand-text) / .18); border-color: rgb(var(--color-sand-text)); transform: scale(.98); }
 .mic.busy { opacity: .7; }
 .kbd { width: 60px; height: auto; }
+.hint { margin: 0; font-size: 12px; color: var(--text-muted); line-height: 1.4; }
 .interim { margin: 0; font-size: 14px; color: var(--text-muted); font-style: italic; }
 .type { display: flex; gap: 8px; }
 .type .fl-inp { flex: 1; min-width: 0; }

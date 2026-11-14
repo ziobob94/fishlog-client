@@ -39,8 +39,8 @@
     </div>
 
     <AppBottomNav v-if="showBottomNav" />
-    <VoiceFab />
-    <VoiceCatchSheet />
+    <FishyFab />
+    <FishySheet />
     <ToastHost />
     <ConfirmHost />
     <LocalStorageNotice />
@@ -56,8 +56,8 @@ import AppTopbar  from './layout/AppTopbar.vue'
 import AppBottomNav from './layout/AppBottomNav.vue'
 import ConfirmHost from './components/ConfirmHost.vue'
 import ToastHost from './components/motion/ToastHost.vue'
-import VoiceFab from './components/VoiceFab.vue'
-import VoiceCatchSheet from './components/VoiceCatchSheet.vue'
+import FishyFab from './components/FishyFab.vue'
+import FishySheet from './components/FishySheet.vue'
 import PageTransition from './components/motion/PageTransition.vue'
 import LegalFooter from './components/LegalFooter.vue'
 import LocalStorageNotice from './components/LocalStorageNotice.vue'

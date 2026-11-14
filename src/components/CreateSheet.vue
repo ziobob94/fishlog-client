@@ -21,12 +21,12 @@ import { RouterLink, useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { X, ChevronRight, Image as ImageIcon, Fish, FileText, Camera, CalendarDays, Mic } from 'lucide-vue-next'
 import { useSessionStore } from '../stores/sessions.js'
-import { useVoiceSheet } from '../composables/useVoiceSheet.js'
+import { useFishySheet } from '../composables/useFishySheet.js'
 
 defineProps({ open: { type: Boolean, default: false } })
 const emit = defineEmits(['close'])
-const voice = useVoiceSheet()
-function onPick(o) { emit('close'); if (o.key === 'voice' && sessions.ongoing) voice.show() }
+const fishy = useFishySheet()
+function onPick(o) { emit('close'); if (o.key === 'fishy') fishy.show() }
 
 const { t } = useI18n()
 const sessions = useSessionStore()
@@ -42,10 +42,8 @@ const options = computed(() => [
   { key: 'session', tone: 'green', icon: Fish, title: t('createMenu.session'),
     sub: sessions.ongoing ? t('createMenu.resumeSession') : t('createMenu.sessionSub'),
     to: sessions.ongoing ? `/session/${sessions.ongoing._id}/edit` : '/new' },
-  // Con un'uscita in corso apre il foglio di dettatura; senza, porta ad avviarne una.
-  { key: 'voice', tone: 'sand', icon: Mic, title: t('createMenu.voice'),
-    sub: sessions.ongoing ? t('createMenu.voiceSub') : t('createMenu.voiceNoSession'),
-    ...(sessions.ongoing ? {} : { to: '/new' }) },
+  // Fishy, l'assistente vocale: sempre disponibile, anche senza un'uscita in corso (può avviarla lui).
+  { key: 'fishy', tone: 'sand', icon: Mic, title: t('createMenu.fishy'), sub: t('createMenu.fishySub') },
   { key: 'listing', tone: 'slate', icon: FileText, title: t('createMenu.listing'), sub: t('createMenu.listingSub'), to: '/market/new' }
 ])
 </script>

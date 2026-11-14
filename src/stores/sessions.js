@@ -54,44 +54,57 @@ export const useSessionStore = defineStore('sessions', () => {
     } else if (item.meta.kind === 'session-update') {
       sessions.value = sessions.value.map(s => s._id === item.meta.sessionId ? serverData : s)
       if (current.value?._id === item.meta.sessionId) current.value = serverData
-    } else if (item.meta.kind === 'voice-catch') {
-      // Testo dettato offline, interpretato ora che la rete è tornata.
-      applyVoiceResults(item.meta.sessionId, serverData.results, item.data?.text)
+    } else if (item.meta.kind === 'voice-catch' || item.meta.kind === 'assistant') {
+      // Frase detta a Fishy offline (o con il servizio AI al limite), interpretata ora.
+      applyAssistantResults(serverData.results, item.data?.text, item.meta.sessionId)
     }
   })
 
-  // Catture a voce che il server non ha potuto salvare da sole (specie incerta/ignota, frase non capita)
-  // e che richiedono una risposta dell'utente: si mostrano in VoiceCatch.vue.
+  // Richieste a Fishy che il server non ha potuto eseguire da sole (specie incerta/ignota, frase non capita,
+  // luogo mancante): richiedono una risposta dell'utente e si mostrano in FishyPanel.vue.
   const voiceNeedsInfo = ref([])
 
-  function applyVoiceResults(sessionId, results = [], text = '') {
-    const saved = results.filter(r => r.status === 'saved').map(r => r.catch)
-    if (saved.length) {
-      if (current.value?._id === sessionId) current.value = withCatches(current.value, saved)
-      if (ongoing.value?._id === sessionId) ongoing.value = withCatches(ongoing.value, saved)
+  // Aggiorna lo stato locale con l'esito delle azioni di Fishy. `legacySessionId`: voci già in coda dalla
+  // versione precedente (endpoint per-uscita), i cui risultati non hanno `action`.
+  function applyAssistantResults(results = [], text = '', legacySessionId = null) {
+    let refresh = false
+    let ended = null
+    for (const r of results) {
+      const act = r.action || 'catch'
+      if (r.status === 'needs_info') {
+        voiceNeedsInfo.value = [...voiceNeedsInfo.value, { id: crypto.randomUUID(), text, ...r }]
+      } else if (r.status === 'saved' && act === 'catch') {
+        const sid = r.sessionId || legacySessionId
+        const hit = [current.value, ongoing.value].some(x => x?._id === sid)
+        if (!hit) refresh = true
+        if (current.value?._id === sid) current.value = withCatches(current.value, [r.catch])
+        if (ongoing.value?._id === sid) ongoing.value = withCatches(ongoing.value, [r.catch])
+      } else if (r.status === 'saved') {
+        refresh = true
+        if (act === 'end_session') ended = r.sessionId
+      }
     }
-    for (const r of results.filter(r => r.status === 'needs_info')) {
-      voiceNeedsInfo.value = [...voiceNeedsInfo.value, { id: crypto.randomUUID(), sessionId, text, ...r }]
+    if (ended && ongoing.value?._id === ended) ongoing.value = null
+    if (refresh) {
+      fetchOngoing().then(() => { if (current.value?._id && !String(current.value._id).startsWith('local-')) fetchSession(current.value._id) })
     }
   }
   const dismissVoiceNeedsInfo = id => { voiceNeedsInfo.value = voiceNeedsInfo.value.filter(n => n.id !== id) }
 
-  // Invia il testo dettato. Online: risponde { results }. Offline: il testo va in coda e viene interpretato
-  // al ritorno della rete ({ queued: true }). `voiceId` rende l'invio idempotente anche se la risposta si perde.
-  async function addVoiceCatch(sessionId, payload) {
+  // Invia la frase a Fishy. Online: risponde { results }. Offline o servizio AI al limite: la frase va in coda e
+  // viene interpretata più tardi ({ queued: true }). `voiceId` rende l'invio idempotente anche se la risposta si perde.
+  async function askFishy(payload) {
     const body = { ...payload, voiceId: payload.voiceId || crypto.randomUUID() }
-    if (sessionId.startsWith('local-')) return { error: 'localSession' }
     try {
-      const { data } = await api.post(`/sessions/${sessionId}/voice-catch`, body, { timeout: 45000 })
-      applyVoiceResults(sessionId, data.results, body.text)
+      const { data } = await api.post('/assistant', body, { timeout: 45000 })
+      applyAssistantResults(data.results, body.text)
       return data
     } catch (e) {
-      // Rete assente oppure servizio AI al limite (429): il testo va in coda e viene interpretato più tardi.
       if (isNetworkError(e) || isRetryableAiError(e)) {
-        await useOfflineStore().enqueue('post', `/sessions/${sessionId}/voice-catch`, body, { kind: 'voice-catch', sessionId })
+        await useOfflineStore().enqueue('post', '/assistant', body, { kind: 'assistant' })
         return { queued: true, reason: isNetworkError(e) ? 'offline' : e.response.data.code, retryAfter: e.response?.data?.retryAfter }
       }
-      return { error: e.response?.data?.error || 'Errore catture a voce' }
+      return { error: e.response?.data?.error || 'Errore dell\'assistente' }
     }
   }
 
@@ -102,6 +115,17 @@ export const useSessionStore = defineStore('sessions', () => {
       if (ongoing.value?._id === sessionId) ongoing.value = withoutCatch(ongoing.value, catchId)
       return true
     } catch { return false }
+  }
+
+  // Annulla l'azione di Fishy descritta da un risultato del server.
+  async function undoAction(r) {
+    switch (r.action || 'catch') {
+      case 'catch': return undoCatch(r.sessionId, r.catch._id)
+      case 'start_session': return deleteSession(r.session._id)
+      case 'change_bait': return !!(await updateSession(r.sessionId, { currentBait: r.previous || '' }))
+      case 'end_session': return !!(await updateSession(r.sessionId, { status: 'ongoing', endTime: '' }))
+      default: return false
+    }
   }
 
   // Sessioni create offline non ancora sincronizzate: vanno mostrate in
@@ -291,6 +315,6 @@ export const useSessionStore = defineStore('sessions', () => {
     sessions, current, ongoing, loading, error, pagination, total,
     fetchSessions, fetchSession, fetchOngoing, createSession, updateSession,
     deleteSession, uploadMedia, uploadCatchMedia, deleteMedia, fetchLeaderboard,
-    voiceNeedsInfo, dismissVoiceNeedsInfo, addVoiceCatch, undoCatch
+    voiceNeedsInfo, dismissVoiceNeedsInfo, askFishy, undoAction
   }
 })
