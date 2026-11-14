@@ -1,3 +1,11 @@
+# [1.78.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.77.0...client-v1.78.0) (2026-11-14)
+
+
+### Features
+
+* **home:** sezione «Le mie località» con preferite, gestione, aggiunta e stella nel Meteo ([#154](https://github.com/ziobob94/fishlog-client/issues/154)) ([7538fc9](https://github.com/ziobob94/fishlog-client/commit/7538fc932d9ef3b47a6aaf1eca82026b6be94612))
+* **sessions:** registra catture a voce nell'uscita in corso ([#153](https://github.com/ziobob94/fishlog-client/issues/153)) ([1ab780d](https://github.com/ziobob94/fishlog-client/commit/1ab780d0fbc54c7c393bea10dff52ba14f4d3ccf))
+
 # [1.77.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.76.0...client-v1.77.0) (2026-11-13)
 
 
