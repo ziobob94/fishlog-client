@@ -8,6 +8,24 @@ import { ref, getCurrentInstance, onBeforeUnmount } from 'vue'
 export const isIOS = () => typeof navigator !== 'undefined' &&
   (/iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1))
 
+// Unisce i segmenti del riconoscitore evitando ripetizioni: se un segmento riprende quello precedente (aggiornamento
+// cumulativo di Android) lo sostituisce, se è già contenuto lo ignora, altrimenti lo accoda.
+export function mergeSegments(parts) {
+  const out = []
+  for (const raw of parts) {
+    const seg = raw.trim()
+    if (!seg) continue
+    const prev = out[out.length - 1]
+    if (prev !== undefined) {
+      const a = prev.toLowerCase(), b = seg.toLowerCase()
+      if (b.startsWith(a)) { out[out.length - 1] = seg; continue }
+      if (a.startsWith(b)) continue
+    }
+    out.push(seg)
+  }
+  return out.join(' ')
+}
+
 export function useSpeech({ lang = 'it-IT', onResult, onError, silenceMs = 3500, idleMs = 10000 } = {}) {
   const Ctor = typeof window !== 'undefined' ? (window.SpeechRecognition || window.webkitSpeechRecognition) : null
   const supported = !!Ctor
@@ -30,20 +48,21 @@ export function useSpeech({ lang = 'it-IT', onResult, onError, silenceMs = 3500,
     // Su iOS la modalità continua è inaffidabile: lì basta una frase (si chiude da sola alla pausa).
     rec.continuous = !isIOS()
     rec.onresult = (e) => {
-      let tmp = ''
-      for (let i = e.resultIndex; i < e.results.length; i++) {
-        const r = e.results[i]
-        if (r.isFinal) finalText += r[0].transcript + ' '
-        else tmp += r[0].transcript
-      }
-      interim.value = (finalText + tmp).trim()
+      // Si ricostruisce SEMPRE da tutti i risultati della sessione: accodare solo i nuovi (da resultIndex) duplica il testo
+      // su Android, dove ogni aggiornamento parziale arriva come nuovo segmento cumulativo («inizia», «inizia una», …).
+      finalText = mergeSegments(Array.from(e.results, r => r[0]?.transcript || ''))
+      interim.value = finalText
       arm(silenceMs)
     }
-    rec.onerror = (e) => { clearTimer(); listening.value = false; if (e.error !== 'no-speech' && e.error !== 'aborted') onError?.(e.error) }
+    rec.onerror = (e) => {
+      clearTimer(); listening.value = false
+      // Con una trascrizione valida già raccolta l'errore (es. rete caduta a fine frase) non va mostrato: onend la invia.
+      if (e.error !== 'no-speech' && e.error !== 'aborted' && !finalText.trim()) onError?.(e.error)
+    }
     rec.onend = () => {
       clearTimer()
       listening.value = false
-      const text = (finalText || interim.value).trim()
+      const text = finalText.trim()
       interim.value = ''
       if (text && !cancelled) onResult?.(text)
     }
