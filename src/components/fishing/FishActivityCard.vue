@@ -27,7 +27,7 @@
         </span>
         <span class="fa-advice">{{ t(`fishAct.advice.${key}`) }}</span>
         <span class="fa-next"><Clock :size="14" aria-hidden="true" /><span><span class="fa-next-k">{{ t('fishAct.nextWindow') }}:</span> {{ nextText }}</span></span>
-        <FishFactors :factors="rec.factors" />
+        <FishFactors :factors="rec.factors" :view="weather.data" />
       </button>
       <p v-if="state === 'offline'" class="fa-stale" role="status"><WifiOff :size="14" aria-hidden="true" /> {{ t('fishAct.offlineStale', { time: clock(rec.savedAt) }) }}</p>
       <FishActivitySheet v-model="open" :rec="rec" :stale-time="state === 'offline' ? clock(rec.savedAt) : ''" />

@@ -1171,6 +1171,8 @@
 			"bodyLabel": "Cosa vuoi raccontare?",
 			"chooseGroup": "Scegli un gruppo",
 			"mediaLabel": "Foto e video",
+			"uploadingPhotos": "Carico le foto · {n} di {total}",
+			"networkError": "Pubblicazione non riuscita. Controlla la connessione e riprova. Il testo e le foto sono al sicuro.",
 			"eventName": "Nome evento",
 			"eventDesc": "Descrizione",
 			"eventDate": "Data e ora",
@@ -1262,6 +1264,8 @@
 		"sell": "Vendi",
 		"newListing": "Nuovo annuncio",
 		"contactSeller": "Contatta venditore",
+		"moreFromSeller": "Altri annunci di {name}",
+		"seeAllFromSeller": "Vedi tutti gli annunci",
 		"description": "Descrizione",
 		"seller": "Venditore",
 		"photo": "Foto",
@@ -1728,6 +1732,11 @@
 				"ritiro": "Ritiro in negozio",
 				"spedizione": "Spedizione"
 			},
+			"address": "Indirizzo del negozio (facoltativo)",
+			"addressPlaceholder": "Via, numero civico",
+			"contactTitle": "Contatto",
+			"chatOn": "Ricevi messaggi dai compratori nella chat di FishLog",
+			"showPhone": "Mostra il numero di telefono del negozio",
 			"contact": "Contatto per i compratori",
 			"saveAndPublish": "Salva e pubblica un annuncio",
 			"saveAndBack": "Salva e torna al market"
@@ -1813,7 +1822,17 @@
 		"replyPrefix": "Risposta alla tua storia",
 		"views": "{n} visualizzazioni",
 		"noStories": "Nessuna storia da mostrare.",
-		"openSession": "Apri l'uscita"
+		"openSession": "Apri l'uscita",
+		"cameraLive": "Anteprima della fotocamera",
+		"switchCamera": "Cambia fotocamera",
+		"cameraUnavailable": "Fotocamera non disponibile",
+		"cameraUnavailableHint": "Non riusciamo ad accedere alla fotocamera. Puoi scegliere una foto dalla galleria.",
+		"pickFromGallery": "Scegli dalla galleria",
+		"sending": "Invio {n}%",
+		"failedTitle": "Storia non pubblicata",
+		"failedHint": "Si è spezzato il filo. Riprova.",
+		"retry": "Riprova",
+		"discard": "Elimina la storia"
 	},
 	"validation": {
 		"required": "Campo obbligatorio",
@@ -2527,6 +2546,10 @@
 				"orario": "Ora di stampa: {ora} (automatica)",
 				"senzaLogo": "Il logo FIPSAS non è incluso: l'intestazione è solo testo.",
 				"scarica": "Scarica il PDF",
+				"anteprima": "Anteprima A4",
+				"anteprimaTitolo": "Anteprima della stampa in formato A4",
+				"anteprimaNota": "Così verrà stampato.",
+				"anteprimaApri": "Apri in una scheda",
 				"errore": "Non è stato possibile creare il PDF."
 			},
 			"pubblica": {
@@ -2536,6 +2559,8 @@
 				"link": "Link pubblico",
 				"copia": "Copia il link",
 				"copiato": "Copiato",
+				"qrAlt": "Codice QR del link pubblico della prova",
+				"qrNota": "Inquadralo per aprire le classifiche in diretta: stampalo e appendilo al campo gara.",
 				"privacy": "Nella pagina pubblica compaiono nome, cognome e società dei concorrenti, come nelle classifiche ufficiali.",
 				"nonAttiva": "La classifica pubblica non è attiva.",
 				"offline": "Offline: dati salvati il {quando}",
@@ -2581,6 +2606,13 @@
 			"pressure": { "up": "Pressione favorevole", "flat": "Pressione nella norma", "down": "Pressione sfavorevole" },
 			"wind": { "up": "Vento favorevole", "flat": "Vento nella norma", "down": "Vento sfavorevole" },
 			"waterTemp": { "up": "Acqua favorevole", "flat": "Acqua nella norma", "down": "Acqua sfavorevole" }
+		},
+		"factorData": {
+			"pressure": { "falling": "Pressione in calo", "steady": "Pressione stabile", "rising": "Pressione in aumento" },
+			"tide": { "rising": "Marea in crescita", "falling": "Marea in calo", "slack": "Marea ferma" },
+			"wind": "Vento {n} km/h",
+			"waterTemp": "Acqua {n} °C",
+			"light": { "sunrise": "Alba alle {time}", "sunset": "Tramonto alle {time}", "night": "Notte" }
 		},
 		"effect": {
 			"up": "favorisce",

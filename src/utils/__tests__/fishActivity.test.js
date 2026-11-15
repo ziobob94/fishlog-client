@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { levelKey, validLevel, visibleFactors, activityState, isStale, windowsText, FRESH_MS } from '../fishActivity.js'
+import { factorDetail, levelKey, validLevel, visibleFactors, activityState, isStale, windowsText, FRESH_MS } from '../fishActivity.js'
 
 describe('livello 1-5', () => {
   it('mappa i cinque livelli sulle chiavi delle parole', () => {
@@ -51,5 +51,28 @@ describe('testo alternativo', () => {
   it('riassume le finestre o dice che nessuna spicca', () => {
     expect(windowsText([{ from: '05:00', to: '08:00' }, { from: '19:00', to: '21:00' }], 'nessuna')).toBe('05:00-08:00, 19:00-21:00')
     expect(windowsText([], 'nessuna')).toBe('nessuna')
+  })
+})
+
+describe('dato concreto dei fattori', () => {
+  const view = {
+    current: { windSpeed: 18.4 },
+    hourly: [{ time: '2026-11-15T10:00', hour: 10 }],
+    daily: [{ sunrise: '2026-11-15T06:50', sunset: '2026-11-15T16:55' }],
+    marine: { seaTemp: 17.6, tides: { series: [{ time: '2026-11-15T10:00', height: 0.3 }, { time: '2026-11-15T11:00', height: 0.4 }] } },
+    fishing: { pressure: { trend: 'in_calo', delta3h: -2 } }
+  }
+  it('legge i dati dalla panoramica del luogo', () => {
+    expect(factorDetail('pressure', view)).toEqual({ id: 'pressure.falling' })
+    expect(factorDetail('wind', view)).toEqual({ id: 'wind', params: { n: 18 } })
+    expect(factorDetail('waterTemp', view)).toEqual({ id: 'waterTemp', params: { n: 18 } })
+    expect(factorDetail('tide', view)).toEqual({ id: 'tide.rising' })
+    expect(factorDetail('light', view)).toEqual({ id: 'light.sunset', params: { time: '16:55' } })
+  })
+  it('senza dato non inventa nulla', () => {
+    expect(factorDetail('wind', null)).toBeNull()
+    expect(factorDetail('wind', { current: {} })).toBeNull()
+    expect(factorDetail('tide', { hourly: [], marine: {} })).toBeNull()
+    expect(factorDetail('pressure', { fishing: { pressure: {} } })).toBeNull()
   })
 })

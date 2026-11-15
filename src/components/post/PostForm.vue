@@ -17,8 +17,11 @@
       <input ref="fileInput" type="file" multiple accept="image/*,video/*" class="hidden" @change="onFileChange" />
     </div>
 
-    <div v-if="saving && pendingFiles.length" class="upload-progress">
-      <div class="upload-progress-bar" :style="{ width: uploadProgress + '%' }"></div>
+    <div v-if="saving && pendingFiles.length" class="upload-progress-wrap">
+      <p class="upload-label fl-mono" role="status">{{ t('posts.form.uploadingPhotos', { n: currentPhoto, total: pendingFiles.length }) }}</p>
+      <div class="upload-progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" :aria-valuenow="uploadProgress">
+        <div class="upload-progress-bar" :style="{ width: uploadProgress + '%' }"></div>
+      </div>
     </div>
 
     <template v-if="form.type === 'event'">
@@ -83,7 +86,7 @@
     <button v-if="!hideSubmit" type="submit" class="fl-btn1 publish" :disabled="saving">
       {{ saving ? t('posts.form.saving') : t('posts.form.submit') }}
     </button>
-    <p v-if="error" class="error-msg">{{ error }}</p>
+    <p v-if="error" class="error-msg" role="alert">{{ error }}</p>
   </form>
 </template>
 
@@ -115,6 +118,10 @@ const { groups } = storeToRefs(groupStore)
 const saving = ref(false)
 const error  = ref('')
 const uploadProgress = ref(0)
+// Se il post è stato creato ma le foto non sono salite, «Riprova» ricarica solo le foto (niente doppioni).
+let createdPost = null
+const currentPhoto = computed(() => Math.min(pendingFiles.value.length, Math.max(1, Math.ceil(uploadProgress.value / 100 * pendingFiles.value.length))))
+const isNetworkError = e => !!e && !e.response && (e.code === 'ERR_NETWORK' || e.message === 'Network Error')
 
 const fileInput = ref(null)
 const dragging  = ref(false)
@@ -198,7 +205,8 @@ async function submit() {
     if (payload.type !== 'event') delete payload.event
     if (payload.type === 'event' || !payload.sessionId) { delete payload.sessionId; delete payload.featuredCatchId }
     if (!payload.featuredCatchId) delete payload.featuredCatchId
-    let created = await props.createFn(payload)
+    let created = createdPost || await props.createFn(payload)
+    createdPost = created
 
     if (pendingFiles.value.length) {
       const fd = new FormData()
@@ -212,11 +220,12 @@ async function submit() {
       created = data
     }
 
+    createdPost = null
     emit('created', created)
     clearPendingFiles()
     form.value = emptyForm()
   } catch (e) {
-    error.value = uploadErrorMessage(e, t)
+    error.value = isNetworkError(e) ? t('posts.form.networkError') : uploadErrorMessage(e, t)
   } finally {
     saving.value = false
     uploadProgress.value = 0
@@ -258,6 +267,7 @@ textarea { min-height: 96px; resize: none; }
          text-white cursor-pointer flex items-center justify-center transition-colors;
 }
 
+.upload-label { @apply text-xs text-muted m-0 mb-1; }
 .upload-progress {
   @apply h-1.5 bg-surface-2 rounded-full overflow-hidden;
 }
