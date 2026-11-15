@@ -27,6 +27,11 @@
   </div>
 </template>
 
+<script>
+// Una sola volta per apertura dell'app, anche se il pulsante viene smontato e rimontato.
+let helloShown = false
+</script>
+
 <script setup>
 import { computed, ref, watch, onMounted, onBeforeUnmount } from 'vue'
 import { useRoute } from 'vue-router'
@@ -37,7 +42,7 @@ import FishyAnimated from './FishyAnimated.vue'
 import { useAuthStore } from '../stores/auth.js'
 import { useFishySheet } from '../composables/useFishySheet.js'
 import { useFishyVoice } from '../composables/useFishyVoice.js'
-import { EXPRESSION, animState, OK_MS, badgeLabel } from '../utils/fishyFab.js'
+import { EXPRESSION, animState, OK_MS, HELLO_MS, badgeLabel } from '../utils/fishyFab.js'
 
 const { t } = useI18n()
 const route = useRoute()
@@ -67,9 +72,24 @@ watch(state, v => {
   okDone.value = false
   if (v === 'success') okTimer = setTimeout(() => { okDone.value = true }, OK_MS)
 }, { immediate: true })
-const anim = computed(() => animState(state.value, okDone.value))
+// Saluto: alla prima apparizione del pulsante (una volta per apertura dell'app) Fishy saluta per HELLO_MS, poi torna a riposo.
+// Con «movimento ridotto» il saluto salta del tutto: resta il pesce fermo.
+const helloOn = ref(false)
+let helloTimer = null
+const reducedMotion = () => {
+  const root = document.documentElement.dataset.motion
+  if (root === 'reduce') return true
+  return root !== 'full' && !!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
+}
+watch(visible, v => {
+  if (!v || helloShown || reducedMotion()) return
+  helloShown = true
+  helloOn.value = true
+  helloTimer = setTimeout(() => { helloOn.value = false }, HELLO_MS)
+}, { immediate: true })
+const anim = computed(() => helloOn.value && (state.value === 'idle' || state.value === 'first') ? 'hello' : animState(state.value, okDone.value))
 onMounted(() => { bubbleTimer = setTimeout(hideBubble, 6000); window.addEventListener('scroll', hideBubble, { once: true, passive: true, capture: true }); syncCompact(); mq?.addEventListener?.('change', syncCompact) })
-onBeforeUnmount(() => { clearTimeout(okTimer); clearTimeout(bubbleTimer); window.removeEventListener('scroll', hideBubble, { capture: true }); mq?.removeEventListener?.('change', syncCompact) })
+onBeforeUnmount(() => { clearTimeout(okTimer); clearTimeout(helloTimer); clearTimeout(bubbleTimer); window.removeEventListener('scroll', hideBubble, { capture: true }); mq?.removeEventListener?.('change', syncCompact) })
 </script>
 
 <style scoped>

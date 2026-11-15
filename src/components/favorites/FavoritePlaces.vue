@@ -1,18 +1,13 @@
 <template>
   <!-- «Le mie località»: fila di schede sotto la card meteo. Tocco = la card meteo grande mostra quel posto. -->
   <section class="fp" :aria-label="t('favorites.title')">
-    <p v-if="viewingName" class="fp-viewing" role="status">
-      <span>{{ t('favorites.viewing', { name: viewingName }) }}</span>
-      <button type="button" class="fp-back m-press" @click="goHere"><Navigation :size="16" aria-hidden="true" /> {{ t('favorites.backToHere') }}</button>
-    </p>
-
     <div class="fp-head">
       <h2 class="fp-title">{{ t('favorites.title') }}</h2>
       <button type="button" class="fp-manage m-press" :disabled="!fav.count" @click="manageOpen = true">{{ t('favorites.manage') }}</button>
     </div>
 
     <p v-if="offline" class="fp-banner" role="status"><WifiOff :size="16" aria-hidden="true" /> {{ t('favorites.offlineBanner') }}</p>
-    <p v-if="fav.cardsAt" class="fp-stale">{{ offline ? t('favorites.updatedStale', { time: clock(fav.cardsAt) }) : t('favorites.updatedAt', { time: clock(fav.cardsAt) }) }} · {{ t('fishAct.placesTag') }}</p>
+    <p v-if="fav.cardsAt" class="fp-stale">{{ offline ? t('favorites.updatedStale', { time: clock(fav.cardsAt) }) : t('favorites.updatedAt', { time: clock(fav.cardsAt) }) }}</p>
     <p v-if="loadingCards" class="fp-sr" role="status">{{ t('favorites.loadingCards') }}</p>
 
     <div ref="rail" class="fp-rail" role="list" :aria-busy="loadingCards ? 'true' : undefined" @keydown="onKey">
@@ -34,7 +29,7 @@
 <script setup>
 import { ref, computed, onMounted, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { Navigation, WifiOff } from 'lucide-vue-next'
+import { WifiOff } from 'lucide-vue-next'
 import FavoriteCard from './FavoriteCard.vue'
 import FavoritesManageSheet from './FavoritesManageSheet.vue'
 import FavoritesAddSheet from './FavoritesAddSheet.vue'
@@ -42,7 +37,7 @@ import { useFavoritesStore, HERE_ID } from '../../stores/favorites.js'
 import { useWeatherStore } from '../../stores/weather.js'
 import { useFishActivityStore } from '../../stores/fishActivity.js'
 import { useOnline } from '../../composables/useOnline.js'
-import { reverseLabel } from '../../utils/places.js'
+import { usePlaceView } from '../../composables/usePlaceView.js'
 
 const { t } = useI18n()
 const fav = useFavoritesStore()
@@ -53,31 +48,14 @@ const offline = computed(() => !online.value || fav.cardsStatus === 'offline')
 const manageOpen = ref(false), addOpen = ref(false), rail = ref(null)
 const clock = ms => new Date(ms).toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit', hour12: false })
 
-// Scheda attiva: «La mia posizione» se la card grande è sul GPS, altrimenti il preferito con le stesse coordinate.
-const activeId = computed(() => {
-  const p = weather.place
-  if (!p) return null
-  if (p.mode === 'here') return HERE_ID
-  return fav.findSame({ lat: p.lat, lon: p.lng })?.id || null
-})
-const viewingName = computed(() => (activeId.value !== HERE_ID && weather.place ? (weather.place.name || t('weather.yourPosition')) : ''))
+const { activeId, view: pick, goHere } = usePlaceView()
 const cardFor = id => fav.cards[id] || null
 const fishFor = id => fishAct.records[id] || null
 // Attività dei pesci di tutte le schede: una sola chiamata batch (cache 15 min lato server).
 const loadFish = () => fishAct.load([...(fav.hereSpot ? [{ id: HERE_ID, ...fav.hereSpot }] : []), ...fav.places])
 const loadingCards = computed(() => fav.cardsStatus === 'loading')
 
-async function view(p) {
-  addOpen.value = false
-  weather.pickPlace({ name: p.name, lat: p.lat, lng: p.lon ?? p.lng })
-  await weather.load({ force: false })
-}
-async function goHere() {
-  if (!(await weather.useHere())) return
-  await weather.load({ force: false })
-  const p = weather.place
-  if (p && !p.name) { try { weather.setName(await reverseLabel(p.lat, p.lng)) } catch { /* resta «La tua posizione» */ } }
-}
+function view(p) { addOpen.value = false; return pick(p) }
 
 // La posizione GPS usata dalla card meteo diventa la scheda «La mia posizione».
 watch(() => weather.place, p => {
@@ -105,9 +83,7 @@ function onKey(e) {
 .fp-title { font-family: var(--font-display); font-size: 1.2rem; margin: 0; }
 .fp-manage { min-height: 44px; padding: 0 12px; border: 0; border-radius: 12px; background: none; color: rgb(var(--color-ocean-text)); font: inherit; font-weight: 800; cursor: pointer; }
 .fp-manage:disabled { opacity: .4; cursor: not-allowed; }
-.fp-manage:focus-visible, .fp-back:focus-visible { outline: 2px solid rgb(var(--color-ocean-text)); outline-offset: 2px; }
-.fp-viewing { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin: 0; padding: 4px 4px 4px 14px; border-radius: 14px; background: rgb(var(--color-surface-2)); border: 1px solid rgb(var(--color-border)); font-weight: 700; font-size: .9rem; }
-.fp-back { min-height: 44px; display: inline-flex; align-items: center; gap: 6px; padding: 0 12px; border: 0; border-radius: 12px; background: none; color: rgb(var(--color-ocean-text)); font: inherit; font-weight: 800; cursor: pointer; flex: none; }
+.fp-manage:focus-visible { outline: 2px solid rgb(var(--color-ocean-text)); outline-offset: 2px; }
 .fp-banner { display: flex; align-items: center; gap: 8px; margin: 0; padding: 10px 14px; border-radius: 14px; border: 1px solid rgb(var(--color-sand-text)); background: rgb(var(--color-sand) / .12); font-size: .88rem; font-weight: 600; }
 .fp-banner svg { color: rgb(var(--color-sand-text)); flex: none; }
 .fp-stale { margin: 0; font-size: .78rem; font-variant-numeric: tabular-nums; color: rgb(var(--color-muted)); }
