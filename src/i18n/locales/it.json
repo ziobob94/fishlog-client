@@ -1264,6 +1264,8 @@
 		"sell": "Vendi",
 		"newListing": "Nuovo annuncio",
 		"contactSeller": "Contatta venditore",
+		"moreFromSeller": "Altri annunci di {name}",
+		"seeAllFromSeller": "Vedi tutti gli annunci",
 		"description": "Descrizione",
 		"seller": "Venditore",
 		"photo": "Foto",

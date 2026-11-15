@@ -72,6 +72,14 @@
         <ChevronRight :size="18" class="text-muted" />
       </RouterLink>
 
+      <template v-if="otherListings.length">
+        <h2 class="section-label">{{ t('market.moreFromSeller', { name: sellerName }) }}</h2>
+        <div class="more-grid">
+          <ListingCard v-for="l in otherListings" :key="l._id" :listing="l" />
+        </div>
+        <RouterLink :to="`/market/shop/${listing.seller._id}`" class="btn btn-ghost w-full mt-2">{{ t('market.seeAllFromSeller') }}</RouterLink>
+      </template>
+
       <div v-if="!isOwner && listing.seller" class="cta-bar">
         <RouterLink :to="`/chat/${listing.seller?._id}`" class="btn btn-primary cta-main">
           <MessageCircle :size="16" /> {{ t('market.contactSeller') }}
@@ -91,6 +99,7 @@ import { Package, Eye, MapPin, Check, ChevronRight, ArrowLeft, Send, Pencil, Tra
 import { useMarketStore } from '../stores/market.js'
 import { useAuthStore } from '../stores/auth.js'
 import api from '../utils/api.js'
+import ListingCard from '../components/market/ListingCard.vue'
 
 const { t } = useI18n()
 const route = useRoute()
@@ -140,6 +149,19 @@ async function onDelete() {
   await store.deleteListing(listing.value._id)
   router.push('/market')
 }
+
+// «Altri annunci di {venditore}»: il server li espone solo per i negozi (/listings/shop/:id).
+const otherListings = ref([])
+async function loadOthers() {
+  otherListings.value = []
+  const sl = listing.value?.seller
+  if (!sl?._id || !sl.shop?.enabled) return
+  try {
+    const { listings } = await store.fetchShop(sl._id)
+    if (listing.value?.seller?._id === sl._id) otherListings.value = (listings || []).filter(l => l._id !== listing.value._id).slice(0, 4)
+  } catch { /* sezione accessoria */ }
+}
+watch(() => listing.value?._id, loadOthers)
 
 const failed = ref(false)
 async function load() {
@@ -192,6 +214,7 @@ onMounted(load)
 .seller-sub { @apply text-xs text-muted; }
 
 /* Su mobile la azione principale resta ancorata in basso, sopra la barra. */
+.more-grid { @apply grid grid-cols-2 gap-3; }
 .cta-bar {
   @apply flex items-center gap-2 mt-5;
 }
