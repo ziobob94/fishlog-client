@@ -337,7 +337,8 @@ async function useExample(ex) { typing.value = true; typed.value = ex; await nex
 .kbd[aria-pressed='true'] { border-color: rgb(var(--color-ocean)); }
 .cancelbtn { min-height: 60px; min-width: 44px; padding: 0 12px; border-radius: 20px; border: 1px solid var(--border); background: transparent; color: var(--foam); font-weight: 700; font-size: 14px; cursor: pointer; }
 .type { display: flex; gap: 8px; }
-.type .fl-inp { flex: 1; min-width: 0; }
+.type .fl-inp { flex: 1 1 0; min-width: 0; width: auto; }
+.type .fl-btn2 { flex: none; width: auto; padding: 0 20px; }
 .hello { display: flex; flex-direction: column; align-items: center; gap: 8px; text-align: center; padding-top: 8px; }
 .hello h3 { margin: 4px 0 0; font-size: 22px; font-weight: 800; color: var(--foam); }
 .hello-p { margin: 0 0 6px; font-size: 15px; line-height: 1.4; color: var(--text-muted); max-width: 320px; }
