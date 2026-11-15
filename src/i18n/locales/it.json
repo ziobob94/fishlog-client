@@ -1813,7 +1813,17 @@
 		"replyPrefix": "Risposta alla tua storia",
 		"views": "{n} visualizzazioni",
 		"noStories": "Nessuna storia da mostrare.",
-		"openSession": "Apri l'uscita"
+		"openSession": "Apri l'uscita",
+		"cameraLive": "Anteprima della fotocamera",
+		"switchCamera": "Cambia fotocamera",
+		"cameraUnavailable": "Fotocamera non disponibile",
+		"cameraUnavailableHint": "Non riusciamo ad accedere alla fotocamera. Puoi scegliere una foto dalla galleria.",
+		"pickFromGallery": "Scegli dalla galleria",
+		"sending": "Invio {n}%",
+		"failedTitle": "Storia non pubblicata",
+		"failedHint": "Si è spezzato il filo. Riprova.",
+		"retry": "Riprova",
+		"discard": "Elimina la storia"
 	},
 	"validation": {
 		"required": "Campo obbligatorio",

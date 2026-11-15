@@ -25,15 +25,26 @@ export const useStoryStore = defineStore('stories', () => {
     return data.data
   }
 
-  async function create({ audience, stickers, file }) {
+  // Se la storia è stata creata ma il file non è salito, l'id resta qui: «Riprova» ricarica solo il file,
+  // «Elimina la storia» la rimuove.
+  const draftId = ref(null)
+
+  async function create({ audience, stickers, file, onProgress }) {
     error.value = null
     try {
-      const { data } = await api.post('/stories', { audience, stickers })
+      let data = draftId.value ? { _id: draftId.value } : null
+      if (!data) {
+        data = (await api.post('/stories', { audience, stickers })).data
+        draftId.value = data._id
+      }
       if (file) {
         const form = new FormData()
         form.append('file', await compressImage(file))
-        await api.post(`/stories/${data._id}/media`, form)
+        await api.post(`/stories/${data._id}/media`, form, {
+          onUploadProgress: e => { if (onProgress && e.total) onProgress(Math.round((e.loaded / e.total) * 100)) }
+        })
       }
+      draftId.value = null
       await fetchRail()
       return data
     } catch (e) {
@@ -42,9 +53,16 @@ export const useStoryStore = defineStore('stories', () => {
     }
   }
 
+  async function discardDraft() {
+    const id = draftId.value
+    draftId.value = null
+    error.value = null
+    if (id) { try { await api.delete(`/stories/${id}`) } catch { /* già assente */ } }
+  }
+
   const markViewed = id => api.post(`/stories/${id}/view`).catch(() => {})
   async function toggleLike(id) { const { data } = await api.post(`/stories/${id}/like`); return data.liked }
   async function remove(id) { await api.delete(`/stories/${id}`); await fetchRail() }
 
-  return { groups, loading, error, fetchRail, fetchUser, create, markViewed, toggleLike, remove }
+  return { groups, loading, error, draftId, fetchRail, fetchUser, create, discardDraft, markViewed, toggleLike, remove }
 })

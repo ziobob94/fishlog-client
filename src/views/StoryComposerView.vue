@@ -2,7 +2,8 @@
   <div class="composer">
     <div class="bg" :style="previewUrl ? { backgroundImage: `url(${previewUrl})` } : null">
       <video v-if="isVideo" :src="previewUrl" class="bg-video" autoplay muted loop playsinline></video>
-      <svg v-if="!previewUrl" class="iso" viewBox="0 0 400 800" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+      <video v-show="liveOn && !previewUrl" ref="liveEl" class="bg-video" autoplay muted playsinline :aria-label="t('stories.cameraLive')"></video>
+      <svg v-if="!previewUrl && !liveOn" class="iso" viewBox="0 0 400 800" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
         <g fill="none" stroke="#7dd3fc" stroke-width="1.5">
           <path opacity=".18" d="M-40 120C120 40 300 80 420 220" /><path opacity=".14" d="M-60 560C80 380 300 420 440 640" /><path opacity=".1" d="M-20 700C150 560 280 640 430 780" />
         </g>
@@ -12,6 +13,7 @@
     <button type="button" class="round close" :aria-label="t('stories.close')" @click="router.back()"><X :size="22" /></button>
 
     <div class="tools">
+      <button v-if="liveOn && !previewUrl" type="button" class="round" :aria-label="t('stories.switchCamera')" :title="t('stories.switchCamera')" @click="switchCamera"><SwitchCamera :size="22" /></button>
       <label class="round" :aria-label="t('stories.chooseMedia')" :title="t('stories.chooseMedia')">
         <Camera :size="22" />
         <input type="file" accept="image/*,video/*" class="sr-only" @change="pickFile" />
@@ -20,6 +22,18 @@
       <button type="button" class="round" :class="{ on: placeOn }" :aria-pressed="placeOn" :aria-label="t('stories.stickerPlace')" :disabled="!session" @click="placeOn = !placeOn"><MapPin :size="22" /></button>
       <button type="button" class="round" :class="{ on: waterOn }" :aria-pressed="waterOn" :aria-label="t('stories.stickerWater')" :disabled="!hasWater" @click="waterOn = !waterOn"><Waves :size="22" /></button>
     </div>
+
+    <div v-if="camUnavailable && !previewUrl" class="cam-off" role="status">
+      <Camera :size="32" aria-hidden="true" />
+      <strong>{{ t('stories.cameraUnavailable') }}</strong>
+      <p>{{ t('stories.cameraUnavailableHint') }}</p>
+      <label class="fl-btn1 gal">
+        {{ t('stories.pickFromGallery') }}
+        <input type="file" accept="image/*,video/*" class="sr-only" @change="pickFile" />
+      </label>
+    </div>
+
+    <button v-if="liveOn && !previewUrl" type="button" class="shutter" :aria-label="t('stories.takePhoto')" @click="snap"></button>
 
     <div class="stickers">
       <StorySticker v-for="s in previewStickers" :key="s.kind" :sticker="s" />
@@ -38,21 +52,32 @@
         <button type="button" :class="{ on: audience === 'friends' }" @click="audience = 'friends'">{{ t('stories.friendsOnly') }}</button>
       </div>
       <p class="fl-hint">{{ t('stories.ttlHint') }}</p>
-      <p v-if="store.error" class="err" role="alert">{{ store.error }}</p>
-      <button type="button" class="fl-btn1" :disabled="publishing || !canPublish" @click="publish">
-        <span v-if="publishing" class="m-spinner" style="width:15px;height:15px"></span>
-        {{ publishing ? t('stories.publishing') : t('stories.publish') }}
-      </button>
-      <button type="button" class="redo" @click="reset">{{ t('stories.redo') }}</button>
+      <div v-if="failed" class="fail" role="alert">
+        <strong>{{ t('stories.failedTitle') }}</strong>
+        <p>{{ store.error || t('stories.failedHint') }}</p>
+        <button type="button" class="fl-btn1" :disabled="publishing" @click="publish">{{ t('stories.retry') }}</button>
+        <button type="button" class="redo danger" :disabled="publishing" @click="discard">{{ t('stories.discard') }}</button>
+      </div>
+      <template v-else>
+        <div v-if="publishing && file" class="prog" role="progressbar" aria-valuemin="0" aria-valuemax="100" :aria-valuenow="progress">
+          <div class="bar"><i :style="{ width: progress + '%' }"></i></div>
+        </div>
+        <button type="button" class="fl-btn1" :disabled="publishing || !canPublish" @click="publish">
+          <span v-if="publishing" class="m-spinner" style="width:15px;height:15px"></span>
+          <span v-if="publishing && file" class="fl-mono">{{ t('stories.sending', { n: progress }) }}</span>
+          <template v-else>{{ publishing ? t('stories.publishing') : t('stories.publish') }}</template>
+        </button>
+      </template>
+      <button v-if="!failed" type="button" class="redo" @click="reset">{{ t('stories.redo') }}</button>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
+import { ref, computed, nextTick, onMounted, onBeforeUnmount } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { X, Camera, Fish, MapPin, Waves } from 'lucide-vue-next'
+import { X, Camera, Fish, MapPin, Waves, SwitchCamera } from 'lucide-vue-next'
 import api from '../utils/api.js'
 import StorySticker from '../components/StorySticker.vue'
 import { useStoryStore } from '../stores/stories.js'
@@ -72,6 +97,50 @@ const audience = ref('friends')
 const publishing = ref(false)
 const catchOn = ref(false), catchId = ref(null), catchPicker = ref(false)
 const placeOn = ref(false), waterOn = ref(false)
+
+const failed = ref(false)
+const progress = ref(0)
+
+// Fotocamera live: se manca o il permesso è negato, si propone la galleria.
+const liveEl = ref(null)
+const liveOn = ref(false)
+const camUnavailable = ref(false)
+const facing = ref('environment')
+let stream = null
+
+function stopLive() {
+  stream?.getTracks().forEach(tr => tr.stop())
+  stream = null
+  liveOn.value = false
+}
+async function startLive() {
+  stopLive()
+  if (!navigator.mediaDevices?.getUserMedia) { camUnavailable.value = true; return }
+  try {
+    stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: facing.value }, audio: false })
+    liveOn.value = true
+    camUnavailable.value = false
+    await nextTick()
+    if (liveEl.value) { liveEl.value.srcObject = stream; liveEl.value.play?.().catch(() => {}) }
+  } catch {
+    camUnavailable.value = true
+  }
+}
+function switchCamera() { facing.value = facing.value === 'environment' ? 'user' : 'environment'; startLive() }
+function snap() {
+  const v = liveEl.value
+  if (!v?.videoWidth) return
+  const c = document.createElement('canvas')
+  c.width = v.videoWidth; c.height = v.videoHeight
+  c.getContext('2d').drawImage(v, 0, 0)
+  c.toBlob(b => { if (b) setFile(new File([b], 'storia.jpg', { type: 'image/jpeg' })) }, 'image/jpeg', 0.92)
+}
+function setFile(f) {
+  if (previewUrl.value) URL.revokeObjectURL(previewUrl.value)
+  file.value = f
+  previewUrl.value = URL.createObjectURL(f)
+  stopLive()
+}
 
 const hasCatches = computed(() => !!session.value?.catches?.length)
 const hasWater = computed(() => {
@@ -97,21 +166,20 @@ const previewStickers = computed(() => {
 const canPublish = computed(() => !!file.value || previewStickers.value.length > 0)
 
 onMounted(async () => {
+  startLive()
   try {
     const { data: list } = await api.get('/sessions', { params: { mine: 'true', limit: 1 } })
     const first = (list.data || list)[0]
     if (first) { const { data } = await api.get(`/sessions/${first._id}`); session.value = data }
   } catch { session.value = null }
 })
-onBeforeUnmount(() => { if (previewUrl.value) URL.revokeObjectURL(previewUrl.value) })
+onBeforeUnmount(() => { stopLive(); if (previewUrl.value) URL.revokeObjectURL(previewUrl.value) })
 
 function pickFile(e) {
   const f = e.target.files?.[0]
   e.target.value = ''
   if (!f) return
-  if (previewUrl.value) URL.revokeObjectURL(previewUrl.value)
-  file.value = f
-  previewUrl.value = URL.createObjectURL(f)
+  setFile(f)
 }
 
 function toggleCatch() {
@@ -123,19 +191,29 @@ function chooseCatch(id) { catchId.value = id; catchOn.value = true; catchPicker
 function reset() {
   if (previewUrl.value) URL.revokeObjectURL(previewUrl.value)
   file.value = null; previewUrl.value = ''; catchOn.value = false; catchId.value = null; placeOn.value = false; waterOn.value = false; catchPicker.value = false
+  if (!camUnavailable.value) startLive()
 }
 
 async function publish() {
   if (!canPublish.value) return
   publishing.value = true
+  failed.value = false
+  progress.value = 0
   const stickers = []
   const sid = session.value?._id
   if (catchOn.value) stickers.push({ kind: 'catch', sessionId: sid, catchId: catchId.value })
   if (placeOn.value) stickers.push({ kind: 'place', sessionId: sid })
   if (waterOn.value) stickers.push({ kind: 'water', sessionId: sid })
-  const created = await store.create({ audience: audience.value, stickers, file: file.value })
+  const created = await store.create({ audience: audience.value, stickers, file: file.value, onProgress: p => { progress.value = p } })
   publishing.value = false
-  if (created) { toast(t('stories.published'), { type: 'success' }); router.replace(route.query.from === 'board' ? '/board' : '/feed') }
+  if (!created) { failed.value = true; return }
+  toast(t('stories.published'), { type: 'success' })
+  router.replace(route.query.from === 'board' ? '/board' : '/feed')
+}
+
+async function discard() {
+  await store.discardDraft()
+  failed.value = false
 }
 </script>
 
@@ -157,6 +235,15 @@ async function publish() {
 .seg { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .seg button { min-height: 48px; border-radius: 14px; border: 1px solid var(--border); background: var(--surface-2); color: var(--foam); font-weight: 700; cursor: pointer; }
 .seg button.on { background: var(--ocean); border-color: var(--ocean); color: rgb(var(--color-on-primary)); }
+.cam-off { position: absolute; left: 24px; right: 24px; top: 30%; display: flex; flex-direction: column; align-items: center; gap: 8px; text-align: center; }
+.cam-off p { color: var(--text-muted); font-size: 14px; margin: 0 0 8px; max-width: 28ch; }
+.gal { display: inline-flex; align-items: center; justify-content: center; cursor: pointer; padding: 0 20px; }
+.shutter { position: absolute; left: 50%; transform: translateX(-50%); bottom: calc(300px + env(safe-area-inset-bottom)); width: 72px; height: 72px; border-radius: 50%; background: transparent; border: 4px solid #fff; cursor: pointer; box-shadow: inset 0 0 0 4px rgba(255,255,255,.9); }
+.prog .bar { height: 6px; border-radius: 3px; background: var(--surface-2); overflow: hidden; }
+.prog .bar i { display: block; height: 100%; background: var(--ocean); transition: width .2s; }
+.fail { display: flex; flex-direction: column; gap: 8px; }
+.fail p { margin: 0; color: var(--text-muted); font-size: 14px; }
+.redo.danger { color: var(--danger); }
 .err { color: var(--danger); font-size: 13px; margin: 0; }
 .redo { background: none; border: 0; color: rgb(var(--color-ocean-text)); font-weight: 700; font-size: 15px; min-height: 44px; cursor: pointer; }
 </style>
