@@ -1,9 +1,9 @@
 <template>
   <!-- «Attività dei pesci»: sotto il meteo, sopra «Le mie località». Stima indicativa (livello 1-5 per l'ora corrente del luogo). -->
-  <section v-if="place" class="fa" aria-labelledby="fa-title" :aria-busy="state === 'loading' ? 'true' : undefined">
+  <section v-if="place" class="fa" :class="{ 'fa-embedded': embedded }" aria-labelledby="fa-title" :aria-busy="state === 'loading' ? 'true' : undefined">
     <div class="fa-head">
       <h2 id="fa-title" class="fa-title">{{ t('fishAct.title') }}</h2>
-      <p class="fa-note">{{ t('fishAct.note') }}</p>
+      <p v-if="!embedded" class="fa-note">{{ t('fishAct.note') }}</p>
     </div>
 
     <div v-if="state === 'loading'" class="fa-sk">
@@ -48,6 +48,8 @@ import { useOnline } from '../../composables/useOnline.js'
 import { activityState, levelKey, clock } from '../../utils/fishActivity.js'
 import '../../assets/weather.css'
 
+// embedded: dentro HomeNowCard, che mostra la nota «Indicativa» una sola volta per tutta la scheda.
+defineProps({ embedded: { type: Boolean, default: false } })
 const SEL = 'sel'
 const { t } = useI18n()
 const fish = useFishActivityStore()
@@ -89,6 +91,7 @@ watch(online, on => { if (on) refresh() })
 
 <style scoped>
 .fa { display: grid; gap: 8px; margin: 0 0 16px; padding: 14px 16px; border-radius: 22px; background: rgb(var(--color-surface)); border: 1px solid rgb(var(--color-border)); }
+.fa.fa-embedded { margin: 0; padding: 12px 0 0; border: 0; border-top: 1px solid rgb(var(--color-border)); border-radius: 0; background: none; }
 .fa-head { display: grid; gap: 2px; }
 .fa-note { margin: 0; font-size: .8rem; color: rgb(var(--color-muted)); }
 .fa-title { font-family: var(--font-display); font-size: 1.2rem; margin: 0; }

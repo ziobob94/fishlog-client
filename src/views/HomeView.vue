@@ -1,17 +1,8 @@
 <template>
   <div class="home">
-    <!-- Meteo in evidenza: scheda grande. -->
-    <HomeWeatherCard class="mb-4" />
-
-    <!-- Attività dei pesci (stima indicativa) del luogo mostrato nella card meteo. -->
-    <FishActivityCard />
-
-    <!-- Le mie località: fila di schede meteo/mare dei posti preferiti. -->
-    <FavoritePlaces />
-
-    <!-- Uscita in corso (mobile): riprendi con un tocco. -->
-    <RouterLink v-if="sessions.ongoing" :to="{ path: `/session/${sessions.ongoing._id}/edit`, hash: '#section-catches' }" class="ongoing-panel md:hidden">
-      <span class="pulse-dot"></span>
+    <!-- Uscita in corso: in cima, solo se attiva. Riprendi con un tocco. -->
+    <RouterLink v-if="sessions.ongoing" :to="{ path: `/session/${sessions.ongoing._id}/edit`, hash: '#section-catches' }" class="ongoing-panel">
+      <span class="pulse-dot" aria-hidden="true"></span>
       <span class="ongoing-text">
         <span class="ongoing-eyebrow">{{ t('home.ongoingTitle') }}</span>
         <span class="ongoing-name">{{ sessions.ongoing.title || sessions.ongoing.location?.name || t('session.untitled') }}</span>
@@ -19,108 +10,81 @@
       <span class="btn-sand">{{ t('sessions.resume') }}</span>
     </RouterLink>
 
-    <GlobeCard />
-
-    <!-- Seconda fonte per vento e mare: solo un link esterno. -->
-
-    <!-- Due scorciatoie (mobile). -->
-    <div class="tiles-2 md:hidden">
-      <RouterLink to="/species" class="tile"><AppIcon name="uscite" :size="20" class="tile-icon" /> {{ t('home.tiles.species') }}</RouterLink>
-      <RouterLink to="/stats" class="tile"><BarChart3 :size="20" class="tile-icon" /> {{ t('home.tiles.stats') }}</RouterLink>
+    <!-- Mobile: una colonna. Desktop: a sinistra «adesso» e le località, a destra le pescate. -->
+    <div class="home-grid">
+      <div class="home-col">
+        <HomeNowCard />
+        <FavoritePlaces />
+      </div>
+      <div class="home-col">
+        <!-- Accordion «Le tue pescate» (mappamondo): chiuso o aperto, ricorda la scelta -->
+        <GlobeCard />
+      </div>
     </div>
 
-    <!-- Sezioni narrative: ognuna spiega un valore e porta all'azione. -->
-    <section class="story-grid max-md:hidden">
-      <article v-for="s in stories" :key="s.key" class="story">
-        <div class="story-icon"><component :is="s.icon" :size="22" /></div>
-        <h2>{{ t(`home.stories.${s.key}.title`) }}</h2>
-        <p class="text-muted">{{ t(`home.stories.${s.key}.text`) }}</p>
-        <RouterLink :to="s.to" class="story-cta">{{ t(`home.stories.${s.key}.cta`) }} <ArrowRight :size="14" /></RouterLink>
-      </article>
-    </section>
-
-    <!-- Accessi secondari, in piccolo: il resto è nel menu. -->
-    <nav class="quick-links" :aria-label="t('home.quick.title')">
-      <RouterLink v-for="q in quickLinks" :key="q.to" :to="q.to" class="quick-link">
-        <component :is="q.icon" :size="14" /> {{ t(`home.quick.${q.key}`) }}
-        <span v-if="badgeCount(q.key)" class="badge badge-danger">{{ badgeCount(q.key) }}</span>
+    <!-- Una sola riga di scorciatoie: il resto è nel menu. -->
+    <nav class="shortcuts" :aria-label="t('home.quick.title')">
+      <RouterLink v-for="q in shortcuts" :key="q.to" :to="q.to" class="shortcut m-press" :aria-label="q.key === 'friends' && pending ? t('home.quick.friendsRequests', { n: pending }) : undefined">
+        <component :is="q.icon" :size="20" aria-hidden="true" />
+        <span class="shortcut-t">{{ t(`home.quick.${q.key}`) }}</span>
+        <span v-if="q.key === 'friends' && pending" class="badge badge-danger" aria-hidden="true">{{ pending }}</span>
       </RouterLink>
     </nav>
   </div>
 </template>
 
 <script setup>
+import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import {
-  Fish, Users, ShoppingBag, UserCircle, UserPlus, BarChart3,
-  Trophy, CalendarDays, ArrowRight, CloudSun, Flag
-} from 'lucide-vue-next'
-import AppIcon from '../components/AppIcon.vue'
+import { BookOpen, BarChart3, Trophy, Flag, UserPlus } from 'lucide-vue-next'
 import { useSessionStore } from '../stores/sessions.js'
-import GlobeCard from '../components/GlobeCard.vue'
 import { useFriendStore } from '../stores/friends.js'
-import HomeWeatherCard from '../components/weather/HomeWeatherCard.vue'
+import HomeNowCard from '../components/HomeNowCard.vue'
+import GlobeCard from '../components/GlobeCard.vue'
 import FavoritePlaces from '../components/favorites/FavoritePlaces.vue'
-import FishActivityCard from '../components/fishing/FishActivityCard.vue'
 
 const { t } = useI18n()
 const friends = useFriendStore()
 const sessions = useSessionStore()
+const pending = computed(() => friends.pendingCount)
 
-// Badge numerico per box con contatori "da leggere/gestire" (gruppi: in sospeso).
-function badgeCount(key) {
-  if (key === 'friends') return friends.pendingCount
-  return 0
-}
-
-const stories = [
-  { key: 'community', to: '/feed',    icon: Users },
-  { key: 'market',    to: '/market',  icon: ShoppingBag },
-  { key: 'species',   to: '/species', icon: CalendarDays }
-]
-
-const quickLinks = [
-  { key: 'weather',     to: '/meteo',      icon: CloudSun },
-  { key: 'sessions',    to: '/sessions',   icon: Fish },
+const shortcuts = [
+  { key: 'species',     to: '/species',    icon: BookOpen },
   { key: 'stats',       to: '/stats',      icon: BarChart3 },
   { key: 'leaderboard', to: '/classifica', icon: Trophy },
   { key: 'gare',        to: '/gare',       icon: Flag },
-  { key: 'friends',     to: '/friends',    icon: UserPlus },
-  { key: 'profile',     to: '/board',    icon: UserCircle }
+  { key: 'friends',     to: '/friends',    icon: UserPlus }
 ]
 </script>
 
 <style scoped>
 /* Spazio in fondo: il pulsante di Fishy (56 px fisso a 16 px sopra la tab bar) non copre l'ultimo contenuto. */
 @media (max-width: 767px) { .home { padding-bottom: calc(56px + 16px + var(--bottom-nav-h) + env(safe-area-inset-bottom)); } }
-.icon-inline { @apply inline-flex items-center gap-1.5; }
 
-.story-grid { @apply grid gap-4 mb-8; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
-.story { @apply flex flex-col items-start gap-2 rounded-signature border border-border/60 bg-surface p-5; }
-.story-icon {
-  @apply flex items-center justify-center w-11 h-11 rounded-full text-ocean-text;
-  background: var(--ocean-glow);
-}
-.story h2 { @apply text-lg; }
-.story p { @apply text-sm flex-1; }
-.story-cta { @apply inline-flex items-center gap-1 text-sm font-semibold text-ocean-text; }
+.home-grid { display: grid; gap: 16px; margin-bottom: 16px; }
+.home-col { display: grid; gap: 16px; align-content: start; min-width: 0; }
+@media (min-width: 768px) { .home-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 24px; align-items: start; } }
+.home-col :deep(.globe-card) { margin-bottom: 0; }
+.home-col :deep(.fp) { margin-bottom: 0; }
 
-.tiles-2 { @apply grid grid-cols-2 gap-3 mb-5; }
-.tile { @apply flex flex-col gap-2 p-4 min-h-[88px] rounded-xl border border-border bg-surface text-foam font-bold no-underline; }
-.tile-icon { @apply text-ocean-text; }
 .ongoing-panel {
   @apply flex items-center gap-3 p-4 mb-4 rounded-xl border border-sand no-underline text-foam;
   background: rgb(var(--color-sand) / 0.1);
 }
+.ongoing-panel:focus-visible { outline: 2px solid rgb(var(--color-ocean-text)); outline-offset: 2px; }
 .ongoing-text { @apply flex flex-col min-w-0 flex-1; }
 .ongoing-eyebrow { @apply text-xs font-bold uppercase text-sand-text; letter-spacing: 0.08em; }
 .ongoing-name { @apply font-bold truncate; }
 .btn-sand { @apply inline-flex items-center justify-center min-h-[44px] px-5 rounded-xl bg-sand text-on-primary font-bold shrink-0; }
 .pulse-dot { @apply inline-flex h-3 w-3 rounded-full bg-sand shrink-0; }
-.quick-links { @apply flex flex-wrap gap-2; }
-.quick-link {
-  @apply inline-flex items-center gap-1.5 rounded-full border border-border/60 bg-surface px-4 min-h-[44px]
-         text-xs font-semibold text-muted no-underline transition-colors duration-200;
+
+.shortcuts { display: grid; grid-template-columns: repeat(auto-fit, minmax(96px, 1fr)); gap: 8px; }
+.shortcut {
+  @apply relative flex flex-col items-center justify-center gap-1 min-h-[64px] px-2 py-2 rounded-xl border border-border bg-surface
+         text-foam text-xs font-bold no-underline text-center transition-colors duration-200;
 }
-.quick-link:hover { @apply border-ocean text-foam; }
+.shortcut svg { @apply text-ocean-text; }
+.shortcut:hover { @apply border-ocean; }
+.shortcut:focus-visible { outline: 2px solid rgb(var(--color-ocean-text)); outline-offset: 2px; }
+.shortcut .badge { position: absolute; top: 4px; right: 6px; }
 </style>

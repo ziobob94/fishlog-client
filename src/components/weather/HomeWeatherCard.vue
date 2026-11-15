@@ -1,6 +1,6 @@
 <template>
   <!-- Scheda grande -->
-  <section class="hw-card" :aria-label="t('weather.card.label')" :aria-busy="state === 'loading' ? 'true' : undefined">
+  <section class="hw-card" :class="{ 'hw-embedded': embedded }" :aria-label="t('weather.card.label')" :aria-busy="state === 'loading' ? 'true' : undefined">
     <!-- Senza luogo -->
     <div v-if="state === 'noplace'" class="hw-empty">
       <MapPin :size="28" aria-hidden="true" class="hw-ico" />
@@ -131,6 +131,7 @@ import { useAccordion } from '../../composables/useAccordion.js'
 import { useHomeWeather } from '../../composables/useHomeWeather.js'
 import '../../assets/weather.css'
 
+defineProps({ embedded: { type: Boolean, default: false } }) // dentro HomeNowCard: niente riquadro proprio
 const { t } = useI18n()
 const { activate, activating, denied, state, offline, summary, placeName, savedLabel, retry, refresh, refreshing, refreshFailed, coolingDown } = useHomeWeather()
 const s = computed(() => summary.value)
@@ -148,6 +149,7 @@ const refreshLabel = computed(() => refreshing.value ? t('weather.refreshing') :
 
 <style scoped>
 .hw-card { display: grid; gap: 12px; padding: 12px 16px 14px; border-radius: 24px 24px 24px 8px; background: rgb(var(--color-surface)); border: 1px solid rgb(var(--color-border)); min-width: 0; }
+.hw-card.hw-embedded { padding: 0; border: 0; border-radius: 0; background: none; }
 .hw-top { display: flex; align-items: center; gap: 2px; flex-wrap: wrap; }
 .hw-head { flex: 1 1 0; min-width: 0; display: grid; gap: 0; }
 .hw-place { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: var(--font-sans); font-weight: 800; font-size: 1rem; color: rgb(var(--color-foam)); min-width: 0; }

@@ -436,6 +436,7 @@
 		}
 	},
 	"home": {
+		"now": { "label": "Adesso: meteo e attività dei pesci" },
 		"newSession": "Nuova uscita",
 		"ongoingTitle": "In corso",
 		"historyTitle": "Storico",
@@ -450,36 +451,14 @@
 				"sicily": "Canale di Sicilia"
 			}
 		},
-		"stories": {
-			"community": {
-				"title": "Social",
-				"text": "Racconta le tue uscite, confrontati con gli altri pescatori e scala la classifica.",
-				"cta": "Vai al Social"
-			},
-			"market": {
-				"title": "Market",
-				"text": "Compra e vendi attrezzatura nuova e usata tra appassionati.",
-				"cta": "Apri il market"
-			},
-			"species": {
-				"title": "Specie e stagioni",
-				"text": "Calendario delle catture, esche, attrezzatura e normativa con la fonte citata, per ogni specie.",
-				"cta": "Esplora le specie"
-			}
-		},
-		"tiles": {
-			"species": "Specie e stagioni",
-			"stats": "Le mie statistiche"
-		},
 		"quick": {
 			"title": "Accessi rapidi",
-			"weather": "Meteo e mare",
-			"sessions": "Uscite",
+			"species": "Specie",
 			"stats": "Statistiche",
 			"leaderboard": "Classifica",
 			"gare": "Gare",
 			"friends": "Amici",
-			"profile": "Il mio profilo"
+			"friendsRequests": "Amici, {n} richieste in attesa"
 		},
 		"liveConditions": {
 			"title": "Oggi dove sei",
