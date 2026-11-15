@@ -1,3 +1,10 @@
+## [1.88.2](https://github.com/ziobob94/fishlog-client/compare/client-v1.88.1...client-v1.88.2) (2026-11-15)
+
+
+### Bug Fixes
+
+* **fishy:** evita testo ripetuto nel riconoscimento vocale su Android ([#180](https://github.com/ziobob94/fishlog-client/issues/180)) ([e4dfec9](https://github.com/ziobob94/fishlog-client/commit/e4dfec9cca109b845aa7c4ce942d771c971e86ed))
+
 ## [1.88.1](https://github.com/ziobob94/fishlog-client/compare/client-v1.88.0...client-v1.88.1) (2026-11-15)
 
 
