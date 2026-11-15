@@ -96,7 +96,7 @@
                 <span class="conversation-preview" :class="{ unread: c.unreadCount }">
                   <CheckCheck v-if="messageTick(c) === 'read'" :size="14" class="tick tick-read shrink-0" />
                   <Check v-else-if="messageTick(c) === 'sent'" :size="14" class="tick shrink-0" />
-                  <span class="conversation-preview-text">{{ previewText(c) }}</span>
+                  <span class="conversation-preview-text"><component :is="previewIcon(c)" v-if="previewIcon(c)" :size="14" class="preview-icon" aria-hidden="true" />{{ previewText(c) }}</span>
                 </span>
               </div>
               <div class="conversation-meta">
@@ -143,7 +143,7 @@ import { toInitials } from '../utils/initials.js'
   import { ref, reactive, computed, watch, onMounted, onBeforeUnmount } from 'vue'
   import { useRoute, useRouter, RouterLink } from 'vue-router'
   import { useI18n } from 'vue-i18n'
-  import { MessageCircle, AlertTriangle, UserPlus, ArrowLeft, UsersRound, Search, Star, Check, CheckCheck } from 'lucide-vue-next'
+  import { MessageCircle, AlertTriangle, UserPlus, ArrowLeft, UsersRound, Search, Star, Check, CheckCheck, Image, Video, Mic, MapPin, Paperclip } from 'lucide-vue-next'
   import { useChatStore } from '../stores/chat.js'
   import { useFriendStore } from '../stores/friends.js'
   import { useUserStore } from '../stores/users.js'
@@ -205,6 +205,12 @@ import { toInitials } from '../utils/initials.js'
     return msg.readBy?.length ? 'read' : 'sent'
   }
 
+  const PREVIEW_ICONS = { image: Image, video: Video, audio: Mic, location: MapPin, file: Paperclip }
+  function previewIcon(c) {
+    const m = c.lastMessage
+    return m && !m.deleted ? PREVIEW_ICONS[m.type] || null : null
+  }
+
   function previewText(c) {
     const lastMessage = c.lastMessage
     if (!lastMessage) return ''
@@ -212,11 +218,11 @@ import { toInitials } from '../utils/initials.js'
 
     const text = (() => {
       switch (lastMessage.type) {
-        case 'image': return '📷 Foto'
-        case 'video': return '🎥 Video'
-        case 'audio': return '🎤 Messaggio vocale'
-        case 'location': return '📍 Posizione'
-        case 'file': return `📎 ${lastMessage.media?.originalName || 'File'}`
+        case 'image': return 'Foto'
+        case 'video': return 'Video'
+        case 'audio': return 'Messaggio vocale'
+        case 'location': return 'Posizione'
+        case 'file': return `${lastMessage.media?.originalName || 'File'}`
         default: return lastMessage.body
       }
     })()
@@ -424,6 +430,7 @@ return toInitials(name)
   .conversation-preview-text {
     @apply truncate min-w-0;
   }
+  .preview-icon { display: inline-block; vertical-align: -2px; margin-right: 4px; }
 
   .conversation-meta {
     @apply flex flex-col items-end justify-center gap-1.5 shrink-0 self-stretch;

@@ -1,3 +1,17 @@
+# [1.86.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.85.0...client-v1.86.0) (2026-11-15)
+
+
+### Bug Fixes
+
+* **a11y:** bersagli di tocco ≥ 44 px su intestazione, Feed, reazioni, filtri, visore, foto, audio e chat ([75acb81](https://github.com/ziobob94/fishlog-client/commit/75acb81f6fc16060bfba121c1db3e42385046a7b))
+* **i18n:** «Social» al posto di «Community» in noGroupsNote ([9ec5dc5](https://github.com/ziobob94/fishlog-client/commit/9ec5dc5ffa3cfa3fa748910e45ab24fd758dde71))
+* **ui:** etichette senza emoji in SessionForm, filtro acqua Specie e anteprima chat (icone Lucide) ([f1c6075](https://github.com/ziobob94/fishlog-client/commit/f1c6075bfb610fb1408f133876ececcf617fe6e5))
+
+
+### Features
+
+* **home:** riga uscita in corso con durata e catture; «Amici» solo con richieste in attesa (mockup 78) ([37b495e](https://github.com/ziobob94/fishlog-client/commit/37b495ec4896221d364f6a1323a9257872dec7ce))
+
 # [1.85.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.84.2...client-v1.85.0) (2026-11-15)
 
 

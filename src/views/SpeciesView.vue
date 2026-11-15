@@ -156,10 +156,10 @@ const TECHNIQUES = [
   { v: 'mosca', l: 'Mosca' }, { v: 'altro', l: 'Altro' }
 ]
 const WATER_TYPES = [
-  { v: 'mare', l: '🌊 Mare' },
-  { v: 'fiume', l: '🏞️ Fiume' },
-  { v: 'lago', l: '🏔️ Lago' },
-  { v: 'altro', l: '💧 Altro' }
+  { v: 'mare', l: 'Mare' },
+  { v: 'fiume', l: 'Fiume' },
+  { v: 'lago', l: 'Lago' },
+  { v: 'altro', l: 'Altro' }
 ]
 
 const species = ref(null)

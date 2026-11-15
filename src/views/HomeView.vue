@@ -4,8 +4,9 @@
     <RouterLink v-if="sessions.ongoing" :to="{ path: `/session/${sessions.ongoing._id}/edit`, hash: '#section-catches' }" class="ongoing-panel">
       <span class="pulse-dot" aria-hidden="true"></span>
       <span class="ongoing-text">
-        <span class="ongoing-eyebrow">{{ t('home.ongoingTitle') }}</span>
+        <span class="ongoing-eyebrow">{{ t('home.ongoingElapsed', { h: elapsed.h, m: elapsed.m }) }}</span>
         <span class="ongoing-name">{{ sessions.ongoing.title || sessions.ongoing.location?.name || t('session.untitled') }}</span>
+        <span class="ongoing-meta">{{ t('home.ongoingCatches', ongoingCatches) }}</span>
       </span>
       <span class="btn-sand">{{ t('sessions.resume') }}</span>
     </RouterLink>
@@ -24,7 +25,7 @@
 
     <!-- Una sola riga di scorciatoie: il resto è nel menu. -->
     <nav class="shortcuts" :aria-label="t('home.quick.title')">
-      <RouterLink v-for="q in shortcuts" :key="q.to" :to="q.to" class="shortcut m-press" :aria-label="q.key === 'friends' && pending ? t('home.quick.friendsRequests', { n: pending }) : undefined">
+      <RouterLink v-for="q in visibleShortcuts" :key="q.to" :to="q.to" class="shortcut m-press" :aria-label="q.key === 'friends' && pending ? t('home.quick.friendsRequests', { n: pending }) : undefined">
         <component :is="q.icon" :size="20" aria-hidden="true" />
         <span class="shortcut-t">{{ t(`home.quick.${q.key}`) }}</span>
         <span v-if="q.key === 'friends' && pending" class="badge badge-danger" aria-hidden="true">{{ pending }}</span>
@@ -34,10 +35,11 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { computed, ref, onMounted, onBeforeUnmount } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { BookOpen, BarChart3, Trophy, Flag, UserPlus } from 'lucide-vue-next'
 import { useSessionStore } from '../stores/sessions.js'
+import { elapsedLabel } from '../utils/sessionTime.js'
 import { useFriendStore } from '../stores/friends.js'
 import HomeNowCard from '../components/HomeNowCard.vue'
 import GlobeCard from '../components/GlobeCard.vue'
@@ -48,6 +50,17 @@ const friends = useFriendStore()
 const sessions = useSessionStore()
 const pending = computed(() => friends.pendingCount)
 
+// Durata dell'uscita in corso: si aggiorna ogni 30 secondi
+const now = ref(Date.now())
+let tick = null
+onMounted(() => { tick = setInterval(() => { now.value = Date.now() }, 30000) })
+onBeforeUnmount(() => clearInterval(tick))
+const elapsed = computed(() => {
+  const [h, m] = elapsedLabel(sessions.ongoing, now.value).split(':')
+  return { h: Number(h), m: m }
+})
+const ongoingCatches = computed(() => sessions.ongoing?.catches?.length || 0)
+
 const shortcuts = [
   { key: 'species',     to: '/species',    icon: BookOpen },
   { key: 'stats',       to: '/stats',      icon: BarChart3 },
@@ -55,6 +68,8 @@ const shortcuts = [
   { key: 'gare',        to: '/gare',       icon: Flag },
   { key: 'friends',     to: '/friends',    icon: UserPlus }
 ]
+// «Amici» compare solo quando ci sono richieste in attesa
+const visibleShortcuts = computed(() => shortcuts.filter(q => q.key !== 'friends' || pending.value > 0))
 </script>
 
 <style scoped>
@@ -75,13 +90,14 @@ const shortcuts = [
 .ongoing-text { @apply flex flex-col min-w-0 flex-1; }
 .ongoing-eyebrow { @apply text-xs font-bold uppercase text-sand-text; letter-spacing: 0.08em; }
 .ongoing-name { @apply font-bold truncate; }
+.ongoing-meta { @apply text-xs text-muted; }
 .btn-sand { @apply inline-flex items-center justify-center min-h-[44px] px-5 rounded-xl bg-sand text-on-primary font-bold shrink-0; }
 .pulse-dot { @apply inline-flex h-3 w-3 rounded-full bg-sand shrink-0; }
 
 .shortcuts { display: grid; grid-template-columns: repeat(auto-fit, minmax(96px, 1fr)); gap: 8px; }
 .shortcut {
   @apply relative flex flex-col items-center justify-center gap-1 min-h-[64px] px-2 py-2 rounded-xl border border-border bg-surface
-         text-foam text-xs font-bold no-underline text-center transition-colors duration-200;
+         text-foam text-xs font-bold no-underline text-center transition-colors duration-base;
 }
 .shortcut svg { @apply text-ocean-text; }
 .shortcut:hover { @apply border-ocean; }

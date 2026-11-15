@@ -6,9 +6,9 @@
       :aria-label="t('nav.menu')"
       @click="$emit('toggle-sidebar')"
     >
-      <span class="block w-5 h-0.5 bg-foam rounded group-hover:bg-ocean transition-colors duration-200"></span>
-      <span class="block w-5 h-0.5 bg-foam rounded group-hover:bg-ocean transition-colors duration-200"></span>
-      <span class="block w-5 h-0.5 bg-foam rounded group-hover:bg-ocean transition-colors duration-200"></span>
+      <span class="block w-5 h-0.5 bg-foam rounded group-hover:bg-ocean transition-colors duration-base"></span>
+      <span class="block w-5 h-0.5 bg-foam rounded group-hover:bg-ocean transition-colors duration-base"></span>
+      <span class="block w-5 h-0.5 bg-foam rounded group-hover:bg-ocean transition-colors duration-base"></span>
     </button>
     <RouterLink to="/" class="inline-flex items-center -ml-1" aria-label="FishLog"><FishLogo :size="30" /></RouterLink>
 

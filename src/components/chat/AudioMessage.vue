@@ -131,7 +131,7 @@
 
 <style scoped>
   .audio-msg { @apply grid items-center gap-x-2 gap-y-0; grid-template-columns: auto 1fr; min-width: 160px; }
-  .audio-play { @apply flex items-center justify-center w-9 h-9 rounded-full bg-ocean text-on-primary border-none cursor-pointer; }
+  .audio-play { @apply flex items-center justify-center w-11 h-11 rounded-full bg-ocean text-on-primary border-none cursor-pointer; }
   .audio-wave { @apply flex items-center gap-[2px] h-7 cursor-pointer; touch-action: none; }
   .audio-wave span { @apply w-[2px] rounded-full bg-ocean-text/50; }
   .audio-wave span.played { @apply bg-ocean-text; }

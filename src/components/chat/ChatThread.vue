@@ -401,7 +401,7 @@ import { confirmDialog } from '../../composables/useConfirm.js'
   }
 
   .message-actions {
-    @apply flex flex-col gap-0.5 opacity-0 transition-opacity duration-150;
+    @apply flex flex-col gap-0.5 opacity-0 transition-opacity duration-fast;
   }
 
   .message-row:hover .message-actions {
@@ -409,7 +409,7 @@ import { confirmDialog } from '../../composables/useConfirm.js'
   }
 
   .message-action-btn {
-    @apply flex items-center justify-center w-8 h-8 rounded text-muted bg-transparent border-none cursor-pointer hover:bg-surface-2 hover:text-ocean transition-colors;
+    @apply flex items-center justify-center w-11 h-11 rounded text-muted bg-transparent border-none cursor-pointer hover:bg-surface-2 hover:text-ocean transition-colors;
   }
 
   .message-bubble.type-image {

@@ -39,13 +39,13 @@
 .wx-pt { display: grid; gap: 6px; }
 .wx-pt-head { display: flex; align-items: center; gap: 10px; }
 .wx-pt-arrow { flex: none; color: rgb(var(--color-muted)); transform: rotate(0deg); }
-.wx-pt-arrow.wx-pt-go { transform: rotate(var(--rot, 0deg)); transition: transform 320ms var(--ease-spring) 200ms; }
+.wx-pt-arrow.wx-pt-go { transform: rotate(var(--rot, 0deg)); transition: transform var(--motion-slow) var(--ease-spring) var(--motion-base); }
 .wx-pt-word { margin: 0; font-weight: 800; font-size: 1.05rem; }
 .wx-pt-falling { color: rgb(var(--color-sand-text)); } .wx-pt-rising { color: rgb(var(--color-ocean-text)); } .wx-pt-steady, .wx-pt-none { color: rgb(var(--color-foam)); }
 .wx-pt-delta { margin: 0; font-size: .8rem; color: rgb(var(--color-muted)); }
 .wx-pt-line { width: 100%; height: 36px; color: rgb(var(--color-ocean-text)); }
 .wx-pt-line polyline { clip-path: inset(0 100% 0 0); }
-.wx-pt-line polyline.wx-pt-draw { clip-path: inset(0 0 0 0); transition: clip-path 320ms var(--ease-enter) 200ms; }
+.wx-pt-line polyline.wx-pt-draw { clip-path: inset(0 0 0 0); transition: clip-path var(--motion-slow) var(--ease-enter) var(--motion-base); }
 .wx-pt-read { margin: 0; font-size: .82rem; color: rgb(var(--color-muted)); line-height: 1.4; }
 :root[data-motion='reduce'] .wx-pt-arrow.wx-pt-go, :root[data-motion='reduce'] .wx-pt-line polyline.wx-pt-draw { transition: none; }
 @media (prefers-reduced-motion: reduce) { :root:not([data-motion='full']) .wx-pt-arrow.wx-pt-go, :root:not([data-motion='full']) .wx-pt-line polyline.wx-pt-draw { transition: none; } }

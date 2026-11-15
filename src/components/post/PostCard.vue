@@ -509,7 +509,7 @@ const featuredCatch = computed(() => {
     transform: scale(1.25) translateZ(0);
   }
   /* Prima del caricamento riserva una proporzione 4:5 (niente salti di layout); poi si adatta alla foto */
-  .media-thumb-img { @apply relative bg-transparent; opacity: 0; aspect-ratio: 4 / 5; transition: opacity 0.2s ease; }
+  .media-thumb-img { @apply relative bg-transparent; opacity: 0; aspect-ratio: 4 / 5; transition: opacity var(--motion-base) var(--ease-standard); }
   .media-thumb-img.is-loaded { opacity: 1; aspect-ratio: auto; }
   @media (prefers-reduced-motion: reduce) { .media-thumb-img { transition: none; } }
 
@@ -523,7 +523,7 @@ const featuredCatch = computed(() => {
   }
 
   .lightbox-close {
-    @apply absolute top-6 right-6 w-9 h-9 rounded-full bg-white/10 hover:bg-white/25 border-none text-white cursor-pointer;
+    @apply absolute top-6 right-6 w-11 h-11 rounded-full bg-white/10 hover:bg-white/25 border-none text-white cursor-pointer;
   }
 
   .attendance-block {
@@ -588,7 +588,7 @@ const featuredCatch = computed(() => {
   }
 
   .switch-knob {
-    @apply absolute left-0.5 w-3.5 h-3.5 rounded-full bg-muted transition-transform duration-200;
+    @apply absolute left-0.5 w-3.5 h-3.5 rounded-full bg-muted transition-transform duration-base;
   }
 
   .switch.on .switch-knob {

@@ -399,7 +399,7 @@ import PageHeader from '../components/PageHeader.vue'
 
   .tab-title-wrap { position: relative; display: inline-block; }
   .tab-title { display: inline-flex; align-items: center; gap: 6px; background: none; border: 0; color: inherit; font: inherit; letter-spacing: inherit; cursor: pointer; padding: 0; min-height: 44px; }
-  .tab-title svg { color: rgb(var(--color-ocean-text)); transition: transform .15s; }
+  .tab-title svg { color: rgb(var(--color-ocean-text)); transition: transform var(--motion-fast); }
   .tab-title svg.flip { transform: rotate(180deg); }
   .tab-menu { position: absolute; left: 0; top: calc(100% + 4px); z-index: 120; min-width: 200px; padding: 6px; background: var(--surface); border: 1px solid var(--border-light); border-radius: 16px; box-shadow: 0 12px 30px rgba(0,0,0,.3); }
   .tab-menu-item { display: flex; align-items: center; justify-content: space-between; gap: 12px; width: 100%; min-height: 44px; padding: 0 12px; background: none; border: 0; border-radius: 12px; color: var(--foam); font-family: var(--font-sans); font-size: 15px; font-weight: 600; cursor: pointer; text-align: left; }
@@ -408,12 +408,12 @@ import PageHeader from '../components/PageHeader.vue'
   .chips { @apply flex gap-1.5 overflow-x-auto pb-1 mb-2; scrollbar-width: none; }
   .chips::-webkit-scrollbar { display: none; }
   .chip {
-    @apply inline-flex items-center shrink-0 min-h-[32px] px-3 rounded-full border border-border bg-surface text-foam text-[0.8125rem] font-semibold cursor-pointer whitespace-nowrap;
+    @apply inline-flex items-center shrink-0 min-h-[44px] px-3 rounded-full border border-border bg-surface text-foam text-[0.8125rem] font-semibold cursor-pointer whitespace-nowrap;
   }
   .chip.active { @apply bg-ocean border-ocean text-on-primary; }
 
   .ph-icon {
-    @apply relative flex items-center justify-center w-9 h-9 rounded-xl text-foam bg-surface border border-border cursor-pointer no-underline;
+    @apply relative flex items-center justify-center w-11 h-11 rounded-xl text-foam bg-surface border border-border cursor-pointer no-underline;
   }
   .ph-icon.active { @apply text-ocean-text border-ocean; }
   .ph-count {

@@ -332,7 +332,7 @@ onMounted(() => {
 }
 .chip-on { @apply bg-ocean border-ocean text-on-primary; }
 .active-filters { @apply flex flex-wrap items-center gap-2 mb-3; }
-.chip-remove { @apply min-h-[36px] px-3; background: var(--ocean-glow); @apply text-ocean-text border-ocean; }
+.chip-remove { @apply min-h-[44px] px-3; background: var(--ocean-glow); @apply text-ocean-text border-ocean; }
 
 .listings-grid {
   @apply grid gap-3;

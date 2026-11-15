@@ -1,6 +1,6 @@
 <template>
   <aside
-    class="fixed inset-y-0 left-0 z-[200] w-60 flex flex-col bg-surface border-r border-border transition-all duration-300"
+    class="fixed inset-y-0 left-0 z-[200] w-60 flex flex-col bg-surface border-r border-border transition-all duration-slow"
     :class="open ? 'translate-x-0 shadow-[4px_0_32px_rgba(0,0,0,0.4)]' : '-translate-x-full'"
     style="padding-top: env(safe-area-inset-top)"
   >
@@ -12,7 +12,7 @@
         <FishLogo :size="32" />
       </RouterLink>
       <button
-        class="p-1 bg-transparent border-none cursor-pointer text-base transition-opacity duration-200"
+        class="p-1 bg-transparent border-none cursor-pointer text-base transition-opacity duration-base"
         :class="locked ? 'opacity-100' : 'opacity-40 hover:opacity-100'"
         :title="locked ? t('nav.unlock') : t('nav.lock')"
         @click="$emit('toggle-lock')"
@@ -197,7 +197,7 @@ return toInitials(name)
 
 <style scoped>
   .nav-item {
-    @apply flex items-center gap-2.5 px-3 py-2 rounded-sm text-sm font-semibold text-muted transition-all duration-200 hover:bg-surface-2 hover:text-foam;
+    @apply flex items-center gap-2.5 px-3 py-2 rounded-sm text-sm font-semibold text-muted transition-all duration-base hover:bg-surface-2 hover:text-foam;
   }
 
   .nav-item.router-link-active {

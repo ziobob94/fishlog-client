@@ -61,9 +61,9 @@ function goBack() {
 .ph-title:has(.tab-title-wrap) { overflow: visible; }
 .ph-actions { @apply flex items-center gap-1.5 ml-auto shrink-0; }
 .ph-btn {
-  @apply relative flex items-center justify-center w-9 h-9 shrink-0 rounded-xl text-foam bg-surface border border-border cursor-pointer no-underline;
+  @apply relative flex items-center justify-center w-11 h-11 shrink-0 rounded-xl text-foam bg-surface border border-border cursor-pointer no-underline;
 }
-.ph-menu { @apply bg-transparent border-transparent -ml-2 w-10 md:hidden; }
+.ph-menu { @apply bg-transparent border-transparent -ml-2 w-11 md:hidden; }
 .ph-back { @apply bg-transparent border-transparent -ml-2; }
 .ph-dot { @apply absolute top-1 right-1 w-2 h-2 rounded-full bg-sand; }
 /* Sul desktop la campanella sta già nella barra in alto. */

@@ -262,6 +262,6 @@ textarea { min-height: 96px; resize: none; }
   @apply h-1.5 bg-surface-2 rounded-full overflow-hidden;
 }
 .upload-progress-bar {
-  @apply h-full bg-ocean rounded-full transition-all duration-200;
+  @apply h-full bg-ocean rounded-full transition-all duration-base;
 }
 </style>

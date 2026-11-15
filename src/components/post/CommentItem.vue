@@ -107,11 +107,11 @@ function pick(e) { pickerOpen.value = false; emit('react', props.c, e) }
 .side-btn.liked { @apply text-sand-text; }
 .like-count { @apply text-xs; min-width: 1ch; font-variant-numeric: tabular-nums; }
 .comment-reactions, .reaction-picker { @apply flex flex-wrap gap-1.5; }
-.reaction-chip { @apply min-h-[32px] px-2.5 rounded-full border border-border bg-transparent text-xs text-foam cursor-pointer; }
+.reaction-chip { @apply min-h-[44px] px-2.5 rounded-full border border-border bg-transparent text-xs text-foam cursor-pointer; }
 .reaction-chip.mine { @apply border-sand-text; }
 .picker-btn { @apply min-w-[44px] min-h-[44px] rounded-full bg-transparent border border-border text-xl cursor-pointer; }
 @media (prefers-reduced-motion: no-preference) {
-  .reaction-picker { animation: pick-in 140ms ease-out; }
+  .reaction-picker { animation: pick-in var(--motion-fast) var(--ease-enter); }
 }
 @keyframes pick-in { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
 </style>

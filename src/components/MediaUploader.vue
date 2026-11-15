@@ -3,7 +3,7 @@
     <!-- Drop zone -->
     <div
       class="flex items-center justify-center min-h-28 border-2 border-dashed border-border rounded-lg
-             cursor-pointer transition-all duration-200"
+             cursor-pointer transition-all duration-base"
       :class="dragging ? 'border-ocean bg-ocean/5' : 'hover:border-ocean hover:bg-ocean/5'"
       @dragover.prevent="dragging = true"
       @dragleave="dragging = false"
@@ -23,7 +23,7 @@
     <!-- Progress -->
     <div v-if="uploading" class="flex flex-col gap-1.5">
       <div class="h-1.5 bg-surface-2 rounded-full overflow-hidden">
-        <div class="h-full bg-ocean rounded-full transition-all duration-200" :style="{ width: progress + '%' }"></div>
+        <div class="h-full bg-ocean rounded-full transition-all duration-base" :style="{ width: progress + '%' }"></div>
       </div>
       <span class="text-xs text-muted text-center">{{ t('mediaUploader.uploadProgress', { progress }) }}</span>
     </div>
@@ -59,7 +59,7 @@
         class="fixed inset-0 z-[1000] bg-black/92 flex items-center justify-center"
         @click.self="lightboxItem = null"
       >
-        <button class="absolute top-6 right-6 w-9 h-9 rounded-full bg-white/10 hover:bg-white/25 border-none text-white cursor-pointer text-base transition-colors"
+        <button class="absolute top-6 right-6 w-11 h-11 rounded-full bg-white/10 hover:bg-white/25 border-none text-white cursor-pointer text-base transition-colors"
           @click="lightboxItem = null"><X :size="18" /></button>
         <img v-if="lightboxItem.type === 'photo'" :src="lightboxItem.url" class="max-w-[90vw] max-h-[90vh] object-contain rounded-sm" />
         <video v-else :src="lightboxItem.url" controls autoplay class="max-w-[90vw] max-h-[90vh] rounded-sm" />
