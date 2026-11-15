@@ -342,318 +342,6 @@
       </div>
     </BottomSheet>
 
-    <div v-if="!menuMode && mode !== 'essential'">
-    <!-- BOTTONE AUTO-FILL (sempre visibile, sopra a tutte le sezioni) -->
-    <div class="autofill-bar" v-if="showAutofill">
-      <div>
-        <p class="autofill-title">{{ t('sessionForm.autoFill.title') }}</p>
-        <p class="autofill-sub">{{ t('sessionForm.autoFill.subtitle') }}</p>
-        <p class="autofill-disclaimer">{{ t('sessionForm.autoFill.disclaimer') }}</p>
-      </div>
-      <button type="button" class="btn btn-secondary btn-sm"
-        :disabled="!canAutoFill || autoFilling || gpsLoading" @click="autoFillWeatherAndSea">
-        <span v-if="autoFilling || gpsLoading" class="m-spinner" style="width:13px;height:13px"></span>
-        <RefreshCw v-else-if="hasAutoData" :size="14" />
-        {{ gpsLoading ? t('sessionForm.fields.gpsDetecting') : (autoFilling ? t('sessionForm.autoFill.loading') : (hasAutoData ? t('sessionForm.autoFill.recalc') : t('sessionForm.autoFill.button'))) }}
-      </button>
-    </div>
-    <p v-if="!canAutoFill" class="autofill-warning">{{ t('sessionForm.autoFill.warning') }}</p>
-    <div v-if="autoFillMsg" class="autofill-result" :class="autoFillMsg.type" role="status">{{ autoFillMsg.text }}</div>
-
-    <div class="expand-all-row">
-      <button type="button" class="btn btn-ghost btn-sm" @click="toggleAll">
-        {{ allOpen ? t('sessionForm.collapseAll') : t('sessionForm.expandAll') }}
-      </button>
-    </div>
-
-    <!-- BASE -->
-    <div class="accordion-section" v-show="sectionVisible('base')">
-    <button type="button" class="section-divider accordion-header" :class="{ incomplete: !canLeaveSection('base') }" @click="toggleSection('base')">
-      <span>{{ t('sessionForm.sections.base') }}</span>
-      <span v-if="!canLeaveSection('base')" class="required-badge" :title="t('sessionForm.requiredToContinue')">*</span>
-      <span class="chevron" :class="{ open: isOpen('base') }">▸</span>
-    </button>
-    <p class="section-desc">{{ t('sessionForm.sections.baseDesc') }}</p>
-    <div class="form-grid" v-if="isOpen('base')">
-      <div class="form-group full">
-        <label>{{ t('sessionForm.fields.titleLabel') }}<FieldInfo :text="t('sessionForm.fields.titleInfo')" /></label>
-        <input v-model="f.title" type="text" :placeholder="f.location?.name?.trim() || t('sessionForm.fields.titlePlaceholder')" />
-      </div>
-      <div class="form-group">
-        <label>{{ t('sessionForm.fields.dateLabel') }} <span class="required-mark">*</span><FieldInfo :text="t('sessionForm.fields.dateInfo')" /></label>
-        <input v-model="f.date" type="date" v-ph="'gg/mm/aaaa'" required :class="{ 'field-missing': !f.date }" />
-      </div>
-      <div class="form-group">
-        <label>{{ t('sessionForm.fields.startTimeLabel') }}<FieldInfo :text="t('sessionForm.fields.startTimeInfo')" /></label>
-        <input v-model="f.startTime" type="time" v-ph="'--:--'" />
-      </div>
-      <div class="form-group">
-        <label>{{ t('sessionForm.fields.endTimeLabel') }}<FieldInfo :text="t('sessionForm.fields.endTimeInfo')" /></label>
-        <input v-model="f.endTime" type="time" v-ph="'--:--'" />
-      </div>
-      <div class="form-group">
-        <label>{{ t('sessionMenu.endDateLabel') }}</label>
-        <input v-model="f.endDate" type="date" :min="f.date || undefined" v-ph="'gg/mm/aaaa'" />
-      </div>
-      <div class="form-group">
-        <label>{{ t('sessionForm.fields.techniqueLabel') }}<FieldInfo :text="t('sessionForm.fields.techniqueInfo')" /></label>
-        <select v-model="f.technique">
-          <option value="">{{ t('sessionForm.fields.selectPlaceholder') }}</option>
-          <option v-for="t2 in TECHNIQUES" :key="t2.v" :value="t2.v">{{ t2.l }}</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label>{{ t('sessionForm.fields.waterTypeLabel') }}<FieldInfo :text="t('sessionForm.fields.waterTypeInfo')" /></label>
-        <select v-model="f.waterType">
-          <option value="">{{ t('sessionForm.fields.selectPlaceholder') }}</option>
-          <option v-for="w in WATER_TYPES" :key="w.v" :value="w.v">{{ w.l }}</option>
-        </select>
-      </div>
-    </div>
-    </div>
-
-    <!-- VOTO (nel menu: pagina a sé; nel form lungo resta in fondo a «Dati uscita») -->
-    <div class="accordion-section" v-show="sectionVisible('rating')">
-    <div class="form-grid">
-      <div class="form-group full">
-        <label>{{ t('sessionForm.fields.ratingLabel') }}<FieldInfo :text="t('sessionForm.fields.ratingInfo')" /></label>
-        <div class="star-row">
-          <button v-for="n in 5" :key="n" type="button"
-            class="star-btn" :class="{ active: n <= f.rating }"
-            @click="f.rating = f.rating === n ? 0 : n">★</button>
-        </div>
-      </div>
-    </div>
-    </div>
-
-    <!-- LUOGO -->
-    <div class="accordion-section" v-show="sectionVisible('location')">
-    <button type="button" class="section-divider accordion-header" :class="{ incomplete: !canLeaveSection('location') }" @click="toggleSection('location')">
-      <span>{{ t('sessionForm.sections.location') }}</span>
-      <span v-if="!canLeaveSection('location')" class="required-badge" :title="t('sessionForm.requiredToContinue')">*</span>
-      <span class="chevron" :class="{ open: isOpen('location') }">▸</span>
-    </button>
-    <p class="section-desc">{{ t('sessionForm.sections.locationDesc') }}</p>
-    <template v-if="isOpen('location')">
-
-    <div class="form-grid">
-      <div class="form-group">
-        <label>{{ t('sessionForm.fields.locationNameLabel') }} <span class="required-mark">*</span><FieldInfo :text="t('sessionForm.fields.locationNameInfo')" /></label>
-        <PlaceInput id="loc-name" v-model="f.location.name" v-model:lat="f.location.coords.lat" v-model:lng="f.location.coords.lng" required :placeholder="t('sessionForm.fields.locationNamePlaceholder')" @place="applyPlace" />
-      </div>
-      <div class="form-group">
-        <label>{{ t('sessionForm.fields.spotLabel') }}<FieldInfo :text="t('sessionForm.fields.spotInfo')" /></label>
-        <input v-model="f.location.spot" type="text" :placeholder="t('sessionForm.fields.spotPlaceholder')" />
-      </div>
-      <div class="form-group">
-        <label>{{ t('sessionForm.fields.regionLabel') }}<FieldInfo :text="t('sessionForm.fields.regionInfo')" /></label>
-        <input :value="f.location.region" type="text" readonly class="derived" :placeholder="t('sessionForm.fields.regionPlaceholder')" />
-      </div>
-      <div class="form-group">
-        <label>{{ t('sessionForm.fields.latLabel') }}<FieldInfo :text="t('sessionForm.fields.latInfo')" /></label>
-        <input :value="f.location.coords.lat ?? ''" type="text" readonly class="derived" placeholder="43.123456" />
-      </div>
-      <div class="form-group">
-        <label>{{ t('sessionForm.fields.lngLabel') }}<FieldInfo :text="t('sessionForm.fields.lngInfo')" /></label>
-        <input :value="f.location.coords.lng ?? ''" type="text" readonly class="derived" placeholder="10.123456" />
-      </div>
-      <div class="form-group full">
-        <label>{{ t('sessionForm.fields.locationNotesLabel') }}<FieldInfo :text="t('sessionForm.fields.locationNotesInfo')" /></label>
-        <textarea v-model="f.location.notes" :placeholder="t('sessionForm.fields.locationNotesPlaceholder')" rows="2" />
-      </div>
-      <div v-if="geocodeMsg" class="form-group full">
-        <span class="autofill-hint">{{ geocodeMsg }}</span>
-      </div>
-      <div class="form-group full">
-        <LocationPicker
-          :lat="f.location.coords.lat"
-          :lng="f.location.coords.lng"
-          @update:lat="v => f.location.coords.lat = v"
-          @update:lng="v => f.location.coords.lng = v"
-          @place="p => applyPlace(p, true)"
-        />
-      </div>
-    </div>
-    </template>
-    </div>
-
-    <!-- CONDIZIONI ACQUA (adattive) -->
-    <div class="accordion-section" v-show="sectionVisible('water')">
-    <button type="button" class="section-divider accordion-header" @click="toggleSection('water')">
-      <span>{{ waterSectionTitle }}</span>
-      <span class="chevron" :class="{ open: isOpen('water') }">▸</span>
-    </button>
-    <p class="section-desc">{{ t('sessionForm.sections.waterDesc') }}</p>
-    <template v-if="isOpen('water')">
-    <div class="form-grid">
-
-      <!-- MARE: stato, onde, marea -->
-      <template v-if="isSea">
-        <div class="form-group">
-          <label>{{ t('sessionForm.fields.seaStateLabel') }}<FieldInfo :text="t('sessionForm.fields.seaStateInfo')" /></label>
-          <select v-model="f.sea.seaState">
-            <option value="">--</option>
-            <option v-for="s in SEA_STATES" :key="s.v" :value="s.v">{{ s.l }}</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>{{ t('sessionForm.fields.waveHeightLabel') }}<FieldInfo :text="t('sessionForm.fields.waveHeightInfo')" /></label>
-          <input v-model="f.sea.waveHeight" type="text" :placeholder="t('sessionForm.fields.waveHeightPlaceholder')" />
-        </div>
-        <div class="form-group">
-          <label>{{ t('sessionForm.fields.wavePeriodLabel') }}<FieldInfo :text="t('sessionForm.fields.wavePeriodInfo')" /></label>
-          <input v-model="f.sea.wavePeriod" type="text" :placeholder="t('sessionForm.fields.wavePeriodPlaceholder')" />
-        </div>
-      </template>
-
-      <!-- FIUME: livello, corrente select -->
-      <template v-else-if="isRiver">
-        <div class="form-group">
-          <label>{{ t('sessionForm.fields.waterLevelLabel') }}<FieldInfo :text="t('sessionForm.fields.waterLevelInfo')" /></label>
-          <select v-model="f.sea.waterLevel">
-            <option value="">--</option>
-            <option v-for="l in WATER_LEVELS" :key="l.v" :value="l.v">{{ l.l }}</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>{{ t('sessionForm.fields.currentLabel') }}<FieldInfo :text="t('sessionForm.fields.currentInfo')" /></label>
-          <select v-model="f.sea.current">
-            <option value="">--</option>
-            <option v-for="c in RIVER_CURRENTS" :key="c" :value="c">{{ c }}</option>
-          </select>
-        </div>
-      </template>
-
-      <!-- MARE/ALTRO: corrente testo -->
-      <div v-if="isSea || isOther" class="form-group">
-        <label>{{ t('sessionForm.fields.currentLabel') }}<FieldInfo :text="t('sessionForm.fields.currentInfo')" /></label>
-        <input v-model="f.sea.current" type="text" :placeholder="t('sessionForm.fields.currentPlaceholder')" />
-      </div>
-
-      <!-- COMUNE: colore e temperatura -->
-      <div class="form-group">
-        <label>{{ t('sessionForm.fields.waterColorLabel') }}<FieldInfo :text="t('sessionForm.fields.waterColorInfo')" /></label>
-        <input v-model="f.sea.waterColor" type="text" :placeholder="t('sessionForm.fields.waterColorPlaceholder')" />
-      </div>
-      <div class="form-group">
-        <label>{{ t('sessionForm.fields.waterTempLabel') }}<FieldInfo :text="t('sessionForm.fields.waterTempInfo')" /></label>
-        <input v-model.number="f.sea.waterTemp" type="number" step="0.5" placeholder="°C" />
-      </div>
-
-      <!-- MARE: marea -->
-      <template v-if="isSea">
-        <div class="form-group">
-          <label>{{ t('sessionForm.fields.tideLabel') }}<FieldInfo :text="t('sessionForm.fields.tideInfo')" /></label>
-          <select v-model="f.sea.tide.state">
-            <option value="">--</option>
-            <option v-for="td in TIDE_STATES" :key="td.v" :value="td.v">{{ td.l }}</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>{{ t('sessionForm.fields.tideNotesLabel') }}<FieldInfo :text="t('sessionForm.fields.tideNotesInfo')" /></label>
-          <input v-model="f.sea.tide.notes" type="text" :placeholder="t('sessionForm.fields.tideNotesPlaceholder')" />
-        </div>
-      </template>
-
-    </div>
-    </template>
-    </div>
-
-    <!-- METEO -->
-    <div class="accordion-section" v-show="sectionVisible('weather')">
-    <button type="button" class="section-divider accordion-header" @click="toggleSection('weather')">
-      <span>{{ t('sessionForm.sections.weather') }}</span>
-      <span class="chevron" :class="{ open: isOpen('weather') }">▸</span>
-    </button>
-    <p class="section-desc">{{ t('sessionForm.sections.weatherDesc') }}</p>
-    <template v-if="isOpen('weather')">
-    <div class="form-grid">
-      <div class="form-group">
-        <label>{{ t('sessionForm.fields.conditionLabel') }}<FieldInfo :text="t('sessionForm.fields.conditionInfo')" /></label>
-        <select v-model="f.weather.condition">
-          <option value="">--</option>
-          <option v-for="c in WEATHER" :key="c.v" :value="c.v">{{ c.l }}</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label>{{ t('sessionForm.fields.windDirectionLabel') }}<FieldInfo :text="t('sessionForm.fields.windDirectionInfo')" /></label>
-        <select v-model="f.weather.windDirection">
-          <option value="">--</option>
-          <option v-for="w in WIND_DIRS" :key="w" :value="w">{{ w }}</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label>{{ t('sessionForm.fields.windSpeedLabel') }}<FieldInfo :text="t('sessionForm.fields.windSpeedInfo')" /></label>
-        <input v-model.number="f.weather.windSpeed" type="number" min="0" placeholder="km/h" />
-      </div>
-      <div class="form-group">
-        <label>{{ t('sessionForm.fields.tempAirLabel') }}<FieldInfo :text="t('sessionForm.fields.tempAirInfo')" /></label>
-        <input v-model.number="f.weather.tempAir" type="number" step="0.5" placeholder="°C" />
-      </div>
-      <div class="form-group">
-        <label>{{ t('sessionForm.fields.pressureLabel') }}<FieldInfo :text="t('sessionForm.fields.pressureInfo')" /></label>
-        <input v-model.number="f.weather.pressure" type="number" placeholder="hPa" />
-      </div>
-      <div class="form-group full">
-        <label>{{ t('sessionForm.fields.weatherNotesLabel') }}<FieldInfo :text="t('sessionForm.fields.weatherNotesInfo')" /></label>
-        <textarea v-model="f.weather.notes" :placeholder="t('sessionForm.fields.weatherNotesPlaceholder')" rows="2" />
-      </div>
-    </div>
-    </template>
-    </div>
-
-    <!-- CATTURE (esca, montatura e lancio sono caratteristiche di ogni cattura) -->
-    <div id="section-catches" class="accordion-section" v-show="sectionVisible('catches')">
-    <button type="button" class="section-divider accordion-header" @click="toggleSection('catches')">
-      <span>{{ t('sessionForm.sections.catches') }}</span>
-      <span class="chevron" :class="{ open: isOpen('catches') }">▸</span>
-    </button>
-    <p class="section-desc">{{ t('sessionForm.sections.catchesDesc') }}</p>
-    <template v-if="isOpen('catches')">
-    <CatchesSection ref="catchesRef" v-model="f.catches" :location="f.location" class="catches-wrap"/>
-    </template>
-    </div>
-
-    <!-- NOTE -->
-    <div class="accordion-section" v-show="sectionVisible('notes')">
-    <button type="button" class="section-divider accordion-header" @click="toggleSection('notes')">
-      <span>{{ t('sessionForm.sections.notes') }}</span>
-      <span class="chevron" :class="{ open: isOpen('notes') }">▸</span>
-    </button>
-    <p class="section-desc">{{ t('sessionForm.sections.notesDesc') }}</p>
-    <template v-if="isOpen('notes')">
-    <template v-if="!menuMode">
-    <div class="form-group">
-      <label>{{ t('sessionForm.fields.visibilityLabel') }}<FieldInfo :text="t('sessionForm.fields.visibilityInfo')" /></label>
-      <select v-model="f.visibility">
-        <option value="private">{{ t('sessionForm.visibility.private') }}</option>
-        <option value="users">{{ t('sessionForm.visibility.users') }}</option>
-        <option value="group">{{ t('sessionForm.visibility.group') }}</option>
-      </select>
-    </div>
-
-    <div v-if="f.visibility === 'group'" class="form-group full">
-      <label>{{ t('sessionForm.fields.allowedGroupsLabel') }}<FieldInfo :text="t('sessionForm.fields.allowedGroupsInfo')" /></label>
-      <div class="group-checkboxes">
-        <label v-for="g in groups" :key="g._id" class="group-check">
-          <input type="checkbox" :value="g._id" v-model="f.allowedGroups" />
-          {{ g.name }}
-        </label>
-        <span v-if="!groups.length" class="text-muted" style="font-size:.85rem">
-          {{ t('sessionForm.fields.noGroups') }} <RouterLink to="/groups">{{ t('sessionForm.fields.createOne') }}</RouterLink>
-        </span>
-      </div>
-    </div>
-    </template>
-
-    <div class="form-group">
-      <label>{{ t('sessionForm.fields.generalNotesLabel') }}<FieldInfo :text="t('sessionForm.fields.generalNotesInfo')" /></label>
-      <textarea v-model="f.notes" :placeholder="t('sessionForm.fields.generalNotesPlaceholder')" rows="4" />
-    </div>
-    </template>
-    </div>
-
-    </div>
 
     <!-- Foglio dal basso: visibilità -->
     <BottomSheet v-model="visSheet" :label="t('sessionMenu.sheetTitle')">
@@ -707,8 +395,6 @@
   import PlaceInput from './PlaceInput.vue'
   import api from '../../utils/api.js'
   import { reverseGeocode, geocodeText } from '../../utils/places.js'
-  import CatchesSection from './CatchesSection.vue'
-  import FieldInfo from '../FieldInfo.vue'
   import BottomSheet from '../motion/BottomSheet.vue'
   import { useOnline } from '../../composables/useOnline.js'
   import { useUnsavedGuard } from '../../composables/useUnsavedGuard.js'
@@ -748,8 +434,6 @@
   // Elenco principale di «Dati uscita»: nessuna barra di salvataggio, si salva dentro ogni sezione
   const menuHome = computed(() => menuMode.value && !activeSection.value)
 
-  // Sezioni del menu «Dati uscita» → sezioni dell'accordion mostrate nella pagina
-  const SECTION_MAP = { general: ['base'], location: ['location'], rating: ['rating'], waterweather: ['water', 'weather'], notes: ['notes'] }
   const online = useOnline()
   const visSheet = ref(false)
 
@@ -769,7 +453,6 @@
   function openSection(id) {
     activeSection.value = id
     showErr.value = false
-    openSections.value = new Set(ALL_SECTIONS)
     nextTick(() => window.scrollTo({ top: 0 }))
   }
   // Visibilità = foglio dal basso (dialogo centrato su desktop), tutte le altre voci = pagina a sé
@@ -778,7 +461,6 @@
     if (isDesktop.value && activeSection.value && activeSection.value !== id) { leaveSection(id); return }
     if (activeSection.value !== id) openSection(id)
   }
-  const sectionVisible = id => !menuMode.value || (SECTION_MAP[activeSection.value] || []).includes(id)
   function sectionLabel(id) {
     return { general: t('sessionMenu.general'), rating: t('sessionMenu.rating'), waterweather: t('sessionMenu.waterWeather'), notes: t('sessionMenu.notes') }[id] || t(`sessionForm.sections.${id}`)
   }
@@ -943,11 +625,7 @@
 
   const f = ref(defaultForm())
 
-  // ─── Accordion ────────────────────────────────────────────────────────────────
-
-  const ALL_SECTIONS = ['base', 'location', 'water', 'weather', 'catches', 'notes']
-
-  const openSections = ref(new Set(['base', 'catches']))
+  // ─── Sezioni obbligatorie ─────────────────────────────────────────────────────
 
   function canLeaveSection(id) {
     if (id === 'base') return !!f.value.date
@@ -962,33 +640,6 @@
     location: () => t('sessionForm.blocked.location')
   }
 
-  const allOpen = computed(() => ALL_SECTIONS.every(id => openSections.value.has(id)))
-
-  // Apre tutto, oppure richiude solo le sezioni non obbligatorie compilate.
-  function toggleAll() {
-    openSections.value = allOpen.value
-      ? new Set(ALL_SECTIONS.filter(id => !canLeaveSection(id) || id === 'catches'))
-      : new Set(ALL_SECTIONS)
-  }
-
-  function isOpen(id) {
-    return openSections.value.has(id)
-  }
-
-  function toggleSection(id) {
-    const next = new Set(openSections.value)
-    if (next.has(id)) {
-      if (!canLeaveSection(id)) {
-        toast(SECTION_BLOCKED_MSG[id]?.() ?? t('sessionForm.requiredToContinue'), { type: 'warning' })
-        return
-      }
-      next.delete(id)
-    } else {
-      next.add(id)
-    }
-    openSections.value = next
-  }
-
   // ─── Auto-fill state ──────────────────────────────────────────────────────────
 
   const gpsLoading = ref(false)
@@ -1001,7 +652,6 @@
   let geocodeTimer = null
 
   const canAutoFill = computed(() => !!f.value.date)
-  const showAutofill = computed(() => !menuMode.value || ['location', 'waterweather'].includes(activeSection.value))
 
   // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -1209,10 +859,6 @@
     d.sea = { ...def.sea, ...d.sea, tide: { state: '', notes: '', ...(d.sea?.tide || {}) } }
     d.weather = { ...def.weather, ...d.weather }
     f.value = { ...def, ...d }
-    // Uscite chiuse: qui di default. Uscite "ongoing" ci passano solo su
-    // richiesta esplicita ("Modifica altri dati" da OngoingCatchForm). In
-    // entrambi i casi tutte le sezioni aperte per la revisione/modifica.
-    openSections.value = new Set(ALL_SECTIONS)
     // Dati appena caricati: non devono far partire geocoding/ricalcoli automatici
     // (cambierebbero il form e farebbero comparire «Uscire senza salvare?» senza modifiche).
     const { lat, lng } = f.value.location.coords
@@ -1220,7 +866,6 @@
     if (f.value.location.name) skipNameGeocode = true
   }, { immediate: true })
 
-  const catchesRef = ref(null)
   const essErr = ref({ where: false, date: false })
   watch(() => f.value.location.name, v => { if (v?.trim()) essErr.value.where = false })
   watch(() => f.value.date, v => { if (v) essErr.value.date = false })
@@ -1299,7 +944,6 @@
     }
     for (const id of ['base', 'location']) {
       if (!canLeaveSection(id)) {
-        const next = new Set(openSections.value); next.add(id); openSections.value = next
         toast(SECTION_BLOCKED_MSG[id](), { type: 'warning' })
         nextTick(() => document.querySelector('.field-missing')?.focus())
         return
@@ -1312,95 +956,17 @@
     payload.endDate = payload.endDate && payload.endDate > payload.date ? payload.endDate : null
     baseSnap.value = formSnap()
     sectionSavePending = menuMode.value
-    emit('submit', payload, catchesRef.value?.pendingPhotosByIndex, { concluded: props.mode === 'essential' && concluded.value, inPlace: menuMode.value })
+    emit('submit', payload, undefined, { concluded: props.mode === 'essential' && concluded.value, inPlace: menuMode.value })
   }
 </script>
-
 <style scoped>
-  .expand-all-row { display: flex; justify-content: flex-end; margin: .25rem 0 .5rem; }
+
   .session-form {
     max-width: 920px;
     padding-bottom: 4.5rem;
   }
 
   .session-form { counter-reset: sec; }
-
-  /* Ogni sezione è una card numerata («carta nautica») */
-  .accordion-section {
-    counter-increment: sec;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: .25rem .875rem .75rem;
-  }
-
-  .accordion-section+.accordion-section {
-    margin-top: .75rem;
-  }
-
-  .accordion-header {
-    background: none;
-    border: none;
-    border-radius: 12px;
-    cursor: pointer;
-    margin: 0;
-    min-height: 44px;
-    padding: .5rem 0;
-    transition: background var(--t);
-    width: 100%;
-    justify-content: flex-start;
-    text-align: left;
-  }
-
-  .accordion-header:hover {
-    background: transparent;
-  }
-
-  .accordion-header.section-divider {
-    font-size: 1rem;
-    letter-spacing: 0;
-    text-transform: none;
-    color: var(--foam);
-  }
-
-  .accordion-header.section-divider::before {
-    content: counter(sec);
-    flex: none;
-    width: 28px;
-    height: 28px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    background: var(--surface-2);
-    color: var(--foam);
-    font-size: .8rem;
-  }
-
-  .accordion-header.section-divider::after {
-    display: none;
-  }
-
-  .accordion-header .chevron { margin-left: auto; }
-
-  .accordion-header + * {
-    margin-top: .5rem;
-  }
-
-  .section-desc {
-    color: var(--text-muted, #6b8fa8);
-    font-size: .82rem;
-    line-height: 1.4;
-    margin: 0 0 1rem;
-  }
-
-  .accordion-header::after {
-    order: 2;
-  }
-
-  .accordion-header.incomplete {
-    box-shadow: none;
-  }
 
   .required-badge {
     color: var(--danger, #f05050);
@@ -1418,19 +984,6 @@
 
   .field-missing {
     border-color: var(--danger, #f05050) !important;
-  }
-
-  .chevron {
-    color: var(--text-muted, #6b8fa8);
-    display: inline-block;
-    flex-shrink: 0;
-    font-size: .7rem;
-    order: 3;
-    transition: transform var(--t);
-  }
-
-  .chevron.open {
-    transform: rotate(90deg);
   }
 
   .star-row {
@@ -1478,8 +1031,7 @@
        scrollare. */
     .session-form {
       padding-bottom: calc(env(safe-area-inset-bottom) + 7.5rem);
-    }
-  }
+    }}
 
   .menu-group { display: flex; flex-direction: column; gap: 10px; margin-top: 18px; }
   .menu-group-title { font-size: 13px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--text-muted); margin: 0 2px; }
@@ -1506,8 +1058,7 @@
   @media (max-width: 767.98px) {
     /* su telefono i due pulsanti riempiono la barra, a metà ciascuno */
     .form-actions-inner > .btn { flex: 1 1 0; min-width: 0; justify-content: center; }
-    .form-actions-inner > .btn-primary { flex: 1.6 1 0; }
-  }
+    .form-actions-inner > .btn-primary { flex: 1.6 1 0; }}
 
   .group-checkboxes {
     display: flex;
@@ -1534,60 +1085,6 @@
     color: var(--text-muted, #6b8fa8);
     font-size: .78rem;
     margin-left: .75rem;
-  }
-
-  .autofill-bar {
-    align-items: center;
-    background: var(--surface-2, #0d2035);
-    border: 1px solid var(--border, #2a3f55);
-    border-radius: 8px;
-    display: flex;
-    gap: 1rem;
-    justify-content: space-between;
-    margin: 1.25rem 0 .5rem;
-    padding: .85rem 1rem;
-  }
-
-  .autofill-title {
-    color: var(--foam, #cde);
-    font-size: .88rem;
-    font-weight: 600;
-  }
-
-  .autofill-sub {
-    color: var(--text-muted, #6b8fa8);
-    font-size: .75rem;
-    margin-top: .15rem;
-  }
-
-  .autofill-disclaimer {
-    color: var(--sand, #f0a040);
-    font-size: .72rem;
-    font-style: italic;
-    margin-top: .3rem;
-  }
-
-  .autofill-bar-collapsed {
-    padding: .4rem .6rem;
-  }
-
-  .autofill-collapsed-btn {
-    align-items: center;
-    color: var(--text-muted, #6b8fa8);
-    cursor: pointer;
-    display: flex;
-    font-size: .82rem;
-    gap: .4rem;
-  }
-
-  .autofill-collapsed-btn:hover {
-    color: var(--foam, #cde);
-  }
-
-  .autofill-warning {
-    color: var(--text-muted, #6b8fa8);
-    font-size: .78rem;
-    margin-bottom: 1rem;
   }
 
   .autofill-result {
@@ -1645,7 +1142,6 @@
   .section-bar { align-items: center; display: flex; flex-direction: column; gap: .25rem; margin-bottom: 1rem; }
   .section-bar h3 { color: var(--foam); font-size: 1.2rem; margin: 0; }
   .link-back { align-items: center; align-self: flex-start; background: none; border: none; color: var(--ocean); cursor: pointer; display: inline-flex; font-weight: 600; gap: .3rem; padding: .4rem 0; }
-  .single-section .accordion-header, .single-section .section-desc { display: none; }
   .delete-link { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; min-height: 52px; border-radius: 16px; background: transparent; border: 1px solid #7f1d1d; color: #fca5a5; cursor: pointer; font-size: 15px; font-weight: 700; margin-top: 18px; }
 
   /* ── Modifica uscita: pagine interne (mockup 80–82) ── */
@@ -1698,6 +1194,5 @@
     .menu-page { padding-bottom: 0; }
     .when-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
     .when-date { grid-column: auto; }
-    .mp-actions { border: 1px solid var(--border); border-radius: 16px; bottom: 12px; left: auto; position: sticky; right: auto; }
-  }
+    .mp-actions { border: 1px solid var(--border); border-radius: 16px; bottom: 12px; left: auto; position: sticky; right: auto; }}
 </style>
