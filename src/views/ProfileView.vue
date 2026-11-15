@@ -578,13 +578,13 @@ async function doDeleteAccount() {
 .switch-track {
   @apply absolute inset-0 rounded-full cursor-pointer;
   background: var(--border, #cbd5e1);
-  transition: background .15s;
+  transition: background var(--motion-fast);
 }
 .switch-track::before {
   content: '';
   position: absolute; left: 2px; top: 2px;
   width: 18px; height: 18px; border-radius: 50%;
-  background: #fff; transition: transform .15s;
+  background: #fff; transition: transform var(--motion-fast);
 }
 .switch input:checked + .switch-track { background: var(--ocean, #0ea5e9); }
 .switch input:checked + .switch-track::before { transform: translateX(18px); }

@@ -106,7 +106,7 @@ async function handleLogin() {
 .btn-oauth  {
   @apply flex items-center justify-center gap-2.5 bg-surface-2 border border-border
          rounded-sm text-foam text-sm font-semibold px-4 py-2.5
-         transition-colors duration-200 hover:border-ocean;
+         transition-colors duration-base hover:border-ocean;
 }
 .divider {
   @apply flex items-center gap-3 text-muted text-xs my-5;

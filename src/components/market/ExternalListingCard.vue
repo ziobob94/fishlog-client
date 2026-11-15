@@ -1,12 +1,12 @@
 <template>
   <a :href="listing.url" target="_blank" rel="noopener noreferrer" :class="`lv-${view}`"
     class="lc group block bg-surface border border-border rounded-lg overflow-hidden
-           transition-all duration-200 hover:border-ocean hover:-translate-y-0.5
+           transition-all duration-base hover:border-ocean hover:-translate-y-0.5
            hover:shadow-[0_4px_24px_rgba(14,165,233,0.1)]"
   >
     <div class="lc-media relative aspect-[4/3] bg-surface-2 overflow-hidden">
       <img v-if="listing.image" :src="listing.image" loading="lazy"
-        class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+        class="w-full h-full object-cover transition-transform duration-slow group-hover:scale-105" />
       <div v-else class="flex items-center justify-center h-full text-muted"><Package :size="40" /></div>
       <span class="badge source-badge absolute bottom-2 left-2 icon-inline">
         <ExternalLink :size="12" /> {{ sourceLabel }}

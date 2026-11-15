@@ -111,7 +111,7 @@ function pick(e) { pickerOpen.value = false; emit('react', props.c, e) }
 .reaction-chip.mine { @apply border-sand-text; }
 .picker-btn { @apply min-w-[44px] min-h-[44px] rounded-full bg-transparent border border-border text-xl cursor-pointer; }
 @media (prefers-reduced-motion: no-preference) {
-  .reaction-picker { animation: pick-in 140ms ease-out; }
+  .reaction-picker { animation: pick-in var(--motion-fast) var(--ease-enter); }
 }
 @keyframes pick-in { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
 </style>

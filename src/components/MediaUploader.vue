@@ -3,7 +3,7 @@
     <!-- Drop zone -->
     <div
       class="flex items-center justify-center min-h-28 border-2 border-dashed border-border rounded-lg
-             cursor-pointer transition-all duration-200"
+             cursor-pointer transition-all duration-base"
       :class="dragging ? 'border-ocean bg-ocean/5' : 'hover:border-ocean hover:bg-ocean/5'"
       @dragover.prevent="dragging = true"
       @dragleave="dragging = false"
@@ -23,7 +23,7 @@
     <!-- Progress -->
     <div v-if="uploading" class="flex flex-col gap-1.5">
       <div class="h-1.5 bg-surface-2 rounded-full overflow-hidden">
-        <div class="h-full bg-ocean rounded-full transition-all duration-200" :style="{ width: progress + '%' }"></div>
+        <div class="h-full bg-ocean rounded-full transition-all duration-base" :style="{ width: progress + '%' }"></div>
       </div>
       <span class="text-xs text-muted text-center">{{ t('mediaUploader.uploadProgress', { progress }) }}</span>
     </div>

@@ -401,7 +401,7 @@ import { confirmDialog } from '../../composables/useConfirm.js'
   }
 
   .message-actions {
-    @apply flex flex-col gap-0.5 opacity-0 transition-opacity duration-150;
+    @apply flex flex-col gap-0.5 opacity-0 transition-opacity duration-fast;
   }
 
   .message-row:hover .message-actions {

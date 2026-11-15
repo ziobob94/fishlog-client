@@ -396,7 +396,7 @@ async function doDelete() {
 .catch-main { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
 .catch-name { font-size: 16px; font-weight: 700; }
 .catch-sum { font-size: 13px; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.chev { color: var(--text-muted); flex: none; transition: transform .15s; }
+.chev { color: var(--text-muted); flex: none; transition: transform var(--motion-fast); }
 .catch.open .chev, .chev.flip { transform: rotate(180deg); }
 .catch-body { padding: 0 14px 14px; display: flex; flex-direction: column; gap: 10px; align-items: flex-start; }
 .catch-body > * { width: 100%; }

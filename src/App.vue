@@ -25,7 +25,7 @@
     />
 
     <div
-      class="flex flex-col flex-1 min-w-0 min-h-0 transition-[margin] duration-300"
+      class="flex flex-col flex-1 min-w-0 min-h-0 transition-[margin] duration-slow"
       :class="sidebarLocked ? 'ml-60' : 'ml-0'"
     >
       <AppTopbar :class="{ 'max-md:hidden': route.meta.ownHeader }" @toggle-sidebar="toggleSidebar" />

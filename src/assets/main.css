@@ -116,12 +116,12 @@
   h1 { font-size: clamp(1.7rem, 4vw, 2.6rem); }
   h2 { font-size: clamp(1.2rem, 3vw, 1.7rem); }
 
-  a { @apply text-ocean-text no-underline transition-colors duration-200; }
+  a { @apply text-ocean-text no-underline transition-colors duration-base; }
   a:hover { @apply text-sand-text; }
 
   input, textarea, select {
     @apply w-full min-w-0 bg-surface-2 border border-border rounded-xl text-foam font-sans text-sm
-           px-3 py-2 outline-none transition-all duration-200;
+           px-3 py-2 outline-none transition-all duration-base;
   }
   input:not([type='checkbox']):not([type='radio']):not([type='range']):not([type='file']), select { min-height: 44px; }
   /* Caselle e radio: dimensione propria, non quella dei campi di testo */
@@ -197,7 +197,7 @@
   .btn {
     @apply inline-flex items-center justify-center gap-1.5 px-4 py-2
            rounded-sm font-sans text-sm font-semibold min-h-[44px]
-           border-0 cursor-pointer transition-all duration-200 whitespace-nowrap;
+           border-0 cursor-pointer transition-all duration-base whitespace-nowrap;
   }
   .btn-primary   { @apply bg-ocean text-on-primary hover:bg-ocean-dark hover:-translate-y-px; }
   .btn-secondary { @apply bg-surface-2 border border-border text-foam hover:border-ocean; }
@@ -258,8 +258,8 @@
 
 @keyframes overlay-in { from { opacity: 0; } to { opacity: 1; } }
 @keyframes sheet-up { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: none; } }
-.dialog-overlay, .lightbox, .user-modal-overlay { animation: overlay-in 180ms ease-out; }
-.dialog-overlay > *, .user-modal, .lightbox-img { animation: sheet-up 240ms cubic-bezier(.2, .8, .2, 1); }
+.dialog-overlay, .lightbox, .user-modal-overlay { animation: overlay-in var(--motion-base) var(--ease-enter); }
+.dialog-overlay > *, .user-modal, .lightbox-img { animation: sheet-up var(--motion-slow) var(--ease-enter); }
 
 
 /* App installata su iOS (viewport-fit=cover): il contenuto parte sotto la
@@ -312,9 +312,9 @@ textarea.fl-inp { min-height: 96px; resize: none; line-height: 1.45; padding: 14
   background: var(--surface); border-top: 1px solid var(--border); display: flex; flex-direction: column; gap: 2px;
 }
 .fl-bar .fl-btn1, .fl-bar .fl-btn2 { min-height: 50px; }
-.fl-switch { width: 52px; height: 32px; border-radius: 16px; border: 0; background: var(--border-light); position: relative; flex: none; padding: 0; cursor: pointer; transition: background .15s; }
+.fl-switch { width: 52px; height: 32px; border-radius: 16px; border: 0; background: var(--border-light); position: relative; flex: none; padding: 0; cursor: pointer; transition: background var(--motion-fast); }
 .fl-switch.on { background: var(--ocean); }
-.fl-switch::after { content: ''; position: absolute; top: 4px; left: 4px; width: 24px; height: 24px; border-radius: 50%; background: #fff; transition: left .15s; }
+.fl-switch::after { content: ''; position: absolute; top: 4px; left: 4px; width: 24px; height: 24px; border-radius: 50%; background: #fff; transition: left var(--motion-fast); }
 .fl-switch.on::after { left: 24px; }
 .fl-iconbtn { width: 44px; height: 44px; border-radius: 14px; border: 1px solid var(--border); background: var(--surface); color: var(--foam); display: flex; align-items: center; justify-content: center; flex: none; cursor: pointer; text-decoration: none; }
 

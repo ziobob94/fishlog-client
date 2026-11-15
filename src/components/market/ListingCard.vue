@@ -1,7 +1,7 @@
 <template>
   <RouterLink :to="`/market/${listing._id}`" :class="`lv-${view}`"
     class="lc group block bg-surface border border-border rounded-signature overflow-hidden
-           transition-all duration-200 hover:border-ocean hover:-translate-y-0.5
+           transition-all duration-base hover:border-ocean hover:-translate-y-0.5
            hover:shadow-[0_4px_24px_rgba(14,165,233,0.1)]"
   >
     <div class="lc-media relative aspect-square bg-surface-2 overflow-hidden">
@@ -9,7 +9,7 @@
         v-if="listing.media?.[0]"
         :src="listing.media[0].url"
         loading="lazy"
-        class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+        class="w-full h-full object-cover transition-transform duration-slow group-hover:scale-105"
       />
       <div v-else class="flex items-center justify-center h-full text-muted">
         <Package :size="40" />
