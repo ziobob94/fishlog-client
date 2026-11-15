@@ -1,3 +1,10 @@
+## [1.84.2](https://github.com/ziobob94/fishlog-client/compare/client-v1.84.1...client-v1.84.2) (2026-11-15)
+
+
+### Bug Fixes
+
+* **fishy:** mascotte statica allineata al mockup (pesce a sinistra con esca ambra) ([#171](https://github.com/ziobob94/fishlog-client/issues/171)) ([eff5700](https://github.com/ziobob94/fishlog-client/commit/eff5700cb831d6e5be69df1e03f5e5d3738c9ba2))
+
 ## [1.84.1](https://github.com/ziobob94/fishlog-client/compare/client-v1.84.0...client-v1.84.1) (2026-11-15)
 
 
