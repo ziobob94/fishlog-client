@@ -1,3 +1,16 @@
+# [1.85.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.84.2...client-v1.85.0) (2026-11-15)
+
+
+### Bug Fixes
+
+* lista luoghi con tastiera aperta in alto, intera e scorrevole ([#172](https://github.com/ziobob94/fishlog-client/issues/172)) ([135ce73](https://github.com/ziobob94/fishlog-client/commit/135ce731779b09ac66bbd9274bf7efd43c85ebdb))
+
+
+### Features
+
+* **places:** suggerimenti Google con priorità ai luoghi vicini al punto scelto o al centro mappa ([#174](https://github.com/ziobob94/fishlog-client/issues/174)) ([8e13566](https://github.com/ziobob94/fishlog-client/commit/8e1356605d6d73a8d3fbb56a86e8f5c75cf34ce8))
+* **sessioni:** uscite di più giorni con giorno di fine, senza soglia di durata ([#173](https://github.com/ziobob94/fishlog-client/issues/173)) ([9958787](https://github.com/ziobob94/fishlog-client/commit/9958787b5aab04771cd2d25c265a5e267e1953a1))
+
 ## [1.84.2](https://github.com/ziobob94/fishlog-client/compare/client-v1.84.1...client-v1.84.2) (2026-11-15)
 
 
