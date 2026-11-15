@@ -1,3 +1,15 @@
+# [1.90.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.89.0...client-v1.90.0) (2026-11-15)
+
+
+### Bug Fixes
+
+* **fishy:** un solo permesso microfono per foglio su iOS e timer dall'audio acceso ([#182](https://github.com/ziobob94/fishlog-client/issues/182)) ([d86ac22](https://github.com/ziobob94/fishlog-client/commit/d86ac220444926f8d9610c3198fd11917f4549ec))
+
+
+### Features
+
+* **sessions:** condividi un'uscita con un link pubblico ([#183](https://github.com/ziobob94/fishlog-client/issues/183)) ([141229b](https://github.com/ziobob94/fishlog-client/commit/141229b6e25411aa0bc38f154e8671caa9500a5e))
+
 # [1.89.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.88.2...client-v1.89.0) (2026-11-15)
 
 
