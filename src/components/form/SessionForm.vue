@@ -34,6 +34,8 @@
         <div v-if="concluded" class="ess-end">
           <label class="fl-lab" for="ess-end">{{ t('sessionForm.fields.endTimeLabel') }}</label>
           <input id="ess-end" v-model="f.endTime" type="time" v-ph="'--:--'" class="fl-inp" />
+          <label class="fl-lab" for="ess-end-date">{{ t('sessionMenu.endDateLabel') }}</label>
+          <input id="ess-end-date" v-model="f.endDate" type="date" :min="f.date || undefined" v-ph="'gg/mm/aaaa'" class="fl-inp" />
         </div>
       </section>
 
@@ -112,6 +114,11 @@
                 <label class="fl-lab sub" for="mp-end">{{ t('sessionMenu.endLabel') }} <span class="opt">· {{ t('sessionMenu.optional') }}</span></label>
                 <input id="mp-end" v-model="f.endTime" type="time" v-ph="'--:--'" class="fl-inp fl-mono" :class="{ 'fl-err': endBeforeStart }" :aria-invalid="endBeforeStart || undefined" aria-describedby="mp-end-err" />
                 <p v-if="endBeforeStart" id="mp-end-err" class="fl-error" role="alert"><AlertTriangle :size="14" aria-hidden="true" /> {{ t('sessionMenu.endBeforeStart') }}</p>
+              </div>
+              <div class="when-date">
+                <label class="fl-lab sub" for="mp-end-date">{{ t('sessionMenu.endDateLabel') }} <span class="opt">· {{ t('sessionMenu.optional') }}</span></label>
+                <input id="mp-end-date" v-model="f.endDate" type="date" :min="f.date || undefined" v-ph="'gg/mm/aaaa'" class="fl-inp fl-mono" />
+                <p v-if="durationHint" class="fl-hint fl-mono">{{ durationHint }}</p>
               </div>
             </div>
           </div>
@@ -383,6 +390,10 @@
       <div class="form-group">
         <label>{{ t('sessionForm.fields.endTimeLabel') }}<FieldInfo :text="t('sessionForm.fields.endTimeInfo')" /></label>
         <input v-model="f.endTime" type="time" v-ph="'--:--'" />
+      </div>
+      <div class="form-group">
+        <label>{{ t('sessionMenu.endDateLabel') }}</label>
+        <input v-model="f.endDate" type="date" :min="f.date || undefined" v-ph="'gg/mm/aaaa'" />
       </div>
       <div class="form-group">
         <label>{{ t('sessionForm.fields.techniqueLabel') }}<FieldInfo :text="t('sessionForm.fields.techniqueInfo')" /></label>
@@ -701,6 +712,7 @@
   import BottomSheet from '../motion/BottomSheet.vue'
   import { useOnline } from '../../composables/useOnline.js'
   import { useUnsavedGuard } from '../../composables/useUnsavedGuard.js'
+  import { sessionMinutes } from '../../utils/sessionTime.js'
   import { useToast } from '../../composables/useToast.js'
   import { confirmDialog } from '../../composables/useConfirm.js'
 
@@ -858,13 +870,23 @@
   const showErr = ref(false)
   const errDate = computed(() => showErr.value && !f.value.date)
   const errPlace = computed(() => showErr.value && !f.value.location.name?.trim())
-  // Le pescate notturne vanno a cavallo di due giorni (22:10 → 01:30, 18:00 → 08:00): una fine più presto
-  // dell'inizio è valida. È «la fine prima dell'inizio» solo se la durata sarebbe oltre 18 ore (22:10 → 21:30).
+  // Senza data di fine una fine più presto dell'inizio è una pescata notturna (22:10 → 01:30): valida.
+  // Con una data di fine esplicita (uscite di più giorni) l'errore scatta solo se la fine data/ora
+  // è davvero precedente all'inizio. Nessun limite di durata.
   const toMin = s => { const m = /^(\d{1,2}):(\d{2})/.exec(s || ''); return m ? Number(m[1]) * 60 + Number(m[2]) : null }
   const endBeforeStart = computed(() => {
+    const { date, endDate } = f.value
+    if (!date || !endDate) return false
+    if (endDate < date) return true
+    if (endDate > date) return false
     const a = toMin(f.value.startTime), b = toMin(f.value.endTime)
-    if (a == null || b == null || b >= a) return false
-    return b + 1440 - a > 1080
+    return a != null && b != null && b < a
+  })
+  const durationHint = computed(() => {
+    const mins = sessionMinutes({ ...f.value, endDate: endBeforeStart.value ? '' : f.value.endDate })
+    if (mins == null || mins < 1440) return ''
+    const d = Math.floor(mins / 1440), h = Math.floor((mins % 1440) / 60)
+    return t('sessionMenu.durationDays', { days: d, hours: h })
   })
   const ratingWords = computed(() => tm('sessionMenu.ratingWords').map(m => rt(m)))
   const headSub = computed(() => {
@@ -907,7 +929,7 @@
 
   const defaultForm = () => ({
     title: '', date: new Date().toISOString().split('T')[0],
-    startTime: '', endTime: '', technique: '', waterType: '', rating: 0,
+    startTime: '', endDate: '', endTime: '', technique: '', waterType: '', rating: 0,
     location: { name: '', spot: '', region: '', municipality: '', province: '', country: '', coords: { lat: null, lng: null }, notes: '' },
     sea: { seaState: '', waveHeight: '', wavePeriod: '', current: '', waterLevel: '', waterColor: '', waterTemp: null, tide: { state: '', notes: '' } },
     weather: { condition: '', windDirection: '', windSpeed: null, tempAir: null, pressure: null, notes: '' },
@@ -1182,6 +1204,7 @@
     const d = JSON.parse(JSON.stringify(data))
     const def = defaultForm()
     if (d.date) d.date = d.date.split('T')[0]
+    d.endDate = d.endDate ? String(d.endDate).split('T')[0] : ''
     d.location = { ...def.location, ...d.location, coords: { lat: null, lng: null, ...(d.location?.coords || {}) } }
     d.sea = { ...def.sea, ...d.sea, tide: { state: '', notes: '', ...(d.sea?.tide || {}) } }
     d.weather = { ...def.weather, ...d.weather }
@@ -1285,6 +1308,8 @@
     const payload = JSON.parse(JSON.stringify(f.value))
     if (!payload.location.coords?.lat && !payload.location.coords?.lng) delete payload.location.coords
     if (payload.visibility !== 'group') payload.allowedGroups = []
+    // Data di fine: solo se indicata e non è il giorno di inizio; vuota = si cancella quella salvata
+    payload.endDate = payload.endDate && payload.endDate > payload.date ? payload.endDate : null
     baseSnap.value = formSnap()
     sectionSavePending = menuMode.value
     emit('submit', payload, catchesRef.value?.pendingPhotosByIndex, { concluded: props.mode === 'essential' && concluded.value, inPlace: menuMode.value })
