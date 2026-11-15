@@ -409,20 +409,20 @@ Salvataggio per sezione, conferma «Uscire senza salvare?» quando si lascia una
 ### Accessibilità e movimento
 `radiogroup`/`radio` per chip e stelle (frecce per spostarsi), `aria-label` sui pulsanti a icona, errori con `role="alert"` e testo (non solo bordo rosso), focus visibile, target ≥ 44 px, dialoghi `alertdialog` con focus intrappolato. Foglio e dialoghi usano i token di `motion.css`; lo spinner si ferma con `prefers-reduced-motion`.
 
-## Uscita in corso v2: bottoni chiari e Fishy sempre a portata (83)
+## Uscita in corso v2: azioni vicino a «Aggiungi cattura», Fishy che ascolta subito (83)
 
-Schermata 34 rivista dopo l'uso reale (`OngoingCatchForm.vue`). Due problemi: i due bottoni in alto erano solo icone («documento» e «⋯») e non si capiva cosa facessero; Fishy stava in fondo alla pagina e bisognava scorrere.
+Schermata 34 rivista dopo l'uso reale (`OngoingCatchForm.vue`). Tre problemi: i bottoni in alto erano solo icone, le pillole messe nell'intestazione finivano sotto la barra di stato, e toccando Fishy bisognava toccare ancora il microfono.
 
 | Cosa | Prima | Ora |
 |---|---|---|
-| Intestazione | icona documento + icona «⋯» | due pillole con testo, alte 44 px: **Modifica** (matita) apre i dati dell'uscita (board 80); **Riepilogo** apre il resoconto |
-| Fishy | pannello dentro la pagina, sotto «Aggiungi cattura» | **tolto dalla pagina**. In basso una barra fissa con «Parla con Fishy» (avatar + riga d'esempio «ho preso una spigola da 2 kg») che apre il foglio di Fishy (board 73–75) |
-| Chiudi uscita | unico bottone della barra | bottone più piccolo «Chiudi» (bandierina, 84 × 64 px) accanto a Fishy |
-| Stato vuoto | «Quando abbocca, tocca «Aggiungi cattura».» | stessa idea, con «oppure dillo a Fishy» |
+| Intestazione | icone documento e «⋯» (poi due pillole) | solo il tasto indietro; sotto il titolo restano luogo, orario e le tre cifre |
+| Azioni sull'uscita | nell'intestazione | riga di due bottoni con testo subito **sotto «Aggiungi cattura»**, alti 52 px: **Modifica dati** (matita, apre la board 80) e **Riepilogo** (apre il resoconto) |
+| Fishy | pannello dentro la pagina | barra fissa in basso «Parla con Fishy» + «Chiudi» (84 × 64 px). **Il tocco apre il foglio già in ascolto** (microfono acceso, «Tocca per finire», Annulla / Scrivi) |
+| Stato vuoto | «Quando abbocca, tocca «Aggiungi cattura».» | con «oppure dillo a Fishy» |
 
-Stati nella board: Vuota, Con catture, Fishy aperto, Fishy in ascolto, Titolo lungo (va a capo, non viene tagliato).
+Stati nella board: Vuota, Con catture, Fishy ascolta, Fishy elabora, Fatto (cattura registrata), Senza microfono (campo di testo con «Invia»), Titolo lungo.
 
-Regole: il bottone tondo di Fishy (FAB) resta nascosto su questa schermata, perché c'è già la barra. «Aggiungi cattura» resta il bottone principale in alto. Bersagli almeno 44 px. Nessuna nuova animazione: il foglio usa quella già definita.
+Regole: se il permesso del microfono è negato o manca, il foglio si apre direttamente con il campo di testo (stato «Senza microfono»). Il bottone tondo di Fishy resta nascosto su questa schermata. Bersagli almeno 44 px. Nessuna animazione nuova.
 
 Screenshot: `screenshots/83-Uscita-in-corso-v2.png` (+ `-chiaro`).
 

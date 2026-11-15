@@ -1139,7 +1139,7 @@
    "y": 39200
   },
   "n29": {
-   "text": "Uscita in corso rivista. In alto i bottoni hanno ora l'etichetta: «Modifica» apre i dati dell'uscita, «Riepilogo» il resoconto. Fishy non è più in fondo alla pagina: in basso c'è sempre «Parla con Fishy», che apre il foglio con microfono. Accanto, «Chiudi» per terminare l'uscita.",
+   "text": "Uscita in corso, seconda versione. «Modifica dati» e «Riepilogo» stanno ora subito sotto «Aggiungi cattura», come bottoni con testo. In alto resta solo il tasto indietro. «Parla con Fishy» apre il foglio già in ascolto: si parla subito, senza toccare il microfono. Gli stati mostrano ascolto, elaborazione, cattura registrata e microfono non disponibile.",
    "w": 560,
    "x": 0,
    "y": 40700
