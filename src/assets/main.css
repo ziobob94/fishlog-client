@@ -294,7 +294,7 @@ textarea.fl-inp { min-height: 96px; resize: none; line-height: 1.45; padding: 14
 .fl-card { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 16px; box-sizing: border-box; }
 .fl-chip {
   flex: none; min-height: 44px; padding: 0 16px; border-radius: 22px; border: 1px solid var(--border);
-  background: var(--surface); color: rgb(var(--color-foam) / .85); font-weight: 600; font-size: 15px; cursor: pointer;
+  background: var(--surface); color: rgb(var(--color-foam) / .85); font-weight: 600; font-size: 15px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;
 }
 .fl-chip.on { border-color: var(--ocean); background: var(--ocean); color: rgb(var(--color-on-primary)); font-weight: 800; }
 .fl-btn1 {
