@@ -858,13 +858,13 @@
   const showErr = ref(false)
   const errDate = computed(() => showErr.value && !f.value.date)
   const errPlace = computed(() => showErr.value && !f.value.location.name?.trim())
-  // «La fine è prima dell'inizio»: una fine più presto dell'inizio è un'uscita a cavallo di mezzanotte
-  // (22:10 → 01:30) solo se la durata resta entro 12 ore; altrimenti è un errore (22:10 → 21:30).
+  // Le pescate notturne vanno a cavallo di due giorni (22:10 → 01:30, 18:00 → 08:00): una fine più presto
+  // dell'inizio è valida. È «la fine prima dell'inizio» solo se la durata sarebbe oltre 18 ore (22:10 → 21:30).
   const toMin = s => { const m = /^(\d{1,2}):(\d{2})/.exec(s || ''); return m ? Number(m[1]) * 60 + Number(m[2]) : null }
   const endBeforeStart = computed(() => {
     const a = toMin(f.value.startTime), b = toMin(f.value.endTime)
     if (a == null || b == null || b >= a) return false
-    return b + 1440 - a > 720
+    return b + 1440 - a > 1080
   })
   const ratingWords = computed(() => tm('sessionMenu.ratingWords').map(m => rt(m)))
   const headSub = computed(() => {
