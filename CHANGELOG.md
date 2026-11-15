@@ -1,3 +1,10 @@
+# [1.89.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.88.2...client-v1.89.0) (2026-11-15)
+
+
+### Features
+
+* **session:** uscita in corso v2, pillole Modifica/Riepilogo e barra Fishy + Chiudi ([#181](https://github.com/ziobob94/fishlog-client/issues/181)) ([4ca07bd](https://github.com/ziobob94/fishlog-client/commit/4ca07bd5c3fee920ee95119ecd18afc496e241c2))
+
 ## [1.88.2](https://github.com/ziobob94/fishlog-client/compare/client-v1.88.1...client-v1.88.2) (2026-11-15)
 
 
