@@ -1,3 +1,10 @@
+# [1.88.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.87.0...client-v1.88.0) (2026-11-15)
+
+
+### Features
+
+* allinea Storie, Post, Negozio, Annuncio, Pesci e FIPSAS al design ([#177](https://github.com/ziobob94/fishlog-client/issues/177)) ([aa0c043](https://github.com/ziobob94/fishlog-client/commit/aa0c043f0213f1a5b3b051452e594cf2dba3fa6d))
+
 # [1.87.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.86.0...client-v1.87.0) (2026-11-15)
 
 
