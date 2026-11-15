@@ -64,7 +64,7 @@ function onNameInput(e) {
   clearTimeout(searchTimer)
   error.value = ''
   if (value.trim().length < 3) { results.value = []; return }
-  searchTimer = setTimeout(async () => { results.value = await searchPlaceOptions(value.trim()) }, 300)
+  searchTimer = setTimeout(async () => { const c = map?.getCenter?.(); results.value = await searchPlaceOptions(value.trim(), { near: c ? { lat: c.lat(), lng: c.lng() } : null }) }, 300)
 }
 
 async function pick(r) {
