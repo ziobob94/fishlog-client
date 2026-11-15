@@ -590,6 +590,7 @@
 			"close": "Chiudi uscita",
 			"closeShort": "Chiudi",
 			"edit": "Modifica",
+			"editData": "Modifica dati",
 			"talkToFishy": "Parla con Fishy",
 			"fishyExample": "«ho preso una spigola da 2 kg»",
 			"closed": "Uscita chiusa",
@@ -2160,6 +2161,8 @@
 		"slideToCancel": "Scorri a sinistra per annullare",
 		"releaseToCancel": "Rilascia per annullare",
 		"subtitle": "Il tuo assistente di pesca",
+		"subtitleListening": "Ti ascolto…",
+		"subtitleNoMic": "Microfono non disponibile",
 		"greeting": "Ciao, sono Fishy",
 		"introShort": "Dimmi cosa succede in acqua e lo scrivo io nel diario. Puoi dire più cose insieme.",
 		"cards": {
@@ -2213,6 +2216,7 @@
 			"syncingTitle": "Sto sincronizzando l'uscita",
 			"recordByHand": "Registra la cattura a mano",
 			"micDenied": "Microfono non consentito: attivalo nelle impostazioni del browser, oppure usa la tastiera.",
+			"micUnavailable": "Non riesco a usare il microfono. Scrivimi pure qui sotto.",
 			"speechError": "Non ho sentito bene: riprova o usa la tastiera.",
 			"keyboardOnly": "Su questo dispositivo Fishy si usa con la tastiera.",
 			"unsynced": "L'uscita non è ancora sincronizzata: le catture a voce funzionano appena lo è."

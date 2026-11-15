@@ -38,7 +38,7 @@ function init() {
     onError: code => {
       const denied = code === 'not-allowed' || code === 'service-not-allowed'
       issue.value = denied ? 'mic_denied' : 'speech_error'
-      issueText.value = t(denied ? 'fishy.state.micDenied' : 'fishy.state.speechError')
+      issueText.value = t(denied ? 'fishy.state.micUnavailable' : 'fishy.state.speechError')
       announcement.value = issueText.value
       setFlash('error')
     }
@@ -48,7 +48,8 @@ function init() {
     document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') { conversation.flush(); releaseMic() } else if (useFishySheet().open.value) holdMic() })
     window.addEventListener('pagehide', () => { conversation.flush(); releaseMic() })
     // Un solo permesso microfono per tutta la vita del foglio (iOS), poi si rilascia.
-    watch(useFishySheet().open, o => { if (o) holdMic(); else releaseMic() }, { immediate: true })
+    // Chiudere il foglio ferma anche l'ascolto avviato da «Parla con Fishy» e libera il microfono.
+    watch(useFishySheet().open, o => { if (o) holdMic(); else { if (speech.listening.value) cancelListening(); releaseMic() } }, { immediate: true })
   }
 }
 
@@ -65,6 +66,14 @@ function startListening() {
 }
 const finish = () => speech?.stop()          // tocca per finire: la frase parte
 const cancelListening = () => { speech?.cancel(); announcement.value = t('fishy.cancelled') }
+// «Parla con Fishy»: apre il foglio e avvia subito l'ascolto. Va chiamata dentro il click, perché il tocco è il gesto
+// che il browser richiede per accendere il microfono. Senza riconoscimento vocale il foglio si apre già sulla tastiera.
+function talk() {
+  init()
+  useFishySheet().show()
+  if (!speech.supported) { issue.value = 'mic_denied'; issueText.value = t('fishy.state.micUnavailable'); return }
+  startListening()
+}
 const toggle = () => { if (speech?.listening.value) finish(); else startListening() }
 
 function describe(r) {
@@ -163,6 +172,7 @@ export function useFishyVoice() {
     conversation, state, busy, issue, issueText, announcement, queued, uses, listening,
     supported: speech.supported, interim: speech.interim,
     elapsedLabel: computed(() => formatElapsed(elapsed.value)),
-    startListening, finish, cancelListening, toggle, submit
+    noMic: computed(() => !speech.supported || issue.value === 'mic_denied'),
+    talk, startListening, finish, cancelListening, toggle, submit
   }
 }
