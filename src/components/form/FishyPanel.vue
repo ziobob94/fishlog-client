@@ -7,10 +7,10 @@
     <p v-if="showIntro" class="intro">{{ t('fishy.intro') }}</p>
 
     <!-- Ultimo scambio (nessuno storico: il comando successivo lo sostituisce) -->
-    <div v-if="exchange" class="conv">
-      <p class="said"><span class="said-l">{{ t('fishy.said') }}</span> {{ exchange.text }}</p>
+    <div v-if="exchange || listings.length" class="conv">
+      <p v-if="exchange" class="said"><span class="said-l">{{ t('fishy.said') }}</span> {{ exchange.text }}</p>
 
-      <TransitionGroup name="fishy-pop" tag="div" class="rows">
+      <TransitionGroup v-if="exchange" name="fishy-pop" tag="div" class="rows">
         <div v-for="row in exchange.rows" :key="row.id" class="act" :class="[row.kind, { amber: row.toComplete && row.state === 'done', gone: row.state !== 'done' }]">
           <span class="ic" aria-hidden="true"><component :is="ICON[row.kind]" :size="20" /></span>
           <div class="body">
@@ -40,7 +40,29 @@
         </div>
       </TransitionGroup>
 
-      <p v-for="(n, i) in exchange.notes" :key="`n${i}`" class="info"><Info :size="16" /> {{ n }}</p>
+      <!-- Annunci preparati da Fishy: non sono pubblicati finché non confermi -->
+      <div v-for="l in listings" :key="l.id" class="act listing" :class="{ gone: l.state === 'published' }">
+        <span class="ic" aria-hidden="true"><Tag :size="20" /></span>
+        <div class="body">
+          <strong>{{ l.state === 'published' ? t('fishy.listing.published') : t('fishy.listing.draft') }}</strong>
+          <span class="sum">
+            <template v-for="(p, i) in parts(l.draft)" :key="i"><span>{{ p }}</span><i v-if="i < parts(l.draft).length - 1"> · </i></template>
+          </span>
+          <span v-if="l.draft.description" class="sub">{{ l.draft.description }}</span>
+          <span v-if="l.state !== 'published'" class="sub">{{ t('fishy.listing.visibleAll') }} · {{ t('fishy.listing.notYet') }}</span>
+          <span v-if="l.state === 'error'" class="sub err"><AlertTriangle :size="14" /> {{ l.error || t('fishy.listing.failed') }}</span>
+        </div>
+        <div class="btns">
+          <RouterLink v-if="l.state === 'published'" :to="`/market/${l.listingId}`" class="btn amberbtn" @click="$emit('close')">{{ t('fishy.listing.view') }}</RouterLink>
+          <template v-else>
+            <button type="button" class="btn amberbtn" :disabled="l.state === 'publishing'" @click="store.publishVoiceListing(l)">{{ l.state === 'publishing' ? t('market.form.saving') : t('fishy.listing.publish') }}</button>
+            <button type="button" class="btn" :disabled="l.state === 'publishing'" @click="editListing(l)">{{ t('fishy.listing.edit') }}</button>
+            <button type="button" class="btn" :disabled="l.state === 'publishing'" @click="store.dismissVoiceListing(l.id)">{{ t('fishy.cancel') }}</button>
+          </template>
+        </div>
+      </div>
+
+      <p v-for="(n, i) in exchange?.notes || []" :key="`n${i}`" class="info"><Info :size="16" /> {{ n }}</p>
     </div>
 
     <!-- Domande di Fishy: serve un'informazione -->
@@ -104,11 +126,13 @@
 
 <script setup>
 import { ref, computed, nextTick } from 'vue'
-import { RouterLink } from 'vue-router'
+import { RouterLink, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { Mic, MicOff, Keyboard, Loader2, WifiOff, Square, Play, Fish, RefreshCw, Flag, Undo2, RotateCcw, AlertCircle, AlertTriangle, Info, Clock, ArrowLeft } from 'lucide-vue-next'
+import { Mic, MicOff, Keyboard, Loader2, WifiOff, Square, Play, Fish, RefreshCw, Flag, Undo2, RotateCcw, AlertCircle, AlertTriangle, Info, Clock, ArrowLeft, Tag } from 'lucide-vue-next'
 import Fishy from '../Fishy.vue'
 import { useSessionStore } from '../../stores/sessions.js'
+import { useMarketStore } from '../../stores/market.js'
+import { listingParts } from '../../utils/fishyListing.js'
 import { useFishyVoice } from '../../composables/useFishyVoice.js'
 import { isIOS } from '../../composables/useSpeech.js'
 import { isCancelZone, EXAMPLES_FULL_UNTIL } from '../../utils/fishyFab.js'
@@ -117,10 +141,12 @@ import { isCancelZone, EXAMPLES_FULL_UNTIL } from '../../utils/fishyFab.js'
 // «Ferma», quindi funziona con VoiceOver e Switch Control). Scorciatoia: tieni premuto e rilascia, con zona di annullo
 // a sinistra. Su iPhone il tieni-premuto è disattivato: l'ascolto parte solo da un tocco completo.
 defineProps({ closable: { type: Boolean, default: false } })
-defineEmits(['close'])
+const emit = defineEmits(['close'])
 
 const ICON = { start: Play, catch: Fish, bait: RefreshCw, update: RefreshCw, end: Flag }
 const { t } = useI18n()
+const router = useRouter()
+const market = useMarketStore()
 const store = useSessionStore()
 const voice = useFishyVoice()
 const { conversation, busy, issue, issueText, announcement, queued, listening, supported, interim, elapsedLabel, startListening, finish, cancelListening, submit } = voice
@@ -130,7 +156,8 @@ const typed = ref('')
 const inp = ref(null)
 const exchange = computed(() => conversation.last.value)
 const notices = computed(() => store.voiceNeedsInfo)
-const showIntro = computed(() => !exchange.value && !notices.value.length && !issue.value && !queued.value && !busy.value && !listening.value)
+const listings = computed(() => store.voiceListings)
+const showIntro = computed(() => !exchange.value && !listings.value.length && !notices.value.length && !issue.value && !queued.value && !busy.value && !listening.value)
 const unsynced = computed(() => String(store.ongoing?._id || '').startsWith('local-'))
 const label = computed(() => busy.value ? t('voice.thinking') : listening.value ? t('fishy.stop') : t('fishy.start'))
 const EX = ['ex1', 'ex2', 'ex3', 'ex4']
@@ -166,6 +193,9 @@ function onClick() {
   if (listening.value) finish(); else startListening()
 }
 
+const parts = d => listingParts(d, { category: t(`market.categories.${d.category || 'altro'}`), condition: t(`market.condition.${d.condition}`) })
+// «Modifica»: apre il form del Market già compilato con la bozza; l'annuncio nasce solo se lo pubblichi da lì.
+function editListing(l) { market.draft = l.draft; store.dismissVoiceListing(l.id); emit('close'); router.push('/market/new') }
 function sendTyped() { const text = typed.value; typed.value = ''; submit({ text }) }
 function answer(n, extra) { store.dismissVoiceNeedsInfo(n.id); submit({ text: n.text, ...extra }) }
 async function useExample(ex) { typing.value = true; typed.value = ex; await nextTick(); inp.value?.focus() }
@@ -192,6 +222,7 @@ async function useExample(ex) { typing.value = true; typed.value = ex; await nex
 .btns { display: flex; flex-direction: column; gap: 6px; flex: none; }
 .btn { min-height: 44px; min-width: 44px; padding: 0 12px; border-radius: 14px; border: 1px solid var(--border); background: transparent; color: var(--foam); font-weight: 700; font-size: 13px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; cursor: pointer; text-decoration: none; }
 .amberbtn { border-color: rgb(var(--color-sand-text)); color: rgb(var(--color-sand-text)); }
+.act.listing { align-items: flex-start; border-color: rgb(var(--color-ocean)); }
 .info { display: flex; gap: 6px; align-items: flex-start; font-size: 13px; color: var(--text-muted); }
 .notice { background: var(--surface); border: 1px solid rgb(var(--color-sand-text) / .6); border-radius: 20px; padding: 12px; display: flex; flex-direction: column; gap: 10px; }
 .nq { display: flex; gap: 10px; align-items: flex-start; }

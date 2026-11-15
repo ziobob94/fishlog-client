@@ -14,6 +14,9 @@ export const useMarketStore = defineStore('market', () => {
   const mine        = ref([])
   const current     = ref(null)
   const categories  = ref([])
+  // Bozza proposta da Fishy, da rifinire nel form «Nuovo annuncio» (si legge una volta sola).
+  const draft       = ref(null)
+  function takeDraft() { const d = draft.value; draft.value = null; return d }
   const loading     = ref(false)
   const pagination  = ref({ page: 1, limit: 20, total: 0, pages: 0 })
 
@@ -124,6 +127,7 @@ export const useMarketStore = defineStore('market', () => {
     external, externalConfigured, externalLoading, externalError, externalPagination,
     shops, shopsLoading, shopsPagination,
     fetchListings, fetchMine, fetchListing, fetchShop, fetchShops, fetchCategories, fetchExternal,
+    draft, takeDraft,
     createListing, updateListing, deleteListing, uploadMedia, deleteMedia
   }
 })

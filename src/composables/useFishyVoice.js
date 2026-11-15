@@ -8,6 +8,7 @@ import { useFishySheet } from './useFishySheet.js'
 import { createFishyConversation } from './fishyConversation.js'
 import { fabState, queuedCount, bumpUses, readUses, INTRO_USES, formatElapsed } from '../utils/fishyFab.js'
 import { summarizeCatch, cleanTranscript } from '../utils/voiceCatch.js'
+import { pendingListingDraft } from '../utils/fishyListing.js'
 
 // Stato condiviso di Fishy: lo usano il pulsante (FishyFab), il foglio e la riga della scheda uscita, così l'ascolto
 // continua anche se si chiude il foglio e l'esito arriva comunque (toast sopra la tab bar).
@@ -93,12 +94,13 @@ async function submit({ text, species, force }) {
   busy.value = true; issue.value = null
   announcement.value = t('voice.thinking')
   // Nessuno storico: il nuovo comando sostituisce lo scambio precedente (frase, azioni, domande).
-  conversation.clear(); store.voiceNeedsInfo = []
+  const listingDraft = pendingListingDraft(store.voiceNeedsInfo) // annuncio a metà: la risposta lo completa
+  conversation.clear(); store.voiceNeedsInfo = []; store.voiceListings = []
   const ex = conversation.start(clean)
   const time = hhmm()
   uses.value = bumpUses()
   try {
-    const res = await store.askFishy({ text: clean, time, species, force })
+    const res = await store.askFishy({ text: clean, time, species, force, ...(listingDraft ? { listingDraft } : {}) })
     if (res.queued) {
       issue.value = res.reason === 'ai_rate_limit' ? 'rate_limit' : res.reason === 'ai_unavailable' ? 'ai_down' : 'offline'
       issueText.value = t(issue.value === 'rate_limit' ? 'voice.rateLimited' : issue.value === 'ai_down' ? 'voice.aiDown' : 'voice.savedForLater')
@@ -118,7 +120,10 @@ async function submit({ text, species, force }) {
         }
       } else if (r.status === 'info' && r.message) ex.notes.push(r.message)
     }
-    if (ex.rows.length) {
+    const askedAboutListing = store.voiceListings.length || store.voiceNeedsInfo.some(n => n.action === 'create_listing')
+    if (askedAboutListing && !useFishySheet().open.value) useFishySheet().show() // la bozza va vista e confermata
+    if (store.voiceListings.length) announcement.value = t('fishy.listing.ready')
+    else if (ex.rows.length) {
       announcement.value = sentence(ex.rows); setFlash('success'); buzz()
       if (!useFishySheet().open.value) toastDone(ex)
     } else if (!store.voiceNeedsInfo.length && ex.notes.length) announcement.value = ex.notes[0]

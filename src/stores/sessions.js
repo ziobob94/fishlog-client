@@ -5,6 +5,8 @@ import { compressAll, compressImage } from '../utils/image.js'
 import router from '../router/index.js'
 import { useOfflineStore } from './offline.js'
 import { withCatches, withoutCatch, isRetryableAiError } from '../utils/voiceCatch.js'
+import { draftToPayload } from '../utils/fishyListing.js'
+import { useMarketStore } from './market.js'
 
 function isNetworkError(err) {
   return !err.response
@@ -63,6 +65,9 @@ export const useSessionStore = defineStore('sessions', () => {
   // Richieste a Fishy che il server non ha potuto eseguire da sole (specie incerta/ignota, frase non capita,
   // luogo mancante): richiedono una risposta dell'utente e si mostrano in FishyPanel.vue.
   const voiceNeedsInfo = ref([])
+  // Annunci che Fishy ha solo preparato: nulla è pubblicato finché l'utente non conferma (publishVoiceListing).
+  // state: 'pending' | 'publishing' | 'published' | 'error'
+  const voiceListings = ref([])
 
   // Aggiorna lo stato locale con l'esito delle azioni di Fishy. `legacySessionId`: voci già in coda dalla
   // versione precedente (endpoint per-uscita), i cui risultati non hanno `action`.
@@ -71,7 +76,9 @@ export const useSessionStore = defineStore('sessions', () => {
     let ended = null
     for (const r of results) {
       const act = r.action || 'catch'
-      if (r.status === 'needs_info') {
+      if (act === 'create_listing' && r.status === 'needs_confirmation') {
+        voiceListings.value = [...voiceListings.value, { id: crypto.randomUUID(), text, draft: r.draft, state: 'pending', error: '', listingId: null }]
+      } else if (r.status === 'needs_info') {
         voiceNeedsInfo.value = [...voiceNeedsInfo.value, { id: crypto.randomUUID(), text, ...r }]
       } else if (r.status === 'saved' && act === 'catch') {
         const sid = r.sessionId || legacySessionId
@@ -87,6 +94,20 @@ export const useSessionStore = defineStore('sessions', () => {
     if (ended && ongoing.value?._id === ended) ongoing.value = null
     if (refresh) {
       fetchOngoing().then(() => { if (current.value?._id && !String(current.value._id).startsWith('local-')) fetchSession(current.value._id) })
+    }
+  }
+  const dismissVoiceListing = id => { voiceListings.value = voiceListings.value.filter(l => l.id !== id) }
+  // Conferma dell'utente: solo ora l'annuncio viene creato, con le stesse regole del form del Market.
+  async function publishVoiceListing(item) {
+    if (item.state === 'publishing' || item.state === 'published') return false
+    item.state = 'publishing'; item.error = ''
+    try {
+      const listing = await useMarketStore().createListing(draftToPayload(item.draft))
+      item.listingId = listing._id; item.state = 'published'
+      return true
+    } catch (e) {
+      item.error = e.response?.data?.error || ''; item.state = 'error'
+      return false
     }
   }
   const dismissVoiceNeedsInfo = id => { voiceNeedsInfo.value = voiceNeedsInfo.value.filter(n => n.id !== id) }
@@ -316,6 +337,6 @@ export const useSessionStore = defineStore('sessions', () => {
     sessions, current, ongoing, loading, error, pagination, total,
     fetchSessions, fetchSession, fetchOngoing, createSession, updateSession,
     deleteSession, uploadMedia, uploadCatchMedia, deleteMedia, fetchLeaderboard,
-    voiceNeedsInfo, dismissVoiceNeedsInfo, askFishy, undoAction
+    voiceNeedsInfo, voiceListings, dismissVoiceNeedsInfo, dismissVoiceListing, publishVoiceListing, askFishy, undoAction
   }
 })
