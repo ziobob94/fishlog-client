@@ -125,6 +125,11 @@
         <PlaceInput id="sh-city" mode="city" v-model="shop.city" />
       </div>
 
+      <div class="form-group">
+        <label for="sh-address">{{ t('seller.shop.address') }}</label>
+        <input id="sh-address" v-model="shop.address" type="text" autocomplete="street-address" :placeholder="t('seller.shop.addressPlaceholder')" />
+      </div>
+
       <fieldset class="checks">
         <legend>{{ t('seller.shop.delivery') }}</legend>
         <label v-for="d in ['ritiro', 'spedizione']" :key="d" class="check-row" :class="{ active: shop.delivery.includes(d) }">
@@ -133,6 +138,17 @@
         </label>
       </fieldset>
 
+      <fieldset class="checks">
+        <legend>{{ t('seller.shop.contactTitle') }}</legend>
+        <label class="check-row" :class="{ active: chatOn }">
+          <input v-model="chatOn" type="checkbox" />
+          <span>{{ t('seller.shop.chatOn') }}</span>
+        </label>
+        <label class="check-row" :class="{ active: shop.showPhone }">
+          <input v-model="shop.showPhone" type="checkbox" />
+          <span>{{ t('seller.shop.showPhone') }}</span>
+        </label>
+      </fieldset>
       <div class="form-group">
         <label for="sh-contact">{{ t('seller.shop.contact') }}</label>
         <input id="sh-contact" v-model="shop.contact" type="text" />
@@ -178,8 +194,11 @@ const form = ref({
 })
 const shop = ref({
   name: s0.name || '', description: s0.description || '', website: s0.website || '',
-  city: s0.city || '', delivery: [...(s0.delivery || [])], contact: s0.contact || ''
+  city: s0.city || '', address: s0.address || '', delivery: [...(s0.delivery || [])], contact: s0.contact || '',
+  showPhone: !!s0.showPhone
 })
+// «Ricevi messaggi dai compratori»: è la stessa impostazione di privacy del market nel profilo.
+const chatOn = ref(auth.user?.marketMessagesFromStrangers !== false)
 const confirmed = ref(false)
 const docFile = ref(null)
 const hasDocument = computed(() => !!auth.user?.shop?.documentUploaded)
@@ -225,6 +244,7 @@ async function saveShop(publish = true) {
   try {
     if (logoFile.value) await auth.uploadShopLogo(logoFile.value)
     await auth.updateShop({ ...shop.value })
+    if (chatOn.value !== (auth.user?.marketMessagesFromStrangers !== false)) await auth.updateProfile({ marketMessagesFromStrangers: chatOn.value })
     saved.value = true
     router.push(publish === false ? '/market' : '/market/new')
   } catch (e) {

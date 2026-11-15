@@ -1730,6 +1730,11 @@
 				"ritiro": "Ritiro in negozio",
 				"spedizione": "Spedizione"
 			},
+			"address": "Indirizzo del negozio (facoltativo)",
+			"addressPlaceholder": "Via, numero civico",
+			"contactTitle": "Contatto",
+			"chatOn": "Ricevi messaggi dai compratori nella chat di FishLog",
+			"showPhone": "Mostra il numero di telefono del negozio",
 			"contact": "Contatto per i compratori",
 			"saveAndPublish": "Salva e pubblica un annuncio",
 			"saveAndBack": "Salva e torna al market"
