@@ -1,3 +1,11 @@
+## [1.88.1](https://github.com/ziobob94/fishlog-client/compare/client-v1.88.0...client-v1.88.1) (2026-11-15)
+
+
+### Bug Fixes
+
+* campo di testo di Fishy non più schiacciato da «Invia»; foglio entro il viewport con tastiera ([#179](https://github.com/ziobob94/fishlog-client/issues/179)) ([bf48ab9](https://github.com/ziobob94/fishlog-client/commit/bf48ab95edf2f9488879d791822935eea9959e0a))
+* **fishy:** nasconde «da completare» quando peso o misura sono stati inseriti ([#178](https://github.com/ziobob94/fishlog-client/issues/178)) ([650944c](https://github.com/ziobob94/fishlog-client/commit/650944c260f97b67a8fe0bff8853c49ee75864c8))
+
 # [1.88.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.87.0...client-v1.88.0) (2026-11-15)
 
 
