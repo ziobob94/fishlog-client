@@ -42,6 +42,12 @@ function onKey(e) {
   else if (!e.shiftKey && a === last) { e.preventDefault(); first.focus() }
 }
 
+// Su iOS la tastiera non riduce dvh: usiamo il visual viewport così il foglio resta sotto la barra di stato.
+const vv = typeof window !== 'undefined' ? window.visualViewport : null
+const setVvh = () => { if (vv) document.documentElement.style.setProperty('--vvh', vv.height + 'px') }
+function trackViewport() { if (!vv) return; setVvh(); vv.addEventListener('resize', setVvh) }
+function untrackViewport() { if (!vv) return; vv.removeEventListener('resize', setVvh); document.documentElement.style.removeProperty('--vvh') }
+
 const close = () => emit('update:modelValue', false)
 const drag = useSwipeDismiss(sheet, {
   scrollEl: scroller,
@@ -55,17 +61,19 @@ watch(() => props.modelValue, async (open) => {
     opener = document.activeElement
     locks++; document.documentElement.style.overflow = 'hidden'
     await nextTick(); sheet.value?.focus()
+    trackViewport()
   } else {
+    untrackViewport()
     locks = Math.max(0, locks - 1); if (!locks) document.documentElement.style.overflow = ''
     opener?.focus?.()
   }
 })
-onBeforeUnmount(() => { if (props.modelValue) locks = Math.max(0, locks - 1); if (!locks) document.documentElement.style.overflow = '' })
+onBeforeUnmount(() => { untrackViewport(); if (props.modelValue) locks = Math.max(0, locks - 1); if (!locks) document.documentElement.style.overflow = '' })
 </script>
 
 <style>
 .sheet-backdrop { position: fixed; inset: 0; z-index: 300; background: rgb(5 10 18 / var(--backdrop-opacity)); }
-.sheet { position: fixed; left: 0; right: 0; bottom: 0; z-index: 301; max-height: 88dvh; display: flex; flex-direction: column;
+.sheet { position: fixed; left: 0; right: 0; bottom: 0; z-index: 301; max-height: min(88dvh, calc(var(--vvh, 100dvh) - 12px)); display: flex; flex-direction: column;
   background: rgb(var(--color-surface)); border-radius: 28px 28px 0 0; border-top: 1px solid rgb(var(--color-border-light));
   padding-bottom: env(safe-area-inset-bottom); outline: none; touch-action: none; }
 .sheet-grab { align-self: center; width: 44px; height: 5px; border-radius: 3px; background: rgb(var(--color-border-light)); margin: 12px 0 6px; flex: none; }
