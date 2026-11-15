@@ -21,7 +21,7 @@
       <p v-if="exchange" class="said"><span class="said-l">{{ t('fishy.said') }}</span> {{ exchange.text }}</p>
 
       <TransitionGroup v-if="exchange" name="fishy-pop" tag="div" class="rows">
-        <div v-for="row in exchange.rows" :key="row.id" class="act" :class="[row.kind, { amber: row.toComplete && row.state === 'done', gone: row.state !== 'done' }]">
+        <div v-for="row in exchange.rows" :key="row.id" class="act" :class="[row.kind, { amber: stillToComplete(row) && row.state === 'done', gone: row.state !== 'done' }]">
           <span class="ic" aria-hidden="true"><component :is="ICON[row.kind]" :size="20" /></span>
           <div class="body">
             <template v-if="row.state === 'done'">
@@ -32,7 +32,7 @@
               </span>
               <span v-if="row.alias" class="sub">{{ t('voice.alias', { alias: row.alias }) }}</span>
               <span v-if="degraded && row.kind === 'catch'" class="sub">{{ t('fishy.state.checkSpeciesWeight') }}</span>
-              <span v-if="row.toComplete" class="sub tc"><AlertCircle :size="14" /> {{ t('voice.toComplete') }}</span>
+              <span v-if="stillToComplete(row)" class="sub tc"><AlertCircle :size="14" /> {{ t('voice.toComplete') }}</span>
               <span class="sub fl-mono">{{ row.time }}</span>
             </template>
             <template v-else-if="row.state === 'undoing'">
@@ -45,7 +45,7 @@
             <template v-else><strong>{{ t('fishy.undone') }}</strong></template>
           </div>
           <div class="btns">
-            <RouterLink v-if="row.state === 'done' && row.completeTo" :to="row.completeTo" class="btn amberbtn" @click="$emit('close')">{{ t('fishy.completeBtn') }}</RouterLink>
+            <RouterLink v-if="row.state === 'done' && row.completeTo && stillToComplete(row)" :to="row.completeTo" class="btn amberbtn" @click="$emit('close')">{{ t('fishy.completeBtn') }}</RouterLink>
             <button v-if="row.state === 'done' || row.state === 'failed'" type="button" class="btn" @click="conversation.undoRow(row)"><Undo2 :size="16" /> {{ t('voice.undo') }}</button>
             <button v-else-if="row.state === 'undoing'" type="button" class="btn" @click="conversation.restoreRow(row)"><RotateCcw :size="16" /> {{ t('fishy.restore') }}</button>
           </div>
@@ -189,6 +189,19 @@ const { t } = useI18n()
 const router = useRouter()
 const market = useMarketStore()
 const store = useSessionStore()
+// «Da completare» è uno snapshot della risposta di Fishy: va riletto dalla cattura corrente,
+// così sparisce appena peso o misura vengono salvati dal form.
+function stillToComplete(row) {
+  if (!row.toComplete) return false
+  const id = row.result?.catch?._id
+  if (!id) return true
+  for (const s of [store.current, store.ongoing]) {
+    if (s?._id !== row.sessionId) continue
+    const c = (s.catches || []).find(x => x._id === id)
+    if (c) return !(Number(c.weightKg) > 0 || Number(c.lengthCm) > 0)
+  }
+  return true
+}
 const offline = useOfflineStore()
 const voice = useFishyVoice()
 const { conversation, busy, issue, issueText, announcement, queued, listening, supported, interim, elapsedLabel, startListening, finish, cancelListening, submit } = voice
