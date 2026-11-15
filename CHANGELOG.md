@@ -1,3 +1,10 @@
+## [1.84.1](https://github.com/ziobob94/fishlog-client/compare/client-v1.84.0...client-v1.84.1) (2026-11-15)
+
+
+### Bug Fixes
+
+* la scheda attività dei pesci non compare senza dati mare ([#169](https://github.com/ziobob94/fishlog-client/issues/169)) ([be5b41d](https://github.com/ziobob94/fishlog-client/commit/be5b41df1dba7142a751cb7014b1e71a517538e7))
+
 # [1.84.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.83.0...client-v1.84.0) (2026-11-15)
 
 
