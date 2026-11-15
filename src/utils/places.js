@@ -147,12 +147,15 @@ async function sessionToken() {
   return token || (token = new AutocompleteSessionToken())
 }
 
-export async function searchPlaceOptions(q, { kind = 'place' } = {}) {
+// near = {lat, lng} opzionale: favorisce (senza escludere) i luoghi entro ~50 km, così «Tirrenia» trova quella vicina.
+export async function searchPlaceOptions(q, { kind = 'place', near = null } = {}) {
   const types = kind === 'city' ? ['(cities)'] : kind === 'region' ? ['(regions)'] : null
   try {
     const { AutocompleteSuggestion } = await lib('places')
     const req = { input: q, sessionToken: await sessionToken(), language: GEO_LANG }
     if (types) req.includedPrimaryTypes = types
+    const lat = Number(near?.lat), lng = Number(near?.lng)
+    if (near && near.lat != null && near.lng != null && Number.isFinite(lat) && Number.isFinite(lng)) req.locationBias = { center: { lat, lng }, radius: 50000 }
     let res
     try { res = await AutocompleteSuggestion.fetchAutocompleteSuggestions(req) }
     catch (e) { if (!types) throw e; delete req.includedPrimaryTypes; res = await AutocompleteSuggestion.fetchAutocompleteSuggestions(req) }

@@ -104,7 +104,7 @@ function onInput(e) {
   clearTimeout(timer)
   if (q.trim().length < 3) { options.value = []; return }
   timer = setTimeout(async () => {
-    const r = await searchPlaceOptions(q.trim(), { kind: props.mode })
+    const r = await searchPlaceOptions(q.trim(), { kind: props.mode, near: props.lat != null && props.lng != null ? { lat: props.lat, lng: props.lng } : null })
     if (inp.value && inp.value.value.trim() === q.trim()) { options.value = r; msg.value = r.length || statusMsg.value ? '' : t('placeInput.noResults') }
   }, 400)
 }
