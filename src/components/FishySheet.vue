@@ -4,10 +4,10 @@
     <div class="fs">
       <div class="fs-head">
         <Fishy :expression="EXPRESSION[state]" :size="56" avatar />
-        <h2>{{ t('fishy.title') }}</h2>
+        <div class="fs-t"><h2>{{ t('fishy.title') }}</h2><p class="fs-tag">{{ t('fishy.subtitle') }}</p></div>
         <button type="button" class="fs-x" :aria-label="t('createMenu.close')" @click="hide"><X :size="22" /></button>
       </div>
-      <p class="fs-sub"><span v-if="sessions.ongoing" class="dot" aria-hidden="true"></span>{{ sub }}</p>
+      <p class="fs-sub" :class="{ on: sessions.ongoing }"><span v-if="sessions.ongoing" class="dot" aria-hidden="true"></span>{{ sub }}</p>
       <FishyPanel closable @close="hide" />
     </div>
   </BottomSheet>
@@ -41,8 +41,11 @@ const sub = computed(() => {
 <style scoped>
 .fs { display: flex; flex-direction: column; gap: 12px; padding-bottom: 8px; }
 .fs-head { display: flex; align-items: center; gap: 12px; margin-top: 6px; }
-.fs-head h2 { flex: 1; font-size: 22px; font-weight: 800; margin: 0; color: var(--foam); }
+.fs-t { flex: 1; min-width: 0; }
+.fs-head h2 { font-size: 22px; font-weight: 800; margin: 0; color: var(--foam); line-height: 1.1; }
+.fs-tag { margin: 2px 0 0; font-size: 13px; color: var(--text-muted); }
 .fs-x { width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; background: none; border: 0; color: var(--foam); cursor: pointer; }
-.fs-sub { margin: -4px 0 0; font-size: 13px; color: var(--text-muted); display: flex; align-items: center; gap: 8px; }
+.fs-sub { margin: 0; font-size: 13px; color: var(--text-muted); display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 14px; border: 1px dashed var(--border); }
+.fs-sub.on { border: 1px solid rgb(var(--color-sand-text) / .6); background: rgb(var(--color-sand-text) / .1); color: var(--foam); }
 .dot { width: 8px; height: 8px; border-radius: 50%; background: rgb(var(--color-success)); flex: none; }
 </style>

@@ -4,7 +4,17 @@
     <p class="sr-only" aria-live="polite" role="status">{{ announcement }}</p>
 
     <!-- Presentazione: solo finché non c'è uno scambio, una domanda, un avviso o un ascolto in corso (nessuno storico) -->
-    <p v-if="showIntro" class="intro">{{ t('fishy.intro') }}</p>
+    <div v-if="showIntro" class="hello">
+      <Fishy :size="120" />
+      <h3>{{ t('fishy.greeting') }}</h3>
+      <p class="hello-p">{{ t('fishy.introShort') }}</p>
+      <div class="cards">
+        <button v-for="c in cards" :key="c.key" type="button" class="card" @click="useExample(c.text)">
+          <span class="ic" aria-hidden="true"><component :is="c.icon" :size="20" /></span>
+          <span class="card-t"><span class="card-l">{{ c.label }}</span><span class="card-x">«{{ c.text }}»</span></span>
+        </button>
+      </div>
+    </div>
 
     <!-- Ultimo scambio (nessuno storico: il comando successivo lo sostituisce) -->
     <div v-if="exchange || listings.length" class="conv">
@@ -15,11 +25,13 @@
           <span class="ic" aria-hidden="true"><component :is="ICON[row.kind]" :size="20" /></span>
           <div class="body">
             <template v-if="row.state === 'done'">
+              <span v-if="degraded" class="badge">{{ t('fishy.state.simplifiedBadge') }}</span>
               <strong>{{ row.title }}</strong>
               <span class="sum">
                 <template v-for="(p, i) in row.parts" :key="i"><span :class="{ 'fl-mono': p.mono }">{{ p.text }}</span><i v-if="i < row.parts.length - 1"> · </i></template>
               </span>
               <span v-if="row.alias" class="sub">{{ t('voice.alias', { alias: row.alias }) }}</span>
+              <span v-if="degraded && row.kind === 'catch'" class="sub">{{ t('fishy.state.checkSpeciesWeight') }}</span>
               <span v-if="row.toComplete" class="sub tc"><AlertCircle :size="14" /> {{ t('voice.toComplete') }}</span>
               <span class="sub fl-mono">{{ row.time }}</span>
             </template>
@@ -66,30 +78,55 @@
     </div>
 
     <!-- Domande di Fishy: serve un'informazione -->
-    <div v-for="n in notices" :key="n.id" class="notice" role="alert">
+    <div v-for="n in notices" :key="n.id" class="notice" :class="{ dashed: n.reason === 'not_understood' }" role="alert">
       <div class="nq">
         <Fishy expression="confused" :size="32" avatar />
         <div>
           <p class="q">{{ n.reason === 'not_understood' ? t('fishy.state.notUnderstood') : n.question }}</p>
           <p v-if="n.reason === 'not_understood' && n.question" class="sub">{{ n.question }}</p>
-          <p v-if="n.reason === 'place_missing'" class="sub">{{ t('fishy.state.placeHint') }}</p>
         </div>
       </div>
-      <div class="chips">
-        <button v-for="c in (n.candidates || [])" :key="c" type="button" class="chip" :disabled="busy" @click="answer(n, { species: c })">{{ c }}</button>
-        <button v-if="n.reason === 'species_unknown' && n.asked" type="button" class="chip" :disabled="busy" @click="answer(n, { species: n.asked, force: true })">{{ t('voice.useAnyway', { name: n.asked }) }}</button>
-        <button type="button" class="chip ghost" @click="store.dismissVoiceNeedsInfo(n.id)">{{ t('voice.dismiss') }}</button>
-      </div>
+      <template v-if="n.reason === 'not_understood'">
+        <div v-if="n.text" class="heard"><span class="sub">{{ t('fishy.state.heard') }}</span><em>«{{ n.text }}»</em></div>
+        <button v-if="supported" type="button" class="pbtn" :disabled="busy" @click="repeatByVoice(n)"><Mic :size="16" /> {{ t('fishy.state.repeatVoice') }}</button>
+        <button type="button" class="obtn" :disabled="busy" @click="writeInstead(n)"><Keyboard :size="16" /> {{ t('fishy.state.write') }}</button>
+      </template>
+      <template v-else>
+        <div class="chips">
+          <button v-if="n.reason === 'place_missing'" type="button" class="chip pos" :disabled="busy || locating" @click="usePosition(n)"><LocateFixed :size="16" /> {{ locating ? t('fishy.state.locating') : t('fishy.state.useMyPosition') }}</button>
+          <template v-if="n.reason === 'place_missing'">
+            <button v-for="p in recentPlaces" :key="p" type="button" class="chip" :disabled="busy" @click="answerPlace(n, p)">{{ p }}</button>
+          </template>
+          <button v-for="c in (n.candidates || [])" :key="c" type="button" class="chip" :disabled="busy" @click="answer(n, { species: c })">{{ c }}</button>
+          <button v-if="n.reason === 'species_unknown' && n.asked" type="button" class="chip" :disabled="busy" @click="answer(n, { species: n.asked, force: true })">{{ t('voice.useAnyway', { name: n.asked }) }}</button>
+          <button type="button" class="chip ghost" @click="store.dismissVoiceNeedsInfo(n.id)">{{ t('voice.dismiss') }}</button>
+        </div>
+        <p v-if="n.reason === 'place_missing'" class="sub">{{ locMsg || t('fishy.state.placeHint') }}</p>
+      </template>
     </div>
 
     <!-- Stati: coda, limite, servizio, microfono -->
-    <p v-if="queued" class="state" role="status"><WifiOff :size="16" /> {{ t('voice.queued', { n: queued }) }} <span class="fl-mono cnt">{{ queued }}</span></p>
-    <p v-if="issue && issue !== 'degraded' && issue !== 'error'" class="state" :class="issue" role="status">
+    <div v-if="queued && issue !== 'ai_down'" class="scard" role="status">
+      <p class="st"><Clock :size="18" /> {{ t('fishy.state.pendingTitle', { n: queued }, queued) }}</p>
+      <p class="sub">{{ issueText || t('fishy.state.pendingBody') }}</p>
+      <ul class="qlist"><li v-for="i in queuedItems" :key="i.localId"><span>«{{ i.data?.text }}»</span><span class="fl-mono">{{ i.data?.time }}</span></li></ul>
+    </div>
+    <div v-if="issue === 'ai_down'" class="scard bad" role="alert">
+      <p class="st"><AlertTriangle :size="18" /> {{ t('fishy.state.aiDownTitle') }}</p>
+      <p class="sub">{{ issueText }}</p>
+      <button type="button" class="pbtn" :disabled="offline.syncing" @click="offline.sync()"><RefreshCw :size="16" /> {{ t('fishy.state.retryNow') }}</button>
+      <button type="button" class="obtn" @click="manualEntry"><Pencil :size="16" /> {{ t('fishy.state.writeByHand') }}</button>
+    </div>
+    <p v-if="issue && !['degraded', 'error', 'ai_down'].includes(issue) && !(queued && ['rate_limit', 'offline'].includes(issue))" class="state" :class="issue" role="status">
       <component :is="issue === 'mic_denied' ? MicOff : issue === 'offline' ? WifiOff : Clock" :size="16" /> {{ issueText }}
     </p>
     <p v-if="issue === 'error'" class="state err" role="alert"><AlertTriangle :size="16" /> {{ issueText }}</p>
-    <p v-if="issue === 'degraded'" class="state warn" role="status"><AlertCircle :size="16" /> {{ issueText }}</p>
-    <p v-if="unsynced" class="state" role="status"><RefreshCw :size="16" /> {{ t('fishy.state.unsynced') }}</p>
+    <p v-if="issue === 'degraded'" class="state warn" role="status"><AlertCircle :size="16" /> {{ t('fishy.state.simplified') }}</p>
+    <div v-if="unsynced" class="scard sync" role="status">
+      <p class="st"><Loader2 :size="18" class="fishy-spin" /> {{ t('fishy.state.syncingTitle') }}</p>
+      <p class="sub">{{ t('fishy.state.unsynced') }}</p>
+      <button type="button" class="obtn" @click="manualEntry"><Pencil :size="16" /> {{ t('fishy.state.recordByHand') }}</button>
+    </div>
     <p v-if="!supported" class="state calm"><Keyboard :size="16" /> {{ t('fishy.state.keyboardOnly') }}</p>
 
     <!-- In ascolto: testo provvisorio e, col tieni-premuto, la zona di annullo -->
@@ -112,12 +149,14 @@
       <button v-if="listening || closable" type="button" class="cancelbtn" @click="listening ? cancelListening() : $emit('close')">{{ t('fishy.cancel') }}</button>
     </div>
 
+    <p v-if="supported && (listening ? !holding : !hideHold)" class="hint">{{ listening ? t('fishy.autoStopHint') : t('fishy.holdHint') }}</p>
+
     <form v-if="typing || !supported" class="type" @submit.prevent="sendTyped">
       <input ref="inp" v-model="typed" class="fl-inp" type="text" maxlength="600" :placeholder="t('voice.placeholder')" :aria-label="t('voice.placeholder')" :disabled="busy" />
       <button type="submit" class="fl-btn2" :disabled="busy || !typed.trim()">{{ t('voice.send') }}</button>
     </form>
 
-    <div v-if="!busy && !listening" class="try">
+    <div v-if="!busy && !listening && !showIntro" class="try">
       <span class="try-l">{{ t('fishy.try') }}</span>
       <button v-for="ex in examples" :key="ex" type="button" class="ex" @click="useExample(ex)">«{{ ex }}»</button>
     </div>
@@ -128,9 +167,11 @@
 import { ref, computed, nextTick } from 'vue'
 import { RouterLink, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { Mic, MicOff, Keyboard, Loader2, WifiOff, Square, Play, Fish, RefreshCw, Flag, Undo2, RotateCcw, AlertCircle, AlertTriangle, Info, Clock, ArrowLeft, Tag } from 'lucide-vue-next'
+import { Mic, MicOff, Keyboard, Loader2, WifiOff, Square, Play, Fish, RefreshCw, Flag, Undo2, RotateCcw, AlertCircle, AlertTriangle, Info, Clock, ArrowLeft, Tag, Pencil, LocateFixed, MapPin } from 'lucide-vue-next'
 import Fishy from '../Fishy.vue'
 import { useSessionStore } from '../../stores/sessions.js'
+import { useOfflineStore } from '../../stores/offline.js'
+import { reverseGeocode } from '../../utils/places.js'
 import { useMarketStore } from '../../stores/market.js'
 import { listingParts } from '../../utils/fishyListing.js'
 import { useFishyVoice } from '../../composables/useFishyVoice.js'
@@ -148,8 +189,31 @@ const { t } = useI18n()
 const router = useRouter()
 const market = useMarketStore()
 const store = useSessionStore()
+const offline = useOfflineStore()
 const voice = useFishyVoice()
 const { conversation, busy, issue, issueText, announcement, queued, listening, supported, interim, elapsedLabel, startListening, finish, cancelListening, submit } = voice
+
+const degraded = computed(() => issue.value === 'degraded')
+const queuedItems = computed(() => offline.outbox.filter(i => i.meta?.kind === 'assistant' || i.meta?.kind === 'voice-catch'))
+const cards = computed(() => [
+  { key: 'start', icon: MapPin, label: t('fishy.cards.start'), text: t('fishy.ex1') },
+  { key: 'catch', icon: Fish, label: t('fishy.cards.catch'), text: t('fishy.ex2') },
+  { key: 'bait', icon: RefreshCw, label: t('fishy.cards.bait'), text: t('fishy.ex3') }
+])
+// Luoghi recenti: i più usati nelle uscite già caricate, al massimo tre.
+const recentPlaces = computed(() => {
+  const seen = []
+  for (const s of store.sessions || []) {
+    const name = s.location?.name
+    if (name && !seen.includes(name)) seen.push(name)
+    if (seen.length === 3) break
+  }
+  return seen
+})
+const locating = ref(false)
+const locMsg = ref('')
+// Tieni-premuto: su iPhone è disattivato (solo tocco), quindi lì la frase non va mostrata.
+const hideHold = computed(() => isIOS())
 
 const typing = ref(false)
 const typed = ref('')
@@ -159,7 +223,7 @@ const notices = computed(() => store.voiceNeedsInfo)
 const listings = computed(() => store.voiceListings)
 const showIntro = computed(() => !exchange.value && !listings.value.length && !notices.value.length && !issue.value && !queued.value && !busy.value && !listening.value)
 const unsynced = computed(() => String(store.ongoing?._id || '').startsWith('local-'))
-const label = computed(() => busy.value ? t('voice.thinking') : listening.value ? t('fishy.stop') : t('fishy.start'))
+const label = computed(() => busy.value ? t('voice.thinking') : listening.value ? t('fishy.tapToFinish') : t('fishy.tapToTalk'))
 const EX = ['ex1', 'ex2', 'ex3', 'ex4']
 const examples = computed(() => (voice.uses.value < EXAMPLES_FULL_UNTIL ? EX : EX.slice(0, 2)).map(k => t(`fishy.${k}`)))
 
@@ -198,6 +262,20 @@ const parts = d => listingParts(d, { category: t(`market.categories.${d.category
 function editListing(l) { market.draft = l.draft; store.dismissVoiceListing(l.id); emit('close'); router.push('/market/new') }
 function sendTyped() { const text = typed.value; typed.value = ''; submit({ text }) }
 function answer(n, extra) { store.dismissVoiceNeedsInfo(n.id); submit({ text: n.text, ...extra }) }
+function answerPlace(n, place) { store.dismissVoiceNeedsInfo(n.id); submit({ text: `${n.text}, a ${place}` }) }
+function usePosition(n) {
+  if (!navigator.geolocation) { locMsg.value = t('placeInput.noGps'); return }
+  locating.value = true; locMsg.value = ''
+  navigator.geolocation.getCurrentPosition(async pos => {
+    const p = await reverseGeocode(pos.coords.latitude, pos.coords.longitude)
+    locating.value = false
+    if (p?.name) answerPlace(n, p.name); else locMsg.value = t('placeInput.noResults')
+  }, () => { locating.value = false; locMsg.value = t('placeInput.gpsDenied') }, { timeout: 10000, enableHighAccuracy: true })
+}
+function repeatByVoice(n) { store.dismissVoiceNeedsInfo(n.id); startListening() }
+async function writeInstead(n) { store.dismissVoiceNeedsInfo(n.id); typing.value = true; await nextTick(); inp.value?.focus() }
+// Inserimento a mano: cattura sull'uscita in corso, altrimenti nuova uscita.
+function manualEntry() { const id = store.ongoing?._id; emit('close'); router.push(id ? `/session/${id}/catch/new` : '/new') }
 async function useExample(ex) { typing.value = true; typed.value = ex; await nextTick(); inp.value?.focus() }
 </script>
 
@@ -247,7 +325,28 @@ async function useExample(ex) { typing.value = true; typed.value = ex; await nex
 .cancelbtn { min-height: 60px; min-width: 44px; padding: 0 12px; border-radius: 20px; border: 1px solid var(--border); background: transparent; color: var(--foam); font-weight: 700; font-size: 14px; cursor: pointer; }
 .type { display: flex; gap: 8px; }
 .type .fl-inp { flex: 1; min-width: 0; }
-.intro { font-size: 15px; line-height: 1.4; color: var(--foam); }
+.hello { display: flex; flex-direction: column; align-items: center; gap: 8px; text-align: center; padding-top: 8px; }
+.hello h3 { margin: 4px 0 0; font-size: 22px; font-weight: 800; color: var(--foam); }
+.hello-p { margin: 0 0 6px; font-size: 15px; line-height: 1.4; color: var(--text-muted); max-width: 320px; }
+.cards { display: flex; flex-direction: column; gap: 8px; width: 100%; }
+.card { display: flex; align-items: center; gap: 12px; min-height: 56px; padding: 10px 12px; border-radius: 16px; border: 1px solid var(--border); background: var(--surface); color: var(--foam); text-align: left; cursor: pointer; }
+.card-t { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.card-l { font-size: 12px; color: var(--text-muted); }
+.card-x { font-size: 15px; font-weight: 700; overflow-wrap: anywhere; }
+.hint { margin: 0; text-align: center; font-size: 12px; color: var(--text-muted); }
+.badge { align-self: flex-start; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 10px; border: 1px solid rgb(var(--color-sand-text)); color: rgb(var(--color-sand-text)); }
+.notice.dashed { border-style: dashed; border-color: var(--border); }
+.heard { display: flex; flex-direction: column; gap: 2px; font-size: 14px; }
+.chip.pos { border-color: rgb(var(--color-ocean)); color: rgb(var(--color-ocean-text)); display: inline-flex; align-items: center; gap: 6px; }
+.pbtn, .obtn { min-height: 44px; padding: 0 14px; border-radius: 14px; font-weight: 700; font-size: 14px; display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; width: 100%; }
+.pbtn { background: rgb(var(--color-ocean)); border: 0; color: #fff; }
+.obtn { background: transparent; border: 1px solid var(--border); color: var(--foam); }
+.scard { background: var(--surface); border: 1px solid rgb(var(--color-sand-text) / .6); border-radius: 20px; padding: 12px; display: flex; flex-direction: column; gap: 8px; }
+.scard.bad { border-color: rgb(var(--color-danger)); }
+.scard.sync { border-color: rgb(var(--color-ocean)); }
+.st { margin: 0; display: flex; align-items: center; gap: 8px; font-weight: 800; font-size: 15px; }
+.qlist { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; font-size: 13px; }
+.qlist li { display: flex; justify-content: space-between; gap: 8px; padding: 8px 0; border-top: 1px solid var(--border); }
 /* Esempi: lista compatta, allineata a sinistra, righe da 36 px */
 .try { display: flex; flex-direction: column; align-items: flex-start; gap: 0; }
 .try-l { font-size: 12px; color: var(--text-muted); }
