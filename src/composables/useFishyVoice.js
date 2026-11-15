@@ -1,8 +1,8 @@
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useSessionStore } from '../stores/sessions.js'
 import { useOfflineStore } from '../stores/offline.js'
-import { useSpeech, isIOS } from './useSpeech.js'
+import { useSpeech, isIOS, holdMic, releaseMic } from './useSpeech.js'
 import { useToast } from './useToast.js'
 import { useFishySheet } from './useFishySheet.js'
 import { createFishyConversation } from './fishyConversation.js'
@@ -45,8 +45,10 @@ function init() {
   })
   if (typeof document !== 'undefined') {
     // In background il timer dell'annullo potrebbe non scattare mai: lo saldiamo subito.
-    document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') conversation.flush() })
-    window.addEventListener('pagehide', () => conversation.flush())
+    document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') { conversation.flush(); releaseMic() } else if (useFishySheet().open.value) holdMic() })
+    window.addEventListener('pagehide', () => { conversation.flush(); releaseMic() })
+    // Un solo permesso microfono per tutta la vita del foglio (iOS), poi si rilascia.
+    watch(useFishySheet().open, o => { if (o) holdMic(); else releaseMic() }, { immediate: true })
   }
 }
 
@@ -57,7 +59,8 @@ function startListening() {
   if (!speech.listening.value) return
   elapsed.value = 0
   const t0 = Date.now()
-  clearInterval(tick); tick = setInterval(() => { elapsed.value = Date.now() - t0; if (!speech.listening.value) { clearInterval(tick); tick = null } }, 250)
+  let offset = 0
+  clearInterval(tick); tick = setInterval(() => { if (speech.audioOn.value) { elapsed.value = Date.now() - (t0 + offset) } else offset = Date.now() - t0; if (!speech.listening.value) { clearInterval(tick); tick = null } }, 250)
   announcement.value = t('voice.listeningAnnounce'); buzz()
 }
 const finish = () => speech?.stop()          // tocca per finire: la frase parte
