@@ -67,19 +67,38 @@ let timer = null
 const inp = ref(null)
 const dropUp = ref(false)
 const listMax = ref(0)
-const listStyle = computed(() => (props.alwaysDown && listMax.value ? { maxHeight: `${listMax.value}px`, overflowY: 'auto' } : null))
+const listStyle = computed(() => (listMax.value ? { maxHeight: `${listMax.value}px`, overflowY: 'auto', overscrollBehavior: 'contain' } : null))
+// Primo antenato scrollabile: il suo bordo alto (intestazione compresa) è il limite oltre cui la lista verrebbe tagliata.
+function scrollParent(el) {
+  for (let n = el?.parentElement; n; n = n.parentElement) {
+    const o = getComputedStyle(n).overflowY
+    if ((o === 'auto' || o === 'scroll') && n.scrollHeight > n.clientHeight) return n
+  }
+  return null
+}
 // Apre verso l'alto se sotto non c'è spazio (barra in basso, tastiera): il menu non resta coperto.
 function measure() {
   const r = inp.value?.getBoundingClientRect(); if (!r) return
   const vh = window.visualViewport?.height || window.innerHeight
   if (props.alwaysDown) { dropUp.value = false; listMax.value = Math.max(160, Math.floor(vh - r.bottom - 16)); return }
+  const vTop = window.visualViewport?.offsetTop || 0
   dropUp.value = vh - r.bottom < 300 && r.top > 300 - 120
+  if (dropUp.value) {
+    // Lista in alto: altezza limitata allo spazio tra il bordo alto visibile (o della pagina scrollabile) e il campo.
+    const sp = scrollParent(inp.value)
+    const top = Math.max(vTop, sp ? sp.getBoundingClientRect().top : 0)
+    listMax.value = Math.max(120, Math.floor(r.top - top - 16))
+  } else if (!props.alwaysDown) listMax.value = 0
 }
 
 // Con la tastiera aperta porta il campo in cima all'area visibile, così i suggerimenti (sotto) restano in vista.
 function onFocus() {
   open.value = true; measure()
-  if (!props.alwaysDown) return
+  if (!props.alwaysDown) {
+    // Tastiera aperta: il campo resta sopra la tastiera e sopra di lui c'è spazio per la lista.
+    setTimeout(() => { if (dropUp.value) { inp.value?.scrollIntoView({ block: 'center', behavior: 'smooth' }); setTimeout(measure, 350) } }, 300)
+    return
+  }
   setTimeout(() => { inp.value?.scrollIntoView({ block: 'start', behavior: 'smooth' }); setTimeout(measure, 350) }, 300)
 }
 function onViewport() { if (open.value) measure() }
@@ -143,7 +162,7 @@ onBeforeUnmount(() => { clearTimeout(timer); window.visualViewport?.removeEventL
 .place-inp { width: 100%; box-sizing: border-box; }
 .place-btn { flex: none; width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; border-radius: 14px; border: 1px solid var(--border-light); background: var(--surface-2); color: rgb(var(--color-ocean-text)); cursor: pointer; }
 .place-list { position: absolute; left: 0; right: 0; top: calc(100% + 6px); z-index: 50; margin: 0; padding: 6px; list-style: none; background: var(--surface); border: 1px solid var(--border-light); border-radius: 16px; box-shadow: 0 12px 30px rgba(0,0,0,.25); }
-.place-list.up { top: auto; bottom: calc(100% + 6px); max-height: 42vh; overflow-y: auto; }
+.place-list.up { top: auto; bottom: calc(100% + 6px); max-height: 42vh; }
 .place-opt { display: flex; align-items: center; gap: 12px; width: 100%; min-height: 52px; padding: 6px 8px; background: none; border: 0; border-radius: 12px; color: var(--foam); text-align: left; cursor: pointer; }
 .place-opt:hover { background: var(--surface-2); }
 .place-ic { width: 36px; height: 36px; border-radius: 10px; background: var(--surface-2); display: flex; align-items: center; justify-content: center; color: rgb(var(--color-ocean-text)); flex: none; }
