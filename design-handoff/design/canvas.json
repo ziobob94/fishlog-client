@@ -1,1 +1,1271 @@
-{"v": 3, "attachments": {}, "boards": {"Amici.dc.html": {"h": 900, "title": "Amici", "w": 390, "x": 940, "y": 3440}, "ChatLista.dc.html": {"h": 900, "title": "Chat · lista", "w": 390, "x": 2350, "y": 0}, "ChatThread.dc.html": {"h": 900, "is_interactive": true, "title": "Chat · conversazione", "w": 390, "x": 2820, "y": 0}, "Classifica.dc.html": {"h": 960, "title": "Classifica", "w": 390, "x": 2890, "y": 1760}, "Commenti.dc.html": {"h": 844, "title": "Social · commenti", "w": 390, "x": 0, "y": 3440}, "Community.dc.html": {"h": 1770, "is_interactive": true, "title": "Social · feed", "w": 390, "x": 1410, "y": 0}, "Dettaglio.dc.html": {"h": 1640, "title": "Dettaglio uscita · mobile", "w": 390, "x": 940, "y": 0}, "Globe.dc.html": {"h": 580, "is_interactive": true, "title": "Mappamondo · componente", "w": 390, "x": 1880, "y": 4800}, "Gruppi.dc.html": {"h": 900, "title": "Gruppi", "w": 390, "x": 1410, "y": 3440}, "HomeDesktop.dc.html": {"expand": "fill", "h": 1500, "is_interactive": true, "title": "Home · desktop", "w": 1360, "x": 0, "y": 1760}, "Icone.dc.html": {"h": 1230, "title": "Identità · icone", "w": 1200, "x": 2560, "y": 6800}, "Login.dc.html": {"h": 844, "title": "Accesso", "w": 390, "x": 1480, "y": 1760}, "Logo.dc.html": {"h": 1260, "title": "Identità · logo", "w": 1200, "x": 0, "y": 6800}, "Main.dc.html": {"h": 1500, "is_interactive": true, "title": "Home · mobile", "w": 390, "x": 0, "y": 0}, "MarketAnnuncio.dc.html": {"h": 1180, "title": "Market · annuncio", "w": 390, "x": 3760, "y": 0}, "MarketLista.dc.html": {"h": 1240, "title": "Market · annunci", "w": 390, "x": 3290, "y": 0}, "MarketNegozi.dc.html": {"h": 900, "title": "Market · negozi", "w": 390, "x": 470, "y": 4800}, "Notifiche.dc.html": {"h": 860, "title": "Notifiche", "w": 390, "x": 1880, "y": 3440}, "NuovaUscita.dc.html": {"h": 980, "title": "Nuova uscita", "w": 390, "x": 1950, "y": 1760}, "NuovoAnnuncio.dc.html": {"h": 1220, "title": "Market · nuovo annuncio", "w": 390, "x": 940, "y": 4800}, "NuovoGruppoChat.dc.html": {"h": 844, "title": "Chat · nuovo gruppo", "w": 390, "x": 1410, "y": 4800}, "NuovoPost.dc.html": {"h": 900, "title": "Social · nuovo post", "w": 390, "x": 1880, "y": 0}, "Profilo.dc.html": {"h": 1300, "title": "Profilo e impostazioni", "w": 390, "x": 0, "y": 4800}, "ProfiloUtente.dc.html": {"h": 1240, "title": "Social · profilo utente", "w": 390, "x": 470, "y": 3440}, "Registrazione.dc.html": {"h": 1000, "title": "Registrazione", "w": 390, "x": 2350, "y": 4800}, "RichiestaVenditore.dc.html": {"h": 1320, "title": "Venditore · 1 richiesta", "w": 390, "x": 2820, "y": 4800}, "SpecieRicerca.dc.html": {"h": 1300, "title": "15 · Specie: in stagione, ricerca e stati (scuro)", "w": 390, "x": 3360, "y": 1760}, "SpecieScheda.dc.html": {"h": 1560, "title": "Specie · scheda", "w": 390, "x": 3830, "y": 1760}, "Statistiche.dc.html": {"h": 1040, "title": "Statistiche", "w": 390, "x": 2420, "y": 1760}, "StatoVerifica.dc.html": {"h": 900, "is_interactive": true, "title": "Venditore · 2 stato verifica", "w": 390, "x": 3290, "y": 4800}, "Stile.dc.html": {"h": 1640, "title": "Identità · linguaggio visivo", "w": 1200, "x": 1280, "y": 6800}, "Uscite.dc.html": {"h": 1000, "title": "Uscite · mobile", "w": 390, "x": 470, "y": 0}, "VenditoreProfilo.dc.html": {"h": 1760, "title": "Venditore · 3 configura negozio", "w": 390, "x": 3760, "y": 4800}, "UscitaInCorso.dc.html": {"h": 1000, "is_interactive": true, "title": "Uscita in corso", "w": 390, "x": 0, "y": 8800}, "AggiungiCattura.dc.html": {"h": 1200, "is_interactive": true, "title": "Aggiungi cattura", "w": 390, "x": 470, "y": 8800}, "ChiudiUscita.dc.html": {"h": 960, "is_interactive": true, "title": "Chiudi uscita", "w": 390, "x": 940, "y": 8800}, "DatiUscita.dc.html": {"h": 900, "is_interactive": true, "title": "Dati uscita", "w": 390, "x": 1410, "y": 8800}, "AcquaMeteo.dc.html": {"h": 1280, "is_interactive": true, "title": "Acqua e meteo", "w": 390, "x": 1880, "y": 8800}, "Crea.dc.html": {"h": 844, "title": "Crea · scelta", "w": 390, "x": 0, "y": 10200}, "NuovaStoria.dc.html": {"h": 844, "is_interactive": true, "title": "Storia · crea", "w": 390, "x": 470, "y": 10200}, "StoriaVista.dc.html": {"h": 844, "title": "Storia · guarda", "w": 390, "x": 940, "y": 10200}, "Bacheca.dc.html": {"h": 1200, "is_interactive": true, "title": "La mia bacheca · profilo", "w": 390, "x": 0, "y": 11300}, "CreaBacheca.dc.html": {"h": 844, "title": "Bacheca · menù Crea", "w": 390, "x": 470, "y": 11300}, "NuovoPostStati.dc.html": {"h": 964, "is_interactive": true, "title": "Nuovo post · stati", "w": 390, "x": 940, "y": 11300}, "NuovaStoriaStati.dc.html": {"h": 908, "is_interactive": true, "title": "Nuova storia · stati", "w": 390, "x": 1410, "y": 11300}, "MenuProfilo.dc.html": {"h": 844, "title": "Profilo · menù", "w": 390, "x": 1880, "y": 11300}, "ImpostazioniProfilo.dc.html": {"h": 1040, "is_interactive": true, "title": "Profilo · impostazioni", "w": 390, "x": 2350, "y": 11300}, "GareElenco.dc.html": {"h": 840, "is_interactive": true, "title": "48 · Gare · elenco (scuro)", "w": 390, "x": 0, "y": 12700}, "GareElenco-chiaro.dc.html": {"h": 840, "is_interactive": true, "title": "48 · Gare · elenco (chiaro)", "w": 390, "x": 470, "y": 12700}, "GareCampionato.dc.html": {"h": 947, "is_interactive": true, "title": "49 · Campionato (scuro)", "w": 390, "x": 960, "y": 12700}, "GareCampionato-chiaro.dc.html": {"h": 947, "is_interactive": true, "title": "49 · Campionato (chiaro)", "w": 390, "x": 1430, "y": 12700}, "GaraDettaglio.dc.html": {"h": 905, "is_interactive": true, "title": "50 · Gara (scuro)", "w": 390, "x": 1920, "y": 12700}, "GaraDettaglio-chiaro.dc.html": {"h": 905, "is_interactive": true, "title": "50 · Gara (chiaro)", "w": 390, "x": 2390, "y": 12700}, "GaraInserimento.dc.html": {"h": 1248, "is_interactive": true, "title": "51 · Inserimento giudice (scuro)", "w": 390, "x": 2880, "y": 12700}, "GaraInserimento-chiaro.dc.html": {"h": 1248, "is_interactive": true, "title": "51 · Inserimento giudice (chiaro)", "w": 390, "x": 3350, "y": 12700}, "GareTabella.dc.html": {"h": 1242, "is_interactive": true, "title": "52 · Tabella lunghezza-peso (scuro)", "w": 390, "x": 3840, "y": 12700}, "GareTabella-chiaro.dc.html": {"h": 1242, "is_interactive": true, "title": "52 · Tabella lunghezza-peso (chiaro)", "w": 390, "x": 4310, "y": 12700}, "GareRegole.dc.html": {"h": 2199, "is_interactive": true, "title": "53 · Regole (scuro)", "w": 390, "x": 4800, "y": 12700}, "GareRegole-chiaro.dc.html": {"h": 2199, "is_interactive": true, "title": "53 · Regole (chiaro)", "w": 390, "x": 5270, "y": 12700}, "GareClassificaPubblica.dc.html": {"h": 1152, "is_interactive": true, "title": "54 · Classifica pubblica (scuro)", "w": 390, "x": 5760, "y": 12700}, "GareClassificaPubblica-chiaro.dc.html": {"h": 1152, "is_interactive": true, "title": "54 · Classifica pubblica (chiaro)", "w": 390, "x": 6230, "y": 12700}, "GareIscritti.dc.html": {"h": 863, "is_interactive": true, "title": "55 · Iscritti e squadre (scuro)", "w": 390, "x": 6720, "y": 12700}, "GareIscritti-chiaro.dc.html": {"h": 863, "is_interactive": true, "title": "55 · Iscritti e squadre (chiaro)", "w": 390, "x": 7190, "y": 12700}, "MeteoMobile.dc.html": {"h": 4800, "is_interactive": true, "title": "56 · Meteo e mare · mobile (scuro)", "w": 390, "x": 0, "y": 14900}, "MeteoMobile-chiaro.dc.html": {"h": 4800, "is_interactive": true, "title": "56 · Meteo e mare · mobile (chiaro)", "w": 390, "x": 470, "y": 14900}, "MeteoDesktop.dc.html": {"h": 3229, "is_interactive": true, "title": "57 · Meteo e mare · desktop (scuro)", "w": 1200, "x": 1000, "y": 14900}, "MeteoDesktop-chiaro.dc.html": {"h": 3229, "is_interactive": true, "title": "57 · Meteo e mare · desktop (chiaro)", "w": 1200, "x": 2280, "y": 14900}, "MeteoLuogo.dc.html": {"h": 811, "is_interactive": true, "title": "58 · Meteo · luogo, permessi, ricerca (scuro)", "w": 390, "x": 0, "y": 19900}, "MeteoLuogo-chiaro.dc.html": {"h": 811, "is_interactive": true, "title": "58 · Meteo · luogo, permessi, ricerca (chiaro)", "w": 390, "x": 470, "y": 19900}, "MeteoHome.dc.html": {"h": 431, "is_interactive": true, "title": "59 · Meteo · scheda Home (scuro)", "w": 390, "x": 1000, "y": 19900}, "MeteoHome-chiaro.dc.html": {"h": 431, "is_interactive": true, "title": "59 · Meteo · scheda Home (chiaro)", "w": 390, "x": 1470, "y": 19900}, "MeteoComponenti.dc.html": {"h": 1023, "is_interactive": true, "title": "60 · Meteo · pressione, vento, luna (scuro)", "w": 390, "x": 2000, "y": 19900}, "MeteoComponenti-chiaro.dc.html": {"h": 1023, "is_interactive": true, "title": "60 · Meteo · pressione, vento, luna (chiaro)", "w": 390, "x": 2470, "y": 19900}, "CattureClassifica.dc.html": {"h": 1135, "is_interactive": true, "title": "61 · Profilo · classifica delle catture", "w": 390, "x": 2820, "y": 11300}, "MeteoGiorno.dc.html": {"h": 4695, "is_interactive": true, "title": "62 · Meteo · dettaglio giorno (scuro)", "w": 390, "x": 3000, "y": 19900}, "MeteoGiorno-chiaro.dc.html": {"h": 4695, "is_interactive": true, "title": "62 · Meteo · dettaglio giorno (chiaro)", "w": 390, "x": 3470, "y": 19900}, "MeteoIcone.dc.html": {"h": 2003, "title": "63 · Meteo · icone (scuro)", "w": 1200, "x": 4000, "y": 19900}, "MeteoIcone-chiaro.dc.html": {"h": 2003, "title": "63 · Meteo · icone (chiaro)", "w": 1200, "x": 5280, "y": 19900}, "HomeMeteo.dc.html": {"h": 1156, "is_interactive": true, "title": "64 · Home · meteo in evidenza, mappamondo espandibile (scuro)", "w": 390, "x": 0, "y": 24800}, "HomeMeteo-chiaro.dc.html": {"h": 1156, "is_interactive": true, "title": "64 · Home · meteo in evidenza, mappamondo espandibile (chiaro)", "w": 390, "x": 470, "y": 24800}, "HomeMeteoDesktop.dc.html": {"h": 977, "is_interactive": true, "title": "65 · Home · meteo e mappamondo (desktop) (scuro)", "w": 1200, "x": 1000, "y": 24800}, "HomeMeteoDesktop-chiaro.dc.html": {"h": 977, "is_interactive": true, "title": "65 · Home · meteo e mappamondo (desktop) (chiaro)", "w": 1200, "x": 2280, "y": 24800}, "UscitaChiusa.dc.html": {"h": 1320, "is_interactive": true, "title": "66 · Uscita conclusa: aggiungi cattura e modifica semplificati (scuro)", "w": 390, "x": 0, "y": 26300}, "UscitaChiusa-chiaro.dc.html": {"h": 1320, "is_interactive": true, "title": "66 · Uscita conclusa: aggiungi cattura e modifica semplificati (chiaro)", "w": 390, "x": 470, "y": 26300}, "SpecieRicerca-chiaro.dc.html": {"h": 1300, "is_interactive": true, "title": "15 · Specie: in stagione, ricerca e stati (chiaro)", "w": 390, "x": 3360, "y": 3200}, "GareFipsasDesktop.dc.html": {"h": 1100, "is_interactive": true, "title": "67 · Gare FIPSAS: desktop — prova, settori, pesatura, classifiche, stampa (scuro)", "w": 1200, "x": 0, "y": 28000}, "GareFipsasDesktop-chiaro.dc.html": {"h": 1100, "is_interactive": true, "title": "67 · Gare FIPSAS: desktop — prova, settori, pesatura, classifiche, stampa (chiaro)", "w": 1200, "x": 1300, "y": 28000}, "GareFipsasMobile.dc.html": {"h": 1000, "is_interactive": true, "title": "68 · Gare FIPSAS mobile: pesatura e classifiche (scuro)", "w": 390, "x": 2600, "y": 28000}, "GareFipsasMobile-chiaro.dc.html": {"h": 1000, "is_interactive": true, "title": "68 · Gare FIPSAS mobile: pesatura e classifiche (chiaro)", "w": 390, "x": 3070, "y": 28000}, "HomePreferiti.dc.html": {"h": 1400, "is_interactive": true, "title": "69 · Home · località preferite (scuro)", "w": 390, "x": 0, "y": 29300}, "HomePreferiti-chiaro.dc.html": {"h": 1400, "is_interactive": true, "title": "69 · Home · località preferite (chiaro)", "w": 390, "x": 470, "y": 29300}, "HomeAttivita.dc.html": {"h": 1250, "is_interactive": true, "title": "70 · Home · attività dei pesci (scuro)", "w": 390, "x": 0, "y": 30900}, "HomeAttivita-chiaro.dc.html": {"h": 1250, "is_interactive": true, "title": "70 · Home · attività dei pesci (chiaro)", "w": 390, "x": 470, "y": 30900}, "FishyPersonaggio.dc.html": {"h": 1000, "is_interactive": true, "title": "71 · Fishy · personaggio e espressioni (scuro)", "w": 1200, "x": 0, "y": 32400}, "FishyPersonaggio-chiaro.dc.html": {"h": 1000, "is_interactive": true, "title": "71 · Fishy · personaggio e espressioni (chiaro)", "w": 1200, "x": 1300, "y": 32400}, "FishyPulsante.dc.html": {"h": 960, "is_interactive": true, "title": "72 · Fishy · pulsante, 8 stati (scuro)", "w": 390, "x": 0, "y": 34600}, "FishyPulsante-chiaro.dc.html": {"h": 960, "is_interactive": true, "title": "72 · Fishy · pulsante, 8 stati (chiaro)", "w": 390, "x": 0, "y": 35700}, "FishyFoglio.dc.html": {"h": 1000, "is_interactive": true, "title": "73 · Fishy · foglio conversazione (scuro)", "w": 390, "x": 500, "y": 34600}, "FishyFoglio-chiaro.dc.html": {"h": 1000, "is_interactive": true, "title": "73 · Fishy · foglio conversazione (chiaro)", "w": 390, "x": 500, "y": 35700}, "FishyDomande.dc.html": {"h": 1000, "is_interactive": true, "title": "74 · Fishy · domande, errori e stati (scuro)", "w": 390, "x": 1000, "y": 34600}, "FishyDomande-chiaro.dc.html": {"h": 1000, "is_interactive": true, "title": "74 · Fishy · domande, errori e stati (chiaro)", "w": 390, "x": 1000, "y": 35700}, "FishyIngressi.dc.html": {"h": 960, "is_interactive": true, "title": "75 · Fishy · punti di ingresso (scuro)", "w": 390, "x": 1500, "y": 34600}, "FishyIngressi-chiaro.dc.html": {"h": 960, "is_interactive": true, "title": "75 · Fishy · punti di ingresso (chiaro)", "w": 390, "x": 1500, "y": 35700}, "FishyMisure.dc.html": {"h": 880, "is_interactive": true, "title": "76 · Fishy · misure e schermi (scuro)", "w": 1320, "x": 0, "y": 33500}, "FishyMisure-chiaro.dc.html": {"h": 880, "is_interactive": true, "title": "76 · Fishy · misure e schermi (chiaro)", "w": 1320, "x": 1400, "y": 33500}, "FishyAnimato.dc.html": {"h": 960, "is_interactive": true, "title": "77 · Fishy · pulsante animato (scuro)", "w": 390, "x": 0, "y": 36800}, "FishyAnimato-chiaro.dc.html": {"h": 960, "is_interactive": true, "title": "77 · Fishy · pulsante animato (chiaro)", "w": 390, "x": 500, "y": 36800}, "HomeRiordino.dc.html": {"h": 930, "is_interactive": true, "title": "78 · Home riorganizzata (scuro)", "w": 390, "x": 0, "y": 38000}, "HomeRiordino-chiaro.dc.html": {"h": 930, "is_interactive": true, "title": "78 · Home riorganizzata (chiaro)", "w": 390, "x": 500, "y": 38000}, "HomeRiordinoDesktop.dc.html": {"h": 1000, "is_interactive": true, "title": "79 · Home riorganizzata desktop (scuro)", "w": 1200, "x": 1000, "y": 38000}, "HomeRiordinoDesktop-chiaro.dc.html": {"h": 1000, "is_interactive": true, "title": "79 · Home riorganizzata desktop (chiaro)", "w": 1200, "x": 2300, "y": 38000}, "ModificaUscita.dc.html": {"h": 1180, "is_interactive": true, "title": "80 · Modifica uscita · sezioni (scuro)", "w": 390, "x": 0, "y": 39500}, "ModificaUscita-chiaro.dc.html": {"h": 1180, "is_interactive": true, "title": "80 · Modifica uscita · sezioni (chiaro)", "w": 390, "x": 500, "y": 39500}, "ModificaUscitaStati.dc.html": {"h": 1240, "is_interactive": true, "title": "81 · Modifica uscita · varianti e stati (scuro)", "w": 390, "x": 1000, "y": 39500}, "ModificaUscitaStati-chiaro.dc.html": {"h": 1240, "is_interactive": true, "title": "81 · Modifica uscita · varianti e stati (chiaro)", "w": 390, "x": 1500, "y": 39500}, "ModificaUscitaDesktop.dc.html": {"h": 860, "is_interactive": true, "title": "82 · Modifica uscita · desktop (scuro)", "w": 1200, "x": 2100, "y": 39500}, "ModificaUscitaDesktop-chiaro.dc.html": {"h": 860, "is_interactive": true, "title": "82 · Modifica uscita · desktop (chiaro)", "w": 1200, "x": 3400, "y": 39500}}, "createdOnFiles": {"at": "2026-11-09T12:37:56.383Z", "v": 1}, "designSystems": [], "launch": {}, "noteOrder": ["t1", "n1", "n2", "n3", "n4", "n5", "n6", "n7", "n8", "n9", "n10", "n11", "n12", "n13", "n14", "n15", "n16", "n17", "n18", "n19", "n20", "n21", "n22", "n23", "n24", "n25", "n26", "n27", "n28"], "notes": {"n1": {"text": "Direzione: stessa identità (oceano + sabbia, Manrope), più gerarchia. Bottone primario con testo scuro (contrasto 6:1 invece di 2.8:1), + centrale in bottom nav, dati chiave in grande.", "w": 560, "x": 0, "y": -120}, "n10": {"text": "Identità: logo (pesce contento), icone (tratto 2 px, tutto arrotondato) e il linguaggio visivo «carta nautica»: isobate, linea di marea, cornice a metro, coordinate e timbro, galleggiante, voce. Applicato per ora alla Home mobile (isobate e coordinate nell'intestazione).", "w": 620, "x": 0, "y": 6680}, "n2": {"text": "Social: feed tipo Instagram, media a tutta larghezza, uscita collegata come scheda sotto il post.", "w": 560, "x": 1410, "y": -120}, "n3": {"text": "Chat: si apre dall'icona messaggi nei Social (come i DM di Instagram), non più dalla bottom nav.", "w": 560, "x": 2350, "y": -120}, "n4": {"text": "Market: tre tab come oggi (Annunci, Negozi, eBay), categorie come chip, filtri in un solo pulsante.", "w": 560, "x": 3290, "y": -120}, "n5": {"text": "Accesso, nuova uscita (sezioni a passi), statistiche, classifica e specie. Nelle schede specie i dati legali sono segnaposto: restano quelli con fonte citata del server. Il grafico delle catture per mese è una proposta, serve un dato in più dall'API.", "w": 620, "x": 1480, "y": 1600}, "n6": {"text": "Parte social: commenti, profilo utente (griglia tipo Instagram), amici, gruppi, notifiche. Mi piace e commenti sulle notifiche sono nuovi rispetto al codice di oggi.", "w": 620, "x": 0, "y": 3320}, "n7": {"text": "Profilo e impostazioni (con scelta del tema), market (negozi, nuovo annuncio), nuovo gruppo chat. Non disegnati: Admin e pagine legali.", "w": 620, "x": 0, "y": 4680}, "n8": {"text": "Home: mappamondo 3D trascinabile con la tua posizione (punto azzurro) e le pescate fatte (segnaposti sabbia, raggruppati se vicini). Controlli: zoom, 'vai alla mia posizione', 'mostra le mie pescate'. Tocca un segnaposto per aprire l'uscita. Coste approssimate: nell'app vera serve una libreria (es. globe.gl) e il permesso di geolocalizzazione.", "w": 560, "x": 0, "y": -420}, "n9": {"text": "Registrazione e percorso venditore: 1) richiesta con dati e documento, 2) stato della verifica (in revisione, approvato, rifiutato: provali dal selettore), 3) solo dopo l'approvazione si configura il negozio (sito se c'è) e compare la proposta del sito realizzato da noi. L'approvazione da parte del team (pannello admin) e la richiesta del sito sono gestioni a parte, non disegnate.", "w": 620, "x": 2350, "y": 4680}, "t1": {"kind": "title1", "maxW": 3600, "text": "FishLog – Restyling", "w": 240, "x": 0, "y": -260}, "n11": {"text": "Flusso uscita, ripensato: 1) Nuova uscita, solo l'essenziale (luogo, quando, tecnica); 2) Uscita in corso: un solo grande bottone «Aggiungi cattura», un solo stato vuoto, niente barra di navigazione; 3) scheda cattura a parte con specie frequenti, peso e lunghezza grandi; 4) Chiudi uscita con voto e note; 5) i dati extra (acqua, meteo) vivono in schermate separate, mai in un form unico.", "w": 900, "x": 0, "y": 8680}, "n12": {"text": "Creare contenuti: il «+» centrale della barra apre «Cosa vuoi condividere?» (post, storia, uscita, annuncio). Nei Social: fila di storie in alto (anello sabbia/oceano = da vedere, grigio = vista; «La tua storia» col +) e riga «Cosa hai pescato oggi?» per un post veloce. Storie: foto o video con adesivi della pesca (cattura, luogo, acqua e meteo), pubblico Tutti o Solo amici, durano 24 ore; chi guarda può rispondere o mettere un cuore. Nuovo rispetto al codice: servono storie nel server (scadenza a 24 h, visualizzazioni).", "w": 900, "x": 0, "y": 10080}, "n13": {"text": "Profilo = La mia bacheca, in stile Instagram: toccando il proprio profilo si apre la bacheca (avatar con anello storia, uscite/catture/amici, bio, «Modifica profilo», tab Post · Uscite · Salvati, griglia a 3 colonne). Le impostazioni NON sono più lì: stanno nel menù (icona in alto a destra): Impostazioni profilo, Privacy, Notifiche, Esci. Il «+» apre il menù Crea come ovunque: Post/Evento e Storia hanno pagine dedicate (44, 45) e chiudendo si torna alla bacheca. Stati: con post, vuota (invito al primo post), caricamento, errore; impostazioni con errore «nome in uso» e salvataggio. Font: Fraunces solo su titoli di pagina e di card; Manrope per etichette, valori e testi; JetBrains Mono solo per numeri, coordinate e misure. Dal profilo (anche di altri utenti) i tre numeri sono tasti: «uscite» apre l'elenco delle uscite, «amici» l'elenco degli amici, «catture» la classifica delle catture dell'utente (61): per peso, per lunghezza, per specie (record e numero di catture), con filtro per specie e periodo; stati vuoto, caricamento ed errore.", "w": 900, "x": 0, "y": 11180}, "n14": {"text": "Modulo Gare: da approvare prima di implementare. Le 8 schermate sono in coppia scuro (sinistra) e chiaro (destra); ogni mockup ha il selettore «Anteprima» per gli stati. Il giudice inserisce, i partecipanti vedono soltanto; la classifica pubblica si apre da un link senza account. Regole di default (tutte configurabili per campionato): classifica di gara a peso totale, punti = piazzamento; generale = somma dei piazzamenti (meno è meglio) con 1 scarto dalla 4ª prova; cappotto = partecipanti + 1; pari merito = media dei posti; spareggio per numero di catture e poi pesce più grande. Font: Fraunces solo titoli di pagina e card, Manrope per testi e valori, JetBrains Mono per ogni numero (cm, kg, punti, posizioni). Nel tema chiaro il pulsante primario usa ocean-dark: il bianco su ocean chiaro arriva solo a 4,2:1.", "w": 1100, "x": 0, "y": 12540}, "n15": {"text": "Da decidere: 1) dove entra «Gare» nell'app (la barra ha già 5 voci: proposta, scheda in Home e voce nel menù del profilo); 2) classifica a squadre: somma dei piazzamenti dei componenti o peso totale della squadra (disegnato: peso totale, punti = piazzamento di squadra); 3) un pesce sotto taglia si registra ma non conta (disegnato così); 4) catture offline: coda sul telefono, conflitti risolti dal giudice.", "w": 1100, "x": 1160, "y": 12540}, "n16": {"text": "Meteo e mare · movimento (solo motion system del progetto). Ingresso dei blocchi: opacity + translateY 8→0 px, 200 ms --ease-enter, stagger 40 ms (max 6), solo al primo caricamento. Tendenza pressione: la freccia ruota dalla posizione «stabile» a quella finale in 320 ms --ease-spring (ritardo 200 ms) e la linea si disegna in 320 ms; il significato resta nella parola «In calo/Stabile/In aumento» e nella freccia già orientata. Aggiorna: icona che ruota 800 ms lineare finché carica. Scheletri: pulsazione 1400 ms, sostituiti dai dati con dissolvenza 200 ms. Con prefers-reduced-motion: nessuno spostamento, ingresso = dissolvenza ≤120 ms, freccia e linea compaiono già finali, scheletri fermi, icona aggiorna sostituita da «Aggiorno…». Nessuna animazione porta informazione che non sia anche scritta.", "w": 900, "x": 0, "y": 14700}, "n17": {"text": "Da decidere: 1) fonte dati: previsioni meteo e marine (onde, swell, temperatura mare, corrente) da un servizio con copertura Adriatico, es. Open-Meteo + Marine API; le maree sono una stima astronomica (non per la navigazione), disegnate con etichetta «Stima»; 2) suggerimenti luoghi: Google Places con chiave lato server; 3) senza dati mare (lago, entroterra, fiume) il blocco diventa una riga neutra: alternativa, nasconderlo del tutto; 4) lettura della pressione: solo testo prudente, nessun «pesca buona/cattiva»; 5) cache locale dell'ultimo dato per l'offline.", "w": 800, "x": 1000, "y": 14700}, "n18": {"text": "Meteo · 7/15 giorni e dettaglio del giorno. Nel blocco «Prossimi giorni» si sceglie 7 o 15 giorni (scelta ricordata) e si vede un riepilogo del periodo: temperature, pioggia totale, vento e onda massimi, grafico min-max con pioggia e attività stimata dei pesci. Dal giorno 8 la previsione è meno affidabile e mancano dettaglio orario, mare e pressione. Toccando un giorno si apre il dettaglio: riepilogo, fasce (notte, mattina, pomeriggio, sera), grafici di temperatura e pioggia, pressione, altezza dell'onda e maree (stima), attività dei pesci e pesci più probabili. Attività e specie sono stime indicative (luce, marea, pressione, vento, temperatura dell'acqua, stagione, catture dell'utente): mai promesse di catture. Da validare con dati reali prima di mostrarle.", "w": 1000, "x": 2000, "y": 14700}, "n19": {"text": "Home: il meteo passa in primo piano e il mappamondo diventa espandibile. Di default il mappamondo è compatto (una calotta con posizione e pescate) con il tasto «Espandi»; espanso occupa lo schermo (su mobile come finestra a tutto schermo, con «Riduci», chip delle zone, controlli e una striscia meteo sempre visibile; su desktop occupa l'area principale e il meteo resta in una barra sopra). La scheda grande del meteo sostituisce «Oggi in mare» e il titolo «Guarda il mare prima di uscire». Le vecchie board 'Home · mobile' e 'Home · desktop' restano come riferimento ma sono superate da 64 e 65. Nella pagina Meteo (56, 57, 62) c'è anche «Confronta le previsioni»: consiglio di aprire 3bmeteo come seconda fonte (link esterno, nessun dato né logo di 3bmeteo dentro FishLog).", "w": 1000, "x": 0, "y": 24600}, "n20": {"text": "Uscita già conclusa: aggiungere una cattura non richiede più di modificare l'uscita. Dal dettaglio c'è un solo pulsante «Aggiungi cattura» fisso in basso; la pagina «Nuova cattura» mostra solo le informazioni principali (specie, misure, rilasciato, foto) e tiene tutto il resto in «Altri dettagli», chiuso di default. Se l'ora cade fuori dall'uscita, il campo lo dice e propone di estendere l'uscita. Dopo il salvataggio si torna al dettaglio con la cattura evidenziata e «Annulla». La matita porta a «Modifica uscita»: sezione «Principali» (generale, luogo, voto) e «Altri dettagli · facoltativi», dove Visibilità (scelta in un foglio) e Note (pagina a sé) sono voci separate. Stati: ora fuori dall'uscita, errore di salvataggio, offline, uscire senza salvare.", "w": 1000, "x": 0, "y": 26100}, "n21": {"text": "Specie: la pagina non è più vuota all'apertura. Mostra «In stagione» con le specie più comuni del mese corrente (novembre) per la zona dell'utente, con livello (Molto comune / Comune), il numero delle sue catture e una barra a 12 mesi con il mese in ambra. Si può cambiare mese da un foglio per programmare le uscite. La scheda «Tutte» è alfabetica; la ricerca (nome comune o scientifico) resta in alto. Stati: caricamento, senza posizione (Italia in generale), offline (elenco salvato), nessun risultato, errore. I dati di stagionalità sono d'esempio: vanno presi da una tabella specie × zona × mese da validare.", "w": 1000, "x": 3360, "y": 1560}, "n22": {"text": "Gare secondo lo standard FIPSAS (surf casting). Una prova ha: organizzazione, manifestazione, prova nr., campo di gara, data, società organizzatrice, direttore e giudice di gara. I concorrenti hanno numero di gara, società e squadra (A–C, * = senza squadra) e vengono sorteggiati in settori A–F da 10. Il giudice pesa il settore: catture + peso → punteggio (conversione + bonus); il posto nel settore è la penalità. Classifiche: di settore, di giornata individuale, progressiva individuale (3 prove) e progressiva squadre (somma dei posti dei 4 componenti). Pari merito = posto medio; nessuna cattura = settore + 1. Stampa in PDF con le stesse colonne dei moduli, orario, direttore e giudice. Le regole non confermate sono segnalate nelle schermate. Nomi e società del mockup sono inventati.", "w": 1000, "x": 0, "y": 27800}, "n23": {"text": "Home: località preferite. Sotto il meteo c'è «Le mie località»: una fila scorrevole di schede (la mia posizione + fino a 8 preferite) con temperatura, vento e onde. Toccando una scheda il meteo grande passa a quel posto, con un avviso «Mia posizione» per tornare. «Gestisci» per riordinare e togliere (con Annulla), «Aggiungi» per cercare e salvare con la stella. Stati: vuoto, caricamento, offline con ora dell'ultimo dato, dati non disponibili. Meteo e onde sono dati reali del servizio; nomi di esempio.", "w": 560, "x": 950, "y": 29300}, "n24": {"text": "Home: attività dei pesci. Una card sotto il meteo con livello da 1 a 5 (Bassa → Alta) scritto a parole e con 5 segmenti, la prossima finestra utile e i 3 fattori che pesano di più (↑ favorevole, → neutro, ↓ sfavorevole). Tocco: foglio con grafico ora per ora, finestre, fattori e «Come viene calcolata». Nelle località preferite ogni scheda mostra il suo livello. Sempre etichettata «Indicativa»: non promette catture. Stati: ottime, scarse, caricamento, dati mancanti con «Riprova», offline.", "w": 560, "x": 950, "y": 30900}, "n25": {"text": "Fishy, assistente vocale ridisegnato. Personaggio: pesce azzurro con galleggiante-lanterna ambra (il Bobber che ha imparato a nuotare), 7 espressioni. Pulsante: 8 stati. Interazione: «tocca per parlare, tocca per finire» come modo principale, «tieni premuto» come scorciatoia, Annulla sempre visibile. Foglio conversazione con la frase detta e le azioni eseguite, ognuna con Annulla persistente. Domande, offline, limite, microfono negato, solo tastiera. Gli anelli di ascolto sono decorativi: il browser non dà il livello audio.", "w": 560, "x": 2800, "y": 32400}, "n26": {"text": "Il pulsante di Fishy animato dal vivo. A riposo ammicca e dondola appena; in ascolto «parla» (bocca che si apre e chiude, galleggiante che si illumina e manda onde, finte: non seguono la voce); in elaborazione guarda in giro con tre puntini; al successo fa un saltello con due scintille, una volta sola. Con movimento ridotto restano fermi avatar, testo e timer. Cambia scheda in alto per rivedere ogni stato.", "w": 560, "x": 1100, "y": 36800}, "n27": {"text": "Home riorganizzata dopo aver letto il codice. Una sola card «Adesso» (meteo + pesci, «Indicativa» una volta), uscita in corso in cima, «Le mie località» come chip, «Le tue pescate» ad accordion con il mappamondo dentro, una riga di scorciatoie al posto di riquadri e sette collegamenti. Desktop in due colonne, senza storie. Nove stati su mobile.", "w": 560, "x": 1000, "y": 37700}, "n28": {"text": "Modifica uscita: tutte le pagine interne ridisegnate. Elenco con stato, Generale, Luogo con mappa, Voto a stelle grandi, Acqua e meteo (mare, fiume, lago), Visibilità come foglio, Note. Nella board 81 trovi errori, GPS, offline, salvataggio, uscita senza salvare ed eliminazione. Su desktop elenco a sinistra e pagina a destra.", "w": 560, "x": 1000, "y": 39200}}, "order": ["Main.dc.html", "Uscite.dc.html", "Dettaglio.dc.html", "HomeDesktop.dc.html", "Community.dc.html", "NuovoPost.dc.html", "ChatLista.dc.html", "ChatThread.dc.html", "MarketLista.dc.html", "MarketAnnuncio.dc.html", "Login.dc.html", "NuovaUscita.dc.html", "Statistiche.dc.html", "Classifica.dc.html", "SpecieRicerca.dc.html", "SpecieRicerca-chiaro.dc.html", "SpecieScheda.dc.html", "Commenti.dc.html", "ProfiloUtente.dc.html", "Amici.dc.html", "Gruppi.dc.html", "Notifiche.dc.html", "Profilo.dc.html", "MarketNegozi.dc.html", "NuovoAnnuncio.dc.html", "NuovoGruppoChat.dc.html", "Globe.dc.html", "Registrazione.dc.html", "RichiestaVenditore.dc.html", "StatoVerifica.dc.html", "VenditoreProfilo.dc.html", "Logo.dc.html", "Stile.dc.html", "Icone.dc.html", "UscitaInCorso.dc.html", "AggiungiCattura.dc.html", "ChiudiUscita.dc.html", "DatiUscita.dc.html", "AcquaMeteo.dc.html", "Crea.dc.html", "NuovaStoria.dc.html", "StoriaVista.dc.html", "Bacheca.dc.html", "CreaBacheca.dc.html", "NuovoPostStati.dc.html", "NuovaStoriaStati.dc.html", "MenuProfilo.dc.html", "ImpostazioniProfilo.dc.html", "GareElenco.dc.html", "GareElenco-chiaro.dc.html", "GareCampionato.dc.html", "GareCampionato-chiaro.dc.html", "GaraDettaglio.dc.html", "GaraDettaglio-chiaro.dc.html", "GaraInserimento.dc.html", "GaraInserimento-chiaro.dc.html", "GareTabella.dc.html", "GareTabella-chiaro.dc.html", "GareRegole.dc.html", "GareRegole-chiaro.dc.html", "GareClassificaPubblica.dc.html", "GareClassificaPubblica-chiaro.dc.html", "GareIscritti.dc.html", "GareIscritti-chiaro.dc.html", "MeteoMobile.dc.html", "MeteoMobile-chiaro.dc.html", "MeteoDesktop.dc.html", "MeteoDesktop-chiaro.dc.html", "MeteoLuogo.dc.html", "MeteoLuogo-chiaro.dc.html", "MeteoHome.dc.html", "MeteoHome-chiaro.dc.html", "MeteoComponenti.dc.html", "MeteoComponenti-chiaro.dc.html", "CattureClassifica.dc.html", "MeteoGiorno.dc.html", "MeteoGiorno-chiaro.dc.html", "MeteoIcone.dc.html", "MeteoIcone-chiaro.dc.html", "HomeMeteo.dc.html", "HomeMeteo-chiaro.dc.html", "HomeMeteoDesktop.dc.html", "HomeMeteoDesktop-chiaro.dc.html", "UscitaChiusa.dc.html", "UscitaChiusa-chiaro.dc.html", "GareFipsasDesktop.dc.html", "GareFipsasDesktop-chiaro.dc.html", "GareFipsasMobile.dc.html", "GareFipsasMobile-chiaro.dc.html", "HomePreferiti.dc.html", "HomePreferiti-chiaro.dc.html", "HomeAttivita.dc.html", "HomeAttivita-chiaro.dc.html", "FishyPersonaggio.dc.html", "FishyPersonaggio-chiaro.dc.html", "FishyPulsante.dc.html", "FishyPulsante-chiaro.dc.html", "FishyFoglio.dc.html", "FishyFoglio-chiaro.dc.html", "FishyDomande.dc.html", "FishyDomande-chiaro.dc.html", "FishyIngressi.dc.html", "FishyIngressi-chiaro.dc.html", "FishyMisure.dc.html", "FishyMisure-chiaro.dc.html", "FishyAnimato.dc.html", "FishyAnimato-chiaro.dc.html", "HomeRiordino.dc.html", "HomeRiordino-chiaro.dc.html", "HomeRiordinoDesktop.dc.html", "HomeRiordinoDesktop-chiaro.dc.html", "ModificaUscita.dc.html", "ModificaUscita-chiaro.dc.html", "ModificaUscitaStati.dc.html", "ModificaUscitaStati-chiaro.dc.html", "ModificaUscitaDesktop.dc.html", "ModificaUscitaDesktop-chiaro.dc.html"], "pages": [], "title": "FishLog – Restyling"}
+{
+ "v": 3,
+ "attachments": {},
+ "boards": {
+  "Amici.dc.html": {
+   "h": 900,
+   "title": "Amici",
+   "w": 390,
+   "x": 940,
+   "y": 3440
+  },
+  "ChatLista.dc.html": {
+   "h": 900,
+   "title": "Chat · lista",
+   "w": 390,
+   "x": 2350,
+   "y": 0
+  },
+  "ChatThread.dc.html": {
+   "h": 900,
+   "is_interactive": true,
+   "title": "Chat · conversazione",
+   "w": 390,
+   "x": 2820,
+   "y": 0
+  },
+  "Classifica.dc.html": {
+   "h": 960,
+   "title": "Classifica",
+   "w": 390,
+   "x": 2890,
+   "y": 1760
+  },
+  "Commenti.dc.html": {
+   "h": 844,
+   "title": "Social · commenti",
+   "w": 390,
+   "x": 0,
+   "y": 3440
+  },
+  "Community.dc.html": {
+   "h": 1770,
+   "is_interactive": true,
+   "title": "Social · feed",
+   "w": 390,
+   "x": 1410,
+   "y": 0
+  },
+  "Dettaglio.dc.html": {
+   "h": 1640,
+   "title": "Dettaglio uscita · mobile",
+   "w": 390,
+   "x": 940,
+   "y": 0
+  },
+  "Globe.dc.html": {
+   "h": 580,
+   "is_interactive": true,
+   "title": "Mappamondo · componente",
+   "w": 390,
+   "x": 1880,
+   "y": 4800
+  },
+  "Gruppi.dc.html": {
+   "h": 900,
+   "title": "Gruppi",
+   "w": 390,
+   "x": 1410,
+   "y": 3440
+  },
+  "HomeDesktop.dc.html": {
+   "expand": "fill",
+   "h": 1500,
+   "is_interactive": true,
+   "title": "Home · desktop",
+   "w": 1360,
+   "x": 0,
+   "y": 1760
+  },
+  "Icone.dc.html": {
+   "h": 1230,
+   "title": "Identità · icone",
+   "w": 1200,
+   "x": 2560,
+   "y": 6800
+  },
+  "Login.dc.html": {
+   "h": 844,
+   "title": "Accesso",
+   "w": 390,
+   "x": 1480,
+   "y": 1760
+  },
+  "Logo.dc.html": {
+   "h": 1260,
+   "title": "Identità · logo",
+   "w": 1200,
+   "x": 0,
+   "y": 6800
+  },
+  "Main.dc.html": {
+   "h": 1500,
+   "is_interactive": true,
+   "title": "Home · mobile",
+   "w": 390,
+   "x": 0,
+   "y": 0
+  },
+  "MarketAnnuncio.dc.html": {
+   "h": 1180,
+   "title": "Market · annuncio",
+   "w": 390,
+   "x": 3760,
+   "y": 0
+  },
+  "MarketLista.dc.html": {
+   "h": 1240,
+   "title": "Market · annunci",
+   "w": 390,
+   "x": 3290,
+   "y": 0
+  },
+  "MarketNegozi.dc.html": {
+   "h": 900,
+   "title": "Market · negozi",
+   "w": 390,
+   "x": 470,
+   "y": 4800
+  },
+  "Notifiche.dc.html": {
+   "h": 860,
+   "title": "Notifiche",
+   "w": 390,
+   "x": 1880,
+   "y": 3440
+  },
+  "NuovaUscita.dc.html": {
+   "h": 980,
+   "title": "Nuova uscita",
+   "w": 390,
+   "x": 1950,
+   "y": 1760
+  },
+  "NuovoAnnuncio.dc.html": {
+   "h": 1220,
+   "title": "Market · nuovo annuncio",
+   "w": 390,
+   "x": 940,
+   "y": 4800
+  },
+  "NuovoGruppoChat.dc.html": {
+   "h": 844,
+   "title": "Chat · nuovo gruppo",
+   "w": 390,
+   "x": 1410,
+   "y": 4800
+  },
+  "NuovoPost.dc.html": {
+   "h": 900,
+   "title": "Social · nuovo post",
+   "w": 390,
+   "x": 1880,
+   "y": 0
+  },
+  "Profilo.dc.html": {
+   "h": 1300,
+   "title": "Profilo e impostazioni",
+   "w": 390,
+   "x": 0,
+   "y": 4800
+  },
+  "ProfiloUtente.dc.html": {
+   "h": 1240,
+   "title": "Social · profilo utente",
+   "w": 390,
+   "x": 470,
+   "y": 3440
+  },
+  "Registrazione.dc.html": {
+   "h": 1000,
+   "title": "Registrazione",
+   "w": 390,
+   "x": 2350,
+   "y": 4800
+  },
+  "RichiestaVenditore.dc.html": {
+   "h": 1320,
+   "title": "Venditore · 1 richiesta",
+   "w": 390,
+   "x": 2820,
+   "y": 4800
+  },
+  "SpecieRicerca.dc.html": {
+   "h": 1300,
+   "title": "15 · Specie: in stagione, ricerca e stati (scuro)",
+   "w": 390,
+   "x": 3360,
+   "y": 1760
+  },
+  "SpecieScheda.dc.html": {
+   "h": 1560,
+   "title": "Specie · scheda",
+   "w": 390,
+   "x": 3830,
+   "y": 1760
+  },
+  "Statistiche.dc.html": {
+   "h": 1040,
+   "title": "Statistiche",
+   "w": 390,
+   "x": 2420,
+   "y": 1760
+  },
+  "StatoVerifica.dc.html": {
+   "h": 900,
+   "is_interactive": true,
+   "title": "Venditore · 2 stato verifica",
+   "w": 390,
+   "x": 3290,
+   "y": 4800
+  },
+  "Stile.dc.html": {
+   "h": 1640,
+   "title": "Identità · linguaggio visivo",
+   "w": 1200,
+   "x": 1280,
+   "y": 6800
+  },
+  "Uscite.dc.html": {
+   "h": 1000,
+   "title": "Uscite · mobile",
+   "w": 390,
+   "x": 470,
+   "y": 0
+  },
+  "VenditoreProfilo.dc.html": {
+   "h": 1760,
+   "title": "Venditore · 3 configura negozio",
+   "w": 390,
+   "x": 3760,
+   "y": 4800
+  },
+  "UscitaInCorso.dc.html": {
+   "h": 1000,
+   "is_interactive": true,
+   "title": "Uscita in corso",
+   "w": 390,
+   "x": 0,
+   "y": 8800
+  },
+  "AggiungiCattura.dc.html": {
+   "h": 1200,
+   "is_interactive": true,
+   "title": "Aggiungi cattura",
+   "w": 390,
+   "x": 470,
+   "y": 8800
+  },
+  "ChiudiUscita.dc.html": {
+   "h": 960,
+   "is_interactive": true,
+   "title": "Chiudi uscita",
+   "w": 390,
+   "x": 940,
+   "y": 8800
+  },
+  "DatiUscita.dc.html": {
+   "h": 900,
+   "is_interactive": true,
+   "title": "Dati uscita",
+   "w": 390,
+   "x": 1410,
+   "y": 8800
+  },
+  "AcquaMeteo.dc.html": {
+   "h": 1280,
+   "is_interactive": true,
+   "title": "Acqua e meteo",
+   "w": 390,
+   "x": 1880,
+   "y": 8800
+  },
+  "Crea.dc.html": {
+   "h": 844,
+   "title": "Crea · scelta",
+   "w": 390,
+   "x": 0,
+   "y": 10200
+  },
+  "NuovaStoria.dc.html": {
+   "h": 844,
+   "is_interactive": true,
+   "title": "Storia · crea",
+   "w": 390,
+   "x": 470,
+   "y": 10200
+  },
+  "StoriaVista.dc.html": {
+   "h": 844,
+   "title": "Storia · guarda",
+   "w": 390,
+   "x": 940,
+   "y": 10200
+  },
+  "Bacheca.dc.html": {
+   "h": 1200,
+   "is_interactive": true,
+   "title": "La mia bacheca · profilo",
+   "w": 390,
+   "x": 0,
+   "y": 11300
+  },
+  "CreaBacheca.dc.html": {
+   "h": 844,
+   "title": "Bacheca · menù Crea",
+   "w": 390,
+   "x": 470,
+   "y": 11300
+  },
+  "NuovoPostStati.dc.html": {
+   "h": 964,
+   "is_interactive": true,
+   "title": "Nuovo post · stati",
+   "w": 390,
+   "x": 940,
+   "y": 11300
+  },
+  "NuovaStoriaStati.dc.html": {
+   "h": 908,
+   "is_interactive": true,
+   "title": "Nuova storia · stati",
+   "w": 390,
+   "x": 1410,
+   "y": 11300
+  },
+  "MenuProfilo.dc.html": {
+   "h": 844,
+   "title": "Profilo · menù",
+   "w": 390,
+   "x": 1880,
+   "y": 11300
+  },
+  "ImpostazioniProfilo.dc.html": {
+   "h": 1040,
+   "is_interactive": true,
+   "title": "Profilo · impostazioni",
+   "w": 390,
+   "x": 2350,
+   "y": 11300
+  },
+  "GareElenco.dc.html": {
+   "h": 840,
+   "is_interactive": true,
+   "title": "48 · Gare · elenco (scuro)",
+   "w": 390,
+   "x": 0,
+   "y": 12700
+  },
+  "GareElenco-chiaro.dc.html": {
+   "h": 840,
+   "is_interactive": true,
+   "title": "48 · Gare · elenco (chiaro)",
+   "w": 390,
+   "x": 470,
+   "y": 12700
+  },
+  "GareCampionato.dc.html": {
+   "h": 947,
+   "is_interactive": true,
+   "title": "49 · Campionato (scuro)",
+   "w": 390,
+   "x": 960,
+   "y": 12700
+  },
+  "GareCampionato-chiaro.dc.html": {
+   "h": 947,
+   "is_interactive": true,
+   "title": "49 · Campionato (chiaro)",
+   "w": 390,
+   "x": 1430,
+   "y": 12700
+  },
+  "GaraDettaglio.dc.html": {
+   "h": 905,
+   "is_interactive": true,
+   "title": "50 · Gara (scuro)",
+   "w": 390,
+   "x": 1920,
+   "y": 12700
+  },
+  "GaraDettaglio-chiaro.dc.html": {
+   "h": 905,
+   "is_interactive": true,
+   "title": "50 · Gara (chiaro)",
+   "w": 390,
+   "x": 2390,
+   "y": 12700
+  },
+  "GaraInserimento.dc.html": {
+   "h": 1248,
+   "is_interactive": true,
+   "title": "51 · Inserimento giudice (scuro)",
+   "w": 390,
+   "x": 2880,
+   "y": 12700
+  },
+  "GaraInserimento-chiaro.dc.html": {
+   "h": 1248,
+   "is_interactive": true,
+   "title": "51 · Inserimento giudice (chiaro)",
+   "w": 390,
+   "x": 3350,
+   "y": 12700
+  },
+  "GareTabella.dc.html": {
+   "h": 1242,
+   "is_interactive": true,
+   "title": "52 · Tabella lunghezza-peso (scuro)",
+   "w": 390,
+   "x": 3840,
+   "y": 12700
+  },
+  "GareTabella-chiaro.dc.html": {
+   "h": 1242,
+   "is_interactive": true,
+   "title": "52 · Tabella lunghezza-peso (chiaro)",
+   "w": 390,
+   "x": 4310,
+   "y": 12700
+  },
+  "GareRegole.dc.html": {
+   "h": 2199,
+   "is_interactive": true,
+   "title": "53 · Regole (scuro)",
+   "w": 390,
+   "x": 4800,
+   "y": 12700
+  },
+  "GareRegole-chiaro.dc.html": {
+   "h": 2199,
+   "is_interactive": true,
+   "title": "53 · Regole (chiaro)",
+   "w": 390,
+   "x": 5270,
+   "y": 12700
+  },
+  "GareClassificaPubblica.dc.html": {
+   "h": 1152,
+   "is_interactive": true,
+   "title": "54 · Classifica pubblica (scuro)",
+   "w": 390,
+   "x": 5760,
+   "y": 12700
+  },
+  "GareClassificaPubblica-chiaro.dc.html": {
+   "h": 1152,
+   "is_interactive": true,
+   "title": "54 · Classifica pubblica (chiaro)",
+   "w": 390,
+   "x": 6230,
+   "y": 12700
+  },
+  "GareIscritti.dc.html": {
+   "h": 863,
+   "is_interactive": true,
+   "title": "55 · Iscritti e squadre (scuro)",
+   "w": 390,
+   "x": 6720,
+   "y": 12700
+  },
+  "GareIscritti-chiaro.dc.html": {
+   "h": 863,
+   "is_interactive": true,
+   "title": "55 · Iscritti e squadre (chiaro)",
+   "w": 390,
+   "x": 7190,
+   "y": 12700
+  },
+  "MeteoMobile.dc.html": {
+   "h": 4800,
+   "is_interactive": true,
+   "title": "56 · Meteo e mare · mobile (scuro)",
+   "w": 390,
+   "x": 0,
+   "y": 14900
+  },
+  "MeteoMobile-chiaro.dc.html": {
+   "h": 4800,
+   "is_interactive": true,
+   "title": "56 · Meteo e mare · mobile (chiaro)",
+   "w": 390,
+   "x": 470,
+   "y": 14900
+  },
+  "MeteoDesktop.dc.html": {
+   "h": 3229,
+   "is_interactive": true,
+   "title": "57 · Meteo e mare · desktop (scuro)",
+   "w": 1200,
+   "x": 1000,
+   "y": 14900
+  },
+  "MeteoDesktop-chiaro.dc.html": {
+   "h": 3229,
+   "is_interactive": true,
+   "title": "57 · Meteo e mare · desktop (chiaro)",
+   "w": 1200,
+   "x": 2280,
+   "y": 14900
+  },
+  "MeteoLuogo.dc.html": {
+   "h": 811,
+   "is_interactive": true,
+   "title": "58 · Meteo · luogo, permessi, ricerca (scuro)",
+   "w": 390,
+   "x": 0,
+   "y": 19900
+  },
+  "MeteoLuogo-chiaro.dc.html": {
+   "h": 811,
+   "is_interactive": true,
+   "title": "58 · Meteo · luogo, permessi, ricerca (chiaro)",
+   "w": 390,
+   "x": 470,
+   "y": 19900
+  },
+  "MeteoHome.dc.html": {
+   "h": 431,
+   "is_interactive": true,
+   "title": "59 · Meteo · scheda Home (scuro)",
+   "w": 390,
+   "x": 1000,
+   "y": 19900
+  },
+  "MeteoHome-chiaro.dc.html": {
+   "h": 431,
+   "is_interactive": true,
+   "title": "59 · Meteo · scheda Home (chiaro)",
+   "w": 390,
+   "x": 1470,
+   "y": 19900
+  },
+  "MeteoComponenti.dc.html": {
+   "h": 1023,
+   "is_interactive": true,
+   "title": "60 · Meteo · pressione, vento, luna (scuro)",
+   "w": 390,
+   "x": 2000,
+   "y": 19900
+  },
+  "MeteoComponenti-chiaro.dc.html": {
+   "h": 1023,
+   "is_interactive": true,
+   "title": "60 · Meteo · pressione, vento, luna (chiaro)",
+   "w": 390,
+   "x": 2470,
+   "y": 19900
+  },
+  "CattureClassifica.dc.html": {
+   "h": 1135,
+   "is_interactive": true,
+   "title": "61 · Profilo · classifica delle catture",
+   "w": 390,
+   "x": 2820,
+   "y": 11300
+  },
+  "MeteoGiorno.dc.html": {
+   "h": 4695,
+   "is_interactive": true,
+   "title": "62 · Meteo · dettaglio giorno (scuro)",
+   "w": 390,
+   "x": 3000,
+   "y": 19900
+  },
+  "MeteoGiorno-chiaro.dc.html": {
+   "h": 4695,
+   "is_interactive": true,
+   "title": "62 · Meteo · dettaglio giorno (chiaro)",
+   "w": 390,
+   "x": 3470,
+   "y": 19900
+  },
+  "MeteoIcone.dc.html": {
+   "h": 2003,
+   "title": "63 · Meteo · icone (scuro)",
+   "w": 1200,
+   "x": 4000,
+   "y": 19900
+  },
+  "MeteoIcone-chiaro.dc.html": {
+   "h": 2003,
+   "title": "63 · Meteo · icone (chiaro)",
+   "w": 1200,
+   "x": 5280,
+   "y": 19900
+  },
+  "HomeMeteo.dc.html": {
+   "h": 1156,
+   "is_interactive": true,
+   "title": "64 · Home · meteo in evidenza, mappamondo espandibile (scuro)",
+   "w": 390,
+   "x": 0,
+   "y": 24800
+  },
+  "HomeMeteo-chiaro.dc.html": {
+   "h": 1156,
+   "is_interactive": true,
+   "title": "64 · Home · meteo in evidenza, mappamondo espandibile (chiaro)",
+   "w": 390,
+   "x": 470,
+   "y": 24800
+  },
+  "HomeMeteoDesktop.dc.html": {
+   "h": 977,
+   "is_interactive": true,
+   "title": "65 · Home · meteo e mappamondo (desktop) (scuro)",
+   "w": 1200,
+   "x": 1000,
+   "y": 24800
+  },
+  "HomeMeteoDesktop-chiaro.dc.html": {
+   "h": 977,
+   "is_interactive": true,
+   "title": "65 · Home · meteo e mappamondo (desktop) (chiaro)",
+   "w": 1200,
+   "x": 2280,
+   "y": 24800
+  },
+  "UscitaChiusa.dc.html": {
+   "h": 1320,
+   "is_interactive": true,
+   "title": "66 · Uscita conclusa: aggiungi cattura e modifica semplificati (scuro)",
+   "w": 390,
+   "x": 0,
+   "y": 26300
+  },
+  "UscitaChiusa-chiaro.dc.html": {
+   "h": 1320,
+   "is_interactive": true,
+   "title": "66 · Uscita conclusa: aggiungi cattura e modifica semplificati (chiaro)",
+   "w": 390,
+   "x": 470,
+   "y": 26300
+  },
+  "SpecieRicerca-chiaro.dc.html": {
+   "h": 1300,
+   "is_interactive": true,
+   "title": "15 · Specie: in stagione, ricerca e stati (chiaro)",
+   "w": 390,
+   "x": 3360,
+   "y": 3200
+  },
+  "GareFipsasDesktop.dc.html": {
+   "h": 1100,
+   "is_interactive": true,
+   "title": "67 · Gare FIPSAS: desktop — prova, settori, pesatura, classifiche, stampa (scuro)",
+   "w": 1200,
+   "x": 0,
+   "y": 28000
+  },
+  "GareFipsasDesktop-chiaro.dc.html": {
+   "h": 1100,
+   "is_interactive": true,
+   "title": "67 · Gare FIPSAS: desktop — prova, settori, pesatura, classifiche, stampa (chiaro)",
+   "w": 1200,
+   "x": 1300,
+   "y": 28000
+  },
+  "GareFipsasMobile.dc.html": {
+   "h": 1000,
+   "is_interactive": true,
+   "title": "68 · Gare FIPSAS mobile: pesatura e classifiche (scuro)",
+   "w": 390,
+   "x": 2600,
+   "y": 28000
+  },
+  "GareFipsasMobile-chiaro.dc.html": {
+   "h": 1000,
+   "is_interactive": true,
+   "title": "68 · Gare FIPSAS mobile: pesatura e classifiche (chiaro)",
+   "w": 390,
+   "x": 3070,
+   "y": 28000
+  },
+  "HomePreferiti.dc.html": {
+   "h": 1400,
+   "is_interactive": true,
+   "title": "69 · Home · località preferite (scuro)",
+   "w": 390,
+   "x": 0,
+   "y": 29300
+  },
+  "HomePreferiti-chiaro.dc.html": {
+   "h": 1400,
+   "is_interactive": true,
+   "title": "69 · Home · località preferite (chiaro)",
+   "w": 390,
+   "x": 470,
+   "y": 29300
+  },
+  "HomeAttivita.dc.html": {
+   "h": 1250,
+   "is_interactive": true,
+   "title": "70 · Home · attività dei pesci (scuro)",
+   "w": 390,
+   "x": 0,
+   "y": 30900
+  },
+  "HomeAttivita-chiaro.dc.html": {
+   "h": 1250,
+   "is_interactive": true,
+   "title": "70 · Home · attività dei pesci (chiaro)",
+   "w": 390,
+   "x": 470,
+   "y": 30900
+  },
+  "FishyPersonaggio.dc.html": {
+   "h": 1000,
+   "is_interactive": true,
+   "title": "71 · Fishy · personaggio e espressioni (scuro)",
+   "w": 1200,
+   "x": 0,
+   "y": 32400
+  },
+  "FishyPersonaggio-chiaro.dc.html": {
+   "h": 1000,
+   "is_interactive": true,
+   "title": "71 · Fishy · personaggio e espressioni (chiaro)",
+   "w": 1200,
+   "x": 1300,
+   "y": 32400
+  },
+  "FishyPulsante.dc.html": {
+   "h": 960,
+   "is_interactive": true,
+   "title": "72 · Fishy · pulsante, 8 stati (scuro)",
+   "w": 390,
+   "x": 0,
+   "y": 34600
+  },
+  "FishyPulsante-chiaro.dc.html": {
+   "h": 960,
+   "is_interactive": true,
+   "title": "72 · Fishy · pulsante, 8 stati (chiaro)",
+   "w": 390,
+   "x": 0,
+   "y": 35700
+  },
+  "FishyFoglio.dc.html": {
+   "h": 1000,
+   "is_interactive": true,
+   "title": "73 · Fishy · foglio conversazione (scuro)",
+   "w": 390,
+   "x": 500,
+   "y": 34600
+  },
+  "FishyFoglio-chiaro.dc.html": {
+   "h": 1000,
+   "is_interactive": true,
+   "title": "73 · Fishy · foglio conversazione (chiaro)",
+   "w": 390,
+   "x": 500,
+   "y": 35700
+  },
+  "FishyDomande.dc.html": {
+   "h": 1000,
+   "is_interactive": true,
+   "title": "74 · Fishy · domande, errori e stati (scuro)",
+   "w": 390,
+   "x": 1000,
+   "y": 34600
+  },
+  "FishyDomande-chiaro.dc.html": {
+   "h": 1000,
+   "is_interactive": true,
+   "title": "74 · Fishy · domande, errori e stati (chiaro)",
+   "w": 390,
+   "x": 1000,
+   "y": 35700
+  },
+  "FishyIngressi.dc.html": {
+   "h": 960,
+   "is_interactive": true,
+   "title": "75 · Fishy · punti di ingresso (scuro)",
+   "w": 390,
+   "x": 1500,
+   "y": 34600
+  },
+  "FishyIngressi-chiaro.dc.html": {
+   "h": 960,
+   "is_interactive": true,
+   "title": "75 · Fishy · punti di ingresso (chiaro)",
+   "w": 390,
+   "x": 1500,
+   "y": 35700
+  },
+  "FishyMisure.dc.html": {
+   "h": 880,
+   "is_interactive": true,
+   "title": "76 · Fishy · misure e schermi (scuro)",
+   "w": 1320,
+   "x": 0,
+   "y": 33500
+  },
+  "FishyMisure-chiaro.dc.html": {
+   "h": 880,
+   "is_interactive": true,
+   "title": "76 · Fishy · misure e schermi (chiaro)",
+   "w": 1320,
+   "x": 1400,
+   "y": 33500
+  },
+  "FishyAnimato.dc.html": {
+   "h": 960,
+   "is_interactive": true,
+   "title": "77 · Fishy · pulsante animato (scuro)",
+   "w": 390,
+   "x": 0,
+   "y": 36800
+  },
+  "FishyAnimato-chiaro.dc.html": {
+   "h": 960,
+   "is_interactive": true,
+   "title": "77 · Fishy · pulsante animato (chiaro)",
+   "w": 390,
+   "x": 500,
+   "y": 36800
+  },
+  "HomeRiordino.dc.html": {
+   "h": 930,
+   "is_interactive": true,
+   "title": "78 · Home riorganizzata (scuro)",
+   "w": 390,
+   "x": 0,
+   "y": 38000
+  },
+  "HomeRiordino-chiaro.dc.html": {
+   "h": 930,
+   "is_interactive": true,
+   "title": "78 · Home riorganizzata (chiaro)",
+   "w": 390,
+   "x": 500,
+   "y": 38000
+  },
+  "HomeRiordinoDesktop.dc.html": {
+   "h": 1000,
+   "is_interactive": true,
+   "title": "79 · Home riorganizzata desktop (scuro)",
+   "w": 1200,
+   "x": 1000,
+   "y": 38000
+  },
+  "HomeRiordinoDesktop-chiaro.dc.html": {
+   "h": 1000,
+   "is_interactive": true,
+   "title": "79 · Home riorganizzata desktop (chiaro)",
+   "w": 1200,
+   "x": 2300,
+   "y": 38000
+  },
+  "ModificaUscita.dc.html": {
+   "h": 1180,
+   "is_interactive": true,
+   "title": "80 · Modifica uscita · sezioni (scuro)",
+   "w": 390,
+   "x": 0,
+   "y": 39500
+  },
+  "ModificaUscita-chiaro.dc.html": {
+   "h": 1180,
+   "is_interactive": true,
+   "title": "80 · Modifica uscita · sezioni (chiaro)",
+   "w": 390,
+   "x": 500,
+   "y": 39500
+  },
+  "ModificaUscitaStati.dc.html": {
+   "h": 1240,
+   "is_interactive": true,
+   "title": "81 · Modifica uscita · varianti e stati (scuro)",
+   "w": 390,
+   "x": 1000,
+   "y": 39500
+  },
+  "ModificaUscitaStati-chiaro.dc.html": {
+   "h": 1240,
+   "is_interactive": true,
+   "title": "81 · Modifica uscita · varianti e stati (chiaro)",
+   "w": 390,
+   "x": 1500,
+   "y": 39500
+  },
+  "ModificaUscitaDesktop.dc.html": {
+   "h": 860,
+   "is_interactive": true,
+   "title": "82 · Modifica uscita · desktop (scuro)",
+   "w": 1200,
+   "x": 2100,
+   "y": 39500
+  },
+  "ModificaUscitaDesktop-chiaro.dc.html": {
+   "h": 860,
+   "is_interactive": true,
+   "title": "82 · Modifica uscita · desktop (chiaro)",
+   "w": 1200,
+   "x": 3400,
+   "y": 39500
+  },
+  "UscitaInCorsoV2.dc.html": {
+   "h": 860,
+   "is_interactive": true,
+   "title": "83 · Uscita in corso v2 (scuro)",
+   "w": 390,
+   "x": 0,
+   "y": 41000
+  },
+  "UscitaInCorsoV2-chiaro.dc.html": {
+   "h": 860,
+   "is_interactive": true,
+   "title": "83 · Uscita in corso v2 (chiaro)",
+   "w": 390,
+   "x": 500,
+   "y": 41000
+  }
+ },
+ "createdOnFiles": {
+  "at": "2026-11-09T12:37:56.383Z",
+  "v": 1
+ },
+ "designSystems": [],
+ "launch": {},
+ "noteOrder": [
+  "t1",
+  "n1",
+  "n2",
+  "n3",
+  "n4",
+  "n5",
+  "n6",
+  "n7",
+  "n8",
+  "n9",
+  "n10",
+  "n11",
+  "n12",
+  "n13",
+  "n14",
+  "n15",
+  "n16",
+  "n17",
+  "n18",
+  "n19",
+  "n20",
+  "n21",
+  "n22",
+  "n23",
+  "n24",
+  "n25",
+  "n26",
+  "n27",
+  "n28",
+  "n29"
+ ],
+ "notes": {
+  "n1": {
+   "text": "Direzione: stessa identità (oceano + sabbia, Manrope), più gerarchia. Bottone primario con testo scuro (contrasto 6:1 invece di 2.8:1), + centrale in bottom nav, dati chiave in grande.",
+   "w": 560,
+   "x": 0,
+   "y": -120
+  },
+  "n10": {
+   "text": "Identità: logo (pesce contento), icone (tratto 2 px, tutto arrotondato) e il linguaggio visivo «carta nautica»: isobate, linea di marea, cornice a metro, coordinate e timbro, galleggiante, voce. Applicato per ora alla Home mobile (isobate e coordinate nell'intestazione).",
+   "w": 620,
+   "x": 0,
+   "y": 6680
+  },
+  "n2": {
+   "text": "Social: feed tipo Instagram, media a tutta larghezza, uscita collegata come scheda sotto il post.",
+   "w": 560,
+   "x": 1410,
+   "y": -120
+  },
+  "n3": {
+   "text": "Chat: si apre dall'icona messaggi nei Social (come i DM di Instagram), non più dalla bottom nav.",
+   "w": 560,
+   "x": 2350,
+   "y": -120
+  },
+  "n4": {
+   "text": "Market: tre tab come oggi (Annunci, Negozi, eBay), categorie come chip, filtri in un solo pulsante.",
+   "w": 560,
+   "x": 3290,
+   "y": -120
+  },
+  "n5": {
+   "text": "Accesso, nuova uscita (sezioni a passi), statistiche, classifica e specie. Nelle schede specie i dati legali sono segnaposto: restano quelli con fonte citata del server. Il grafico delle catture per mese è una proposta, serve un dato in più dall'API.",
+   "w": 620,
+   "x": 1480,
+   "y": 1600
+  },
+  "n6": {
+   "text": "Parte social: commenti, profilo utente (griglia tipo Instagram), amici, gruppi, notifiche. Mi piace e commenti sulle notifiche sono nuovi rispetto al codice di oggi.",
+   "w": 620,
+   "x": 0,
+   "y": 3320
+  },
+  "n7": {
+   "text": "Profilo e impostazioni (con scelta del tema), market (negozi, nuovo annuncio), nuovo gruppo chat. Non disegnati: Admin e pagine legali.",
+   "w": 620,
+   "x": 0,
+   "y": 4680
+  },
+  "n8": {
+   "text": "Home: mappamondo 3D trascinabile con la tua posizione (punto azzurro) e le pescate fatte (segnaposti sabbia, raggruppati se vicini). Controlli: zoom, 'vai alla mia posizione', 'mostra le mie pescate'. Tocca un segnaposto per aprire l'uscita. Coste approssimate: nell'app vera serve una libreria (es. globe.gl) e il permesso di geolocalizzazione.",
+   "w": 560,
+   "x": 0,
+   "y": -420
+  },
+  "n9": {
+   "text": "Registrazione e percorso venditore: 1) richiesta con dati e documento, 2) stato della verifica (in revisione, approvato, rifiutato: provali dal selettore), 3) solo dopo l'approvazione si configura il negozio (sito se c'è) e compare la proposta del sito realizzato da noi. L'approvazione da parte del team (pannello admin) e la richiesta del sito sono gestioni a parte, non disegnate.",
+   "w": 620,
+   "x": 2350,
+   "y": 4680
+  },
+  "t1": {
+   "kind": "title1",
+   "maxW": 3600,
+   "text": "FishLog – Restyling",
+   "w": 240,
+   "x": 0,
+   "y": -260
+  },
+  "n11": {
+   "text": "Flusso uscita, ripensato: 1) Nuova uscita, solo l'essenziale (luogo, quando, tecnica); 2) Uscita in corso: un solo grande bottone «Aggiungi cattura», un solo stato vuoto, niente barra di navigazione; 3) scheda cattura a parte con specie frequenti, peso e lunghezza grandi; 4) Chiudi uscita con voto e note; 5) i dati extra (acqua, meteo) vivono in schermate separate, mai in un form unico.",
+   "w": 900,
+   "x": 0,
+   "y": 8680
+  },
+  "n12": {
+   "text": "Creare contenuti: il «+» centrale della barra apre «Cosa vuoi condividere?» (post, storia, uscita, annuncio). Nei Social: fila di storie in alto (anello sabbia/oceano = da vedere, grigio = vista; «La tua storia» col +) e riga «Cosa hai pescato oggi?» per un post veloce. Storie: foto o video con adesivi della pesca (cattura, luogo, acqua e meteo), pubblico Tutti o Solo amici, durano 24 ore; chi guarda può rispondere o mettere un cuore. Nuovo rispetto al codice: servono storie nel server (scadenza a 24 h, visualizzazioni).",
+   "w": 900,
+   "x": 0,
+   "y": 10080
+  },
+  "n13": {
+   "text": "Profilo = La mia bacheca, in stile Instagram: toccando il proprio profilo si apre la bacheca (avatar con anello storia, uscite/catture/amici, bio, «Modifica profilo», tab Post · Uscite · Salvati, griglia a 3 colonne). Le impostazioni NON sono più lì: stanno nel menù (icona in alto a destra): Impostazioni profilo, Privacy, Notifiche, Esci. Il «+» apre il menù Crea come ovunque: Post/Evento e Storia hanno pagine dedicate (44, 45) e chiudendo si torna alla bacheca. Stati: con post, vuota (invito al primo post), caricamento, errore; impostazioni con errore «nome in uso» e salvataggio. Font: Fraunces solo su titoli di pagina e di card; Manrope per etichette, valori e testi; JetBrains Mono solo per numeri, coordinate e misure. Dal profilo (anche di altri utenti) i tre numeri sono tasti: «uscite» apre l'elenco delle uscite, «amici» l'elenco degli amici, «catture» la classifica delle catture dell'utente (61): per peso, per lunghezza, per specie (record e numero di catture), con filtro per specie e periodo; stati vuoto, caricamento ed errore.",
+   "w": 900,
+   "x": 0,
+   "y": 11180
+  },
+  "n14": {
+   "text": "Modulo Gare: da approvare prima di implementare. Le 8 schermate sono in coppia scuro (sinistra) e chiaro (destra); ogni mockup ha il selettore «Anteprima» per gli stati. Il giudice inserisce, i partecipanti vedono soltanto; la classifica pubblica si apre da un link senza account. Regole di default (tutte configurabili per campionato): classifica di gara a peso totale, punti = piazzamento; generale = somma dei piazzamenti (meno è meglio) con 1 scarto dalla 4ª prova; cappotto = partecipanti + 1; pari merito = media dei posti; spareggio per numero di catture e poi pesce più grande. Font: Fraunces solo titoli di pagina e card, Manrope per testi e valori, JetBrains Mono per ogni numero (cm, kg, punti, posizioni). Nel tema chiaro il pulsante primario usa ocean-dark: il bianco su ocean chiaro arriva solo a 4,2:1.",
+   "w": 1100,
+   "x": 0,
+   "y": 12540
+  },
+  "n15": {
+   "text": "Da decidere: 1) dove entra «Gare» nell'app (la barra ha già 5 voci: proposta, scheda in Home e voce nel menù del profilo); 2) classifica a squadre: somma dei piazzamenti dei componenti o peso totale della squadra (disegnato: peso totale, punti = piazzamento di squadra); 3) un pesce sotto taglia si registra ma non conta (disegnato così); 4) catture offline: coda sul telefono, conflitti risolti dal giudice.",
+   "w": 1100,
+   "x": 1160,
+   "y": 12540
+  },
+  "n16": {
+   "text": "Meteo e mare · movimento (solo motion system del progetto). Ingresso dei blocchi: opacity + translateY 8→0 px, 200 ms --ease-enter, stagger 40 ms (max 6), solo al primo caricamento. Tendenza pressione: la freccia ruota dalla posizione «stabile» a quella finale in 320 ms --ease-spring (ritardo 200 ms) e la linea si disegna in 320 ms; il significato resta nella parola «In calo/Stabile/In aumento» e nella freccia già orientata. Aggiorna: icona che ruota 800 ms lineare finché carica. Scheletri: pulsazione 1400 ms, sostituiti dai dati con dissolvenza 200 ms. Con prefers-reduced-motion: nessuno spostamento, ingresso = dissolvenza ≤120 ms, freccia e linea compaiono già finali, scheletri fermi, icona aggiorna sostituita da «Aggiorno…». Nessuna animazione porta informazione che non sia anche scritta.",
+   "w": 900,
+   "x": 0,
+   "y": 14700
+  },
+  "n17": {
+   "text": "Da decidere: 1) fonte dati: previsioni meteo e marine (onde, swell, temperatura mare, corrente) da un servizio con copertura Adriatico, es. Open-Meteo + Marine API; le maree sono una stima astronomica (non per la navigazione), disegnate con etichetta «Stima»; 2) suggerimenti luoghi: Google Places con chiave lato server; 3) senza dati mare (lago, entroterra, fiume) il blocco diventa una riga neutra: alternativa, nasconderlo del tutto; 4) lettura della pressione: solo testo prudente, nessun «pesca buona/cattiva»; 5) cache locale dell'ultimo dato per l'offline.",
+   "w": 800,
+   "x": 1000,
+   "y": 14700
+  },
+  "n18": {
+   "text": "Meteo · 7/15 giorni e dettaglio del giorno. Nel blocco «Prossimi giorni» si sceglie 7 o 15 giorni (scelta ricordata) e si vede un riepilogo del periodo: temperature, pioggia totale, vento e onda massimi, grafico min-max con pioggia e attività stimata dei pesci. Dal giorno 8 la previsione è meno affidabile e mancano dettaglio orario, mare e pressione. Toccando un giorno si apre il dettaglio: riepilogo, fasce (notte, mattina, pomeriggio, sera), grafici di temperatura e pioggia, pressione, altezza dell'onda e maree (stima), attività dei pesci e pesci più probabili. Attività e specie sono stime indicative (luce, marea, pressione, vento, temperatura dell'acqua, stagione, catture dell'utente): mai promesse di catture. Da validare con dati reali prima di mostrarle.",
+   "w": 1000,
+   "x": 2000,
+   "y": 14700
+  },
+  "n19": {
+   "text": "Home: il meteo passa in primo piano e il mappamondo diventa espandibile. Di default il mappamondo è compatto (una calotta con posizione e pescate) con il tasto «Espandi»; espanso occupa lo schermo (su mobile come finestra a tutto schermo, con «Riduci», chip delle zone, controlli e una striscia meteo sempre visibile; su desktop occupa l'area principale e il meteo resta in una barra sopra). La scheda grande del meteo sostituisce «Oggi in mare» e il titolo «Guarda il mare prima di uscire». Le vecchie board 'Home · mobile' e 'Home · desktop' restano come riferimento ma sono superate da 64 e 65. Nella pagina Meteo (56, 57, 62) c'è anche «Confronta le previsioni»: consiglio di aprire 3bmeteo come seconda fonte (link esterno, nessun dato né logo di 3bmeteo dentro FishLog).",
+   "w": 1000,
+   "x": 0,
+   "y": 24600
+  },
+  "n20": {
+   "text": "Uscita già conclusa: aggiungere una cattura non richiede più di modificare l'uscita. Dal dettaglio c'è un solo pulsante «Aggiungi cattura» fisso in basso; la pagina «Nuova cattura» mostra solo le informazioni principali (specie, misure, rilasciato, foto) e tiene tutto il resto in «Altri dettagli», chiuso di default. Se l'ora cade fuori dall'uscita, il campo lo dice e propone di estendere l'uscita. Dopo il salvataggio si torna al dettaglio con la cattura evidenziata e «Annulla». La matita porta a «Modifica uscita»: sezione «Principali» (generale, luogo, voto) e «Altri dettagli · facoltativi», dove Visibilità (scelta in un foglio) e Note (pagina a sé) sono voci separate. Stati: ora fuori dall'uscita, errore di salvataggio, offline, uscire senza salvare.",
+   "w": 1000,
+   "x": 0,
+   "y": 26100
+  },
+  "n21": {
+   "text": "Specie: la pagina non è più vuota all'apertura. Mostra «In stagione» con le specie più comuni del mese corrente (novembre) per la zona dell'utente, con livello (Molto comune / Comune), il numero delle sue catture e una barra a 12 mesi con il mese in ambra. Si può cambiare mese da un foglio per programmare le uscite. La scheda «Tutte» è alfabetica; la ricerca (nome comune o scientifico) resta in alto. Stati: caricamento, senza posizione (Italia in generale), offline (elenco salvato), nessun risultato, errore. I dati di stagionalità sono d'esempio: vanno presi da una tabella specie × zona × mese da validare.",
+   "w": 1000,
+   "x": 3360,
+   "y": 1560
+  },
+  "n22": {
+   "text": "Gare secondo lo standard FIPSAS (surf casting). Una prova ha: organizzazione, manifestazione, prova nr., campo di gara, data, società organizzatrice, direttore e giudice di gara. I concorrenti hanno numero di gara, società e squadra (A–C, * = senza squadra) e vengono sorteggiati in settori A–F da 10. Il giudice pesa il settore: catture + peso → punteggio (conversione + bonus); il posto nel settore è la penalità. Classifiche: di settore, di giornata individuale, progressiva individuale (3 prove) e progressiva squadre (somma dei posti dei 4 componenti). Pari merito = posto medio; nessuna cattura = settore + 1. Stampa in PDF con le stesse colonne dei moduli, orario, direttore e giudice. Le regole non confermate sono segnalate nelle schermate. Nomi e società del mockup sono inventati.",
+   "w": 1000,
+   "x": 0,
+   "y": 27800
+  },
+  "n23": {
+   "text": "Home: località preferite. Sotto il meteo c'è «Le mie località»: una fila scorrevole di schede (la mia posizione + fino a 8 preferite) con temperatura, vento e onde. Toccando una scheda il meteo grande passa a quel posto, con un avviso «Mia posizione» per tornare. «Gestisci» per riordinare e togliere (con Annulla), «Aggiungi» per cercare e salvare con la stella. Stati: vuoto, caricamento, offline con ora dell'ultimo dato, dati non disponibili. Meteo e onde sono dati reali del servizio; nomi di esempio.",
+   "w": 560,
+   "x": 950,
+   "y": 29300
+  },
+  "n24": {
+   "text": "Home: attività dei pesci. Una card sotto il meteo con livello da 1 a 5 (Bassa → Alta) scritto a parole e con 5 segmenti, la prossima finestra utile e i 3 fattori che pesano di più (↑ favorevole, → neutro, ↓ sfavorevole). Tocco: foglio con grafico ora per ora, finestre, fattori e «Come viene calcolata». Nelle località preferite ogni scheda mostra il suo livello. Sempre etichettata «Indicativa»: non promette catture. Stati: ottime, scarse, caricamento, dati mancanti con «Riprova», offline.",
+   "w": 560,
+   "x": 950,
+   "y": 30900
+  },
+  "n25": {
+   "text": "Fishy, assistente vocale ridisegnato. Personaggio: pesce azzurro con galleggiante-lanterna ambra (il Bobber che ha imparato a nuotare), 7 espressioni. Pulsante: 8 stati. Interazione: «tocca per parlare, tocca per finire» come modo principale, «tieni premuto» come scorciatoia, Annulla sempre visibile. Foglio conversazione con la frase detta e le azioni eseguite, ognuna con Annulla persistente. Domande, offline, limite, microfono negato, solo tastiera. Gli anelli di ascolto sono decorativi: il browser non dà il livello audio.",
+   "w": 560,
+   "x": 2800,
+   "y": 32400
+  },
+  "n26": {
+   "text": "Il pulsante di Fishy animato dal vivo. A riposo ammicca e dondola appena; in ascolto «parla» (bocca che si apre e chiude, galleggiante che si illumina e manda onde, finte: non seguono la voce); in elaborazione guarda in giro con tre puntini; al successo fa un saltello con due scintille, una volta sola. Con movimento ridotto restano fermi avatar, testo e timer. Cambia scheda in alto per rivedere ogni stato.",
+   "w": 560,
+   "x": 1100,
+   "y": 36800
+  },
+  "n27": {
+   "text": "Home riorganizzata dopo aver letto il codice. Una sola card «Adesso» (meteo + pesci, «Indicativa» una volta), uscita in corso in cima, «Le mie località» come chip, «Le tue pescate» ad accordion con il mappamondo dentro, una riga di scorciatoie al posto di riquadri e sette collegamenti. Desktop in due colonne, senza storie. Nove stati su mobile.",
+   "w": 560,
+   "x": 1000,
+   "y": 37700
+  },
+  "n28": {
+   "text": "Modifica uscita: tutte le pagine interne ridisegnate. Elenco con stato, Generale, Luogo con mappa, Voto a stelle grandi, Acqua e meteo (mare, fiume, lago), Visibilità come foglio, Note. Nella board 81 trovi errori, GPS, offline, salvataggio, uscita senza salvare ed eliminazione. Su desktop elenco a sinistra e pagina a destra.",
+   "w": 560,
+   "x": 1000,
+   "y": 39200
+  },
+  "n29": {
+   "text": "Uscita in corso rivista. In alto i bottoni hanno ora l'etichetta: «Modifica» apre i dati dell'uscita, «Riepilogo» il resoconto. Fishy non è più in fondo alla pagina: in basso c'è sempre «Parla con Fishy», che apre il foglio con microfono. Accanto, «Chiudi» per terminare l'uscita.",
+   "w": 560,
+   "x": 0,
+   "y": 40700
+  }
+ },
+ "order": [
+  "Main.dc.html",
+  "Uscite.dc.html",
+  "Dettaglio.dc.html",
+  "HomeDesktop.dc.html",
+  "Community.dc.html",
+  "NuovoPost.dc.html",
+  "ChatLista.dc.html",
+  "ChatThread.dc.html",
+  "MarketLista.dc.html",
+  "MarketAnnuncio.dc.html",
+  "Login.dc.html",
+  "NuovaUscita.dc.html",
+  "Statistiche.dc.html",
+  "Classifica.dc.html",
+  "SpecieRicerca.dc.html",
+  "SpecieRicerca-chiaro.dc.html",
+  "SpecieScheda.dc.html",
+  "Commenti.dc.html",
+  "ProfiloUtente.dc.html",
+  "Amici.dc.html",
+  "Gruppi.dc.html",
+  "Notifiche.dc.html",
+  "Profilo.dc.html",
+  "MarketNegozi.dc.html",
+  "NuovoAnnuncio.dc.html",
+  "NuovoGruppoChat.dc.html",
+  "Globe.dc.html",
+  "Registrazione.dc.html",
+  "RichiestaVenditore.dc.html",
+  "StatoVerifica.dc.html",
+  "VenditoreProfilo.dc.html",
+  "Logo.dc.html",
+  "Stile.dc.html",
+  "Icone.dc.html",
+  "UscitaInCorso.dc.html",
+  "AggiungiCattura.dc.html",
+  "ChiudiUscita.dc.html",
+  "DatiUscita.dc.html",
+  "AcquaMeteo.dc.html",
+  "Crea.dc.html",
+  "NuovaStoria.dc.html",
+  "StoriaVista.dc.html",
+  "Bacheca.dc.html",
+  "CreaBacheca.dc.html",
+  "NuovoPostStati.dc.html",
+  "NuovaStoriaStati.dc.html",
+  "MenuProfilo.dc.html",
+  "ImpostazioniProfilo.dc.html",
+  "GareElenco.dc.html",
+  "GareElenco-chiaro.dc.html",
+  "GareCampionato.dc.html",
+  "GareCampionato-chiaro.dc.html",
+  "GaraDettaglio.dc.html",
+  "GaraDettaglio-chiaro.dc.html",
+  "GaraInserimento.dc.html",
+  "GaraInserimento-chiaro.dc.html",
+  "GareTabella.dc.html",
+  "GareTabella-chiaro.dc.html",
+  "GareRegole.dc.html",
+  "GareRegole-chiaro.dc.html",
+  "GareClassificaPubblica.dc.html",
+  "GareClassificaPubblica-chiaro.dc.html",
+  "GareIscritti.dc.html",
+  "GareIscritti-chiaro.dc.html",
+  "MeteoMobile.dc.html",
+  "MeteoMobile-chiaro.dc.html",
+  "MeteoDesktop.dc.html",
+  "MeteoDesktop-chiaro.dc.html",
+  "MeteoLuogo.dc.html",
+  "MeteoLuogo-chiaro.dc.html",
+  "MeteoHome.dc.html",
+  "MeteoHome-chiaro.dc.html",
+  "MeteoComponenti.dc.html",
+  "MeteoComponenti-chiaro.dc.html",
+  "CattureClassifica.dc.html",
+  "MeteoGiorno.dc.html",
+  "MeteoGiorno-chiaro.dc.html",
+  "MeteoIcone.dc.html",
+  "MeteoIcone-chiaro.dc.html",
+  "HomeMeteo.dc.html",
+  "HomeMeteo-chiaro.dc.html",
+  "HomeMeteoDesktop.dc.html",
+  "HomeMeteoDesktop-chiaro.dc.html",
+  "UscitaChiusa.dc.html",
+  "UscitaChiusa-chiaro.dc.html",
+  "GareFipsasDesktop.dc.html",
+  "GareFipsasDesktop-chiaro.dc.html",
+  "GareFipsasMobile.dc.html",
+  "GareFipsasMobile-chiaro.dc.html",
+  "HomePreferiti.dc.html",
+  "HomePreferiti-chiaro.dc.html",
+  "HomeAttivita.dc.html",
+  "HomeAttivita-chiaro.dc.html",
+  "FishyPersonaggio.dc.html",
+  "FishyPersonaggio-chiaro.dc.html",
+  "FishyPulsante.dc.html",
+  "FishyPulsante-chiaro.dc.html",
+  "FishyFoglio.dc.html",
+  "FishyFoglio-chiaro.dc.html",
+  "FishyDomande.dc.html",
+  "FishyDomande-chiaro.dc.html",
+  "FishyIngressi.dc.html",
+  "FishyIngressi-chiaro.dc.html",
+  "FishyMisure.dc.html",
+  "FishyMisure-chiaro.dc.html",
+  "FishyAnimato.dc.html",
+  "FishyAnimato-chiaro.dc.html",
+  "HomeRiordino.dc.html",
+  "HomeRiordino-chiaro.dc.html",
+  "HomeRiordinoDesktop.dc.html",
+  "HomeRiordinoDesktop-chiaro.dc.html",
+  "ModificaUscita.dc.html",
+  "ModificaUscita-chiaro.dc.html",
+  "ModificaUscitaStati.dc.html",
+  "ModificaUscitaStati-chiaro.dc.html",
+  "ModificaUscitaDesktop.dc.html",
+  "ModificaUscitaDesktop-chiaro.dc.html",
+  "UscitaInCorsoV2.dc.html",
+  "UscitaInCorsoV2-chiaro.dc.html"
+ ],
+ "pages": [],
+ "title": "FishLog – Restyling"
+}
