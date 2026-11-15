@@ -4,7 +4,7 @@
     <div class="fs">
       <div class="fs-head">
         <Fishy :expression="EXPRESSION[state]" :size="56" avatar />
-        <div class="fs-t"><h2>{{ t('fishy.title') }}</h2><p class="fs-tag">{{ t('fishy.subtitle') }}</p></div>
+        <div class="fs-t"><h2>{{ t('fishy.title') }}</h2><p class="fs-tag">{{ tag }}</p></div>
         <button type="button" class="fs-x" :aria-label="t('createMenu.close')" @click="hide"><X :size="22" /></button>
       </div>
       <p class="fs-sub" :class="{ on: sessions.ongoing }"><span v-if="sessions.ongoing" class="dot" aria-hidden="true"></span>{{ sub }}</p>
@@ -28,7 +28,8 @@ import { EXPRESSION } from '../utils/fishyFab.js'
 const { t } = useI18n()
 const sessions = useSessionStore()
 const { open, hide } = useFishySheet()
-const { state } = useFishyVoice()
+const { state, listening, noMic } = useFishyVoice()
+const tag = computed(() => noMic.value ? t('fishy.subtitleNoMic') : listening.value ? t('fishy.subtitleListening') : t('fishy.subtitle'))
 // Dice a che punto sei: con un'uscita in corso luogo e ora d'inizio, altrimenti come cominciarne una.
 const sub = computed(() => {
   const o = sessions.ongoing

@@ -127,7 +127,7 @@
       <p class="sub">{{ t('fishy.state.unsynced') }}</p>
       <button type="button" class="obtn" @click="manualEntry"><Pencil :size="16" /> {{ t('fishy.state.recordByHand') }}</button>
     </div>
-    <p v-if="!supported" class="state calm"><Keyboard :size="16" /> {{ t('fishy.state.keyboardOnly') }}</p>
+    <p v-if="!supported && issue !== 'mic_denied'" class="state calm"><Keyboard :size="16" /> {{ t('fishy.state.keyboardOnly') }}</p>
 
     <!-- In ascolto: testo provvisorio e, col tieni-premuto, la zona di annullo -->
     <p v-if="listening && interim" class="interim">{{ interim }}</p>
@@ -164,7 +164,7 @@
 </template>
 
 <script setup>
-import { ref, computed, nextTick } from 'vue'
+import { ref, computed, nextTick, watch } from 'vue'
 import { RouterLink, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { Mic, MicOff, Keyboard, Loader2, WifiOff, Square, Play, Fish, RefreshCw, Flag, Undo2, RotateCcw, AlertCircle, AlertTriangle, Info, Clock, ArrowLeft, Tag, Pencil, LocateFixed, MapPin } from 'lucide-vue-next'
@@ -204,7 +204,7 @@ function stillToComplete(row) {
 }
 const offline = useOfflineStore()
 const voice = useFishyVoice()
-const { conversation, busy, issue, issueText, announcement, queued, listening, supported, interim, elapsedLabel, startListening, finish, cancelListening, submit } = voice
+const { conversation, noMic, busy, issue, issueText, announcement, queued, listening, supported, interim, elapsedLabel, startListening, finish, cancelListening, submit } = voice
 
 const degraded = computed(() => issue.value === 'degraded')
 const queuedItems = computed(() => offline.outbox.filter(i => i.meta?.kind === 'assistant' || i.meta?.kind === 'voice-catch'))
@@ -231,6 +231,8 @@ const hideHold = computed(() => isIOS())
 const typing = ref(false)
 const typed = ref('')
 const inp = ref(null)
+// Senza microfono (assente o negato) si scrive: il campo si apre da solo e prende il focus.
+watch(noMic, async n => { if (n) { typing.value = true; await nextTick(); inp.value?.focus() } }, { immediate: true })
 const exchange = computed(() => conversation.last.value)
 const notices = computed(() => store.voiceNeedsInfo)
 const listings = computed(() => store.voiceListings)

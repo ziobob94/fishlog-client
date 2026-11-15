@@ -13,9 +13,6 @@
       </svg>
       <div class="hero-top">
         <RouterLink to="/sessions" class="back" :aria-label="t('session.ongoing.backToList')"><ChevronLeft :size="22" /></RouterLink>
-        <span class="grow"></span>
-        <button type="button" class="hero-pill" @click="$emit('edit-full')"><Pencil :size="18" aria-hidden="true" /> {{ t('session.ongoing.edit') }}</button>
-        <RouterLink :to="`/session/${session._id}`" class="hero-pill"><FileText :size="18" aria-hidden="true" /> {{ t('session.edit.viewSummary') }}</RouterLink>
       </div>
       <div class="hero-text">
         <span class="eyebrow"><span class="dot"></span>{{ t('session.ongoing.live', { time: startLabel }) }}</span>
@@ -33,6 +30,10 @@
       <RouterLink :to="`/session/${session._id}/catch/new`" class="fl-btn1 add-btn">
         <Plus :size="24" :stroke-width="2.4" /> {{ t('session.ongoing.addCatch') }}
       </RouterLink>
+      <div class="actions">
+        <button type="button" class="fl-btn2" @click="$emit('edit-full')"><Pencil :size="20" aria-hidden="true" /> {{ t('session.ongoing.editData') }}</button>
+        <RouterLink :to="`/session/${session._id}`" class="fl-btn2"><FileText :size="20" aria-hidden="true" /> {{ t('session.edit.viewSummary') }}</RouterLink>
+      </div>
 
       <!-- Stato vuoto: il galleggiante -->
       <div v-if="!catches.length" class="empty">
@@ -66,7 +67,7 @@
     </main>
 
     <div class="fl-bar bar-row">
-      <button type="button" class="fishy-btn" @click="fishySheet.show()">
+      <button type="button" class="fishy-btn" @click="voice.talk()">
         <Fishy expression="rest" :size="40" avatar />
         <span class="fishy-txt">
           <span class="fishy-title">{{ t('session.ongoing.talkToFishy') }}</span>
@@ -88,11 +89,11 @@ import { useI18n } from 'vue-i18n'
 import { Plus, ChevronRight, ChevronLeft, Fish, FileText, Pencil, Flag, Check } from 'lucide-vue-next'
 import Bobber from '../Bobber.vue'
 import Fishy from '../Fishy.vue'
-import { useFishySheet } from '../../composables/useFishySheet.js'
+import { useFishyVoice } from '../../composables/useFishyVoice.js'
 import { sessionStart, fmtClock, elapsedLabel, totalKgLabel } from '../../utils/sessionTime.js'
 
 const { t } = useI18n()
-const fishySheet = useFishySheet()
+const voice = useFishyVoice()
 
 const props = defineProps({
   session: { type: Object, required: true }
@@ -130,10 +131,7 @@ const elapsed = computed(() => elapsedLabel(props.session, now.value))
 .hero { position: relative; background: rgb(var(--color-sea-deep)); border-radius: 0 0 28px 8px; overflow: hidden; padding: 8px 16px 22px 8px; display: flex; flex-direction: column; gap: 14px; }
 .hero-bg { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
 .hero-top { position: relative; display: flex; align-items: center; gap: 4px; }
-.grow { flex: 1; }
 .back { width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; color: var(--foam); }
-.hero-pill { min-height: 44px; padding: 0 14px; border-radius: 22px; display: inline-flex; align-items: center; gap: 8px; background: rgb(var(--color-ink) / .6); border: 1px solid var(--border-light); color: var(--foam); font: inherit; font-size: 15px; font-weight: 700; text-decoration: none; cursor: pointer; margin-left: 4px; transition: background-color var(--motion-fast) var(--ease-standard); }
-.hero-pill:active { background: rgb(var(--color-ink) / .8); }
 .hero-text { position: relative; padding-left: 8px; display: flex; flex-direction: column; gap: 6px; }
 .eyebrow { display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: rgb(var(--color-sand-text)); }
 .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--sand); }
@@ -145,7 +143,9 @@ const elapsed = computed(() => elapsedLabel(props.session, now.value))
 .num.amber { color: rgb(var(--color-sand-text)); }
 .lbl { font-size: 12px; color: var(--text-muted); font-weight: 600; }
 
-.body { padding: 18px 16px 0; display: flex; flex-direction: column; gap: 18px; }
+.body { padding: 18px 16px 0; display: flex; flex-direction: column; gap: 16px; }
+.actions { display: flex; gap: 10px; margin-top: -6px; }
+.actions .fl-btn2 { flex: 1 1 0; min-width: 0; min-height: 52px; text-decoration: none; }
 .add-btn { min-height: 60px; font-size: 17px; box-shadow: 0 8px 22px rgba(14, 165, 233, .28); text-decoration: none; }
 
 .empty { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 20px 16px; text-align: center; }
