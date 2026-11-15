@@ -38,7 +38,8 @@
 import { ref, computed, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { Link2, Copy, Share2, Link2Off as LinkOff } from 'lucide-vue-next'
-import { sessionShareApi, nativeShare, copyText } from '../utils/sessionShare.js'
+import { sessionShareApi } from '../utils/sessionShare.js'
+import { nativeShare, copyText } from '../utils/nativeShare.js'
 
 const props = defineProps({ session: { type: Object, required: true } })
 const emit = defineEmits(['close', 'changed'])

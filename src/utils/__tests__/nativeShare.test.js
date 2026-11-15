@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, afterEach } from 'vitest'
-import { nativeShare } from '../sessionShare.js'
+import { nativeShare } from '../nativeShare.js'
 
 afterEach(() => vi.unstubAllGlobals())
 
