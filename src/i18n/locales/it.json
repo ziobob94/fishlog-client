@@ -1171,6 +1171,8 @@
 			"bodyLabel": "Cosa vuoi raccontare?",
 			"chooseGroup": "Scegli un gruppo",
 			"mediaLabel": "Foto e video",
+			"uploadingPhotos": "Carico le foto · {n} di {total}",
+			"networkError": "Pubblicazione non riuscita. Controlla la connessione e riprova. Il testo e le foto sono al sicuro.",
 			"eventName": "Nome evento",
 			"eventDesc": "Descrizione",
 			"eventDate": "Data e ora",
