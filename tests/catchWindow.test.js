@@ -23,3 +23,17 @@ describe('checkCatchTime', () => {
     expect(checkCatchTime(s('06:00', '10:00', 'ongoing'), '12:00').ok).toBe(true)
   })
 })
+
+describe('checkCatchTime con uscite di più giorni', () => {
+  const m = (startTime, endTime, date, endDate) => ({ startTime, endTime, date, endDate, status: 'closed' })
+  it('ogni ora è valida se dura un giorno o più', () => {
+    const x = m('20:00', '10:00', '2026-06-01', '2026-06-04')
+    expect(checkCatchTime(x, '03:00').ok).toBe(true)
+    expect(checkCatchTime(x, '15:00').ok).toBe(true)
+  })
+  it('con data di fine sotto le 24 ore vale la fascia oraria', () => {
+    const x = m('22:00', '02:00', '2026-06-01', '2026-06-02')
+    expect(checkCatchTime(x, '12:00').ok).toBe(false)
+    expect(checkCatchTime(x, '23:00').ok).toBe(true)
+  })
+})

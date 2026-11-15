@@ -193,7 +193,9 @@ const bannerMeta = computed(() => {
   const s = session.value
   if (!s) return ''
   const d = s.date ? new Date(s.date).toLocaleDateString('it-IT', { day: 'numeric', month: 'short', year: 'numeric' }) : ''
-  const range = s.startTime ? `${s.startTime}${s.endTime ? '–' + s.endTime : ''}` : ''
+  const endDay = s.endDate && String(s.endDate).slice(0, 10) > String(s.date || '').slice(0, 10)
+    ? new Date(s.endDate).toLocaleDateString('it-IT', { day: 'numeric', month: 'short' }) : ''
+  const range = s.startTime ? `${s.startTime}${s.endTime ? '–' + [endDay, s.endTime].filter(Boolean).join(' ') : ''}` : ''
   return [d, range].filter(Boolean).join(' · ')
 })
 

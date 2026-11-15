@@ -1,3 +1,5 @@
+import { sessionMinutes } from './sessionTime.js'
+
 // Fascia oraria di un'uscita conclusa e controllo dell'ora di una cattura.
 const toMin = hhmm => {
   const m = /^(\d{1,2}):(\d{2})/.exec(hhmm || '')
@@ -10,6 +12,8 @@ const toMin = hhmm => {
 export function checkCatchTime(session, time) {
   const t = toMin(time), s = toMin(session?.startTime), e = toMin(session?.endTime)
   if (t == null || s == null || e == null || session?.status === 'ongoing') return { ok: true }
+  // Uscita di un giorno o più (data di fine indicata): ogni ora del giorno cade nella fascia
+  if (session?.endDate && (sessionMinutes(session) ?? 0) >= 1440) return { ok: true }
   if (e >= s) {
     if (t > e) return { ok: false, side: 'after', time }
     if (t < s) return { ok: false, side: 'before', time }

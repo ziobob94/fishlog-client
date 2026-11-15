@@ -2249,6 +2249,8 @@
 		"save": "Salva",
 		"placeRequired": "Scrivi dove hai pescato: il luogo è obbligatorio.",
 		"endBeforeStart": "La fine è prima dell'inizio.",
+		"endDateLabel": "Giorno di fine",
+		"durationDays": "Durata: {days} g {hours} h",
 		"when": "Quando",
 		"locked": "Compilato in automatico, sola lettura",
 		"lockedHint": "Si compila da sola dal punto sulla mappa.",
