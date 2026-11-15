@@ -168,6 +168,7 @@ textarea.field { @apply py-3; }
 .media-remove {
   @apply absolute top-1 right-1 w-7 h-7 flex items-center justify-center bg-black/60 text-white rounded-full border-none cursor-pointer;
 }
+.media-remove::after { content: ""; position: absolute; inset: -8px; }
 
 .vis-hint { @apply text-sm text-muted mt-2; }
 .chips { @apply flex flex-wrap gap-2; }

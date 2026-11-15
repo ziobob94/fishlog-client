@@ -408,12 +408,12 @@ import PageHeader from '../components/PageHeader.vue'
   .chips { @apply flex gap-1.5 overflow-x-auto pb-1 mb-2; scrollbar-width: none; }
   .chips::-webkit-scrollbar { display: none; }
   .chip {
-    @apply inline-flex items-center shrink-0 min-h-[32px] px-3 rounded-full border border-border bg-surface text-foam text-[0.8125rem] font-semibold cursor-pointer whitespace-nowrap;
+    @apply inline-flex items-center shrink-0 min-h-[44px] px-3 rounded-full border border-border bg-surface text-foam text-[0.8125rem] font-semibold cursor-pointer whitespace-nowrap;
   }
   .chip.active { @apply bg-ocean border-ocean text-on-primary; }
 
   .ph-icon {
-    @apply relative flex items-center justify-center w-9 h-9 rounded-xl text-foam bg-surface border border-border cursor-pointer no-underline;
+    @apply relative flex items-center justify-center w-11 h-11 rounded-xl text-foam bg-surface border border-border cursor-pointer no-underline;
   }
   .ph-icon.active { @apply text-ocean-text border-ocean; }
   .ph-count {

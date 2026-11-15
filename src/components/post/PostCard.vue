@@ -523,7 +523,7 @@ const featuredCatch = computed(() => {
   }
 
   .lightbox-close {
-    @apply absolute top-6 right-6 w-9 h-9 rounded-full bg-white/10 hover:bg-white/25 border-none text-white cursor-pointer;
+    @apply absolute top-6 right-6 w-11 h-11 rounded-full bg-white/10 hover:bg-white/25 border-none text-white cursor-pointer;
   }
 
   .attendance-block {

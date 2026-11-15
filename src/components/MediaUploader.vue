@@ -59,7 +59,7 @@
         class="fixed inset-0 z-[1000] bg-black/92 flex items-center justify-center"
         @click.self="lightboxItem = null"
       >
-        <button class="absolute top-6 right-6 w-9 h-9 rounded-full bg-white/10 hover:bg-white/25 border-none text-white cursor-pointer text-base transition-colors"
+        <button class="absolute top-6 right-6 w-11 h-11 rounded-full bg-white/10 hover:bg-white/25 border-none text-white cursor-pointer text-base transition-colors"
           @click="lightboxItem = null"><X :size="18" /></button>
         <img v-if="lightboxItem.type === 'photo'" :src="lightboxItem.url" class="max-w-[90vw] max-h-[90vh] object-contain rounded-sm" />
         <video v-else :src="lightboxItem.url" controls autoplay class="max-w-[90vw] max-h-[90vh] rounded-sm" />
