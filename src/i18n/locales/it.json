@@ -2546,6 +2546,10 @@
 				"orario": "Ora di stampa: {ora} (automatica)",
 				"senzaLogo": "Il logo FIPSAS non è incluso: l'intestazione è solo testo.",
 				"scarica": "Scarica il PDF",
+				"anteprima": "Anteprima A4",
+				"anteprimaTitolo": "Anteprima della stampa in formato A4",
+				"anteprimaNota": "Così verrà stampato.",
+				"anteprimaApri": "Apri in una scheda",
 				"errore": "Non è stato possibile creare il PDF."
 			},
 			"pubblica": {
@@ -2555,6 +2559,8 @@
 				"link": "Link pubblico",
 				"copia": "Copia il link",
 				"copiato": "Copiato",
+				"qrAlt": "Codice QR del link pubblico della prova",
+				"qrNota": "Inquadralo per aprire le classifiche in diretta: stampalo e appendilo al campo gara.",
 				"privacy": "Nella pagina pubblica compaiono nome, cognome e società dei concorrenti, come nelle classifiche ufficiali.",
 				"nonAttiva": "La classifica pubblica non è attiva.",
 				"offline": "Offline: dati salvati il {quando}",
