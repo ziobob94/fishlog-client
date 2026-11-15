@@ -42,7 +42,7 @@
       <section>
         <span class="fl-lab">{{ t('sessionForm.essential.water') }}</span>
         <div class="ess-chips">
-          <button v-for="w in WATER_TYPES" :key="w.v" type="button" class="fl-chip" :class="{ on: f.waterType === w.v }" :aria-pressed="f.waterType === w.v" @click="f.waterType = f.waterType === w.v ? '' : w.v">{{ w.l }}</button>
+          <button v-for="w in WATER_CHIPS" :key="w.v" type="button" class="fl-chip" :class="{ on: f.waterType === w.v }" :aria-pressed="f.waterType === w.v" @click="f.waterType = f.waterType === w.v ? '' : w.v"><component :is="w.icon" :size="16" aria-hidden="true" />{{ w.l }}</button>
         </div>
       </section>
 
@@ -808,29 +808,29 @@
     { v: 'mosca', l: 'Mosca' }, { v: 'altro', l: 'Altro' }
   ]
   const WATER_TYPES = [
-    { v: 'mare', l: '🌊 Mare' },
-    { v: 'fiume', l: '🏞️ Fiume' },
-    { v: 'lago', l: '🏔️ Lago' },
-    { v: 'altro', l: '💧 Altro' },
+    { v: 'mare', l: 'Mare' },
+    { v: 'fiume', l: 'Fiume' },
+    { v: 'lago', l: 'Lago' },
+    { v: 'altro', l: 'Altro' },
   ]
   const SEA_STATES = [
-    { v: 'piatto', l: '🫧 Piatto' },
-    { v: 'poco_mosso', l: '〰️ Poco mosso' },
-    { v: 'mosso', l: '🌊 Mosso' },
-    { v: 'molto_mosso', l: '🌊💨 Molto mosso' },
-    { v: 'agitato', l: '⛈️ Agitato' },
+    { v: 'piatto', l: 'Piatto' },
+    { v: 'poco_mosso', l: 'Poco mosso' },
+    { v: 'mosso', l: 'Mosso' },
+    { v: 'molto_mosso', l: 'Molto mosso' },
+    { v: 'agitato', l: 'Agitato' },
   ]
   const WATER_LEVELS = [
-    { v: 'piena', l: '🔼 In piena' },
-    { v: 'normale', l: '➡️ Normale' },
-    { v: 'magra', l: '🔽 In magra' },
+    { v: 'piena', l: 'In piena' },
+    { v: 'normale', l: 'Normale' },
+    { v: 'magra', l: 'In magra' },
   ]
   const RIVER_CURRENTS = ['🌀 Lenta', '➡️ Moderata', '💨 Sostenuta', '🌊 Forte', '⚡ Molto forte']
   const TIDE_STATES = [
-    { v: 'crescente', l: '📈 Crescente' },
-    { v: 'calante', l: '📉 Calante' },
-    { v: 'alta', l: '⬆️ Alta' },
-    { v: 'bassa', l: '⬇️ Bassa' },
+    { v: 'crescente', l: 'Crescente' },
+    { v: 'calante', l: 'Calante' },
+    { v: 'alta', l: 'Alta' },
+    { v: 'bassa', l: 'Bassa' },
   ]
   const WIND_DIRS = [
     'Tramontana (N)', 'Greco-Tramontana (NNE)', 'Grecale (NE)', 'Greco-Levante (ENE)',
@@ -839,9 +839,9 @@
     'Ponente (W)', 'Maestrale-Ponente (WNW)', 'Maestrale (NW)', 'Tramontana-Maestrale (NNW)',
   ]
   const WEATHER = [
-    { v: 'sole', l: '☀️ Sole' }, { v: 'nuvoloso', l: '⛅ Nuvoloso' },
-    { v: 'coperto', l: '☁️ Coperto' }, { v: 'pioggia', l: '🌧️ Pioggia' },
-    { v: 'vento', l: '💨 Vento' }, { v: 'nebbia', l: '🌫️ Nebbia' }
+    { v: 'sole', l: 'Sole' }, { v: 'nuvoloso', l: 'Nuvoloso' },
+    { v: 'coperto', l: 'Coperto' }, { v: 'pioggia', l: 'Pioggia' },
+    { v: 'vento', l: 'Vento' }, { v: 'nebbia', l: 'Nebbia' }
   ]
 
   // Chip dell'elenco «Modifica uscita»: etichette senza emoji, i valori salvati restano quelli di sempre
