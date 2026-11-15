@@ -20,8 +20,10 @@ export function visibleFactors(factors, max = 3) {
 //  loading  → nessun dato e richiesta in corso (skeleton, aria-busy)
 //  ok       → livello valido
 //  offline  → livello salvato, ma senza rete (mostra l'ora dell'ultimo dato)
+//  hidden   → il server dice che mancano i dati mare (reason 'no-marine'): la stima non ha senso, la scheda non si mostra
 //  missing  → dati mancanti (server senza stima, luogo non raggiungibile, offline senza dato): nessun livello
 export function activityState({ rec, loading = false, online = true }) {
+  if (rec?.ok && rec.reason === 'no-marine') return 'hidden'
   if (!rec) return loading ? 'loading' : 'missing'
   if (!rec.ok || validLevel(rec.level) == null) return 'missing'
   return online ? 'ok' : 'offline'

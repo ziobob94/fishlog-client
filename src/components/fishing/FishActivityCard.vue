@@ -1,6 +1,6 @@
 <template>
   <!-- «Attività dei pesci»: sotto il meteo, sopra «Le mie località». Stima indicativa (livello 1-5 per l'ora corrente del luogo). -->
-  <section v-if="place" class="fa" :class="{ 'fa-embedded': embedded }" aria-labelledby="fa-title" :aria-busy="state === 'loading' ? 'true' : undefined">
+  <section v-if="place && state !== 'hidden'" class="fa" :class="{ 'fa-embedded': embedded }" aria-labelledby="fa-title" :aria-busy="state === 'loading' ? 'true' : undefined">
     <div class="fa-head">
       <h2 id="fa-title" class="fa-title">{{ t('fishAct.title') }}</h2>
       <p v-if="!embedded" class="fa-note">{{ t('fishAct.note') }}</p>
