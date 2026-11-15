@@ -2601,6 +2601,13 @@
 			"wind": { "up": "Vento favorevole", "flat": "Vento nella norma", "down": "Vento sfavorevole" },
 			"waterTemp": { "up": "Acqua favorevole", "flat": "Acqua nella norma", "down": "Acqua sfavorevole" }
 		},
+		"factorData": {
+			"pressure": { "falling": "Pressione in calo", "steady": "Pressione stabile", "rising": "Pressione in aumento" },
+			"tide": { "rising": "Marea in crescita", "falling": "Marea in calo", "slack": "Marea ferma" },
+			"wind": "Vento {n} km/h",
+			"waterTemp": "Acqua {n} °C",
+			"light": { "sunrise": "Alba alle {time}", "sunset": "Tramonto alle {time}", "night": "Notte" }
+		},
 		"effect": {
 			"up": "favorisce",
 			"flat": "neutro",
