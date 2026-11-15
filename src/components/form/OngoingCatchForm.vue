@@ -14,8 +14,8 @@
       <div class="hero-top">
         <RouterLink to="/sessions" class="back" :aria-label="t('session.ongoing.backToList')"><ChevronLeft :size="22" /></RouterLink>
         <span class="grow"></span>
-        <RouterLink :to="`/session/${session._id}`" class="fl-iconbtn hero-btn" :aria-label="t('session.edit.viewSummary')" :title="t('session.edit.viewSummary')"><FileText :size="20" /></RouterLink>
-        <button type="button" class="fl-iconbtn hero-btn" :aria-label="t('session.ongoing.dataLink')" :title="t('session.ongoing.dataLink')" @click="$emit('edit-full')"><MoreHorizontal :size="20" /></button>
+        <button type="button" class="hero-pill" @click="$emit('edit-full')"><Pencil :size="18" aria-hidden="true" /> {{ t('session.ongoing.edit') }}</button>
+        <RouterLink :to="`/session/${session._id}`" class="hero-pill"><FileText :size="18" aria-hidden="true" /> {{ t('session.edit.viewSummary') }}</RouterLink>
       </div>
       <div class="hero-text">
         <span class="eyebrow"><span class="dot"></span>{{ t('session.ongoing.live', { time: startLabel }) }}</span>
@@ -33,8 +33,6 @@
       <RouterLink :to="`/session/${session._id}/catch/new`" class="fl-btn1 add-btn">
         <Plus :size="24" :stroke-width="2.4" /> {{ t('session.ongoing.addCatch') }}
       </RouterLink>
-
-      <FishyPanel />
 
       <!-- Stato vuoto: il galleggiante -->
       <div v-if="!catches.length" class="empty">
@@ -67,8 +65,18 @@
       </section>
     </main>
 
-    <div class="fl-bar">
-      <RouterLink :to="`/session/${session._id}/close`" class="fl-btn2 close-btn">{{ t('session.ongoing.close') }}</RouterLink>
+    <div class="fl-bar bar-row">
+      <button type="button" class="fishy-btn" @click="fishySheet.show()">
+        <Fishy expression="rest" :size="40" avatar />
+        <span class="fishy-txt">
+          <span class="fishy-title">{{ t('session.ongoing.talkToFishy') }}</span>
+          <span class="fishy-ex">{{ t('session.ongoing.fishyExample') }}</span>
+        </span>
+      </button>
+      <RouterLink :to="`/session/${session._id}/close`" class="close-btn" :aria-label="t('session.ongoing.close')">
+        <Flag :size="20" aria-hidden="true" />
+        <span>{{ t('session.ongoing.closeShort') }}</span>
+      </RouterLink>
     </div>
   </div>
 </template>
@@ -77,12 +85,14 @@
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import { RouterLink } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { Plus, ChevronRight, ChevronLeft, Fish, FileText, MoreHorizontal, Check } from 'lucide-vue-next'
+import { Plus, ChevronRight, ChevronLeft, Fish, FileText, Pencil, Flag, Check } from 'lucide-vue-next'
 import Bobber from '../Bobber.vue'
-import FishyPanel from './FishyPanel.vue'
+import Fishy from '../Fishy.vue'
+import { useFishySheet } from '../../composables/useFishySheet.js'
 import { sessionStart, fmtClock, elapsedLabel, totalKgLabel } from '../../utils/sessionTime.js'
 
 const { t } = useI18n()
+const fishySheet = useFishySheet()
 
 const props = defineProps({
   session: { type: Object, required: true }
@@ -114,7 +124,7 @@ const elapsed = computed(() => elapsedLabel(props.session, now.value))
 </script>
 
 <style scoped>
-.ongoing { display: flex; flex-direction: column; margin: -1.5rem -1rem 0; padding-bottom: calc(100px + env(safe-area-inset-bottom)); }
+.ongoing { display: flex; flex-direction: column; margin: -1.5rem -1rem 0; padding-bottom: calc(64px + 20px + 24px + env(safe-area-inset-bottom)); }
 @media (min-width: 640px) { .ongoing { margin: -2rem -1.5rem 0; } }
 
 .hero { position: relative; background: rgb(var(--color-sea-deep)); border-radius: 0 0 28px 8px; overflow: hidden; padding: 8px 16px 22px 8px; display: flex; flex-direction: column; gap: 14px; }
@@ -122,11 +132,12 @@ const elapsed = computed(() => elapsedLabel(props.session, now.value))
 .hero-top { position: relative; display: flex; align-items: center; gap: 4px; }
 .grow { flex: 1; }
 .back { width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; color: var(--foam); }
-.hero-btn { background: rgb(var(--color-ink) / .6); border-color: var(--border-light); margin-left: 2px; }
+.hero-pill { min-height: 44px; padding: 0 14px; border-radius: 22px; display: inline-flex; align-items: center; gap: 8px; background: rgb(var(--color-ink) / .6); border: 1px solid var(--border-light); color: var(--foam); font: inherit; font-size: 15px; font-weight: 700; text-decoration: none; cursor: pointer; margin-left: 4px; transition: background-color var(--motion-fast) var(--ease-standard); }
+.hero-pill:active { background: rgb(var(--color-ink) / .8); }
 .hero-text { position: relative; padding-left: 8px; display: flex; flex-direction: column; gap: 6px; }
 .eyebrow { display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: rgb(var(--color-sand-text)); }
 .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--sand); }
-.hero h1 { margin: 0; font-size: 28px; line-height: 1.1; letter-spacing: -.01em; font-weight: 800; color: var(--foam); }
+.hero h1 { margin: 0; overflow-wrap: anywhere; font-size: 28px; line-height: 1.1; letter-spacing: -.01em; font-weight: 800; color: var(--foam); }
 .subline { font-size: 12px; color: rgb(var(--color-ocean-text)); }
 .stats { position: relative; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; padding-left: 8px; }
 .stats > div { display: flex; flex-direction: column; gap: 2px; }
@@ -155,5 +166,11 @@ const elapsed = computed(() => elapsedLabel(props.session, now.value))
 .row-time { font-size: 12px; color: var(--text-muted); }
 .go { color: rgb(var(--color-ocean-text)); flex: none; }
 
-.close-btn { border-color: var(--sand); color: rgb(var(--color-sand-text)); text-decoration: none; }
+.bar-row { flex-direction: row; gap: 12px; align-items: stretch; }
+.fishy-btn { flex: 1; min-width: 0; height: 64px; padding: 0 12px 0 10px; display: flex; align-items: center; gap: 10px; text-align: left; border-radius: 16px; background: var(--surface); border: 1px solid rgb(var(--color-ocean)); color: var(--foam); font: inherit; cursor: pointer; }
+.fishy-btn:active { background: var(--surface-2); }
+.fishy-txt { min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.fishy-title { font-size: 15px; font-weight: 800; }
+.fishy-ex { font-size: 12px; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.close-btn { flex: none; width: 84px; height: 64px; border-radius: 16px; border: 1px solid var(--border-light); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; color: var(--foam); font-size: 13px; font-weight: 700; text-decoration: none; }
 </style>
