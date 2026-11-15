@@ -17,7 +17,7 @@ defineProps({ size: { type: Number, default: 120 } })
 </script>
 
 <style scoped>
-.bob { animation: bob 2.6s ease-in-out infinite; }
+.bob { animation: bob var(--motion-loop-bobber) ease-in-out infinite; }
 @media (prefers-reduced-motion: reduce) { :root:not([data-motion='full']) .bob { animation: none; } }
 :root[data-motion='reduce'] .bob { animation: none; }
 @keyframes bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(6px); } }

@@ -73,7 +73,7 @@ const newSessionTarget = computed(() =>
 
 .bottom-nav-item {
   @apply relative flex flex-col items-center justify-center gap-0.5
-         min-h-[44px] py-1 text-muted text-[0.68rem] font-semibold no-underline transition-colors duration-200;
+         min-h-[44px] py-1 text-muted text-[0.68rem] font-semibold no-underline transition-colors duration-base;
 }
 
 .bottom-nav-item.router-link-active {

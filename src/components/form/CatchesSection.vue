@@ -526,12 +526,12 @@ function confirmRemove() {
   align-items: center; background: var(--surface, #0a1929);
   border: 1px solid var(--border, #2a3f55); border-radius: 8px;
   color: var(--text-muted, #6b8fa8); cursor: pointer; display: flex;
-  height: 34px; justify-content: center; transition: color .15s, border-color .15s, background .15s;
+  height: 34px; justify-content: center; transition: color var(--motion-fast), border-color var(--motion-fast), background var(--motion-fast);
   width: 34px;
 }
 .row-icon-btn:hover { background: var(--surface-2, #0d2035); border-color: var(--ocean, #0ea5e9); color: var(--ocean, #0ea5e9); }
 
-.row-chevron { transition: transform .15s, color .15s, border-color .15s, background .15s; }
+.row-chevron { transition: transform var(--motion-fast), color var(--motion-fast), border-color var(--motion-fast), background var(--motion-fast); }
 .row-chevron.open { transform: rotate(180deg); }
 
 .row-remove:hover { border-color: var(--danger, #f05050); color: var(--danger, #f05050); }
@@ -561,10 +561,10 @@ function confirmRemove() {
   color: var(--text-muted, #6b8fa8); cursor: pointer; display: flex;
   font-size: .7rem; font-weight: 700; justify-content: space-between;
   letter-spacing: .05em; padding: .6rem .75rem; text-transform: uppercase;
-  transition: color .15s; width: 100%;
+  transition: color var(--motion-fast); width: 100%;
 }
 .mini-header:hover { color: var(--foam, #cde); }
-.mini-header .chevron { font-size: .7rem; transition: transform .15s; }
+.mini-header .chevron { font-size: .7rem; transition: transform var(--motion-fast); }
 .mini-header .chevron.open { transform: rotate(90deg); }
 
 .photo-panel { padding: .85rem .75rem; }
@@ -590,7 +590,7 @@ function confirmRemove() {
 .photo-add {
   align-items: center; border: 1px dashed var(--border, #2a3f55); border-radius: 8px;
   color: var(--text-muted, #6b8fa8); cursor: pointer; display: flex;
-  height: 64px; justify-content: center; transition: border-color .15s, color .15s; width: 64px;
+  height: 64px; justify-content: center; transition: border-color var(--motion-fast), color var(--motion-fast); width: 64px;
 }
 .photo-add:hover { border-color: var(--ocean, #0ea5e9); color: var(--ocean, #0ea5e9); }
 .sr-only { border: 0; clip: rect(0,0,0,0); height: 1px; overflow: hidden; padding: 0; position: absolute; width: 1px; }
@@ -609,7 +609,7 @@ function confirmRemove() {
   display: inline-block;
   height: 22px;
   position: relative;
-  transition: background-color .2s;
+  transition: background-color var(--motion-base);
   width: 40px;
 }
 .switch.on { background: var(--success, #5cd98a); }
@@ -620,7 +620,7 @@ function confirmRemove() {
 .switch-knob {
   background: #fff; border-radius: 50%; height: 16px;
   left: 3px; position: absolute; top: 3px;
-  transition: transform .2s; width: 16px;
+  transition: transform var(--motion-base); width: 16px;
 }
 .switch.on .switch-knob { transform: translateX(18px); }
 

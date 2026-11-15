@@ -81,7 +81,7 @@ const shortcuts = [
 .shortcuts { display: grid; grid-template-columns: repeat(auto-fit, minmax(96px, 1fr)); gap: 8px; }
 .shortcut {
   @apply relative flex flex-col items-center justify-center gap-1 min-h-[64px] px-2 py-2 rounded-xl border border-border bg-surface
-         text-foam text-xs font-bold no-underline text-center transition-colors duration-200;
+         text-foam text-xs font-bold no-underline text-center transition-colors duration-base;
 }
 .shortcut svg { @apply text-ocean-text; }
 .shortcut:hover { @apply border-ocean; }

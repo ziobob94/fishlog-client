@@ -509,7 +509,7 @@ const featuredCatch = computed(() => {
     transform: scale(1.25) translateZ(0);
   }
   /* Prima del caricamento riserva una proporzione 4:5 (niente salti di layout); poi si adatta alla foto */
-  .media-thumb-img { @apply relative bg-transparent; opacity: 0; aspect-ratio: 4 / 5; transition: opacity 0.2s ease; }
+  .media-thumb-img { @apply relative bg-transparent; opacity: 0; aspect-ratio: 4 / 5; transition: opacity var(--motion-base) var(--ease-standard); }
   .media-thumb-img.is-loaded { opacity: 1; aspect-ratio: auto; }
   @media (prefers-reduced-motion: reduce) { .media-thumb-img { transition: none; } }
 
@@ -588,7 +588,7 @@ const featuredCatch = computed(() => {
   }
 
   .switch-knob {
-    @apply absolute left-0.5 w-3.5 h-3.5 rounded-full bg-muted transition-transform duration-200;
+    @apply absolute left-0.5 w-3.5 h-3.5 rounded-full bg-muted transition-transform duration-base;
   }
 
   .switch.on .switch-knob {

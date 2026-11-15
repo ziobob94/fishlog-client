@@ -67,7 +67,7 @@ onBeforeUnmount(() => {
   cursor: pointer;
   display: inline-flex;
   padding: 0;
-  transition: color .15s;
+  transition: color var(--motion-fast);
 }
 .field-info-btn:hover,
 .field-info-btn[aria-expanded="true"] {

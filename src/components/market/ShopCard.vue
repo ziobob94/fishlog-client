@@ -1,7 +1,7 @@
 <template>
   <RouterLink :to="`/market/shop/${shop._id}`"
     class="group block bg-surface border border-border rounded-signature p-4
-           transition-all duration-200 hover:border-ocean hover:-translate-y-0.5
+           transition-all duration-base hover:border-ocean hover:-translate-y-0.5
            hover:shadow-[0_4px_24px_rgba(14,165,233,0.1)]"
   >
     <div class="flex items-center gap-3">
