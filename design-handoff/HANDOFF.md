@@ -372,6 +372,43 @@ Barra laterale e **due colonne** (meteo e località a sinistra; uscita in corso,
 ### Accessibilità e movimento
 Ordine di lettura = ordine visivo; l'attività dei pesci ha sempre testo oltre al colore («Pesci: media», `aria-label` con «indicativa»); target ≥ 44 px; accordion con `aria-expanded`; scheletri fermi con `prefers-reduced-motion`. Nessun nuovo token di movimento.
 
+## Modifica uscita: tutte le pagine interne (80–82)
+
+Schermate: `screenshots/80-Modifica-uscita-sezioni`, `81-Modifica-uscita-stati`, `82-Modifica-uscita-desktop` (scuro e `-chiaro`); board 80, 81, 82 sul canvas. Codice: `EditSessionView.vue` e `SessionForm.vue` in modalità menu (`menuMode`: righe → una pagina per sezione). Fino ad ora era ridisegnato solo l'elenco (37, ora superato) e Acqua e meteo (38); le pagine di Generale, Luogo, Voto, Visibilità e Note usavano ancora l'accordion, i `<select>` con emoji e le icone «i» (`FieldInfo`).
+
+### Cosa cambia in tutte le pagine
+- Testata: freccia «Torna alle voci» (≥ 44 px), titolo e, sotto, luogo e data dell'uscita.
+- **Un solo pulsante «Salva»** fisso in fondo (nell'elenco non c'è). Salvando si torna all'elenco con il toast «Modifiche salvate.».
+- Etichette sopra ai campi; il testo d'aiuto è sempre visibile e sostituisce le icone «i». Campi da 52 px, lettere piccole solo nelle etichette; i numeri in JetBrains Mono.
+- Niente `<select>`: scelte brevi come **chip** (radio), mai solo colore (selezionato = riempito + `aria-checked`).
+- Campi derivati (regione, coordinate) tratteggiati con lucchetto: si compilano da soli.
+- Tutto è facoltativo tranne **data** e **luogo**.
+
+### Pagine (board 80)
+| Pagina | Contenuto |
+|---|---|
+| Elenco «Dati dell'uscita» | Compila luogo e meteo (GPS) · **Principali:** Generale, Luogo, Voto (4/5) · **Altri dettagli · facoltativi:** Acqua e meteo, Visibilità (Solo io), Note · «Elimina uscita». Stato con testo + segno di spunta («Compilato», «Da aggiungere») |
+| Generale | Titolo, Data, Inizio, Fine, Tecnica (6 chip), Tipo di acqua (4 chip, avvisa che cambia i campi di «Acqua e meteo») |
+| Luogo | Nome (ricerca con suggerimenti), Spot, mappa con punto trascinabile e pulsante «Usa la mia posizione», Latitudine/Longitudine e Regione di sola lettura, Note sul luogo |
+| Voto | 5 stelle da 56 px con parola sotto (Da dimenticare, Così così, Buona, Bella uscita, Indimenticabile), «Togli il voto» |
+| Acqua e meteo | Selettore **Acqua / Meteo** nella stessa pagina (nel codice sono già due gruppi: il selettore scorre al gruppo). Acqua adattiva al tipo (mare: stato, onde, marea, corrente, colore, temperatura · fiume: livello, corrente, colore, temperatura · lago/altro: corrente, colore, temperatura). Meteo: cielo (6 chip con icona), direzione del vento a **8 chip** con nome (Tramontana, Grecale…), velocità, temperatura, pressione, note |
+| Visibilità | **Foglio dal basso** con tre scelte (Solo io, Tutti gli utenti, Gruppi); con «Gruppi» appaiono le caselle dei gruppi o «Non hai ancora gruppi». Salva alla chiusura se è cambiato qualcosa (come oggi) |
+| Note | Un solo campo grande; la visibilità non sta più qui |
+
+Direzioni intermedie del vento (le 16 del codice): le 8 principali sono chip, per le altre si apre l'elenco completo in un foglio («Più precisa»). I valori salvati restano quelli attuali.
+
+### Varianti e stati (board 81)
+Fiume · Lago/altro · Luogo con suggerimenti · Luogo mancante («Scrivi dove hai pescato: il luogo è obbligatorio.») · Data mancante · Orari incoerenti («La fine è prima dell'inizio.» da aggiungere: oggi non c'è) · Compilazione dal GPS (in corso, riuscita, nessun dato, GPS negato, offline; la stima ha sempre il testo «I dati sono una stima…») · Salvataggio (pulsante bloccato con «Salvataggio…») · Offline (banner, «Salva» disattivato) · Errore di salvataggio (banner con «Riprova», i dati restano) · «Uscire senza salvare?» · «Eliminare questa uscita?» · «Modifiche salvate.» · Gruppi: nessuno.
+
+### Desktop (board 82)
+Elenco fisso a sinistra (340 px) con la voce attiva evidenziata, pagina a destra (max 640 px) con «Salva» fisso in fondo; i campi corti si affiancano su tre colonne. Niente foglio: la Visibilità si apre in un dialogo centrato.
+
+### Cosa NON cambia
+Salvataggio per sezione, conferma «Uscire senza salvare?» quando si lascia una sezione modificata, ritorno al menu con il gesto indietro, regole di obbligatorietà (data e luogo), foglio Visibilità che salva alla chiusura.
+
+### Accessibilità e movimento
+`radiogroup`/`radio` per chip e stelle (frecce per spostarsi), `aria-label` sui pulsanti a icona, errori con `role="alert"` e testo (non solo bordo rosso), focus visibile, target ≥ 44 px, dialoghi `alertdialog` con focus intrappolato. Foglio e dialoghi usano i token di `motion.css`; lo spinner si ferma con `prefers-reduced-motion`.
+
 ## Movimento (animazioni e transizioni) — vale per tutta l'app
 
 Stile: calmo e acquatico, come un'onda lunga. Mai rimbalzi: la «molla» è appena accennata (sovraelongazione ≈ 3 %). I valori sono token in `tokens/motion.css` (importare da `tokens.css`; alias Tailwind `duration-fast|base|slow`, `ease-enter|exit|standard|spring` in `tailwind-extend.js`). Gli esempi Vue sono in `vue-starter/motion/`.
