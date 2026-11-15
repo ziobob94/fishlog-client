@@ -28,6 +28,7 @@ export default createRouter({
     { path: '/confirm-email',   name: 'confirm-email',   component: () => import('../views/ConfirmEmailView.vue'),   meta: { public: true } },
     { path: '/privacy-policy', name: 'privacy-policy', component: () => import('../views/legal/PrivacyView.vue'), meta: { public: true } },
     { path: '/gare/p/:slug', name: 'fipsas-public', component: () => import('../views/fipsas/FipsasPublicView.vue'), meta: { public: true } },
+    { path: '/uscita/:token', name: 'session-public', component: () => import('../views/SessionPublicView.vue'), meta: { public: true } },
     { path: '/termini',        name: 'terms',          component: () => import('../views/legal/TermsView.vue'),   meta: { public: true } },
     { path: '/cookie-policy',  name: 'cookie-policy',  component: () => import('../views/legal/CookieView.vue'),  meta: { public: true } },
     { path: '/',               name: 'home',          component: () => import('../views/HomeView.vue'), meta: { tab: true } },

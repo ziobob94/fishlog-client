@@ -24,6 +24,7 @@
         </div>
         <div v-else class="hero-empty"><ImageIcon :size="52" :stroke-width="1.6" /></div>
         <button type="button" class="hero-btn hero-back" :aria-label="t('common.back')" @click="router.push('/sessions')"><ChevronLeft :size="22" /></button>
+        <button v-if="isOwner && !session._pending" type="button" class="hero-btn hero-share" :aria-label="t('session.share.open')" @click="showShare = true"><Share2 :size="18" /></button>
         <RouterLink v-if="isOwner" :to="`/session/${session._id}/edit`" class="hero-btn hero-edit" :aria-label="t('groups.editAction')"><Pencil :size="18" /></RouterLink>
         <span v-if="media.length" class="fl-mono hero-count">{{ slideIndex + 1 }}/{{ media.length }} {{ t('session.view.photoWord') }}</span>
         <div v-if="!media.length" class="hero-ticks" aria-hidden="true"></div>
@@ -158,6 +159,8 @@
       <RouterLink :to="`/session/${session._id}/catch/new`" class="fl-btn1 add-btn"><Plus :size="20" /> {{ t('catchPage.add') }}</RouterLink>
     </div>
 
+    <ShareSessionSheet v-if="showShare" :session="session" @close="showShare = false" @changed="onShareChanged" />
+
     <!-- Confirm delete -->
     <Teleport to="body">
       <div v-if="confirmDelete" class="dialog-overlay" @click.self="confirmDelete = false">
@@ -181,7 +184,7 @@ import { ref, computed, onMounted, onBeforeUnmount, watch, nextTick } from 'vue'
 import { elapsedLabel } from '../utils/sessionTime.js'
 import { useRoute, useRouter, RouterLink } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { Hourglass, MapPin, Pencil, Camera, ChevronLeft, ChevronDown, ChevronRight, Plus, Image as ImageIcon } from 'lucide-vue-next'
+import { Hourglass, Share2, MapPin, Pencil, Camera, ChevronLeft, ChevronDown, ChevronRight, Plus, Image as ImageIcon } from 'lucide-vue-next'
 import { lastCatchChange, clearLastCatchChange } from '../composables/useUndoCatch.js'
 import { useToast } from '../composables/useToast.js'
 import { useSessionStore } from '../stores/sessions.js'
@@ -191,6 +194,7 @@ import InfoItem      from '../components/InfoItem.vue'
 import MapDisplay    from '../components/MapDisplay.vue'
 import TideDivider   from '../components/TideDivider.vue'
 import StampBadge    from '../components/StampBadge.vue'
+import ShareSessionSheet from '../components/ShareSessionSheet.vue'
 
 const { t }  = useI18n()
 const store  = useSessionStore()
@@ -220,6 +224,8 @@ function onSlide() {
   if (el) slideIndex.value = Math.round(el.scrollLeft / Math.max(1, el.clientWidth))
 }
 const showMedia = ref(false)
+const showShare = ref(false)
+function onShareChanged(token) { if (store.current) store.current = { ...store.current, shareToken: token || undefined } }
 const { toast } = useToast()
 
 // Solo sulle uscite concluse del proprietario: aggiungere/modificare una cattura non cambia lo stato dell'uscita.
@@ -352,6 +358,7 @@ async function doDelete() {
 .hero-btn { position: absolute; top: 14px; width: 44px; height: 44px; border-radius: 14px; background: rgb(var(--color-ink) / .72); border: 1px solid var(--border); color: var(--foam); display: flex; align-items: center; justify-content: center; cursor: pointer; text-decoration: none; backdrop-filter: blur(6px); }
 .hero-back { left: 14px; }
 .hero-edit { right: 14px; }
+.hero-share { right: 66px; }
 .hero-count { position: absolute; left: 14px; bottom: 14px; font-size: 12px; padding: 5px 10px; border-radius: 12px; background: rgb(var(--color-ink) / .75); color: var(--foam); }
 .hero-ticks { position: absolute; left: 12px; right: 12px; bottom: 10px; height: 10px; pointer-events: none; background: repeating-linear-gradient(90deg, rgba(241,245,249,.85) 0 2px, transparent 2px 10px); }
 .hero-major { position: absolute; left: 12px; right: 12px; bottom: 10px; height: 18px; pointer-events: none; background: repeating-linear-gradient(90deg, rgb(var(--color-sand-text)) 0 2px, transparent 2px 50px); }

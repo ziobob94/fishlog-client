@@ -664,6 +664,28 @@
 			"visUsersHint": "Visibile a tutti gli utenti.",
 			"visGroupHint": "Visibile ai gruppi scelti."
 		},
+		"share": {
+			"open": "Condividi uscita",
+			"title": "Condividi fuori dall'app",
+			"intro": "Crei un link che chiunque può aprire, anche senza account Fishlog. L'uscita resta com'è nell'app.",
+			"showsYes": "Si vedono: luogo, data, durata, catture, foto e il tuo nome.",
+			"showsNo": "Non si vedono: coordinate, note, esche e montature.",
+			"create": "Crea link",
+			"active": "Il link è attivo: chi lo riceve può vedere questa uscita.",
+			"linkLabel": "Link di condivisione",
+			"copy": "Copia link",
+			"copied": "Copiato",
+			"share": "Condividi",
+			"revoke": "Disattiva link",
+			"revokeHint": "Disattivandolo, il link smette subito di funzionare.",
+			"close": "Chiudi",
+			"text": "Guarda la mia uscita di pesca: {title}",
+			"invalid": "Link non valido",
+			"invalidNote": "Il link non esiste oppure è stato disattivato.",
+			"by": "di {name}",
+			"noCatches": "Nessuna cattura registrata.",
+			"cta": "Scopri Fishlog"
+		},
 		"view": {
 			"notFound": "Sessione non trovata.",
 			"backToList": "← Torna alla lista",
