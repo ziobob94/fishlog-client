@@ -1,3 +1,10 @@
+# [1.91.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.90.0...client-v1.91.0) (2026-11-15)
+
+
+### Features
+
+* **session:** uscita in corso, azioni sotto «Aggiungi cattura» e Fishy che ascolta subito ([#184](https://github.com/ziobob94/fishlog-client/issues/184)) ([172feea](https://github.com/ziobob94/fishlog-client/commit/172feeae63d1bb7d39703d186cefb5722567da4b))
+
 # [1.90.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.89.0...client-v1.90.0) (2026-11-15)
 
 
