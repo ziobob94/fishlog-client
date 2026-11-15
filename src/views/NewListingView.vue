@@ -7,6 +7,7 @@
   <div v-else>
     <PageHeader :title="t('market.newListing')" back close-icon />
     <ListingForm
+      :initial="initial"
       :categories="store.categories"
       :submit-label="t('market.form.publish')"
       :saving="saving"
@@ -32,6 +33,7 @@ const auth = useAuthStore()
 // Un privato pubblica sempre; un negozio solo dopo la verifica
 const verified = computed(() => auth.user?.shop?.canPublish ?? auth.user?.shop?.verificationStatus === 'verified')
 
+const initial = store.takeDraft() || {} // bozza di Fishy, se arrivi da lì
 const saving = ref(false)
 const error  = ref('')
 
