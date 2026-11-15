@@ -30,6 +30,8 @@ describe('stato dati mancanti, caricamento, offline', () => {
   })
   it('livello null o luogo non raggiungibile → dati mancanti (nessun livello)', () => {
     expect(activityState({ rec: rec({ level: null }) })).toBe('missing')
+    expect(activityState({ rec: rec({ level: null, reason: 'no-marine' }) })).toBe('hidden')
+    expect(activityState({ rec: rec({ level: null, reason: 'no-marine' }), online: false })).toBe('hidden')
     expect(activityState({ rec: rec({ ok: false }) })).toBe('missing')
     expect(activityState({ rec: rec({ level: 9 }) })).toBe('missing')
   })
