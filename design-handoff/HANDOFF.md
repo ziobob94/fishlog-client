@@ -317,16 +317,60 @@ Controlli ≥44 px; contrasto ≥4,5:1; stato annunciato con `aria-live="polite"
 
 ## Fishy: pulsante animato (77)
 
-Schermate e anteprima in movimento: `screenshots/77-Fishy-animato(.png|-chiaro.png|.gif)`; board 77 sul canvas (le animazioni girano dal vivo); componente `vue-starter/FishyAnimated.vue` (prop `state`: `idle | listen | think | ok`, `size`).
+Schermate e anteprima in movimento: `screenshots/77-Fishy-animato(.png|-chiaro.png|.gif)`; board 77 sul canvas (le animazioni girano dal vivo); componente `vue-starter/FishyAnimated.vue` (prop `state`: `idle | listen | think | ok | hello`, `size`).
 Solo CSS/SVG, nessuna libreria. Tutte le animazioni sono decorative (`aria-hidden`) e si spengono con `prefers-reduced-motion` (restano avatar fermo, testo, timer, bordo).
 | Stato | Cosa si muove | Durata · curva |
 |---|---|---|
 | `idle` | ammicco, coda che dondola appena, galleggiante che oscilla | ammicco 5 s, coda 2,8 s, galleggiante 4 s · ease-in-out, loop |
 | `listen` | **parla**: la bocca si apre e chiude a ritmo irregolare; occhio grande con ammicco; galleggiante che pulsa e manda due onde; coda veloce | bocca 0,9 s, onde/alone 1,2 s, coda 0,55 s · ease-in-out, loop |
 | `think` | lo sguardo gira, tre puntini si accendono in sequenza (sfasati di 0,2 s), coda lenta | sguardo 2,4 s, puntini 1,2 s · ease-in-out, loop |
+| `hello` | **saluta**: la pinna si agita (−30°/+38°), la bocca parla, saltello continuo, occhio grande; compare il fumetto «Ciao!» (solo da 80 px in su, non sul pulsante). Dopo 3 s torna a `idle` | pinna 0,5 s, salto 1 s, fumetto 0,35 s una volta · 3 s in tutto |
 | `ok` | saltello (−7 px), occhi felici, due scintille che «scoppiano»; **una volta sola** poi torna a `idle` | 0,7 s ease-out; scintille 0,4 s |
 La bocca che parla e le onde sono una finta: il riconoscimento del browser non dà il livello audio, quindi non devono mai sembrare un misuratore. Nessun loop vistoso nel foglio quando si leggono le conferme: lì usare `idle` o l'avatar fermo.
-Per il pulsante: `FishyFab` usa `FishyAnimated` con `state` legato agli stati del FAB (idle→`idle`, ascolto→`listen`, elaborazione→`think`, successo→`ok`; errore, offline e limite restano le espressioni ferme di `Fishy.vue`). Anelli dell'ascolto (decorativi) come in board 72.
+Per il pulsante: `FishyFab` usa `FishyAnimated` con `state` legato agli stati del FAB (idle→`idle`, prima apparizione→`hello` per 3 s con il testo «Parla con Fishy», ascolto→`listen`, elaborazione→`think`, successo→`ok`; errore, offline e limite restano le espressioni ferme di `Fishy.vue`). Anelli dell'ascolto (decorativi) come in board 72.
+
+## Home: analisi del codice e riorganizzazione (78–79)
+
+Schermate: `screenshots/78-Home-riorganizzata(.png|-chiaro.png)` (mobile, 9 stati) e `79-Home-riorganizzata-desktop(.png|-chiaro.png)`; board 78 e 79 sul canvas. Analisi fatta leggendo `src/views/HomeView.vue` (master) e i componenti collegati; l'app non è stata eseguita.
+
+### Com'è ora (ordine in `HomeView.vue`)
+1. `HomeWeatherCard` · 2. `FishActivityCard` · 3. `FavoritePlaces` · 4. pannello «uscita in corso» (solo mobile) · 5. `GlobeCard` · 6. `tiles-2` (solo mobile) · 7. `story-grid` (solo desktop) · 8. `quick-links` con 7 collegamenti (Specie, Statistiche, Amici, ecc.), più il padding in fondo per il pulsante di Fishy.
+
+### Differenze rispetto al mockup (aggiunte senza passare dal design)
+- Meteo, attività dei pesci e preferite sono **tre blocchi separati** che dicono quasi la stessa cosa (condizioni adesso, ma tre volte, con tre titoli); nel mockup 64/69/70 erano un unico percorso.
+- L'**uscita in corso** è al quarto posto (sotto tutto il meteo) invece che in testa: chi sta pescando deve scorrere per fermarla.
+- Il **mappamondo** occupa una schermata intera sotto il fold senza dare un'azione; le «Pescate» nel mockup erano un accordion compatto.
+- `tiles-2` e `quick-links` duplicano la navigazione (sette collegamenti più due riquadri, tutti anche nel menu).
+- Su desktop `story-grid` ripete cose già nella pagina Social.
+- Da verificare nel codice: la nota «Indicativa» ripetuta e gli stati vuoti sovrapposti; nel mockup sono una sola nota e un solo stato vuoto.
+
+### Nuova struttura (mobile, dall'alto)
+1. **Uscita in corso** (solo se attiva): una riga sabbia con «Uscita in corso · 2 h 15», luogo, numero di catture e «Riprendi». Sparisce quando non c'è.
+2. **Adesso** (una sola card, componente `HomeNowCard`): luogo e ora di aggiornamento, temperatura, vento, pressione, onda, e subito sotto «Pesci: media» con «Indicativa · 16:00–18:00». Si espande per le prossime ore e «Apri meteo e mare». Chiusa è una sola riga (temperatura, condizioni, vento, onda, pesci). La nota «Indicativa» compare **una sola volta**, qui.
+3. **Le mie località**: scorrimento orizzontale di chip (96 px) con temperatura, vento/onda e «Pesci: …»; «Gestisci» accanto al titolo; chip «Aggiungi» tratteggiato. Scegliere una località cambia la card «Adesso» e mostra il banner «Stai guardando Ancona» con «Mia posizione» per tornare.
+4. **Le tue pescate**: accordion chiuso («6 luoghi sul mappamondo · 3 pescate nell'ultima uscita · 09/11»); il mappamondo e «La mia posizione» stanno dentro, non più come blocco fisso.
+5. **Una sola riga di scorciatoie**: Specie, Statistiche, Classifica, Gare (più «Amici» con il numero di richieste quando ce ne sono) al posto di `tiles-2` e dei 7 `quick-links`; il resto è nel menu.
+Pulsante di Fishy sempre in basso a destra, con il padding già previsto in fondo.
+
+### Cosa si toglie o si sposta
+- Si **tolgono**: `tiles-2`, `quick-links` (sostituiti dalla riga di scorciatoie), `story-grid` desktop, la seconda nota «Indicativa».
+- Si **uniscono**: `HomeWeatherCard` + `FishActivityCard` → una sola `HomeNowCard` (i due componenti si possono riusare dentro).
+- Si **spostano**: uscita in corso in cima; `GlobeCard` dentro l'accordion «Le tue pescate»; `FavoritePlaces` («Le mie località») subito sotto «Adesso».
+
+### Stati (board 78)
+- **Con uscita in corso** / **Senza uscita** (in questo caso «Le tue pescate» è aperto).
+- **Meteo espanso** e **Meteo chiuso** (riga unica).
+- **Altra località**: banner «Stai guardando Ancona» + «Mia posizione».
+- **Nessuna preferita**: un solo blocco «Salva una spiaggia · Vedi vento, onde e pesci dei tuoi posti qui, senza aprire il meteo», niente altri stati vuoti.
+- **Caricamento**: scheletri, nessun numero inventato.
+- **Offline**: banner «Sei offline: mostro gli ultimi dati.», «Non aggiornato · dati delle 13:40», località «Aggiornate alle 13:40 · dati non aggiornati».
+- **Dati parziali**: valore mancante «—» con «Dati non disponibili», mai 0.
+
+### Desktop (board 79)
+Barra laterale e **due colonne** (meteo e località a sinistra; uscita in corso, pescate e scorciatoie a destra). Niente `story-grid`; le storie restano in Community. Stati: con e senza uscita in corso.
+
+### Accessibilità e movimento
+Ordine di lettura = ordine visivo; l'attività dei pesci ha sempre testo oltre al colore («Pesci: media», `aria-label` con «indicativa»); target ≥ 44 px; accordion con `aria-expanded`; scheletri fermi con `prefers-reduced-motion`. Nessun nuovo token di movimento.
 
 ## Movimento (animazioni e transizioni) — vale per tutta l'app
 
