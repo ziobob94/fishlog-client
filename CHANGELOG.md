@@ -1,3 +1,10 @@
+# [1.87.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.86.0...client-v1.87.0) (2026-11-15)
+
+
+### Features
+
+* **fishy:** foglio allineato alle board 73 e 74 (stato vuoto, pulsante, testata, luogo mancante, stati) ([#176](https://github.com/ziobob94/fishlog-client/issues/176)) ([00385c6](https://github.com/ziobob94/fishlog-client/commit/00385c68fa5174f7a74c09f2ea4e4373725a5d29))
+
 # [1.86.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.85.0...client-v1.86.0) (2026-11-15)
 
 
