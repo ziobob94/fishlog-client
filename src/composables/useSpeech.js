@@ -26,11 +26,30 @@ export function mergeSegments(parts) {
   return out.join(' ')
 }
 
+// iOS (Safari e PWA) richiede di nuovo il permesso del microfono a ogni nuova sessione di riconoscimento. Finché il foglio di
+// Fishy è aperto teniamo quindi UN solo flusso audio già autorizzato (si chiede una volta, non a ogni frase) e lo
+// rilasciamo alla chiusura del foglio o quando l'app va in background. Solo iOS; si spegne con localStorage fishy.keepMic = 'off'.
+let keepStream = null
+let keepPending = null
+export async function holdMic() {
+  try {
+    if (!isIOS() || keepStream || keepPending || localStorage.getItem('fishy.keepMic') === 'off') return
+    if (!navigator.mediaDevices?.getUserMedia) return
+    keepPending = navigator.mediaDevices.getUserMedia({ audio: true })
+    keepStream = await keepPending
+  } catch { keepStream = null /* negato o non disponibile: si va avanti come prima */ } finally { keepPending = null }
+}
+export function releaseMic() {
+  try { keepStream?.getTracks().forEach(t => t.stop()) } catch { /* */ }
+  keepStream = null
+}
+
 export function useSpeech({ lang = 'it-IT', onResult, onError, silenceMs = 3500, idleMs = 10000 } = {}) {
   const Ctor = typeof window !== 'undefined' ? (window.SpeechRecognition || window.webkitSpeechRecognition) : null
   const supported = !!Ctor
   const listening = ref(false)
   const interim = ref('')
+  const audioOn = ref(false)
   let rec = null
   let finalText = ''
   let timer = null
@@ -41,7 +60,7 @@ export function useSpeech({ lang = 'it-IT', onResult, onError, silenceMs = 3500,
 
   function start() {
     if (!supported || listening.value) return
-    finalText = ''; interim.value = ''; cancelled = false
+    finalText = ''; interim.value = ''; cancelled = false; audioOn.value = false
     rec = new Ctor()
     rec.lang = lang
     rec.interimResults = true
@@ -54,6 +73,8 @@ export function useSpeech({ lang = 'it-IT', onResult, onError, silenceMs = 3500,
       interim.value = finalText
       arm(silenceMs)
     }
+    // Il timer di registrazione parte solo quando l'audio è davvero acceso (dopo l'eventuale richiesta di permesso).
+    rec.onaudiostart = () => { audioOn.value = true }
     rec.onerror = (e) => {
       clearTimer(); listening.value = false
       // Con una trascrizione valida già raccolta l'errore (es. rete caduta a fine frase) non va mostrato: onend la invia.
@@ -73,5 +94,5 @@ export function useSpeech({ lang = 'it-IT', onResult, onError, silenceMs = 3500,
   function stop() { clearTimer(); try { rec?.stop() } catch { /* già fermo */ } }
   if (getCurrentInstance()) onBeforeUnmount(() => { clearTimer(); try { rec?.abort() } catch { /* */ } })
 
-  return { supported, listening, interim, start, stop, cancel }
+  return { supported, listening, audioOn, interim, start, stop, cancel }
 }
