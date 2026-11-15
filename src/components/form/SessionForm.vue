@@ -1,5 +1,5 @@
 <template>
-  <form @submit.prevent="handleSubmit" class="session-form" novalidate>
+  <form @submit.prevent="handleSubmit" class="session-form" :class="{ 'is-menu': menuMode }" novalidate>
 
     <!-- ═══ NUOVA USCITA: solo l'essenziale (luogo, quando, ambiente, tecnica) ═══ -->
     <div v-if="mode === 'essential'" class="essential">
@@ -53,35 +53,289 @@
       <p class="ess-foot">{{ t('sessionForm.essential.later') }}</p>
     </div>
 
-    <!-- ═══ DATI USCITA: elenco di righe → una schermata per sezione ═══ -->
-    <div v-else-if="menuMode && !activeSection" class="data-menu">
-      <button type="button" class="detect-card" :disabled="!canAutoFill || autoFilling || gpsLoading" @click="autoFillWeatherAndSea">
-        <span class="detect-icon"><span v-if="autoFilling || gpsLoading" class="m-spinner" style="width:18px;height:18px"></span><RefreshCw v-else-if="hasAutoData" :size="22" /><MapPin v-else :size="22" /></span>
-        <span class="detect-text">
-          <strong>{{ gpsLoading ? t('sessionForm.fields.gpsDetecting') : (autoFilling ? t('sessionForm.autoFill.loading') : (hasAutoData ? t('sessionForm.autoFill.recalc') : t('sessionForm.menu.autofill'))) }}</strong>
-          <small>{{ t('sessionForm.menu.autofillSub') }}</small>
-        </span>
-        <ChevronRight :size="20" class="menu-go" />
-      </button>
-      <p v-if="autoFillMsg" class="autofill-result" :class="autoFillMsg.type">{{ autoFillMsg.text }}</p>
-      <section v-for="g in menuGroups" :key="g.id" class="menu-group" :aria-labelledby="`mg-${g.id}`">
-        <h3 :id="`mg-${g.id}`" class="menu-group-title">{{ g.title }}</h3>
-        <button v-for="row in g.rows" :key="row.id" type="button" class="menu-row" @click="openRow(row.id)">
-          <span class="menu-icon" :class="{ done: row.done }"><component :is="MENU_ICONS[row.id]" :size="22" /></span>
-          <span class="menu-text"><strong>{{ row.title }}</strong><small>{{ row.sub }}</small></span>
-          <span class="menu-status fl-mono" :class="{ done: row.done }">{{ row.status }}</span>
-          <ChevronRight :size="18" class="menu-go" />
+    <!-- ═══ MODIFICA USCITA (menuMode): elenco di voci → una pagina per sezione. Da md: elenco a sinistra, pagina a destra ═══ -->
+    <div v-else-if="menuMode" class="menu-shell" :class="{ 'has-page': activeSection }">
+
+      <div v-if="!activeSection || isDesktop" class="data-menu">
+        <button type="button" class="detect-card" :disabled="!canAutoFill || autoFilling || gpsLoading" @click="autoFillWeatherAndSea">
+          <span class="detect-icon"><span v-if="autoFilling || gpsLoading" class="m-spinner" style="width:18px;height:18px"></span><RefreshCw v-else-if="hasAutoData" :size="22" aria-hidden="true" /><MapPin v-else :size="22" aria-hidden="true" /></span>
+          <span class="detect-text">
+            <strong>{{ gpsLoading ? t('sessionForm.fields.gpsDetecting') : (autoFilling ? t('sessionForm.autoFill.loading') : (hasAutoData ? t('sessionForm.autoFill.recalc') : t('sessionForm.menu.autofill'))) }}</strong>
+            <small>{{ t('sessionForm.menu.autofillSub') }}</small>
+          </span>
+          <ChevronRight :size="20" class="menu-go" aria-hidden="true" />
         </button>
+        <p v-if="autoFillMsg && !activeSection" class="autofill-result" :class="autoFillMsg.type" role="status">{{ autoFillMsg.text }}</p>
+        <section v-for="g in menuGroups" :key="g.id" class="menu-group" :aria-labelledby="`mg-${g.id}`">
+          <h3 :id="`mg-${g.id}`" class="menu-group-title">{{ g.title }}</h3>
+          <button v-for="row in g.rows" :key="row.id" type="button" class="menu-row" :class="{ active: isDesktop && activeSection === row.id }" :aria-current="isDesktop && activeSection === row.id ? 'page' : undefined" @click="openRow(row.id)">
+            <span class="menu-icon" :class="{ done: row.done }"><component :is="MENU_ICONS[row.id]" :size="22" aria-hidden="true" /></span>
+            <span class="menu-text"><strong>{{ row.title }}</strong><small>{{ row.sub }}</small></span>
+            <span class="menu-status fl-mono" :class="{ done: row.done }"><Check v-if="row.done" :size="14" aria-hidden="true" /> {{ row.status }}</span>
+            <ChevronRight :size="18" class="menu-go" aria-hidden="true" />
+          </button>
+        </section>
+        <button type="button" class="delete-link" @click="$emit('delete')"><Trash2 :size="18" aria-hidden="true" /> {{ t('sessionForm.menu.delete') }}</button>
+      </div>
+
+      <section v-if="activeSection" class="menu-page" :aria-labelledby="'mp-title'">
+        <header class="mp-head">
+          <button v-if="!isDesktop" type="button" class="fl-iconbtn" :aria-label="t('sessionMenu.backToMenu')" @click="leaveSection()"><ArrowLeft :size="22" aria-hidden="true" /></button>
+          <div class="mp-titles">
+            <h2 id="mp-title" class="mp-title">{{ sectionLabel(activeSection) }}</h2>
+            <p v-if="headSub" class="mp-sub">{{ headSub }}</p>
+          </div>
+        </header>
+
+        <div class="mp-body">
+
+        <!-- GENERALE -->
+        <template v-if="activeSection === 'general'">
+          <div class="mf">
+            <label class="fl-lab" for="mp-title-inp">{{ t('sessionMenu.titleLabel') }} <span class="opt">· {{ t('sessionMenu.optional') }}</span></label>
+            <input id="mp-title-inp" v-model="f.title" type="text" class="fl-inp" aria-describedby="mp-title-help" :placeholder="f.location?.name?.trim() || t('sessionForm.fields.titlePlaceholder')" />
+            <p id="mp-title-help" class="fl-hint">{{ t('sessionForm.fields.titleInfo') }}</p>
+          </div>
+          <div class="mf">
+            <span class="fl-lab">{{ t('sessionMenu.when') }}</span>
+            <div class="when-grid">
+              <div class="when-date">
+                <label class="fl-lab sub" for="mp-date">{{ t('sessionMenu.dateLabel') }} <span class="req" aria-hidden="true">*</span></label>
+                <input id="mp-date" v-model="f.date" type="date" v-ph="'gg/mm/aaaa'" required class="fl-inp fl-mono" :class="{ 'fl-err': errDate }" :aria-invalid="errDate || undefined" aria-describedby="mp-date-err" />
+                <p v-if="errDate" id="mp-date-err" class="fl-error" role="alert"><AlertTriangle :size="14" aria-hidden="true" /> {{ t('sessionForm.essential.dateRequired') }}</p>
+              </div>
+              <div>
+                <label class="fl-lab sub" for="mp-start">{{ t('sessionMenu.startLabel') }}</label>
+                <input id="mp-start" v-model="f.startTime" type="time" v-ph="'--:--'" class="fl-inp fl-mono" />
+              </div>
+              <div>
+                <label class="fl-lab sub" for="mp-end">{{ t('sessionMenu.endLabel') }} <span class="opt">· {{ t('sessionMenu.optional') }}</span></label>
+                <input id="mp-end" v-model="f.endTime" type="time" v-ph="'--:--'" class="fl-inp fl-mono" :class="{ 'fl-err': endBeforeStart }" :aria-invalid="endBeforeStart || undefined" aria-describedby="mp-end-err" />
+                <p v-if="endBeforeStart" id="mp-end-err" class="fl-error" role="alert"><AlertTriangle :size="14" aria-hidden="true" /> {{ t('sessionMenu.endBeforeStart') }}</p>
+              </div>
+            </div>
+          </div>
+          <div class="mf">
+            <span id="mp-tech" class="fl-lab">{{ t('sessionMenu.techniqueLabel') }} <span class="opt">· {{ t('sessionMenu.optional') }}</span></span>
+            <ChipGroup v-model="f.technique" :options="TECHNIQUES" labelledby="mp-tech" :cols="3" />
+          </div>
+          <div class="mf">
+            <span id="mp-wtype" class="fl-lab">{{ t('sessionMenu.waterTypeLabel') }} <span class="opt">· {{ t('sessionMenu.optional') }}</span></span>
+            <ChipGroup v-model="f.waterType" :options="WATER_CHIPS" labelledby="mp-wtype" />
+            <p class="fl-hint">{{ t('sessionMenu.waterTypeNote') }}</p>
+          </div>
+        </template>
+
+        <!-- LUOGO -->
+        <template v-else-if="activeSection === 'location'">
+          <button type="button" class="detect-card" :disabled="!canAutoFill || autoFilling || gpsLoading" @click="autoFillWeatherAndSea">
+            <span class="detect-icon"><span v-if="autoFilling || gpsLoading" class="m-spinner" style="width:18px;height:18px"></span><RefreshCw v-else-if="hasAutoData" :size="22" aria-hidden="true" /><MapPin v-else :size="22" aria-hidden="true" /></span>
+            <span class="detect-text">
+              <strong>{{ gpsLoading ? t('sessionForm.fields.gpsDetecting') : (autoFilling ? t('sessionForm.autoFill.loading') : (hasAutoData ? t('sessionForm.autoFill.recalc') : t('sessionForm.menu.autofill'))) }}</strong>
+              <small>{{ t('sessionForm.menu.autofillSub') }}</small>
+            </span>
+            <ChevronRight :size="20" class="menu-go" aria-hidden="true" />
+          </button>
+          <p v-if="!canAutoFill" class="fl-hint">{{ t('sessionForm.autoFill.warning') }}</p>
+          <p v-if="autoFillMsg" class="autofill-result" :class="autoFillMsg.type" :role="autoFillMsg.type === 'error' ? 'alert' : 'status'">{{ autoFillMsg.text }}</p>
+          <p v-if="autoFilling || autoFillMsg || hasAutoData" class="fl-hint">{{ t('sessionForm.autoFill.disclaimer') }}</p>
+          <p v-if="geocodeMsg" class="fl-hint" role="status">{{ geocodeMsg }}</p>
+
+          <div class="mf">
+            <label class="fl-lab" for="loc-name">{{ t('sessionMenu.placeLabel') }} <span class="req" aria-hidden="true">*</span></label>
+            <PlaceInput id="loc-name" v-model="f.location.name" v-model:lat="f.location.coords.lat" v-model:lng="f.location.coords.lng" :invalid="errPlace" required :placeholder="t('sessionForm.fields.locationNamePlaceholder')" @place="applyPlace" />
+            <p v-if="errPlace" class="fl-error" role="alert"><AlertTriangle :size="14" aria-hidden="true" /> {{ t('sessionMenu.placeRequired') }}</p>
+          </div>
+          <div class="mf">
+            <label class="fl-lab" for="mp-spot">{{ t('sessionMenu.spotLabel') }} <span class="opt">· {{ t('sessionMenu.optional') }}</span></label>
+            <input id="mp-spot" v-model="f.location.spot" type="text" class="fl-inp" aria-describedby="mp-spot-help" :placeholder="t('sessionForm.fields.spotPlaceholder')" />
+            <p id="mp-spot-help" class="fl-hint">{{ t('sessionForm.fields.spotInfo') }}</p>
+          </div>
+          <div class="mf">
+            <LocationPicker :lat="f.location.coords.lat" :lng="f.location.coords.lng"
+              @update:lat="v => f.location.coords.lat = v" @update:lng="v => f.location.coords.lng = v" @place="p => applyPlace(p, true)" />
+          </div>
+          <div class="mf two">
+            <div>
+              <label class="fl-lab" for="mp-lat">{{ t('sessionMenu.latLabel') }}</label>
+              <div class="locked"><input id="mp-lat" :value="f.location.coords.lat ?? ''" type="text" readonly aria-readonly="true" class="fl-inp fl-mono locked-inp" placeholder="–" aria-describedby="mp-lock-help" /><Lock :size="16" class="locked-ic" role="img" :aria-label="t('sessionMenu.locked')" /></div>
+            </div>
+            <div>
+              <label class="fl-lab" for="mp-lng">{{ t('sessionMenu.lngLabel') }}</label>
+              <div class="locked"><input id="mp-lng" :value="f.location.coords.lng ?? ''" type="text" readonly aria-readonly="true" class="fl-inp fl-mono locked-inp" placeholder="–" aria-describedby="mp-lock-help" /><Lock :size="16" class="locked-ic" role="img" :aria-label="t('sessionMenu.locked')" /></div>
+            </div>
+          </div>
+          <div class="mf">
+            <label class="fl-lab" for="mp-region">{{ t('sessionMenu.regionLabel') }}</label>
+            <div class="locked"><input id="mp-region" :value="f.location.region" type="text" readonly aria-readonly="true" class="fl-inp locked-inp" placeholder="–" aria-describedby="mp-lock-help" /><Lock :size="16" class="locked-ic" role="img" :aria-label="t('sessionMenu.locked')" /></div>
+            <p id="mp-lock-help" class="fl-hint">{{ t('sessionMenu.lockedHint') }}</p>
+          </div>
+          <div class="mf">
+            <label class="fl-lab" for="mp-locnotes">{{ t('sessionMenu.locationNotesLabel') }} <span class="opt">· {{ t('sessionMenu.optional') }}</span></label>
+            <textarea id="mp-locnotes" v-model="f.location.notes" class="fl-inp" rows="3" aria-describedby="mp-locnotes-help" :placeholder="t('sessionForm.fields.locationNotesPlaceholder')"></textarea>
+            <p id="mp-locnotes-help" class="fl-hint">{{ t('sessionForm.fields.locationNotesInfo') }}</p>
+          </div>
+        </template>
+
+        <!-- VOTO -->
+        <template v-else-if="activeSection === 'rating'">
+          <div class="fl-card rating-card">
+            <div class="card-head"><Star :size="20" aria-hidden="true" /><div><h3>{{ t('sessionMenu.ratingPrompt') }}</h3><p>{{ t('sessionMenu.ratingPromptSub') }}</p></div></div>
+            <StarRating v-model="f.rating" :words="ratingWords" :label="t('sessionForm.fields.ratingLabel')" />
+            <button v-if="f.rating > 0" type="button" class="fl-btn2" @click="f.rating = 0">{{ t('sessionMenu.ratingClear') }}</button>
+          </div>
+          <p class="fl-hint center">{{ t('sessionMenu.ratingTip') }}</p>
+        </template>
+
+        <!-- ACQUA E METEO -->
+        <template v-else-if="activeSection === 'waterweather'">
+          <div class="segment" role="group" :aria-label="t('sessionMenu.segment')">
+            <button type="button" :aria-pressed="wwTab === 'water'" :class="{ on: wwTab === 'water' }" @click="jumpTo('water')">{{ t('sessionMenu.water') }}</button>
+            <button type="button" :aria-pressed="wwTab === 'weather'" :class="{ on: wwTab === 'weather' }" @click="jumpTo('weather')">{{ t('sessionMenu.weather') }}</button>
+          </div>
+
+          <div id="mp-g-water" ref="waterGroup" class="fl-card group">
+            <p class="kind-note"><Waves :size="16" aria-hidden="true" /> {{ t('sessionMenu.waterKindNote', { kind: t('sessionMenu.waterKind.' + (f.waterType || 'mare')) }) }}</p>
+            <div class="card-head"><Waves :size="20" aria-hidden="true" /><div><h3>{{ waterSectionTitle }}</h3><p>{{ t('sessionMenu.waterSub') }}</p></div></div>
+
+            <template v-if="isSea">
+              <div class="mf">
+                <span id="mp-sea" class="fl-lab">{{ t('sessionMenu.seaStateLabel') }} <span class="opt">· {{ t('sessionMenu.optional') }}</span></span>
+                <ChipGroup v-model="f.sea.seaState" :options="SEA_CHIPS" labelledby="mp-sea" />
+                <p class="fl-hint">{{ t('sessionForm.fields.seaStateInfo') }}</p>
+              </div>
+              <div class="mf two">
+                <div>
+                  <label class="fl-lab" for="mp-wh">{{ t('sessionMenu.waveHeight') }}</label>
+                  <input id="mp-wh" v-model="f.sea.waveHeight" type="text" inputmode="decimal" class="fl-inp fl-mono" :placeholder="t('sessionForm.fields.waveHeightPlaceholder')" aria-describedby="mp-wh-help" />
+                </div>
+                <div>
+                  <label class="fl-lab" for="mp-wp">{{ t('sessionMenu.wavePeriod') }}</label>
+                  <input id="mp-wp" v-model="f.sea.wavePeriod" type="text" inputmode="decimal" class="fl-inp fl-mono" :placeholder="t('sessionForm.fields.wavePeriodPlaceholder')" aria-describedby="mp-wh-help" />
+                </div>
+                <p id="mp-wh-help" class="fl-hint span2">{{ t('sessionForm.fields.waveHeightInfo') }} {{ t('sessionForm.fields.wavePeriodInfo') }}</p>
+              </div>
+              <div class="mf">
+                <span id="mp-tide" class="fl-lab">{{ t('sessionMenu.tideLabel') }} <span class="opt">· {{ t('sessionMenu.optional') }}</span></span>
+                <ChipGroup v-model="f.sea.tide.state" :options="TIDE_CHIPS" labelledby="mp-tide" />
+                <p class="fl-hint">{{ t('sessionForm.fields.tideInfo') }}</p>
+              </div>
+              <div class="mf">
+                <label class="fl-lab" for="mp-tidenotes">{{ t('sessionMenu.tideNotesLabel') }} <span class="opt">· {{ t('sessionMenu.optional') }}</span></label>
+                <input id="mp-tidenotes" v-model="f.sea.tide.notes" type="text" class="fl-inp" :placeholder="t('sessionForm.fields.tideNotesPlaceholder')" />
+              </div>
+            </template>
+
+            <template v-else-if="isRiver">
+              <div class="mf">
+                <span id="mp-level" class="fl-lab">{{ t('sessionMenu.levelLabel') }} <span class="opt">· {{ t('sessionMenu.optional') }}</span></span>
+                <ChipGroup v-model="f.sea.waterLevel" :options="LEVEL_CHIPS" labelledby="mp-level" :cols="3" />
+                <p class="fl-hint">{{ t('sessionForm.fields.waterLevelInfo') }}</p>
+              </div>
+              <div class="mf">
+                <span id="mp-rcur" class="fl-lab">{{ t('sessionMenu.currentLabel') }} <span class="opt">· {{ t('sessionMenu.optional') }}</span></span>
+                <ChipGroup v-model="f.sea.current" :options="RIVER_CHIPS" labelledby="mp-rcur" />
+                <p class="fl-hint">{{ t('sessionForm.fields.currentInfo') }}</p>
+              </div>
+            </template>
+
+            <div v-else class="mf">
+              <label class="fl-lab" for="mp-cur">{{ t('sessionMenu.currentLabel') }} <span class="opt">· {{ t('sessionMenu.optional') }}</span></label>
+              <input id="mp-cur" v-model="f.sea.current" type="text" class="fl-inp" aria-describedby="mp-cur-help" :placeholder="t('sessionForm.fields.currentPlaceholder')" />
+              <p id="mp-cur-help" class="fl-hint">{{ t('sessionForm.fields.currentInfo') }}</p>
+            </div>
+            <div v-if="isSea" class="mf">
+              <label class="fl-lab" for="mp-cur">{{ t('sessionMenu.currentLabel') }} <span class="opt">· {{ t('sessionMenu.optional') }}</span></label>
+              <input id="mp-cur" v-model="f.sea.current" type="text" class="fl-inp" aria-describedby="mp-cur-help" :placeholder="t('sessionForm.fields.currentPlaceholder')" />
+              <p id="mp-cur-help" class="fl-hint">{{ t('sessionForm.fields.currentInfo') }}</p>
+            </div>
+
+            <div class="mf two">
+              <div>
+                <label class="fl-lab" for="mp-col">{{ t('sessionMenu.colorLabel') }}</label>
+                <input id="mp-col" v-model="f.sea.waterColor" type="text" class="fl-inp" :placeholder="t('sessionForm.fields.waterColorPlaceholder')" aria-describedby="mp-col-help" />
+              </div>
+              <div>
+                <label class="fl-lab" for="mp-wt">{{ t('sessionMenu.tempWater') }}</label>
+                <div class="suffix"><input id="mp-wt" v-model.number="f.sea.waterTemp" type="number" step="0.5" inputmode="decimal" class="fl-inp fl-mono" aria-describedby="mp-col-help" /><span aria-hidden="true">°C</span></div>
+              </div>
+              <p id="mp-col-help" class="fl-hint span2">{{ t('sessionForm.fields.waterColorInfo') }}</p>
+            </div>
+          </div>
+
+          <div id="mp-g-weather" ref="weatherGroup" class="fl-card group">
+            <div class="card-head"><CloudSun :size="20" aria-hidden="true" /><div><h3>{{ t('sessionForm.sections.weather') }}</h3><p>{{ t('sessionMenu.weatherSub') }}</p></div></div>
+            <div class="mf">
+              <span id="mp-sky" class="fl-lab">{{ t('sessionMenu.sky') }} <span class="opt">· {{ t('sessionMenu.optional') }}</span></span>
+              <ChipGroup v-model="f.weather.condition" :options="SKY_CHIPS" labelledby="mp-sky" />
+            </div>
+            <div class="mf">
+              <span id="mp-wind" class="fl-lab">{{ t('sessionMenu.windDir') }} <span class="opt">· {{ t('sessionMenu.optional') }}</span></span>
+              <ChipGroup v-model="f.weather.windDirection" :options="WIND8" labelledby="mp-wind" :cols="4" />
+              <button type="button" class="wind-more" @click="windSheet = true"><Compass :size="16" aria-hidden="true" /> {{ t('sessionMenu.windMore') }}<span v-if="windIsIntermediate"> · {{ f.weather.windDirection }}</span></button>
+              <p class="fl-hint">{{ t('sessionMenu.windMoreHint') }}</p>
+            </div>
+            <div class="mf two">
+              <div>
+                <label class="fl-lab" for="mp-ws">{{ t('sessionMenu.windSpeed') }}</label>
+                <div class="suffix"><input id="mp-ws" v-model.number="f.weather.windSpeed" type="number" min="0" inputmode="decimal" class="fl-inp fl-mono" /><span aria-hidden="true">km/h</span></div>
+              </div>
+              <div>
+                <label class="fl-lab" for="mp-ta">{{ t('sessionMenu.tempAir') }}</label>
+                <div class="suffix"><input id="mp-ta" v-model.number="f.weather.tempAir" type="number" step="0.5" inputmode="decimal" class="fl-inp fl-mono" /><span aria-hidden="true">°C</span></div>
+              </div>
+            </div>
+            <div class="mf">
+              <label class="fl-lab" for="mp-pr">{{ t('sessionMenu.pressure') }} <span class="opt">· {{ t('sessionMenu.optional') }}</span></label>
+              <div class="suffix"><input id="mp-pr" v-model.number="f.weather.pressure" type="number" inputmode="numeric" class="fl-inp fl-mono" aria-describedby="mp-pr-help" /><span aria-hidden="true">hPa</span></div>
+              <p id="mp-pr-help" class="fl-hint">{{ t('sessionForm.fields.pressureInfo') }}</p>
+            </div>
+            <div class="mf">
+              <label class="fl-lab" for="mp-wn">{{ t('sessionMenu.weatherNotes') }} <span class="opt">· {{ t('sessionMenu.optional') }}</span></label>
+              <input id="mp-wn" v-model="f.weather.notes" type="text" class="fl-inp" :placeholder="t('sessionForm.fields.weatherNotesPlaceholder')" />
+            </div>
+          </div>
+        </template>
+
+        <!-- NOTE -->
+        <template v-else-if="activeSection === 'notes'">
+          <div class="fl-card">
+            <div class="card-head"><StickyNote :size="20" aria-hidden="true" /><div><h3>{{ t('sessionMenu.notes') }}</h3><p>{{ t('sessionMenu.notesPromptSub') }}</p></div></div>
+            <div class="mf">
+              <label class="fl-lab" for="mp-notes">{{ t('sessionMenu.notesLabel') }} <span class="opt">· {{ t('sessionMenu.optional') }}</span></label>
+              <textarea id="mp-notes" v-model="f.notes" class="fl-inp notes-area" rows="8" aria-describedby="mp-notes-help" :placeholder="t('sessionForm.fields.generalNotesPlaceholder')"></textarea>
+              <p id="mp-notes-help" class="fl-hint">{{ t('sessionMenu.notesHelp') }}</p>
+            </div>
+          </div>
+        </template>
+
+        </div>
+
+        <!-- Un solo «Salva» fisso in fondo -->
+        <div class="mp-actions">
+          <div v-if="!online || error" class="form-status" role="alert" :class="{ off: !online }">
+            <template v-if="!online"><WifiOff :size="16" aria-hidden="true" /> {{ t('sessionMenu.offline') }}</template>
+            <template v-else><AlertTriangle :size="16" aria-hidden="true" /> {{ t('sessionMenu.saveError') }}
+              <button type="button" class="status-retry" :disabled="saving" @click="handleSubmit">{{ t('sessionMenu.retry') }}</button></template>
+          </div>
+          <button type="submit" class="fl-btn1" :disabled="saving || !online">
+            <span v-if="saving" class="m-spinner" style="width:15px;height:15px"></span>
+            {{ saving ? t('sessionForm.saving') : t('sessionForm.menu.save') }}
+          </button>
+        </div>
       </section>
-      <button type="button" class="delete-link" @click="$emit('delete')"><Trash2 :size="18" /> {{ t('sessionForm.menu.delete') }}</button>
     </div>
 
-    <div v-else-if="menuMode" class="section-bar">
-      <button type="button" class="link-back" @click="leaveSection"><ArrowLeft :size="18" /> {{ t('sessionForm.menu.back') }}</button>
-      <h3>{{ sectionLabel(activeSection) }}</h3>
-    </div>
+    <!-- Foglio: le 16 direzioni del vento -->
+    <BottomSheet v-model="windSheet" :label="t('sessionMenu.windSheetTitle')">
+      <div class="vis-sheet">
+        <h2 class="vis-title">{{ t('sessionMenu.windSheetTitle') }}</h2>
+        <ChipGroup :model-value="f.weather.windDirection" :options="WIND16" :label="t('sessionMenu.windSheetTitle')" :cols="2" @update:model-value="pickWind" />
+        <button type="button" class="fl-btn1" @click="windSheet = false">{{ t('sessionMenu.done') }}</button>
+      </div>
+    </BottomSheet>
 
-    <div v-show="mode !== 'essential' && (!menuMode || activeSection)" :class="{ 'single-section': menuMode }">
+    <div v-if="!menuMode && mode !== 'essential'">
     <!-- BOTTONE AUTO-FILL (sempre visibile, sopra a tutte le sezioni) -->
     <div class="autofill-bar" v-if="showAutofill">
       <div>
@@ -409,26 +663,18 @@
     </BottomSheet>
 
     <!-- AZIONI -->
-    <div v-if="!menuHome || !online || error" class="form-actions">
+    <div v-if="menuMode ? (menuHome && (!online || error)) : true" class="form-actions">
       <div v-if="mode !== 'essential' && (!online || error)" class="form-status" role="alert" :class="{ off: !online }">
         <template v-if="!online"><WifiOff :size="16" /> {{ t('sessionMenu.offline') }}</template>
         <template v-else><AlertTriangle :size="16" /> {{ t('sessionMenu.saveError') }}
           <button type="button" class="status-retry" :disabled="saving" @click="handleSubmit">{{ t('sessionMenu.retry') }}</button></template>
       </div>
       <div v-if="!menuHome" class="form-actions-inner" :class="{ 'ess-actions': mode === 'essential' }">
-        <template v-if="menuMode && activeSection">
-          <button type="submit" class="btn btn-primary" :disabled="saving || !online">
-            <span v-if="saving" class="m-spinner" style="width:15px;height:15px"></span>
-            {{ saving ? t('sessionForm.saving') : t('sessionForm.menu.save') }}
-          </button>
-        </template>
-        <template v-else>
-          <button v-if="mode !== 'essential'" type="button" class="btn btn-ghost" @click="$emit('cancel')">{{ t('common.cancel') }}</button>
-          <button type="submit" :class="mode === 'essential' ? 'fl-btn1' : 'btn btn-primary'" :disabled="saving || !online">
-            <span v-if="saving" class="m-spinner" style="width:15px;height:15px"></span>
-            {{ saving ? t('sessionForm.saving') : (mode === 'essential' ? (concluded ? t('sessionForm.essential.save') : t('sessionForm.essential.start')) : (isEdit ? t('sessionForm.submitEdit') : t('sessionForm.submitCreate'))) }}
-          </button>
-        </template>
+        <button v-if="mode !== 'essential'" type="button" class="btn btn-ghost" @click="$emit('cancel')">{{ t('common.cancel') }}</button>
+        <button type="submit" :class="mode === 'essential' ? 'fl-btn1' : 'btn btn-primary'" :disabled="saving || !online">
+          <span v-if="saving" class="m-spinner" style="width:15px;height:15px"></span>
+          {{ saving ? t('sessionForm.saving') : (mode === 'essential' ? (concluded ? t('sessionForm.essential.save') : t('sessionForm.essential.start')) : (isEdit ? t('sessionForm.submitEdit') : t('sessionForm.submitCreate'))) }}
+        </button>
       </div>
     </div>
 
@@ -436,10 +682,12 @@
 </template>
 
 <script setup>
-  import { ref, reactive, computed, watch, onMounted, nextTick } from 'vue'
-  import { ChevronRight, ArrowLeft, MapPin, RefreshCw, Trash2, FileText, Waves, Star, Eye, StickyNote, WifiOff, AlertTriangle } from 'lucide-vue-next'
+  import { ref, reactive, computed, watch, onMounted, onBeforeUnmount, nextTick } from 'vue'
+  import { ChevronRight, ArrowLeft, MapPin, RefreshCw, Trash2, FileText, Waves, Star, Eye, StickyNote, WifiOff, AlertTriangle, Check, Lock, Compass, CloudSun, Sun, Cloud, CloudRain, Wind, CloudFog, Droplet, Droplets } from 'lucide-vue-next'
   const MENU_ICONS = { general: FileText, location: MapPin, rating: Star, waterweather: Waves, visibility: Eye, notes: StickyNote }
   import { useI18n } from 'vue-i18n'
+  import ChipGroup from './ChipGroup.vue'
+  import StarRating from './StarRating.vue'
   import { useGroupStore } from '../../stores/groups.js'
   import { useAuthStore } from '../../stores/auth.js'
   import { RouterLink, onBeforeRouteLeave } from 'vue-router'
@@ -456,7 +704,7 @@
   import { useToast } from '../../composables/useToast.js'
   import { confirmDialog } from '../../composables/useConfirm.js'
 
-  const { t } = useI18n()
+  const { t, tm, rt, locale } = useI18n()
   const { toast } = useToast()
   const groupStore = useGroupStore()
   const authStore = useAuthStore()
@@ -493,13 +741,31 @@
   const online = useOnline()
   const visSheet = ref(false)
 
+  // Da md: elenco a sinistra e pagina a destra (sempre una voce aperta)
+  const isDesktop = ref(false)
+  let mq = null
+  const onMq = () => { isDesktop.value = !!mq?.matches }
+  onMounted(() => {
+    if (typeof window === 'undefined' || !window.matchMedia) return
+    mq = window.matchMedia('(min-width: 768px)')
+    onMq()
+    mq.addEventListener?.('change', onMq)
+  })
+  onBeforeUnmount(() => mq?.removeEventListener?.('change', onMq))
+  watch([menuMode, isDesktop], ([m, d]) => { if (m && d && !activeSection.value) activeSection.value = 'general' }, { immediate: true })
+
   function openSection(id) {
     activeSection.value = id
+    showErr.value = false
     openSections.value = new Set(ALL_SECTIONS)
     nextTick(() => window.scrollTo({ top: 0 }))
   }
-  // Visibilità = foglio dal basso, tutte le altre voci = pagina a sé
-  function openRow(id) { id === 'visibility' ? (visSheet.value = true) : openSection(id) }
+  // Visibilità = foglio dal basso (dialogo centrato su desktop), tutte le altre voci = pagina a sé
+  function openRow(id) {
+    if (id === 'visibility') { visSheet.value = true; return }
+    if (isDesktop.value && activeSection.value && activeSection.value !== id) { leaveSection(id); return }
+    if (activeSection.value !== id) openSection(id)
+  }
   const sectionVisible = id => !menuMode.value || (SECTION_MAP[activeSection.value] || []).includes(id)
   function sectionLabel(id) {
     return { general: t('sessionMenu.general'), rating: t('sessionMenu.rating'), waterweather: t('sessionMenu.waterWeather'), notes: t('sessionMenu.notes') }[id] || t(`sessionForm.sections.${id}`)
@@ -565,6 +831,64 @@
     { v: 'coperto', l: '☁️ Coperto' }, { v: 'pioggia', l: '🌧️ Pioggia' },
     { v: 'vento', l: '💨 Vento' }, { v: 'nebbia', l: '🌫️ Nebbia' }
   ]
+
+  // Chip dell'elenco «Modifica uscita»: etichette senza emoji, i valori salvati restano quelli di sempre
+  const WATER_CHIPS = [
+    { v: 'mare', l: 'Mare', icon: Waves }, { v: 'fiume', l: 'Fiume', icon: Waves },
+    { v: 'lago', l: 'Lago', icon: Droplet }, { v: 'altro', l: 'Altro', icon: Droplets }
+  ]
+  const SEA_CHIPS = SEA_STATES.map(s => ({ v: s.v, l: s.l.replace(/^\P{L}+/u, '') }))
+  const TIDE_CHIPS = TIDE_STATES.map(s => ({ v: s.v, l: s.l.replace(/^\P{L}+/u, '') }))
+  const LEVEL_CHIPS = WATER_LEVELS.map(s => ({ v: s.v, l: s.l.replace(/^\P{L}+/u, '') }))
+  const RIVER_CHIPS = RIVER_CURRENTS.map(c => ({ v: c, l: c.replace(/^\P{L}+/u, '') }))
+  const SKY_ICONS = { sole: Sun, nuvoloso: CloudSun, coperto: Cloud, pioggia: CloudRain, vento: Wind, nebbia: CloudFog }
+  const SKY_CHIPS = WEATHER.map(c => ({ v: c.v, l: c.l.replace(/^\P{L}+/u, ''), icon: SKY_ICONS[c.v] }))
+  // 16 direzioni (valori salvati invariati). Le 8 principali sono chip, le altre stanno nel foglio «Più precisa».
+  const WIND_CODES = { N: 'N', NNE: 'NNE', NE: 'NE', ENE: 'ENE', E: 'E', ESE: 'ESE', SE: 'SE', SSE: 'SSE', S: 'S', SSW: 'SSO', SW: 'SO', WSW: 'OSO', W: 'O', WNW: 'ONO', NW: 'NO', NNW: 'NNO' }
+  const WIND16 = WIND_DIRS.map(v => {
+    const m = /^(.*) \((\w+)\)$/.exec(v)
+    return { v, l: m[1], sub: WIND_CODES[m[2]], main: m[2].length < 3 }
+  })
+  const WIND8 = WIND16.filter(w => w.main)
+  const windIsIntermediate = computed(() => !!f.value.weather.windDirection && !WIND8.some(w => w.v === f.value.weather.windDirection))
+  const windSheet = ref(false)
+  function pickWind(v) { f.value.weather.windDirection = v; if (v) windSheet.value = false }
+
+  // ─── Pagine, errori e testata ───
+  const showErr = ref(false)
+  const errDate = computed(() => showErr.value && !f.value.date)
+  const errPlace = computed(() => showErr.value && !f.value.location.name?.trim())
+  // Le pescate notturne vanno a cavallo di due giorni (22:10 → 01:30, 18:00 → 08:00): una fine più presto
+  // dell'inizio è valida. È «la fine prima dell'inizio» solo se la durata sarebbe oltre 18 ore (22:10 → 21:30).
+  const toMin = s => { const m = /^(\d{1,2}):(\d{2})/.exec(s || ''); return m ? Number(m[1]) * 60 + Number(m[2]) : null }
+  const endBeforeStart = computed(() => {
+    const a = toMin(f.value.startTime), b = toMin(f.value.endTime)
+    if (a == null || b == null || b >= a) return false
+    return b + 1440 - a > 1080
+  })
+  const ratingWords = computed(() => tm('sessionMenu.ratingWords').map(m => rt(m)))
+  const headSub = computed(() => {
+    const place = f.value.location?.name?.trim()
+    const d = f.value.date ? new Date(`${f.value.date}T12:00:00`) : null
+    const date = d && !isNaN(d) ? d.toLocaleDateString(locale.value, { day: 'numeric', month: 'short', year: 'numeric' }) : ''
+    return [place, date].filter(Boolean).join(' · ')
+  })
+  // Acqua e meteo: il selettore scorre al gruppo e segue lo scroll
+  const wwTab = ref('water')
+  const waterGroup = ref(null), weatherGroup = ref(null)
+  function jumpTo(which) {
+    wwTab.value = which
+    const el = which === 'water' ? waterGroup.value : weatherGroup.value
+    const reduce = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches || document.documentElement.dataset.motion === 'reduce'
+    el?.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' })
+  }
+  function onScrollWW() {
+    if (activeSection.value !== 'waterweather' || !weatherGroup.value) return
+    wwTab.value = weatherGroup.value.getBoundingClientRect().top < window.innerHeight * 0.4 ? 'weather' : 'water'
+  }
+  onMounted(() => window.addEventListener('scroll', onScrollWW, { passive: true }))
+  onBeforeUnmount(() => window.removeEventListener('scroll', onScrollWW))
+  watch(activeSection, () => { wwTab.value = 'water' })
 
   // ─── Tipo d'acqua ─────────────────────────────────────────────────────────────
 
@@ -886,7 +1210,7 @@
   let sectionSavePending = false
 
   // Uscita da una sezione verso il menu: con modifiche non salvate chiede conferma e poi le scarta
-  async function leaveSection() {
+  async function leaveSection(target = null) {
     if (isDirty()) {
       const ok = await confirmDialog(t('unsaved.message'), { title: t('unsaved.title'), confirmLabel: t('unsaved.leave'), cancelLabel: t('unsaved.stay') })
       if (!ok) return
@@ -899,6 +1223,8 @@
       f.value = restored
       nextTick(() => { baseSnap.value = formSnap() })
     }
+    if (target) { openSection(target); return }
+    showErr.value = false
     activeSection.value = null
   }
 
@@ -908,11 +1234,11 @@
     sectionSavePending = false
     if (props.error) return
     savedSnap = baseSnap.value
-    if (activeSection.value) activeSection.value = null
+    if (activeSection.value && !isDesktop.value) activeSection.value = null
   })
   // Dentro una sezione, «indietro» (freccia o gesto) torna al menu dell'uscita invece di uscire dalla pagina
   onBeforeRouteLeave(() => {
-    if (menuMode.value && activeSection.value) { leaveSection(); return false }
+    if (menuMode.value && activeSection.value && !isDesktop.value) { leaveSection(); return false }
     return true
   })
   // Con il menu a sezioni si salva dentro ogni sezione: l'avviso vale solo per la nuova uscita
@@ -938,10 +1264,19 @@
         return
       }
     }
+    if (menuMode.value) {
+      showErr.value = true
+      const bad = !f.value.date || endBeforeStart.value ? 'general' : (!f.value.location.name?.trim() ? 'location' : null)
+      if (bad) {
+        if (activeSection.value !== bad) openSection(bad)
+        showErr.value = true
+        nextTick(() => document.querySelector('.menu-page [aria-invalid="true"]')?.focus())
+        return
+      }
+    }
     for (const id of ['base', 'location']) {
       if (!canLeaveSection(id)) {
         const next = new Set(openSections.value); next.add(id); openSections.value = next
-        if (menuMode.value) activeSection.value = id
         toast(SECTION_BLOCKED_MSG[id](), { type: 'warning' })
         nextTick(() => document.querySelector('.field-missing')?.focus())
         return
@@ -1287,4 +1622,57 @@
   .link-back { align-items: center; align-self: flex-start; background: none; border: none; color: var(--ocean); cursor: pointer; display: inline-flex; font-weight: 600; gap: .3rem; padding: .4rem 0; }
   .single-section .accordion-header, .single-section .section-desc { display: none; }
   .delete-link { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; min-height: 52px; border-radius: 16px; background: transparent; border: 1px solid #7f1d1d; color: #fca5a5; cursor: pointer; font-size: 15px; font-weight: 700; margin-top: 18px; }
+
+  /* ── Modifica uscita: pagine interne (mockup 80–82) ── */
+  .menu-shell { display: block; }
+  .menu-page { display: flex; flex-direction: column; gap: 16px; padding-bottom: calc(150px + env(safe-area-inset-bottom)); }
+  .mp-head { align-items: center; display: flex; gap: 12px; }
+  .mp-titles { min-width: 0; }
+  .mp-title { color: var(--foam); font-family: 'Fraunces', serif; font-size: 24px; font-weight: 700; line-height: 1.15; margin: 0; }
+  .mp-sub { color: var(--text-muted); font-size: 13px; margin: 2px 0 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .mp-body { display: flex; flex-direction: column; gap: 18px; }
+  .mf { display: flex; flex-direction: column; min-width: 0; }
+  .mf.two { display: grid; gap: 10px 12px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .mf.two .span2 { grid-column: 1 / -1; margin: 0; }
+  .fl-lab .opt { font-weight: 600; letter-spacing: .04em; text-transform: none; }
+  .fl-lab.sub { letter-spacing: .1em; }
+  .fl-error { align-items: flex-start; display: flex; gap: 5px; }
+  .fl-error svg { flex: none; margin-top: 2px; }
+  .fl-hint.center { text-align: center; }
+  .when-grid { display: grid; gap: 10px 12px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .when-date { grid-column: 1 / -1; }
+  .locked { position: relative; }
+  .locked-inp { background: transparent; border-style: dashed; color: var(--text-muted); cursor: default; padding-right: 40px; }
+  .locked-ic { color: var(--text-muted); position: absolute; right: 14px; top: 50%; transform: translateY(-50%); }
+  .suffix { position: relative; }
+  .suffix .fl-inp { padding-right: 56px; }
+  .suffix span { color: var(--text-muted); font-size: 13px; pointer-events: none; position: absolute; right: 14px; top: 50%; transform: translateY(-50%); }
+  .card-head { align-items: flex-start; color: rgb(var(--color-ocean-text)); display: flex; gap: 10px; margin-bottom: 14px; }
+  .card-head h3 { color: var(--foam); font-family: 'Fraunces', serif; font-size: 19px; margin: 0; }
+  .card-head p { color: var(--text-muted); font-size: 13px; margin: 2px 0 0; }
+  .fl-card.group { display: flex; flex-direction: column; gap: 18px; scroll-margin-top: 16px; }
+  .fl-card.group .card-head { margin-bottom: 0; }
+  .rating-card { align-items: stretch; display: flex; flex-direction: column; gap: 14px; }
+  .rating-card .card-head { margin-bottom: 0; }
+  .kind-note { align-items: center; background: rgba(14, 165, 233, .1); border-radius: 12px; color: var(--foam); display: flex; font-size: 14px; gap: 8px; margin: 0; padding: 10px 12px; }
+  .notes-area { min-height: 200px; }
+  .segment { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; display: grid; gap: 4px; grid-template-columns: 1fr 1fr; padding: 4px; }
+  .segment button { background: none; border: 0; border-radius: 12px; color: var(--foam); cursor: pointer; font-size: 15px; font-weight: 700; min-height: 44px; transition: background var(--motion-base, 200ms) var(--ease-standard, ease), color var(--motion-fast, 120ms) var(--ease-standard, ease); }
+  .segment button.on { background: var(--ocean); color: rgb(var(--color-on-primary)); }
+  .segment button:focus-visible, .wind-more:focus-visible, .delete-link:focus-visible, .detect-card:focus-visible { outline: 2px solid rgb(var(--color-ocean-text)); outline-offset: 2px; }
+  .wind-more { align-items: center; align-self: flex-start; background: none; border: 1px solid var(--border-light); border-radius: 12px; color: var(--foam); cursor: pointer; display: inline-flex; font-weight: 700; gap: 6px; margin-top: 10px; min-height: 44px; padding: 0 14px; }
+  .menu-row.active { background: rgba(14, 165, 233, .1); border-color: rgb(var(--color-ocean-text)); }
+  .menu-status { align-items: center; display: inline-flex; gap: 3px; }
+  .mp-actions { background: var(--surface); border-top: 1px solid var(--border); bottom: 0; display: flex; flex-direction: column; gap: 8px; left: 0; padding: 10px 16px calc(10px + env(safe-area-inset-bottom)); position: fixed; right: 0; z-index: 160; }
+  .mp-actions .form-status { padding: 4px 0; }
+
+  @media (min-width: 768px) {
+    .session-form.is-menu { max-width: 1004px; padding-bottom: 2rem; }
+    .menu-shell { align-items: start; display: grid; gap: 24px; grid-template-columns: 340px minmax(0, 640px); }
+    .menu-shell .data-menu { padding-bottom: 0; position: sticky; top: 16px; }
+    .menu-page { padding-bottom: 0; }
+    .when-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .when-date { grid-column: auto; }
+    .mp-actions { border: 1px solid var(--border); border-radius: 16px; bottom: 12px; left: auto; position: sticky; right: auto; }
+  }
 </style>
