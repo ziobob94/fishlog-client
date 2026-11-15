@@ -439,6 +439,8 @@
 		"now": { "label": "Adesso: meteo e attività dei pesci" },
 		"newSession": "Nuova uscita",
 		"ongoingTitle": "In corso",
+		"ongoingElapsed": "Uscita in corso · {h} h {m}",
+		"ongoingCatches": "Nessuna cattura | 1 cattura | {n} catture",
 		"historyTitle": "Storico",
 		"zones": {
 			"title": "Scegli la zona",
