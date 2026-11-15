@@ -35,6 +35,9 @@ export async function holdMic() {
   try {
     if (!isIOS() || keepStream || keepPending || localStorage.getItem('fishy.keepMic') === 'off') return
     if (!navigator.mediaDevices?.getUserMedia) return
+    // Non si tenta se il permesso è negato; viene chiamato solo dopo che l'audio è già partito, quindi non deve mostrare popup.
+    const st = await navigator.permissions?.query({ name: 'microphone' }).catch(() => null)
+    if (st?.state === 'denied') return
     keepPending = navigator.mediaDevices.getUserMedia({ audio: true })
     keepStream = await keepPending
   } catch { keepStream = null /* negato o non disponibile: si va avanti come prima */ } finally { keepPending = null }

@@ -45,11 +45,14 @@ function init() {
   })
   if (typeof document !== 'undefined') {
     // In background il timer dell'annullo potrebbe non scattare mai: lo saldiamo subito.
-    document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') { conversation.flush(); releaseMic() } else if (useFishySheet().open.value) holdMic() })
+    document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') { conversation.flush(); releaseMic() }  })
     window.addEventListener('pagehide', () => { conversation.flush(); releaseMic() })
     // Un solo permesso microfono per tutta la vita del foglio (iOS), poi si rilascia.
     // Chiudere il foglio ferma anche l'ascolto avviato da «Parla con Fishy» e libera il microfono.
-    watch(useFishySheet().open, o => { if (o) holdMic(); else { if (speech.listening.value) cancelListening(); releaseMic() } }, { immediate: true })
+    watch(useFishySheet().open, o => { if (!o) { if (speech.listening.value) cancelListening(); releaseMic() } }, { immediate: true })
+    // Il flusso si apre solo DOPO che l'utente ha toccato «Tocca per parlare» e l'audio è partito: mai all'apertura del foglio
+    // (altrimenti iOS mostra il popup del microfono prima ancora che l'utente voglia parlare).
+    watch(speech.audioOn, v => { if (v && useFishySheet().open.value) holdMic() })
   }
 }
 
