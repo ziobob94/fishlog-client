@@ -7,6 +7,7 @@ class FakeRec {
   start() { this.started = true }
   stop() { this.started = false; queueMicrotask(() => this.onend?.()) }
   abort() { this.started = false }
+  sayAll(list) { this.onresult?.({ resultIndex: 0, results: list.map(([text, isFinal]) => Object.assign([{ transcript: text }], { isFinal })) }) }
   say(text, isFinal = true) { this.onresult?.({ resultIndex: 0, results: [Object.assign([{ transcript: text }], { isFinal })] }) }
 }
 
@@ -80,5 +81,44 @@ describe('useSpeech', () => {
     instances[0].onend?.()
     expect(s.listening.value).toBe(false)
     expect(onResult).not.toHaveBeenCalled()
+  })
+
+  it('Android: segmenti cumulativi non vengono ripetuti', async () => {
+    const { useSpeech } = await load()
+    const onResult = vi.fn()
+    const s = useSpeech({ onResult })
+    s.start()
+    const r = instances[0]
+    r.sayAll([['inizia', true]])
+    r.sayAll([['inizia', true], ['inizia una', true]])
+    r.sayAll([['inizia', true], ['inizia una', true], ['inizia una sessione di pesca', true]])
+    expect(s.interim.value).toBe('inizia una sessione di pesca')
+    s.stop()
+    await vi.advanceTimersByTimeAsync(0)
+    expect(onResult).toHaveBeenCalledWith('inizia una sessione di pesca')
+  })
+
+  it('parziali sostituiti, finali concatenati', async () => {
+    const { useSpeech } = await load()
+    const onResult = vi.fn()
+    const s = useSpeech({ onResult })
+    s.start()
+    const r = instances[0]
+    r.sayAll([['ho preso', false]])
+    r.sayAll([['ho preso una spigola', true], ['e una', false]])
+    r.sayAll([['ho preso una spigola', true], ['e una orata', true]])
+    s.stop()
+    await vi.advanceTimersByTimeAsync(0)
+    expect(onResult).toHaveBeenCalledWith('ho preso una spigola e una orata')
+  })
+
+  it('un errore dopo una trascrizione valida non viene segnalato', async () => {
+    const { useSpeech } = await load()
+    const onError = vi.fn(), onResult = vi.fn()
+    const s = useSpeech({ onResult, onError })
+    s.start(); instances[0].say('una orata')
+    instances[0].onerror({ error: 'network' }); instances[0].onend()
+    expect(onError).not.toHaveBeenCalled()
+    expect(onResult).toHaveBeenCalledWith('una orata')
   })
 })
