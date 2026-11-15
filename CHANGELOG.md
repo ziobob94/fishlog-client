@@ -1,3 +1,10 @@
+# [1.84.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.83.0...client-v1.84.0) (2026-11-15)
+
+
+### Features
+
+* Home riorganizzata (scheda Adesso unica, scorciatoie in una riga, due colonne su desktop) e saluto di Fishy ([#168](https://github.com/ziobob94/fishlog-client/issues/168)) ([42b20ce](https://github.com/ziobob94/fishlog-client/commit/42b20ce612d4140be5bb0775f7bcc146e749c0de))
+
 # [1.83.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.82.0...client-v1.83.0) (2026-11-14)
 
 
