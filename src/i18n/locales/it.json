@@ -636,7 +636,8 @@
 			"saveFish": "Salva pesce",
 			"fishSaved": "Cattura salvata",
 			"photosToAdd": "{n} foto da aggiungere",
-			"photosSaved": "{n} foto già salvate",
+			"photosSaved": "{n} foto salvate. Tocca una foto per vederla a schermo intero.",
+			"photosPending": "{n} foto in attesa: partono quando salvi la cattura",
 			"photosOffline": "Pesce salvato, ma le foto si possono aggiungere solo con connessione: riapri il pesce quando sei online.",
 			"moreDetails": "Più dettagli (esca, ora, note)",
 			"lessDetails": "Meno dettagli",
@@ -2272,6 +2273,18 @@
 		"localSession": "Le catture a voce funzionano dopo che l'uscita è stata sincronizzata.",
 		"micDenied": "Microfono non consentito: abilitalo nelle impostazioni del browser, oppure scrivi la cattura.",
 		"speechError": "Non ho sentito bene: riprova o scrivi la cattura."
+	},
+	"catchGallery": {
+		"open": "Apri la foto {n} di {total}",
+		"viewer": "Foto della cattura",
+		"delete": "Elimina la foto",
+		"remove": "Rimuovi la foto",
+		"removeLocal": "Non aggiungere questa foto",
+		"more": "Altre",
+		"uploading": "Foto in attesa di invio",
+		"deleteConfirm": "Eliminare questa foto? Non si può annullare.",
+		"deleteTitle": "Elimina la foto",
+		"deleteFailed": "Non sono riuscito a eliminare la foto. Riprova."
 	},
 	"catchPage": {
 		"sessionBanner": "Stai aggiungendo a",

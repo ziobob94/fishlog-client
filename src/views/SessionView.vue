@@ -73,22 +73,25 @@
           <div class="catch-list">
             <div v-for="(c, ci) in session.catches" :key="c._id" :ref="el => { if (c._id === change?.catchId) hlEl = el }" class="catch" :class="{ open: openCatch === c._id, hl: c._id === change?.catchId }">
               <RouterLink v-if="canAddCatch" :to="`/session/${session._id}/catch/${ci}`" class="catch-head" :aria-label="t('catchPage.editCatchAria', { name: c.species })">
-                <span class="fl-mono time-chip">{{ c.time || '--:--' }}</span>
+                <CatchThumb :media="c.media" />
                 <span class="catch-main">
                   <strong class="catch-name">{{ c.species }}</strong>
                   <span class="catch-sum">{{ catchSummary(c) }}</span>
+                  <span class="fl-mono catch-time">{{ c.time || '--:--' }}</span>
                 </span>
                 <ChevronRight :size="20" class="chev go" />
               </RouterLink>
               <button v-else type="button" class="catch-head" :aria-expanded="openCatch === c._id" @click="openCatch = openCatch === c._id ? null : c._id">
-                <span class="fl-mono time-chip">{{ c.time || '--:--' }}</span>
+                <CatchThumb :media="c.media" />
                 <span class="catch-main">
                   <strong class="catch-name">{{ c.species }}</strong>
                   <span class="catch-sum">{{ catchSummary(c) }}</span>
+                  <span class="fl-mono catch-time">{{ c.time || '--:--' }}</span>
                 </span>
                 <ChevronDown :size="20" class="chev" />
               </button>
               <div v-if="openCatch === c._id" class="catch-body">
+                <CatchGallery v-if="visibleMedia(c.media).length" variant="strip" :media="c.media" :can-delete="isOwner && !session._pending" :meta="viewerMeta(c)" @remove="removeCatchMedia(c, $event)" />
                 <RouterLink v-if="c.species" :to="`/species/${encodeURIComponent(c.species)}`" class="species-link">{{ t('session.view.speciesCard') }} →</RouterLink>
                 <span v-if="c.released" class="badge badge-success">{{ t('session.view.released') }}</span>
                 <div class="info-grid sm">
@@ -190,6 +193,11 @@ import { useToast } from '../composables/useToast.js'
 import { useSessionStore } from '../stores/sessions.js'
 import { useAuthStore } from '../stores/auth.js'
 import MediaUploader from '../components/MediaUploader.vue'
+import CatchThumb from '../components/CatchThumb.vue'
+import CatchGallery from '../components/CatchGallery.vue'
+import { visibleMedia } from '../utils/catchMedia.js'
+import api from '../utils/api.js'
+import { confirmDialog } from '../composables/useConfirm.js'
 import InfoItem      from '../components/InfoItem.vue'
 import MapDisplay    from '../components/MapDisplay.vue'
 import TideDivider   from '../components/TideDivider.vue'
@@ -256,6 +264,17 @@ async function undoChange() {
   toast(res ? t('catchPage.undone') : t('catchPage.undoFailed'), { type: res ? 'success' : 'error' })
 }
 const openCatch = ref(null)
+// Testo sotto la foto a schermo intero: nome, misure, data e luogo.
+function viewerMeta(c) {
+  const s = session.value
+  const measures = [c.lengthCm != null ? `${c.lengthCm} cm` : '', c.weightKg != null ? `${c.weightKg} kg` : ''].filter(Boolean).join(' · ')
+  return { title: c.species, measures, when: [fmtShort(s?.date), c.time, s?.location?.name].filter(Boolean).join(' · ') }
+}
+async function removeCatchMedia(c, m) {
+  if (!(await confirmDialog(t('catchGallery.deleteConfirm'), { title: t('catchGallery.deleteTitle'), confirmLabel: t('common.delete') }))) return
+  try { await api.delete(`/media/${session.value._id}/catch/${c._id}/${m._id}`) } catch { toast(t('catchGallery.deleteFailed'), { type: 'error' }); return }
+  c.media = (c.media || []).filter(x => x._id !== m._id)
+}
 
 const placeLine = computed(() => {
   const l = session.value?.location
@@ -402,6 +421,7 @@ async function doDelete() {
 .time-chip { flex: none; background: rgba(14, 165, 233, .16); color: rgb(var(--color-ocean-text)); border-radius: 10px; padding: 8px 8px; font-size: 13px; }
 .catch-main { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
 .catch-name { font-size: 16px; font-weight: 700; }
+.catch-time { font-size: 12px; color: rgb(var(--color-ocean-text)); }
 .catch-sum { font-size: 13px; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .chev { color: var(--text-muted); flex: none; transition: transform var(--motion-fast); }
 .catch.open .chev, .chev.flip { transform: rotate(180deg); }
