@@ -1,3 +1,10 @@
+## [1.91.1](https://github.com/ziobob94/fishlog-client/compare/client-v1.91.0...client-v1.91.1) (2026-11-16)
+
+
+### Bug Fixes
+
+* **fishy:** non aprire il microfono all'apertura del foglio, solo dopo il primo ascolto ([#185](https://github.com/ziobob94/fishlog-client/issues/185)) ([4c02167](https://github.com/ziobob94/fishlog-client/commit/4c02167ac3e76e26901061d1ef1c66dd35b11cbe))
+
 # [1.91.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.90.0...client-v1.91.0) (2026-11-15)
 
 
