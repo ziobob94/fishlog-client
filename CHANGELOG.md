@@ -1,3 +1,10 @@
+# [1.92.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.91.1...client-v1.92.0) (2026-11-16)
+
+
+### Features
+
+* **catture:** mostra le foto delle catture in dettaglio, riepilogo e uscita in corso ([59fdf4d](https://github.com/ziobob94/fishlog-client/commit/59fdf4ddba93440b8db86215623ef81d954fbbcb))
+
 ## [1.91.1](https://github.com/ziobob94/fishlog-client/compare/client-v1.91.0...client-v1.91.1) (2026-11-16)
 
 
