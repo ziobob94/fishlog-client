@@ -52,10 +52,7 @@
           <span class="saved"><Check :size="14" /> {{ t('session.ongoing.saved') }}</span>
         </div>
         <RouterLink v-for="(c, i) in catches" :key="c._id || i" :to="`/session/${session._id}/catch/${i}`" class="card-row">
-          <span class="thumb">
-            <Fish :size="30" />
-            <i class="ticks"></i><i class="ticks gold"></i>
-          </span>
+          <CatchThumb :media="c.media" />
           <span class="row-main">
             <span class="row-name">{{ c.species }}</span>
             <span class="fl-mono row-size">{{ measures(c) }}</span>
@@ -86,8 +83,9 @@
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import { RouterLink } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { Plus, ChevronRight, ChevronLeft, Fish, FileText, Pencil, Flag, Check } from 'lucide-vue-next'
+import { Plus, ChevronRight, ChevronLeft, FileText, Pencil, Flag, Check } from 'lucide-vue-next'
 import Bobber from '../Bobber.vue'
+import CatchThumb from '../CatchThumb.vue'
 import Fishy from '../Fishy.vue'
 import { useFishyVoice } from '../../composables/useFishyVoice.js'
 import { sessionStart, fmtClock, elapsedLabel, totalKgLabel } from '../../utils/sessionTime.js'
@@ -157,9 +155,6 @@ const elapsed = computed(() => elapsedLabel(props.session, now.value))
 .wave { flex: 1; min-width: 0; width: 100%; color: var(--border); }
 .saved { font-size: 12px; color: rgb(var(--color-success-text)); display: flex; align-items: center; gap: 4px; }
 .card-row { display: flex; gap: 12px; align-items: center; background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 10px; min-height: 64px; text-decoration: none; color: var(--foam); }
-.thumb { position: relative; width: 72px; height: 72px; border-radius: 16px 16px 16px 6px; background: linear-gradient(160deg, var(--surface-2), rgb(var(--color-sea-deep))); color: rgb(var(--color-ocean-text) / .6); display: flex; align-items: center; justify-content: center; flex: none; overflow: hidden; }
-.ticks { position: absolute; left: 8px; right: 8px; bottom: 6px; height: 7px; background: repeating-linear-gradient(90deg, rgb(var(--color-foam) / .8) 0 2px, transparent 2px 8px); }
-.ticks.gold { height: 12px; background: repeating-linear-gradient(90deg, rgb(var(--color-sand-text)) 0 2px, transparent 2px 40px); }
 .row-main { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
 .row-name { font-size: 16px; font-weight: 700; }
 .row-size { font-size: 13px; color: rgb(var(--color-sand-text)); }

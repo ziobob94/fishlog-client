@@ -13,6 +13,9 @@
         <button type="button" class="eb-retry" :disabled="saving || !online" @click="save(false)">{{ t('catchPage.retry') }}</button>
       </div>
 
+      <!-- Foto della cattura in alto (altezza 210 px) -->
+      <CatchGallery v-if="savedMedia.length" ref="gallery" :media="savedMedia" :can-delete="canDeleteMedia" :meta="viewerMeta" @remove="removeSaved" />
+
       <!-- Banner dell'uscita -->
       <div v-if="session" class="session-banner">
         <span class="sb-lab">{{ isNew ? t('catchPage.sessionBanner') : t('session.view.sections.catches', { n: session.catches?.length || 0 }) }}</span>
@@ -68,8 +71,27 @@
               <input type="file" accept="image/*,video/*" multiple class="sr-only" @change="pickPhotos" />
             </label>
           </div>
-          <p v-if="photos.length" class="photo-note">{{ t('session.ongoing.photosToAdd', { n: photos.length }) }}</p>
-          <p v-else-if="draft.media?.length" class="photo-note">{{ t('session.ongoing.photosSaved', { n: draft.media.length }) }}</p>
+          <div v-if="savedMedia.length || pendingPreviews.length" class="photo-grid">
+            <div v-for="(m, i) in savedMedia" :key="m._id || m.url" class="pg-cell">
+              <button type="button" class="pg-open" :aria-label="t('catchGallery.open', { n: i + 1, total: savedMedia.length })" @click="gallery?.open(i, $event.currentTarget)">
+                <CatchThumb :media="[m]" fluid />
+              </button>
+              <button v-if="canDeleteMedia" type="button" class="pg-x" :aria-label="t('catchGallery.remove')" :disabled="!online" @click="removeSaved(m)"><span><X :size="12" :stroke-width="3" /></span></button>
+            </div>
+            <div v-for="(p, i) in pendingPreviews" :key="p.key" class="pg-cell pending">
+              <span class="pg-open" role="img" :aria-label="t('catchGallery.uploading')">
+                <CatchThumb :media="[p]" fluid />
+                <span class="pg-wait"><span class="m-spinner" style="width:18px;height:18px"></span></span>
+              </span>
+              <button type="button" class="pg-x" :aria-label="t('catchGallery.removeLocal')" @click="removePending(i)"><span><X :size="12" :stroke-width="3" /></span></button>
+            </div>
+            <label class="pg-more">
+              <Plus :size="20" aria-hidden="true" /> {{ t('catchGallery.more') }}
+              <input type="file" accept="image/*,video/*" multiple class="sr-only" @change="pickPhotos" />
+            </label>
+          </div>
+          <p v-if="photos.length" class="photo-note pending"><Hourglass :size="14" aria-hidden="true" /> {{ t('session.ongoing.photosPending', { n: photos.length }) }}</p>
+          <p v-else-if="savedMedia.length" class="photo-note">{{ t('session.ongoing.photosSaved', { n: savedMedia.length }) }}</p>
         </section>
 
         <!-- Altri dettagli -->
@@ -127,13 +149,18 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, nextTick } from 'vue'
+import { ref, computed, onMounted, onBeforeUnmount, watch, nextTick } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { AlertTriangle, Camera, Image, ChevronRight, RefreshCw, Trash2, WifiOff, Check } from 'lucide-vue-next'
+import { AlertTriangle, Camera, Image, ChevronRight, RefreshCw, Trash2, WifiOff, Check, Plus, X, Hourglass } from 'lucide-vue-next'
 import PageHeader from '../components/PageHeader.vue'
+import CatchGallery from '../components/CatchGallery.vue'
+import CatchThumb from '../components/CatchThumb.vue'
 import SpeciesQuickAdd from '../components/form/SpeciesQuickAdd.vue'
 import { useSessionStore } from '../stores/sessions.js'
+import { useAuthStore } from '../stores/auth.js'
+import api from '../utils/api.js'
+import { visibleMedia, isAuthor } from '../utils/catchMedia.js'
 import { useToast } from '../composables/useToast.js'
 import { useBaitSuggestions } from '../composables/useBaitSuggestions.js'
 import { useOnline } from '../composables/useOnline.js'
@@ -146,6 +173,7 @@ const { t } = useI18n()
 const route = useRoute()
 const router = useRouter()
 const store = useSessionStore()
+const auth = useAuthStore()
 const { toast } = useToast()
 const { fetchBaitSuggestions } = useBaitSuggestions()
 const online = useOnline()
@@ -216,7 +244,8 @@ async function pickOtherTime() {
   el?.focus(); el?.scrollIntoView?.({ block: 'center' })
 }
 
-const dirtyState = () => JSON.stringify([draft.value, photos.value.length, extension.value])
+// `media` fuori dallo stato «da salvare»: le foto si eliminano subito, non fanno parte della bozza.
+const dirtyState = () => JSON.stringify([{ ...draft.value, media: undefined }, photos.value.length, extension.value])
 const guard = useUnsavedGuard(() => ready.value && !saving.value && dirtyState() !== snapshot.value)
 
 onMounted(async () => {
@@ -238,6 +267,41 @@ function chooseSpecies(name) {
   if (!name) return
   draft.value.species = name
   speciesQuery.value = ''
+}
+
+const gallery = ref(null)
+const savedMedia = computed(() => visibleMedia(draft.value.media))
+const canDeleteMedia = computed(() => !isNew.value && isAuthor(session.value, auth.user?._id || auth.user?.id))
+const viewerMeta = computed(() => {
+  const d = draft.value
+  const measures = [d.lengthCm != null ? `${d.lengthCm} cm` : '', d.weightKg != null ? `${d.weightKg} kg` : ''].filter(Boolean).join(' · ')
+  const s = session.value
+  const date = s?.date ? new Date(s.date).toLocaleDateString('it-IT', { day: 'numeric', month: 'short' }) : ''
+  return { title: d.species, measures, when: [date, d.time, s?.location?.name].filter(Boolean).join(' · ') }
+})
+
+// Anteprime delle foto scelte e non ancora inviate (si liberano quando cambiano o alla chiusura).
+const pendingPreviews = ref([])
+watch(photos, list => {
+  pendingPreviews.value.forEach(p => URL.revokeObjectURL(p.url))
+  pendingPreviews.value = list.map((f, i) => ({ key: `${f.name}-${f.size}-${i}`, url: URL.createObjectURL(f), type: f.type?.startsWith('video') ? 'video' : 'photo', caption: '' }))
+}, { deep: false })
+onBeforeUnmount(() => pendingPreviews.value.forEach(p => URL.revokeObjectURL(p.url)))
+function removePending(i) { photos.value = photos.value.filter((_, k) => k !== i) }
+
+async function removeSaved(m) {
+  const c = draft.value
+  if (!online.value || !c._id || !m._id) return
+  if (!(await confirmDialog(t('catchGallery.deleteConfirm'), { title: t('catchGallery.deleteTitle'), confirmLabel: t('common.delete') }))) return
+  try {
+    await api.delete(`/media/${sessionId}/catch/${c._id}/${m._id}`)
+  } catch {
+    toast(t('catchGallery.deleteFailed'), { type: 'error' })
+    return
+  }
+  draft.value = { ...c, media: (c.media || []).filter(x => x._id !== m._id) }
+  const sc = store.current?.catches?.[editIndex.value]
+  if (sc) sc.media = (sc.media || []).filter(x => x._id !== m._id)
 }
 
 function pickPhotos(event) {
@@ -359,6 +423,18 @@ async function remove() {
 .photo-btn { min-height: 84px; border-radius: 18px; border: 1px dashed var(--border-light); background: var(--surface); color: var(--foam); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; font-weight: 700; font-size: 14px; cursor: pointer; margin: 0; text-transform: none; letter-spacing: 0; }
 .photo-btn.primary { border-color: rgb(var(--color-ocean-text)); background: rgba(14, 165, 233, .08); color: rgb(var(--color-ocean-text)); }
 .photo-note { color: var(--success); font-size: .85rem; margin-top: .5rem; }
+.photo-note.pending { color: rgb(var(--color-sand-text)); display: flex; align-items: center; gap: 6px; }
+.photo-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; margin-top: 12px; }
+.pg-cell { position: relative; }
+.pg-open { display: block; width: 100%; padding: 0; border: 0; background: none; cursor: pointer; position: relative; border-radius: 16px 16px 16px 6px; }
+.pg-open:focus-visible, .pg-x:focus-visible { outline: 2px solid rgb(var(--color-ocean-text)); outline-offset: 2px; }
+.pg-x { position: absolute; top: -10px; right: -10px; width: 44px; height: 44px; display: flex; align-items: flex-start; justify-content: flex-end; padding: 10px; border: 0; background: none; cursor: pointer; z-index: 1; }
+.pg-x span { width: 22px; height: 22px; border-radius: 50%; background: rgb(11 22 35 / .85); color: #f1f5f9; display: flex; align-items: center; justify-content: center; }
+.pg-x:disabled { opacity: .5; cursor: default; }
+.pg-cell.pending :deep(img) { filter: brightness(.45); }
+.pg-wait { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; color: #f1f5f9; }
+.pg-more { margin: 0; aspect-ratio: 1; min-height: 44px; border-radius: 16px 16px 16px 6px; border: 1px dashed rgb(var(--color-ocean-text) / .6); color: rgb(var(--color-ocean-text)); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; font-size: 12px; font-weight: 700; cursor: pointer; text-transform: none; letter-spacing: 0; }
+.pg-more:focus-within { outline: 2px solid rgb(var(--color-ocean-text)); outline-offset: 2px; }
 
 .more-row { align-items: center; background: none; border: none; border-top: 1px solid var(--border); color: var(--foam); cursor: pointer; display: flex; justify-content: space-between; padding: 16px 0 6px; text-align: left; width: 100%; }
 .more-row span { display: flex; flex-direction: column; gap: 2px; }
