@@ -426,6 +426,22 @@ Regole: se il permesso del microfono è negato o manca, il foglio si apre dirett
 
 Screenshot: `screenshots/83-Uscita-in-corso-v2.png` (+ `-chiaro`).
 
+## Foto della cattura (84)
+
+Nel codice ogni cattura ha già le sue foto (`c.media`, caricate con `uploadCatchMedia`), ma oggi non si vedono: il dettaglio (`CatchFormView.vue`) scrive solo «N foto salvate», e nel riepilogo (`SessionView.vue`) le foto stanno dentro la cattura aperta, in una gestione per l'autore. Le immagini nei mockup sono di esempio.
+
+| Dove | Cosa si vede |
+|---|---|
+| Dettaglio cattura | la foto in alto (altezza 210 px) con contatore «1/3 foto» e metro in basso, puntini sotto; più giù la sezione Foto con miniature quadrate, ognuna con la «×» (bersaglio 44 px) e un riquadro tratteggiato «Altre». Senza foto restano i due bottoni «Scatta foto» e «Galleria» |
+| Foto in attesa | miniatura scurita con rotellina e riga «N foto in attesa: partono appena torna la rete» (caricamento offline già esistente) |
+| Foto a schermo intero | sfondo scuro, «1/3 foto», cestino solo per l'autore, nome, misure, data e luogo sotto |
+| Riepilogo | ogni cattura ha una miniatura da 72 px; se le foto sono più di una compare il numero con l'icona macchina fotografica. Senza foto: segnaposto tratteggiato con il pesce. Aprendo la cattura si scorre una striscia di foto, poi Esca, Rilasciato, Ora e «Modifica cattura» |
+| Uscita in corso | stessa miniatura nelle righe delle catture |
+
+Regole: foto solo se disponibili, altrimenti il segnaposto di oggi. Immagini con `loading="lazy"` e `alt` vuoto o la didascalia. I video restano nel visualizzatore con i controlli. Il cestino compare solo a chi ha creato la cattura.
+
+Screenshot: `screenshots/84-Foto-cattura.png` (+ `-chiaro`).
+
 ## Movimento (animazioni e transizioni) — vale per tutta l'app
 
 Stile: calmo e acquatico, come un'onda lunga. Mai rimbalzi: la «molla» è appena accennata (sovraelongazione ≈ 3 %). I valori sono token in `tokens/motion.css` (importare da `tokens.css`; alias Tailwind `duration-fast|base|slow`, `ease-enter|exit|standard|spring` in `tailwind-extend.js`). Gli esempi Vue sono in `vue-starter/motion/`.

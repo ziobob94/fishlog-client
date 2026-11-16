@@ -921,6 +921,22 @@
    "w": 390,
    "x": 500,
    "y": 41000
+  },
+  "FotoCattura.dc.html": {
+   "h": 900,
+   "is_interactive": true,
+   "title": "84 · Foto della cattura (scuro)",
+   "w": 390,
+   "x": 0,
+   "y": 42500
+  },
+  "FotoCattura-chiaro.dc.html": {
+   "h": 900,
+   "is_interactive": true,
+   "title": "84 · Foto della cattura (chiaro)",
+   "w": 390,
+   "x": 500,
+   "y": 42500
   }
  },
  "createdOnFiles": {
@@ -959,7 +975,8 @@
   "n26",
   "n27",
   "n28",
-  "n29"
+  "n29",
+  "n30"
  ],
  "notes": {
   "n1": {
@@ -1143,6 +1160,12 @@
    "w": 560,
    "x": 0,
    "y": 40700
+  },
+  "n30": {
+   "text": "Foto della cattura. Nel dettaglio la foto è in alto con contatore e metro, sotto le miniature con «Altre». Nel riepilogo ogni cattura ha la miniatura (con il numero di foto se sono più di una); aprendola si scorrono le foto. Stessa miniatura nell'elenco dell'uscita in corso. Senza foto resta il segnaposto. Le immagini sono di esempio.",
+   "w": 560,
+   "x": 0,
+   "y": 42200
   }
  },
  "order": [
@@ -1264,7 +1287,9 @@
   "ModificaUscitaDesktop.dc.html",
   "ModificaUscitaDesktop-chiaro.dc.html",
   "UscitaInCorsoV2.dc.html",
-  "UscitaInCorsoV2-chiaro.dc.html"
+  "UscitaInCorsoV2-chiaro.dc.html",
+  "FotoCattura.dc.html",
+  "FotoCattura-chiaro.dc.html"
  ],
  "pages": [],
  "title": "FishLog – Restyling"
