@@ -1,14 +1,14 @@
 // Store del pannello Meteo e mare: luogo scelto («Qui» o cercato), ultimo dato e stato della richiesta.
 // Il dato più recente per luogo resta in IndexedDB: offline si mostra quello con l'ora in evidenza.
 // Quota Google: la Home non chiama il server se il dato in cache è recente (FRESH_MS); il server a sua volta
-// raggruppa i luoghi vicini in celle da ~5 km.
+// raggruppa i luoghi vicini in celle da ~2 km in Italia (~5 km altrove).
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import api from '../utils/api.js'
 import { getWeatherCache, putWeatherCache } from '../utils/offlineDb.js'
 import { normalizeOverview } from '../utils/weather.js'
 
-export const FRESH_MS = 15 * 60e3
+export const FRESH_MS = 10 * 60e3
 const PLACE_KEY = 'fishlog_weather_place'
 const cellKey = (lat, lng) => `${Number(lat).toFixed(2)},${Number(lng).toFixed(2)}`
 
