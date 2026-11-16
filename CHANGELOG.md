@@ -1,3 +1,11 @@
+# [1.93.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.92.0...client-v1.93.0) (2026-11-16)
+
+
+### Features
+
+* **foto:** converti le foto in WebP compresso prima dell'upload ([66677b8](https://github.com/ziobob94/fishlog-client/commit/66677b8ef7b28c1539b894d1dbf54f0852f794cc))
+* **meteo:** dato considerato fresco per 10 minuti invece di 15 ([c39915d](https://github.com/ziobob94/fishlog-client/commit/c39915d0ac3b1e3a6b1dd30b83fec6fc05fc2b7d))
+
 # [1.92.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.91.1...client-v1.92.0) (2026-11-16)
 
 
