@@ -937,6 +937,22 @@
    "w": 390,
    "x": 500,
    "y": 42500
+  },
+  "FishyRobot.dc.html": {
+   "h": 1150,
+   "is_interactive": true,
+   "title": "85 · Fishy robot e icona app (scuro)",
+   "w": 390,
+   "x": 0,
+   "y": 44000
+  },
+  "FishyRobot-chiaro.dc.html": {
+   "h": 1150,
+   "is_interactive": true,
+   "title": "85 · Fishy robot e icona app (chiaro)",
+   "w": 390,
+   "x": 500,
+   "y": 44000
   }
  },
  "createdOnFiles": {
@@ -976,7 +992,8 @@
   "n27",
   "n28",
   "n29",
-  "n30"
+  "n30",
+  "n31"
  ],
  "notes": {
   "n1": {
@@ -1166,6 +1183,12 @@
    "w": 560,
    "x": 0,
    "y": 42200
+  },
+  "n31": {
+   "text": "Fishy diventa un pesce robot e la sua faccia diventa l'icona dell'app. Visiera-schermo con occhi e bocca a LED, antenna con la lanterna ambra, corpo a pannelli. Le sette espressioni restano le stesse. L'icona è Fishy su blu notte con gli anelli delle isobate; ci sono versione tonda, maschera Android, monocromo e favicon.",
+   "w": 560,
+   "x": 0,
+   "y": 43700
   }
  },
  "order": [
@@ -1289,7 +1312,9 @@
   "UscitaInCorsoV2.dc.html",
   "UscitaInCorsoV2-chiaro.dc.html",
   "FotoCattura.dc.html",
-  "FotoCattura-chiaro.dc.html"
+  "FotoCattura-chiaro.dc.html",
+  "FishyRobot.dc.html",
+  "FishyRobot-chiaro.dc.html"
  ],
  "pages": [],
  "title": "FishLog – Restyling"

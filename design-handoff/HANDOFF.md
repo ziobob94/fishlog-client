@@ -442,6 +442,24 @@ Regole: foto solo se disponibili, altrimenti il segnaposto di oggi. Immagini con
 
 Screenshot: `screenshots/84-Foto-cattura.png` (+ `-chiaro`).
 
+## Fishy pesce robot e nuova icona dell'app (85)
+
+**Decisione:** Fishy non è più un pesce con il galleggiante ma un **pesce robot**, e la sua faccia è l'**icona principale dell'app** (prima era un pesce nero su azzurro).
+
+**Il personaggio.** Stessa forma e stessa tavolozza di prima (azzurro oceano, pancia chiara, lanterna ambra). Cambia il carattere: la testa ha una **visiera-schermo scura** con occhio e bocca a LED (azzurro, ambra quando c'è un problema); sopra la testa un'**antenna con la lanterna ambra** al posto del galleggiante; il corpo ha **cuciture e bulloni**, la coda ha le stecche e la pinna ha un bullone. Il contorno scuro `#0b1623` c'è sempre, in scuro e in chiaro. I LED stanno su una visiera scura, quindi restano uguali nei due temi.
+
+**Le sette espressioni non cambiano** (a riposo, ascolta, pensa, contento, perplesso, offline, al limite) e restano legate agli stessi momenti. Cambiano solo le luci: onde dalla lanterna quando ascolta, puntini quando pensa, «?» quando non capisce, «zz» e luci spente offline, palpebra e goccia al limite.
+
+**Icona dell'app.** Fishy su blu notte `#0b2a45` con gli anelli delle isobate, come negli sfondi dell'app. Pesce al centro, circa il 66% della larghezza. Versioni: iOS (1024 quadrata, il sistema arrotonda), Android tonda e squircle, **maschera** con la zona sicura all'80% (`maskable-512.png`, pesce più piccolo), **monocromo** per le icone a tema di Android 13 (`monochrome.svg`, visiera e occhio scavati) e **favicon** (solo testa con visiera e lanterna: a 16 px il pesce intero non si legge).
+
+**File** in `assets/`: `app-icon.svg`, `app-icon-1024.png`, `app-icon-512.png`, `app-icon-192.png`, `apple-touch-icon-180.png`, `maskable.svg`, `maskable-512.png`, `monochrome.svg`, `favicon.svg`, `favicon-32.png`, `favicon-16.png`. Sostituiscono le icone PWA e la favicon di prima.
+
+**Componente:** `vue-starter/Fishy.vue` è già aggiornato al robot (stessa API: `expr`, `size`, `title`).
+
+**Ancora da allineare** (fino all'approvazione resta il vecchio pesce): `FishyAnimated.vue` e le animazioni (ciao, ascolto, pensa, ok), il bottone tondo e il foglio di Fishy nelle board 56–77, il logo `FishLogo.vue` e la tavola Logo (31). Il pesce nel logo e quello dell'icona devono essere lo stesso.
+
+Screenshot: `screenshots/85-Fishy-robot-icona.png` (+ `-chiaro`).
+
 ## Movimento (animazioni e transizioni) — vale per tutta l'app
 
 Stile: calmo e acquatico, come un'onda lunga. Mai rimbalzi: la «molla» è appena accennata (sovraelongazione ≈ 3 %). I valori sono token in `tokens/motion.css` (importare da `tokens.css`; alias Tailwind `duration-fast|base|slow`, `ease-enter|exit|standard|spring` in `tailwind-extend.js`). Gli esempi Vue sono in `vue-starter/motion/`.
