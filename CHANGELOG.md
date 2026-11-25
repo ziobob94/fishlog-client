@@ -1,3 +1,10 @@
+# [1.94.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.93.0...client-v1.94.0) (2026-11-25)
+
+
+### Features
+
+* **home:** dettaglio orario al tap sui riquadri meteo (vento, pressione, onda, pioggia) ([c44c5af](https://github.com/ziobob94/fishlog-client/commit/c44c5af13b73fb04e9a7cc8562973c9e9d12ccbe))
+
 # [1.93.0](https://github.com/ziobob94/fishlog-client/compare/client-v1.92.0...client-v1.93.0) (2026-11-16)
 
 
