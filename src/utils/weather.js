@@ -397,3 +397,18 @@ export function homeHours(hourly, daily) {
     }
   })
 }
+
+// Dettaglio orario di un riquadro della scheda Home (vento, pressione, onda, pioggia): le prime `n` ore con valore.
+// Vento, pressione e pioggia vengono da `hourly`; l'onda da `marine.waves` (stessa cadenza oraria). `extra` è il dato di contorno della riga.
+export const DETAIL_HOURS = 48
+export function metricRows(metric, view, n = DETAIL_HOURS) {
+  if (!view) return []
+  const rows = metric === 'wave'
+    ? (view.marine?.waves || []).map(w => ({ key: w.time, date: String(w.time || '').slice(0, 10), hour: Number((String(w.time || '').match(/T(\d{2})/) || [])[1]), value: w.height, extra: { period: w.period } }))
+    : (view.hourly || []).map(h => ({
+        key: h.time || `${h.date}-${h.hour}`, date: h.date, hour: h.hour,
+        value: metric === 'wind' ? h.windSpeed : metric === 'pressure' ? h.pressure : h.precipProbability,
+        extra: metric === 'wind' ? { gust: h.windGust, deg: h.windDeg } : metric === 'rain' ? { mm: h.precipMm } : {},
+      }))
+  return rows.filter(r => isNum(r.value)).slice(0, n)
+}
