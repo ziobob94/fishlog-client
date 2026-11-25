@@ -38,6 +38,7 @@ export function useHomeWeather() {
       pressure: { value: c.pressure, state: press },
       wave: d.marine.available ? { height: d.marine.waveHeight, period: d.marine.wavePeriod } : null,
       rain: { prob: c.precipProbability, mm: c.precipMm },
+      raw: d, // overview completo: serve al dettaglio orario dei riquadri
     }
   })
   const placeName = computed(() => store.place?.name || '')

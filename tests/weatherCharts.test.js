@@ -17,3 +17,25 @@ describe('pressureSeries', () => {
   })
   it('con meno di 2 punti è vuota', () => { expect(pressureSeries([{ time: 'a', pressure: 1010 }]).points).toEqual([]) })
 })
+
+import { metricRows } from '../src/utils/weather.js'
+describe('metricRows (dettaglio orario dei riquadri)', () => {
+  const view = {
+    hourly: [
+      { time: '2026-11-25T09:00', date: '2026-11-25', hour: 9, windSpeed: 12, windGust: 20, pressure: 1012, precipProbability: 10, precipMm: 0 },
+      { time: '2026-11-25T10:00', date: '2026-11-25', hour: 10, windSpeed: null, windGust: null, pressure: 1011, precipProbability: 40, precipMm: 0.6 },
+    ],
+    marine: { waves: [{ time: '2026-11-25T09:00', height: 0.8, period: 5 }, { time: '2026-11-25T10:00', height: null, period: null }] },
+  }
+  it('vento: salta le ore senza valore e porta le raffiche', () => {
+    const r = metricRows('wind', view); expect(r).toHaveLength(1); expect(r[0].extra.gust).toBe(20)
+  })
+  it('pressione e pioggia', () => {
+    expect(metricRows('pressure', view).map(r => r.value)).toEqual([1012, 1011])
+    expect(metricRows('rain', view)[1].extra.mm).toBe(0.6)
+  })
+  it('onda: legge marine.waves', () => {
+    const r = metricRows('wave', view); expect(r).toHaveLength(1); expect(r[0]).toMatchObject({ hour: 9, date: '2026-11-25', value: 0.8 })
+  })
+  it('senza dati è vuoto', () => { expect(metricRows('wind', null)).toEqual([]) })
+})

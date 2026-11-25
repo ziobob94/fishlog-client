@@ -89,28 +89,29 @@
           </template>
         </div>
 
-        <dl class="hw-grid">
-          <div class="hw-tile">
-            <dt><WeatherIcon name="vento" :size="14" plain /> {{ t('weather.now.wind') }}</dt>
-            <dd><span class="wx-num hw-v">{{ fmt(s.wind.speed) }}</span> <small>km/h</small>
-              <small class="hw-sub2"><template v-if="s.wind.info.calm">{{ t('weather.wind.calm') }}</template><template v-else-if="s.wind.info.from">{{ t('weather.wind.from') }} <abbr :title="s.wind.info.name">{{ s.wind.info.abbr }}</abbr></template><template v-if="s.wind.gust != null"> · {{ t('home.weather.gust', { n: fmt(s.wind.gust) }) }}</template></small></dd>
-          </div>
-          <div class="hw-tile">
-            <dt><WeatherIcon name="pressione" :size="14" plain /> {{ t('weather.now.pressure') }}</dt>
-            <dd><span class="wx-num hw-v">{{ fmt(s.pressure.value) }}</span> <small>hPa</small>
-              <small v-if="pressWord" class="hw-sub2" :class="`hw-pt-${s.pressure.state.key}`">{{ pressWord }}</small></dd>
-          </div>
-          <div v-if="s.wave" class="hw-tile">
-            <dt><WeatherIcon name="onda" :size="14" plain /> {{ t('weather.sea.wave') }}</dt>
-            <dd><span class="wx-num hw-v">{{ fmt(s.wave.height, 1) }}</span> <small>m</small>
-              <small class="hw-sub2">{{ t('home.weather.period', { n: fmt(s.wave.period) }) }}</small></dd>
-          </div>
-          <div class="hw-tile" :class="{ 'hw-wide': !s.wave }">
-            <dt><WeatherIcon name="pioggia-prob" :size="14" plain /> {{ t('weather.now.rain') }}</dt>
-            <dd><span class="wx-num hw-v">{{ fmt(s.rain.prob) }}%</span>
-              <small class="hw-sub2">{{ t('home.weather.expectedMm', { mm: fmt(s.rain.mm, 1) }) }}</small></dd>
-          </div>
-        </dl>
+        <div class="hw-grid" role="group" :aria-label="t('home.weather.detail.group')">
+          <button type="button" class="hw-tile m-press" aria-haspopup="dialog" :title="t('home.weather.detail.hint')" @click="openDetail('wind')">
+            <span class="hw-dt"><WeatherIcon name="vento" :size="14" plain /> {{ t('weather.now.wind') }}</span>
+            <span class="hw-dd"><span class="wx-num hw-v">{{ fmt(s.wind.speed) }}</span> <small>km/h</small>
+              <small class="hw-sub2"><template v-if="s.wind.info.calm">{{ t('weather.wind.calm') }}</template><template v-else-if="s.wind.info.from">{{ t('weather.wind.from') }} <abbr :title="s.wind.info.name">{{ s.wind.info.abbr }}</abbr></template><template v-if="s.wind.gust != null"> · {{ t('home.weather.gust', { n: fmt(s.wind.gust) }) }}</template></small></span>
+          </button>
+          <button type="button" class="hw-tile m-press" aria-haspopup="dialog" :title="t('home.weather.detail.hint')" @click="openDetail('pressure')">
+            <span class="hw-dt"><WeatherIcon name="pressione" :size="14" plain /> {{ t('weather.now.pressure') }}</span>
+            <span class="hw-dd"><span class="wx-num hw-v">{{ fmt(s.pressure.value) }}</span> <small>hPa</small>
+              <small v-if="pressWord" class="hw-sub2" :class="`hw-pt-${s.pressure.state.key}`">{{ pressWord }}</small></span>
+          </button>
+          <button v-if="s.wave" type="button" class="hw-tile m-press" aria-haspopup="dialog" :title="t('home.weather.detail.hint')" @click="openDetail('wave')">
+            <span class="hw-dt"><WeatherIcon name="onda" :size="14" plain /> {{ t('weather.sea.wave') }}</span>
+            <span class="hw-dd"><span class="wx-num hw-v">{{ fmt(s.wave.height, 1) }}</span> <small>m</small>
+              <small class="hw-sub2">{{ t('home.weather.period', { n: fmt(s.wave.period) }) }}</small></span>
+          </button>
+          <button type="button" class="hw-tile m-press" :class="{ 'hw-wide': !s.wave }" aria-haspopup="dialog" :title="t('home.weather.detail.hint')" @click="openDetail('rain')">
+            <span class="hw-dt"><WeatherIcon name="pioggia-prob" :size="14" plain /> {{ t('weather.now.rain') }}</span>
+            <span class="hw-dd"><span class="wx-num hw-v">{{ fmt(s.rain.prob) }}%</span>
+              <small class="hw-sub2">{{ t('home.weather.expectedMm', { mm: fmt(s.rain.mm, 1) }) }}</small></span>
+          </button>
+        </div>
+        <HourlyDetailSheet v-model="detailOpen" :metric="detail" :view="s.raw" />
 
         <RouterLink to="/meteo" class="hw-link hw-open m-press">{{ t('weather.card.open') }} <ArrowRight :size="16" aria-hidden="true" /></RouterLink>
         </div>
@@ -120,11 +121,12 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { MapPin, WifiOff, ArrowRight, Search, RefreshCw, TriangleAlert, ChevronDown } from 'lucide-vue-next'
 import WeatherIcon from '../WeatherIcon.vue'
 import WindArrow from './WindArrow.vue'
+import HourlyDetailSheet from './HourlyDetailSheet.vue'
 import { wmoLabel } from '../weather-icons.js'
 import { fmt, MISSING } from '../../utils/weather.js'
 import { useAccordion } from '../../composables/useAccordion.js'
@@ -143,6 +145,9 @@ const pressWord = computed(() => {
 // Accordion: chiusa = badge di una riga; aperta = riepilogo completo. Parte aperta e ricorda la scelta sul dispositivo.
 const { open, toggle } = useAccordion('fishlog.homeWeatherOpen', true)
 const toggleLabel = computed(() => open.value ? t('home.weather.collapse') : t('home.weather.expandLabel', { place: place.value }))
+// Tocco su un riquadro: foglio con l'andamento ora per ora di quella grandezza.
+const detailOpen = ref(false), detail = ref('wind')
+const openDetail = m => { detail.value = m; detailOpen.value = true }
 const refreshDisabled = computed(() => offline.value || refreshing.value || coolingDown.value)
 const refreshLabel = computed(() => refreshing.value ? t('weather.refreshing') : offline.value ? t('home.weather.refreshOffline') : coolingDown.value ? t('home.weather.refreshWait') : t('weather.refresh'))
 </script>
@@ -207,10 +212,11 @@ const refreshLabel = computed(() => refreshing.value ? t('weather.refreshing') :
 .hw-h-w :deep(svg) { width: 14px; height: 14px; }
 .hw-h-wv { font-size: .72rem; color: rgb(var(--color-muted)); }
 .hw-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin: 0; }
-.hw-tile { background: rgb(var(--color-surface-2)); border-radius: 14px; padding: 12px; min-width: 0; }
+.hw-tile { background: rgb(var(--color-surface-2)); border-radius: 14px; padding: 12px; min-width: 0; border: 0; margin: 0; text-align: left; font: inherit; color: inherit; cursor: pointer; display: block; width: 100%; }
+.hw-tile:focus-visible { outline: 2px solid rgb(var(--color-ocean-text)); outline-offset: 2px; }
 .hw-wide { grid-column: span 2; }
-.hw-tile dt { display: flex; align-items: center; gap: 6px; font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; color: rgb(var(--color-muted)); }
-.hw-tile dd { margin: 6px 0 0; display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 6px; color: rgb(var(--color-foam)); }
+.hw-dt { display: flex; align-items: center; gap: 6px; font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; color: rgb(var(--color-muted)); }
+.hw-dd { margin: 6px 0 0; display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 6px; color: rgb(var(--color-foam)); }
 .hw-v { font-size: 1.5rem; font-weight: 700; }
 .hw-tile small { font-size: .78rem; color: rgb(var(--color-muted)); }
 .hw-tile abbr { text-decoration: none; font-weight: 700; color: rgb(var(--color-foam)); }
